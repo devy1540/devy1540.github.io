@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url> <loc>https://devy1540.github.io/Test/t33/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test/test/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test/test2/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test2/t33/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test2/test/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test2/test2/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test3/t33/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test3/test/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test3/test2/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test2/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://devy1540.github.io/Test3/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://devy1540.github.io/SpringBoot/spring-boot-DI/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://devy1540.github.io/SpringBoot/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://devy1540.github.io/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://devy1540.github.io/search/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 </urlset>
