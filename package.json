@@ -9,7 +9,7 @@
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "deploy": "gatsby build && gh-pages -d public -b gh-pages",
+    "deploy": "gatsby build && gh-pages -d public -b master",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing \""
   },
   "dependencies": {
