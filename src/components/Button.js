@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import tw, { css } from "twin.macro"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 
 const Button = ({ children, onClick, _css, title }) => {
   const { isDarkMode } = useContext(ThemeContext)

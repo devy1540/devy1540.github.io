@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import tw, { css } from "twin.macro"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import Button from "./Button"
 import { FiMoon, FiSun } from "react-icons/fi"
 import { AiOutlineArrowUp } from "react-icons/ai"

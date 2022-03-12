@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 
 const src = "https://utteranc.es/client.js"
 const DARK_THEME = "github-dark"

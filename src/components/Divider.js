@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
 import tw, { css } from "twin.macro"
 

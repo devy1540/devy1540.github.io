@@ -3,7 +3,7 @@ import tw, { css } from "twin.macro"
 import SEO from "../components/seo"
 import Layout from "../components/Layout"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 
 export default () => {
   const { isDarkMode } = useContext(ThemeContext)

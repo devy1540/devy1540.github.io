@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import tw, { css } from "twin.macro"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
 import { Link } from "gatsby"
 import { AiOutlineSearch } from "react-icons/ai"

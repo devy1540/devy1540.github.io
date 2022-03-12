@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useCallback } from "react"
 import tw, { css } from "twin.macro"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
 import Tags from "./Tags"
 import Tag from "./Tag"
