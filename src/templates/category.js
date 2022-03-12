@@ -85,12 +85,12 @@ export default ({ data, location }) => {
       <SEO title={categoryTitle} />
       <Wrapper>
         <Profile />
-        <h1 className="category-title" css={tw`mt-4 px-4 text-4xl font-bold`}>
-          #{categoryTitle}
-        </h1>
       </Wrapper>
       <CategoryMenu path={location.pathname} />
       <Wrapper>
+        <h1 className="category-title" css={tw`mt-4 px-4 text-2xl font-bold`}>
+          {categoryTitle}
+        </h1>
         <TagSelector tags={tags} onTagClick={onTagClick} state={state} />
         {state.filteredPosts.length === 0 && (
           <div css={tw`mx-4 text-xl`}>no post..</div>

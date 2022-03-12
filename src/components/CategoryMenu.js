@@ -139,13 +139,13 @@ const CategoryMenu = ({ path }) => {
         <h3
           css={css`
             transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            ${tw`mx-4 mt-2 font-bold mb-2 text-lg`}
+            ${tw`mx-4 font-bold mb-2 text-lg`}
             ${isDarkMode ? tw`text-gray-400` : tw`text-gray-700`};
           `}
         >
           <Link to={`/`}>Categories</Link>
         </h3>
-        <ul css={tw`mx-4 mt-2`}>
+        <ul css={tw`mx-4 mt-4`}>
           {nodes.map((category, index) => {
             if (category.relativePath !== "") {
               return (
@@ -153,7 +153,7 @@ const CategoryMenu = ({ path }) => {
                   key={`category_${index}`}
                   css={css`
                     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-                    ${tw`text-gray-500 text-sm`}
+                    ${tw`text-gray-500 text-sm mt-1`}
                     ${path &&
                     decodeURI(path) === `/${category.relativePath}/` &&
                     `
