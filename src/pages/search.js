@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, {useState, useEffect, useCallback, useMemo} from "react"
 import tw from "twin.macro"
 import SEO from "../components/seo"
 import Layout from "../components/Layout"
@@ -6,7 +6,10 @@ import { graphql } from "gatsby"
 import queryString from "query-string"
 import Search from "../components/Search"
 import Post from "../components/Post"
-import TagSelector from "../components/TagSelector"
+import SideWrapper from "../components/SideWrapper"
+import CategoryMenu from "../components/CategoryMenu";
+import TagMenu from "../components/TagMenu";
+import ProfileDummy from "../components/ProfileDummy";
 
 const Wrapper = tw.div`w-full max-w-screen-md mx-auto`
 
@@ -112,13 +115,19 @@ export default ({ data, location }) => {
   return (
     <Layout>
       <SEO title="Search" />
+      <SideWrapper>
+        <Wrapper>
+          <ProfileDummy />
+        </Wrapper>
+        <CategoryMenu />
+        <TagMenu tags={state.tags} onTagClick={onTagClick} state={state} />
+      </SideWrapper>
       <Wrapper>
         <Search
           value={state.query}
           onChange={(e) => handleChange(e.target.value)}
           location={location}
         />
-        <TagSelector tags={state.tags} onTagClick={onTagClick} state={state} />
         {state.filteredData.map((post, index) => (
           <Post post={post} key={`post_${index}`} />
         ))}
