@@ -1,6 +1,6 @@
 module.exports = {
   title: `dev_y Blog`,
-  description: `developer`,
+  description: `개발자 윤혁준의 블로그입니다.`,
   author: `윤혁준`,
   introduction: `개발자 윤혁준입니다.`,
   siteUrl: `https://devy1540.github.io/`, // Your blog site url
