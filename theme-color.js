@@ -4,6 +4,7 @@ module.exports = {
     textColor1: "#9CB4D4",
     // footer, 글 등등
     textColor2: "#DDDDDD",
+    textColor3: "#9ca3af",
     // 배너 기준 왼쪽 컬러
     mainColor1: "#B1D5C2",
     // 배너 기준 오른쪽 컬러
@@ -14,6 +15,7 @@ module.exports = {
   darkModeColor: {
     textColor1: "#bd93f9",
     textColor2: "#555555",
+    textColor3: "#f7f7f7",
     mainColor1: "#804bd8",
     mainColor2: "#544ad8",
     mainColor3: "#6272a4",
