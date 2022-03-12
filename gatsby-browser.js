@@ -6,7 +6,7 @@ import "intersection-observer"
 import smoothscroll from "smoothscroll-polyfill"
 
 import React, { useState, useEffect, useCallback } from "react"
-import ThemeContext from "./src/lib/context/ThemContext"
+import ThemeContext from "./src/lib/context/ThemeContext"
 import metaConfig from "./gatsby-meta-config"
 
 // kick off the polyfill!

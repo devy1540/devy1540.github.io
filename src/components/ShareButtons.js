@@ -4,7 +4,7 @@ import { keyframes } from "@emotion/core"
 import Divider from "./Divider"
 import { FaFacebookF, FaTwitter, FaLink, FaInfo } from "react-icons/fa"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 
 var timeId1, timeId2
 

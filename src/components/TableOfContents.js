@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import tw, { css } from "twin.macro"
 
 const TableOfContents = ({ toc, currentHeaderUrl }) => {

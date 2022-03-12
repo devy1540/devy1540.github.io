@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import tw, { css } from "twin.macro"
 import { Link } from "gatsby"
-import ThemeContext from "../lib/context/ThemContext"
+import ThemeContext from "../lib/context/ThemeContext"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
 import { AiOutlineArrowRight, AiOutlineArrowLeft } from "react-icons/ai"
 
