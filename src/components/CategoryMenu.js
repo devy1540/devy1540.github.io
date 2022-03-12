@@ -59,10 +59,16 @@ const CategoryMenu = ({ path }) => {
                     decodeURI(path) === `/${category.relativePath}/` &&
                     `
                         font-size: 0.95rem;
-                        color: ${isDarkMode ? "#DDDDDD" : "#555555"};
+                        color: ${
+                          isDarkMode
+                            ? whiteModeColor.textColor2
+                            : darkModeColor.textColor2
+                        };
                         `}
                         &:hover {
-                      color: ${isDarkMode ? "#DDDDDD" : "#555555"};
+                      color: ${isDarkMode
+                        ? whiteModeColor.textColor2
+                        : darkModeColor.textColor2};
                     }
                   `}
                 >
@@ -152,10 +158,16 @@ const CategoryMenu = ({ path }) => {
                     decodeURI(path) === `/${category.relativePath}/` &&
                     `
                         font-size: 0.95rem;
-                        color: ${isDarkMode ? "#DDDDDD" : "#555555"};
+                        color: ${
+                          isDarkMode
+                            ? whiteModeColor.textColor2
+                            : darkModeColor.textColor2
+                        };
                         `}
                         &:hover {
-                      color: ${isDarkMode ? "#DDDDDD" : "#555555"};
+                      color: ${isDarkMode
+                        ? whiteModeColor.textColor2
+                        : darkModeColor.textColor2};
                     }
                   `}
                 >
