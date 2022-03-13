@@ -28,7 +28,7 @@ const ShareButtons = ({ url, text }) => {
     visible: false,
     end: true,
   })
-  const onFackebookClick = () => {
+  const onFacebookClick = () => {
     window.FB.ui({
       method: "share",
       mobile_iframe: true,
@@ -114,6 +114,12 @@ const ShareButtons = ({ url, text }) => {
         <Divider color />
       </div>
       <div css={tw`flex flex-wrap justify-end mt-4 px-2`}>
+        <ShareButton
+            color={"#2D87FD"}
+            icon={<FaFacebookF css={tw`fill-current my-auto`} />}
+            target={"Facebook"}
+            onClick={onFacebookClick}
+        />
         <ShareButton
           color={"#1CA1F2"}
           icon={<FaTwitter css={tw`fill-current my-auto`} />}
