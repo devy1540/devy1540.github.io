@@ -13,6 +13,7 @@ import Tags from "../components/Tags"
 import ShareButtons from "../components/ShareButtons"
 import SideWrapper from "../components/SideWrapper";
 import CategoryMenu from "../components/CategoryMenu";
+import ProfileDummy from "../components/ProfileDummy";
 
 const Wrapper = tw.div`w-full max-w-screen-md mx-auto`
 const NAV_OFFSET_Y = 36
