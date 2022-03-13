@@ -12,7 +12,7 @@ import {
   FaLinkedin,
   FaInstagram,
 } from "react-icons/fa"
-import { graphql, useStaticQuery } from "gatsby"
+import {graphql, Link, useStaticQuery} from "gatsby"
 
 const Wrapper = tw.div`w-full max-w-screen-md px-4 md:px-0 mx-auto pt-8 md:pt-12 mt-2 mb-4`
 const ProfileContainer = tw.div`md:flex items-center px-2`
@@ -57,7 +57,7 @@ const Profile = () => {
         <PhotoFrame _css={tw`mr-8 mb-2 md:mb-4`} fixed={fixed} />
         <div>
           <span>Written by </span>
-          <p
+          <Link to={'https://github.com/devy1540'}
             css={css`
               ${tw`inline-block text-xl font-bold rounded-full mb-2 px-3`}
               ${isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200`}
@@ -67,7 +67,7 @@ const Profile = () => {
             `}
           >
             @{author}
-          </p>
+          </Link>
           <div css={tw`text-sm font-normal mb-2`}>{introduction}</div>
         </div>
       </ProfileContainer>
