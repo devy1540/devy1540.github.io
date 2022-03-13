@@ -3,7 +3,7 @@ import tw, { css } from "twin.macro"
 import ThemeContext from "../lib/context/ThemeContext"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
 import { Link } from "gatsby"
-import { AiOutlineSearch } from "react-icons/ai"
+import {AiOutlineSearch, AiOutlineUser} from "react-icons/ai"
 
 const Wrapper = tw.nav`
 flex items-center justify-between flex-wrap max-w-screen-xl mx-auto p-5
@@ -34,15 +34,33 @@ const Nav = () => {
     }
   }
 
+  const IconContents = () => {
+    return (
+        <>
+            <div
+                css={css`
+                    display: flex;
+                `}
+            >
+                <Link to={`/`} aria-label={`about page`} css={css`
+                margin-right: 30px;
+                `}>
+                    <AiOutlineUser css={tw`text-white my-auto w-8 h-8`} />
+                </Link>
+                <Link to={`/search`} aria-label={`search page`}>
+                    <AiOutlineSearch css={tw`text-white my-auto w-8 h-8`} />
+                </Link>
+            </div>
+        </>
+    )
+  }
   const Content = () => {
     return (
       <>
         <Link css={tw`text-xl text-white font-bold`} to={"/"}>
           devy's Blog
         </Link>
-        <Link to={`/search`} aria-label={`search page`}>
-          <AiOutlineSearch css={tw`text-white my-auto w-8 h-8`} />
-        </Link>
+          <IconContents />
       </>
     )
   }
