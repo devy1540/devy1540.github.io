@@ -1,8 +1,8 @@
 module.exports = {
-  title: `dev_y Blog`,
-  description: `운동과 개발을 좋아하는 개발자 윤혁준(dev_y)입니다.`,
-  author: `dev_y1540`,
-  introduction: `운동과 개발을 좋아하는 개발자 윤혁준(dev_y)입니다.`,
+  title: `devy's Blog`,
+  description: `운동과 개발을 좋아하는 개발자 윤혁준(devy)입니다.`,
+  author: `devy1540`,
+  introduction: `운동과 개발을 좋아하는 개발자 윤혁준(devy)입니다.`,
   siteUrl: `https://devy1540.github.io/`, // Your blog site url
   social: {
     twitter: ``, // Your Twitter account
