@@ -10,6 +10,7 @@ import {
   FaTwitter,
   FaMedium,
   FaLinkedin,
+  FaInstagram,
 } from "react-icons/fa"
 import { graphql, useStaticQuery } from "gatsby"
 
@@ -43,6 +44,7 @@ const Profile = () => {
             medium
             facebook
             linkedin
+            instagram
           }
         }
       }
@@ -96,7 +98,7 @@ const Profile = () => {
             display: inline-block;
           `}
           title={"facebook Link"}
-          href={`https://www.facebook.com/profile.php?id=${social.facebook}`}
+          href={`https://www.facebook.com/${social.facebook}`}
         >
           <FaFacebook
             css={css`
@@ -107,8 +109,28 @@ const Profile = () => {
                 color: ${isDarkMode ? "#fff" : "#000"};
               }
             `}
-          ></FaFacebook>
+          />
         </a>
+      )}
+      {social.instagram && (
+          <a
+              css={css`
+            display: inline-block;
+          `}
+              title={"instagram Link"}
+              href={`https://www.instagram.com/${social.instagram}`}
+          >
+            <FaInstagram
+                css={css`
+              ${tw`w-8 h-8 mt-4 ml-4`}
+              transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
+              color: #888;
+              &:hover {
+                color: ${isDarkMode ? "#fff" : "#000"};
+              }
+            `}
+            />
+          </a>
       )}
       {social.twitter && (
         <a
@@ -127,7 +149,7 @@ const Profile = () => {
                 color: ${isDarkMode ? "#fff" : "#000"};
               }
             `}
-          ></FaTwitter>
+          />
         </a>
       )}
       {social.medium && (
@@ -167,7 +189,7 @@ const Profile = () => {
                 color: ${isDarkMode ? "#fff" : "#000"};
               }
             `}
-          ></FaLinkedin>
+          />
         </a>
       )}
     </Wrapper>
