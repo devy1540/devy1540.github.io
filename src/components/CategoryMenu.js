@@ -3,8 +3,6 @@ import { useStaticQuery, graphql, Link } from "gatsby"
 import tw, { css } from "twin.macro"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
 import ThemeContext from "../lib/context/ThemeContext"
-import TagMenu from "./TagMenu"
-import Divider from "./Divider"
 
 const Wrapper = tw.div`block xl:hidden w-full max-w-screen-md mx-auto`
 
