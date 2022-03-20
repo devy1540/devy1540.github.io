@@ -59,16 +59,15 @@ const TableOfContents = ({ toc, currentHeaderUrl }) => {
         `}
       >
         <div css={tw`mx-4`}>
-
           <div
-    css={css`
+            css={css`
               ul {
                 margin-left: 0.5rem;
               }
               ul > li a:hover {
                 color: ${isDarkMode
-        ? whiteModeColor.textColor2
-        : darkModeColor.textColor2};
+                  ? whiteModeColor.textColor2
+                  : darkModeColor.textColor2};
               }
               ul > li a {
                 transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -77,12 +76,12 @@ const TableOfContents = ({ toc, currentHeaderUrl }) => {
               ul > li a[href="${currentHeaderUrl}"] {
                 font-size: 0.95rem;
                 color: ${isDarkMode
-        ? whiteModeColor.textColor2
-        : darkModeColor.textColor2};
+                  ? whiteModeColor.textColor2
+                  : darkModeColor.textColor2};
               }
             `}
-    dangerouslySetInnerHTML={{__html: toc}}
-    />
+            dangerouslySetInnerHTML={{ __html: toc }}
+          />
         </div>
       </div>
     </>

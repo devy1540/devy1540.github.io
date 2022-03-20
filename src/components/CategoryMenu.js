@@ -4,7 +4,7 @@ import tw, { css } from "twin.macro"
 import { whiteModeColor, darkModeColor } from "../../theme-color"
 import ThemeContext from "../lib/context/ThemeContext"
 import TagMenu from "./TagMenu"
-import Divider from "./Divider";
+import Divider from "./Divider"
 
 const Wrapper = tw.div`block xl:hidden w-full max-w-screen-md mx-auto`
 
@@ -113,7 +113,7 @@ const CategoryMenu = ({ path }) => {
             top: 100px;
             width: calc((100vw - 720px) / 2 - 80px);
             max-width: 250px;
-        /*    margin-left: calc((100vw - 1280px) / 2);*/
+            /*    margin-left: calc((100vw - 1280px) / 2);*/
             overflow: auto;
             word-break: break-word;
             max-height: calc(100vh - 200px);
@@ -147,7 +147,9 @@ const CategoryMenu = ({ path }) => {
         >
           <Link to={`/`}>Categories</Link>
         </h3>
-        <ul css={tw`mx-4 mt-1 text-sm text-gray-500`}><Link to={`/`}>Home</Link></ul>
+        <ul css={tw`mx-4 mt-1 text-sm text-gray-500`}>
+          <Link to={`/`}>Home</Link>
+        </ul>
         <ul css={tw`mx-4 mt-1`}>
           {nodes.map((category, index) => {
             if (category.relativePath !== "") {

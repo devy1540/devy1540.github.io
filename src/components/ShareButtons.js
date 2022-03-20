@@ -115,10 +115,10 @@ const ShareButtons = ({ url, text }) => {
       </div>
       <div css={tw`flex flex-wrap justify-end mt-4 px-2`}>
         <ShareButton
-            color={"#2D87FD"}
-            icon={<FaFacebookF css={tw`fill-current my-auto`} />}
-            target={"Facebook"}
-            onClick={onFacebookClick}
+          color={"#2D87FD"}
+          icon={<FaFacebookF css={tw`fill-current my-auto`} />}
+          target={"Facebook"}
+          onClick={onFacebookClick}
         />
         <ShareButton
           color={"#1CA1F2"}

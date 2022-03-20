@@ -12,7 +12,7 @@ import {
   FaLinkedin,
   FaInstagram,
 } from "react-icons/fa"
-import {graphql, Link, useStaticQuery} from "gatsby"
+import { graphql, Link, useStaticQuery } from "gatsby"
 
 const Wrapper = tw.div`w-full max-w-screen-md px-4 md:px-0 mx-auto pt-8 md:pt-12 mt-2 mb-4`
 const ProfileContainer = tw.div`md:flex items-center px-2`
@@ -57,7 +57,8 @@ const Profile = () => {
         <PhotoFrame _css={tw`mr-8 mb-2 md:mb-4`} fixed={fixed} />
         <div>
           <span>Written by </span>
-          <Link to={'https://github.com/devy1540'}
+          <Link
+            to={"https://github.com/devy1540"}
             css={css`
               ${tw`inline-block text-xl font-bold rounded-full mb-2 px-3`}
               ${isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200`}
@@ -113,15 +114,15 @@ const Profile = () => {
         </a>
       )}
       {social.instagram && (
-          <a
-              css={css`
+        <a
+          css={css`
             display: inline-block;
           `}
-              title={"instagram Link"}
-              href={`https://www.instagram.com/${social.instagram}`}
-          >
-            <FaInstagram
-                css={css`
+          title={"instagram Link"}
+          href={`https://www.instagram.com/${social.instagram}`}
+        >
+          <FaInstagram
+            css={css`
               ${tw`w-8 h-8 mt-4 ml-4`}
               transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
               color: #888;
@@ -129,8 +130,8 @@ const Profile = () => {
                 color: ${isDarkMode ? "#fff" : "#000"};
               }
             `}
-            />
-          </a>
+          />
+        </a>
       )}
       {social.twitter && (
         <a
