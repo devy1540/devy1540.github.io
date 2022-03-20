@@ -43,7 +43,7 @@ const Nav = () => {
           `}
         >
           <Link
-            to={`/`}
+            to={`https://devy1540.notion.site/a6b71f11606a49aab4353479f8df4f77`}
             aria-label={`about page`}
             css={css`
               margin-right: 30px;
