@@ -1,6 +1,6 @@
 import tw from "twin.macro"
 import React, { useMemo, useState, useEffect, useCallback, useRef } from "react"
-import SEO from "../components/seo"
+import SEO from "../components/SEO"
 import Profile from "../components/Profile"
 import Post from "../components/Post"
 import Layout from "../components/Layout"

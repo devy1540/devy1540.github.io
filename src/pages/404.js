@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import tw, { css } from "twin.macro"
-import SEO from "../components/seo"
+import SEO from "../components/SEO"
 import Layout from "../components/Layout"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
 import ThemeContext from "../lib/context/ThemeContext"

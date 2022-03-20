@@ -1,15 +1,15 @@
-import React, {useState, useEffect, useCallback} from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import tw from "twin.macro"
-import SEO from "../components/seo"
+import SEO from "../components/SEO"
 import Layout from "../components/Layout"
 import { graphql } from "gatsby"
 import queryString from "query-string"
 import Search from "../components/Search"
 import Post from "../components/Post"
 import SideWrapper from "../components/SideWrapper"
-import CategoryMenu from "../components/CategoryMenu";
-import TagMenu from "../components/TagMenu";
-import ProfileDummy from "../components/ProfileDummy";
+import CategoryMenu from "../components/CategoryMenu"
+import TagMenu from "../components/TagMenu"
+import ProfileDummy from "../components/ProfileDummy"
 
 const Wrapper = tw.div`w-full max-w-screen-md mx-auto`
 

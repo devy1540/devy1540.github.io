@@ -2,14 +2,14 @@ import React, { useContext, useRef, useCallback } from "react"
 import tw, { css } from "twin.macro"
 import ThemeContext from "../lib/context/ThemeContext"
 import { darkModeColor, whiteModeColor } from "../../theme-color"
-import TagsByMenu from "./TagsByMenu";
-import TagByMenu from "./TagByMenu";
+import TagsByMenu from "./TagsByMenu"
+import TagByMenu from "./TagByMenu"
 
 const TagMenu = ({ onTagClick, state, tags }) => {
-    const { isDarkMode } = useContext(ThemeContext)
-    const containerRef = useRef(null)
+  const { isDarkMode } = useContext(ThemeContext)
+  const containerRef = useRef(null)
 
-    /*const scrollToCenter = useCallback(
+  /*const scrollToCenter = useCallback(
         (tabRef) => {
             const { offsetWidth: tabWidth } = tabRef.current
             const { scrollLeft, offsetWidth: containerWidth } = containerRef.current
@@ -28,10 +28,10 @@ const TagMenu = ({ onTagClick, state, tags }) => {
         [containerRef]
     )*/
 
-    return (
-        <>
-            <div
-                css={css`
+  return (
+    <>
+      <div
+        css={css`
           ::-webkit-scrollbar {
             width: 4px;
           }
@@ -66,51 +66,51 @@ const TagMenu = ({ onTagClick, state, tags }) => {
             border-image: linear-gradient(
               180deg,
               ${isDarkMode
-                    ? darkModeColor.mainColor1 +
-                    "," +
-                    darkModeColor.mainColor2 +
-                    "," +
-                    darkModeColor.mainColor3
-                    : whiteModeColor.mainColor1 +
-                    "," +
-                    whiteModeColor.mainColor2 +
-                    "," +
-                    whiteModeColor.mainColor3}
+                ? darkModeColor.mainColor1 +
+                  "," +
+                  darkModeColor.mainColor2 +
+                  "," +
+                  darkModeColor.mainColor3
+                : whiteModeColor.mainColor1 +
+                  "," +
+                  whiteModeColor.mainColor2 +
+                  "," +
+                  whiteModeColor.mainColor3}
             );
             border-image-slice: 1;
           }
         `}
-            >
-                <h3
-                    css={css`
+      >
+        <h3
+          css={css`
             transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
             ${tw`mx-4 font-bold mb-2 text-lg`}
             ${isDarkMode ? tw`text-gray-400` : tw`text-gray-700`};
           `}
-                >
-                    Tags
-                </h3>
-                <div
-                    css={css`
-                        ${tw`grid-rows-4`}
-                    `}
-                >
-                    <TagByMenu
-                        tag={"ALL"}
-                        selectedTag={state.tag}
-                        index={"default"}
-                        onClick={onTagClick}
-                    />
-                    <TagsByMenu
-                        tags={tags}
-                        onClick={onTagClick}
-                        tag={state.tag}
-                        // scrollToCenter={scrollToCenter}
-                    />
-                </div>
-            </div>
-        </>
-    )
+        >
+          Tags
+        </h3>
+        <div
+          css={css`
+            ${tw`grid-rows-4`}
+          `}
+        >
+          <TagByMenu
+            tag={"ALL"}
+            selectedTag={state.tag}
+            index={"default"}
+            onClick={onTagClick}
+          />
+          <TagsByMenu
+            tags={tags}
+            onClick={onTagClick}
+            tag={state.tag}
+            // scrollToCenter={scrollToCenter}
+          />
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default TagMenu

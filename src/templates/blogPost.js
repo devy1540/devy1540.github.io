@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { graphql, navigate } from "gatsby"
-import SEO from "../components/seo"
+import SEO from "../components/SEO"
 import Profile from "../components/Profile"
 import tw, { css } from "twin.macro"
 import Markdown from "../components/Markdown"

@@ -12,26 +12,23 @@ const ProfileDummy = () => {
   const { isDarkMode } = useContext(ThemeContext)
   return (
     <Wrapper
-        css={css`
-            margin-bottom: 0.41rem;
-        `}
+      css={css`
+        margin-bottom: 0.41rem;
+      `}
     >
-        <div
+      <div
+        css={css`
+          ${tw`mr-8 mb-10 md:mb-4`}
+        `}
+      >
+        <ProfileContainer>
+          <div
             css={css`
-                ${tw`mr-8 mb-10 md:mb-4`}
+              ${tw`h-3`}
             `}
-
-        >
-            <ProfileContainer>
-                <div
-                    css={css`
-                        ${tw`h-3`}
-                    `}
-                >
-
-                </div>
-            </ProfileContainer>
-        </div>
+          ></div>
+        </ProfileContainer>
+      </div>
     </Wrapper>
   )
 }
