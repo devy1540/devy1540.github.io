@@ -27,13 +27,13 @@ const TableOfContents = ({ toc, currentHeaderUrl }) => {
           scrollbar-width: thin;
           scrollbar-color: gray transparent;
           display: none;
-          @media screen and (min-width: 1280px) {
+          @media screen and (min-width: 1320px) {
             float: right;
             position: sticky;
             top: 100px;
-            width: calc((100vw - 720px) / 2 - 80px);
+            width: calc((100vw - 1024px) / 2 - 120px);
             max-width: 250px;
-            margin-right: 1rem;
+            margin-right: 4rem;
             overflow: auto;
             word-break: break-word;
             max-height: calc(100vh - 200px);

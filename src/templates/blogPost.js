@@ -12,7 +12,7 @@ import Utterances from "../components/Utterances"
 import Tags from "../components/Tags"
 import ShareButtons from "../components/ShareButtons"
 
-const Wrapper = tw.div`w-full max-w-screen-md mx-auto`
+const Wrapper = tw.div`w-full max-w-screen-lg mx-auto`
 const NAV_OFFSET_Y = 36
 
 export default ({ data, pageContext, location }) => {
