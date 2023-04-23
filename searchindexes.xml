@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>windows 환경에서 Java 설치</title><url>/post/sdk/how-to-install-jdk-in-windows/</url><categories><category>sdk</category></categories><tags><tag>windows</tag><tag>jdk</tag><tag>java</tag><tag>sdk</tag></tags><content type="html">1. 개요 Java개발을 하기 위해선 jre, jdk 등 개발 도구를 설치해야 한다.
 이 글에서는 Java 개발을 위한 첫 단계인 개발 도구를 설치하는 방법을 알아보도록 한다.
-2. JRE? JDK? 테스트글!10</content></entry></search>
+2. 환경 OS: Windows 11
+SDK: AdoptOpenJDK
+설치법: Portable 설치(.msi가 아닌 직접 다운받아서 설치)
+3. JRE? JDK? 출처: www.oracle.com JRE(Java Runtime Enviornment): 자바 프로그램을 실행하는데 필요한 패키지 모음이다.
+JDK(Java Development Kit): Java를 사용하기 위해 필요한 모든 기능을 갖춘 SDK(Software Development Kit)이며,
+jre 패키지 + 여러 패키지(javadoc, jdb)등이 합쳐져 있다.
+어느쪽이든 기본적으로 자바를 실행하는데 있어 문제는 없으니 목적과 상황에 맞게 설치하면 된다.
+4. 설치 https://adoptium.net/temurin/releases/ 에 접속한다.
+Operating System에서 Windows,
+Architecture는 32비트는 x86, 64비트는 x64,
+Package Type은 JDK, JRE 중 하나,
+Version은 사용하고자 하는 버전(LTS인 8, 11, 17 추천)으로 설정해준다.
+그 후에 .zip으로 다운을 받아준다 다운받은 JDk / JRE를 관리하고자 하는 경로에 압축을 풀어준다. 설정 - 시스템 - 정보에 들어가서 고급 시스템 설정을 누른다. 고급 탭에서 환경 변수를 누른다. 새로 만들기에서 다음과 같이 입력해준 뒤, 확인을 누른다.
+변수이름: JAVA_HOME
+변수경로: jdk 설치 경로(java_xxx까지 입력) Path 더블 클릭 후 %JAVA_HOME%\bin 을 입력해준 뒤, 확인을 누른다. cmd창에서 java --version을 쳤을 때, 버전 정보가 나오는 지 확인한다. 버전 정보까지 올바르게 나온다면 셋팅은 완료 되었다고 보면 된다.
+5. Q&amp;amp;A Q &amp;gt; .msi로 설치안하고 .zip으로 한 이유가 있나요
+A &amp;gt; 자바는 JAVA_HOME을 기반으로 jre 또는 jdk를 찾기 떄문에, 해당 설정만 잘해준다면, 어느 경로에 설치해도 문제가 없기 떄문에, 깔끔하게 관리하려고 다음과 같이 진행을 했다.
+필요한 경우 .msi를 받아서 윈도우 인스톨러 기반으로 진행해도 문제 없다.</content></entry></search>
