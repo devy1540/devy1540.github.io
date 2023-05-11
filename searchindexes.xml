@@ -1,4 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>windows 환경에서 Java 설치</title><url>/post/sdk/how-to-install-jdk-in-windows/</url><categories><category>sdk</category></categories><tags><tag>windows</tag><tag>jdk</tag><tag>java</tag><tag>sdk</tag></tags><content type="html">1. 개요 Java개발을 하기 위해선 jre, jdk 등 개발 도구를 설치해야 한다.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>spring boot - certmanager를 통해 http2 설정 및 테스트 (1/2)</title><url>/post/spring/http2-certmanager-%EC%97%B0%EB%8F%99/</url><categories><category>spring</category></categories><tags><tag>java</tag><tag>spring</tag><tag>kubernetes</tag><tag>http2</tag></tags><content type="html">1. 개요 쿠버네티스를 사용하는 환경에서 spring boot로 서비스 진행을 하다보면, http2를 제공해야되는 상황이 필요할 수 있다.
+이때, 쿠버네티스의 cert-manager를 통해서 self-signed 인증서를 발급받아 간편하게 http2 인증을 할 수 있는 방법을 로컬환경과 쿠버네티스 환경에서 사용 및 테스트를 해볼 수 있도록 한다.
+이번 문서에서는 쿠버네티스 환경에 cert-manager 배포와 인증을 위한 기본설정에 대해서 알아볼 수 있도록 한다. 2. 준비 http2를 하기 위해선 tls 인증이 기본으로 필요하다. 따라서, tls 인증서를 발급 해주는 cert-manager 설치를 위한 쿠버네티스 환경이 필요하다.
+쿠버네티스 환경 구성이 어려운 경우 아래의 방법을 권장한다.
+Docker Desktop을 이용한 kubernetes 설치 WSL2(Ubuntu)를 이용한 microk8s WSL2(Ubuntu)를 이용한 minikube 또한 쿠버네티스에서 패키지 관리를 도와주는 helm도 같이 설치 하는 것을 권장한다. 3. 방법 쿠버네티스에 cert-manager 설치 cert-manager 공식문서를 참고해서 설치 할 수 있도록 한다.
+아래는 설치에 필요한 명령어로 맞는 환경에 설치를 진행할 수 있도록 한다. kubectl apply kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml helm helm install cert-manager -n cert-manager \ --create-namespace --set installCRDs=true 정상적으로 설치 되었을 경우 다음과 같이 배포되어있는 것을 확인할 수 있다.
+helm chart를 이용해서 설치했을 때 다음과 같이 설치된다. Issuer, Certificate 배포 Issuer란 서명할 수 있는 주체로 인증서를 생성할 수 있다. 이를 통해 self-signed 인증서를 발급 받아서 진행 할 수 있도록 한다. Issuer 생성 쿠버네티스 환경에서 Issuer는 ClusterIssuer와 Issuer가 있다.
+Issuer의 경우 특정 namespace에 속한 리소스로 해당 namespace에서만 사용할 수 있다.
+CluserIssuer의 경우 특정 namespace가 아닌 클러스터 전역으로 사용할 수 있다.
+구성과 목적에 맞게 이용하면 되지만, 본 문서에서는 CluserIssuer를 기준으로 설명한다.
+# ClusterIssuer 생성 apiVersion: cert-manager.io/v1 kind: ClusterIssuer metadata: name: selfsigned-issuer spec: selfSigned: {} 배포 후 아래와 같이 나오면 된다. Certificate 생성 위에서 만든 ClusterIssuer로 인증서를 만들 수 있도록 한다.
+아래의 yaml은 위에서 만든 selfsigned-issuer를 통해 인증서를 발급을 진행한다.
+apiVersion: cert-manager.io/v1 kind: Certificate metadata: name: selfsigned-cert spec: secretName: selfsigned-cert-tls duration: 8760h # 365일 renewBefore: 168h # 7일 commonName: example.com isCA: false privateKey: size: 2048 algorithm: RSA encoding: PKCS1 usages: - digital signature - key encipherment - server auth issuerRef: name: selfsigned-issuer kind: ClusterIssuer 배포 후 아래와 같이 나오면 된다. 인증서가 정상적으로 배포가 되었을 경우 secrets이 생성이 된다. secrets명은 위 사진처럼 인증서 조회 시 확인할 수있다. 다음 문서에서는 spring boot 환경 구성, 로컬 테스트, 쿠버네티스 환경 배포테스트를 할 수 있도록 진행한다.</content></entry><entry><title>windows 환경에서 Java 설치</title><url>/post/sdk/windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-java-%EC%84%A4%EC%B9%98-1/</url><categories><category>sdk</category></categories><tags><tag>windows</tag><tag>jdk</tag><tag>java</tag><tag>sdk</tag></tags><content type="html">1. 개요 Java개발을 하기 위해선 jre, jdk 등 개발 도구를 설치해야 한다.
 이 글에서는 Java 개발을 위한 첫 단계인 개발 도구를 설치하는 방법을 알아보도록 한다.
 2. 환경 OS: Windows 11
 SDK: AdoptOpenJDK
