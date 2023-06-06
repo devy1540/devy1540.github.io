@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>spring boot - certmanager를 통해 http2 설정 및 테스트 (2/2)</title><url>/post/spring/http2-certmanager-%EC%97%B0%EB%8F%99-2/</url><categories><category>spring</category></categories><tags><tag>java</tag><tag>spring</tag><tag>kubernetes</tag><tag>http2</tag></tags><content type="html"><![CDATA[개요 이전 문서에서 쿠버네티스 환경에 cert-manager를 설치해서 환경구성을 완료했다면, 이번 문서에서는 spring boot 환경 구성 및 테스트까지 알아 볼 수 있도록 합니다. 준비 http2 테스트를 위해선 다음과 같은 테스트 환경이 필요합니다.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>hugo를 이용한 github 블로그 개설</title><url>/post/blog/%ED%9C%B4%EA%B3%A0-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-01/</url><categories><category>blog</category></categories><tags><tag>blog</tag><tag>github</tag><tag>hugo</tag></tags><content type="html">개요 github 블로그 개설하는 방법은 여러가지 입니다. hugo, jekyll 등 여러 정적 사이트 생성기를 이용하여 블로그를 관리 및 운영을 할 수 있습니다.
+이 중, hugo를 이용하여 github 블로그 개설하는 방법에 대해서 알아볼 수 있도록 합니다.
+이번 포스트에서는 hugo를 사용하기 위한 환경구성, 로컬 repository 생성까지 알아 볼 수 있도록 합니다.
+정적 사이트 생성기? hugo? 환경구성 환경구성은 windows 환경 기준으로 작성되었습니다.
+go, hugo 설치 hugo는 go 언어로 이루어진 정적 사이트 생성기입니다. 따라서 go가 사전에 설치 되어야합니다.
+다운로드 사이트(golang 공식 사이트) 바로가기 정상적으로 설치하고 나서 cmd 또는 powershell에서 go version 시 버전 정보가 나오면 완료입니다. 그 다음, hugo를 설치할 수 있도록 합니다.
+hugo github 블로그 바로가기 우측 중하단에 있는 Release를 클릭합니다. 최신 버전의 경우 windows 설치환경을 제공하는 파일을 제공안할 수 있어, windows를 제공하는 마지막 버전을 찾을 수 있도록 합니다.
+extended 버전으로 설치하는 것을 권장합니다. 다운로드 받은 압축파일을 원하는 경로에 저장 할 수 있도록 합니다.
+그 다음, 환경변수로 등록헤서 원활하게 사용할 수 있도록 환경을 구성합니다.
+마찬가지로 cmd 또는 powershell에서 hugo version 입력 시 버전 정보가 나오는지 확인합니다. git 설치 hugo를 정상적으로 쓰기 위해선 git 설치가 되어 있어야 합니다.
+git 다운로드 사이트 바로가기 로컬 작업공간 생성 go, hugo, git까지 정상적으로 설치하고 난 뒤, 로컬환경에 작업할 수 있는 작업공간을 생성해야 합니다.
+작업공간을 위치할 공간에 아래의 명령어를 입력 할 수 있도록 합니다.
+# hugo new site {프로젝트 또는 폴더명} hugo new site blog 정상적으로 명령어가 실행된 경우 다음과 같은 문구를 확인할 수 있으며, 폴더가 생성된 것을 확인 할 수 있습니다. 설치된 작업공간에는 아래와 같은 디렉토리 구조를 가지고 있습니다. 테마 설치 블로그에 사용할 테마를 선택하여 적용할 수 있도록 합니다.
+공식문서에서 보여주는 테마부터 github에 사용자들이 만든 여러테마가 있어, 원하는 테마를 하나 선택할 수 있도록 합니다.
+이번 문서에서는 https://themes.gohugo.io/themes/hugo-papermod/ 테마를 이용해보도록 하겠습니다.
+테마를 적용하는 방법은 기본적으로 2가지이며, 각각의 방법 별로 장점이 있습니다.
+git의 submodule을 이용하는 방법 테마의 최신버전을 유지하기 쉬워진다. 파일을 다운로드하여 배치하는 방법 초기 설치가 빠르다 hugo에서는 첫번째 방법인 submodule을 사용하는 방법을 권장하고 있어 해당 방법으로 설명하도록 하겠습니다.
+먼저 git submodule를 이용하기 위해선 작업공간 디렉토리가 git으로 관리가 되어야합니다.
+따라서, 작업공간 디렉토리(이하, blog)에서 git init을 할 수 있도록 합니다.
+git init 그 다음, 테마를 submodule를 이용하여 가져올 수 있도록 합니다.
+git submodule add https://github.com/adityatelange/hugo-PaperMod.git 그 다음 blog 디렉토리에 있는 config.toml파일에 다음과 같이 추가합니다.
+theme = &amp;#39;hugo-PaperMod&amp;#39; 여기서 hugo-PaperMod는 themes 디렉토리에서 submodule, clone 등으로 다운받은 디렉토리명 입니다.
+테마가 정상적으로 반영되는지 확인하기 위해 blog 디렉토리 경로에서 확인할 수 있는 명령어를 실행합니다.
+hugo server -D 브라우저에서 http://localhost:1313로 접근하여 테마가 정상적으로 출력 되는지 확인합니다.
+출력까지 확인 되었다면 로컬 repository까지 환경구축이 완료 된것을 확인할 수 있습니다.
+다음 포스트에서는 github repo 연결과 자동화 배포까지 알아 볼 수 있도록 하겠습니다.
+감사합니다.</content></entry><entry><title>spring boot - certmanager를 통해 http2 설정 및 테스트 (2/2)</title><url>/post/spring/http2-certmanager-%EC%97%B0%EB%8F%99-2/</url><categories><category>spring</category></categories><tags><tag>java</tag><tag>spring</tag><tag>kubernetes</tag><tag>http2</tag></tags><content type="html"><![CDATA[개요 이전 문서에서 쿠버네티스 환경에 cert-manager를 설치해서 환경구성을 완료했다면, 이번 문서에서는 spring boot 환경 구성 및 테스트까지 알아 볼 수 있도록 합니다. 준비 http2 테스트를 위해선 다음과 같은 테스트 환경이 필요합니다.
 key, crt 파일 해당 파일은 이전 문서에서 진행 후 생성된 secrets에서 추출합니다. 테스트용 API 서버 Spring Boot로 간단하게 환경구성 합니다. kubernetes 환경에 배포를 위해 Dockerfile 과 deployment, service yaml 까지 준비합니다. spring boot 서버 기본 구성은 아래와 같이 진행했습니다.
 plugins { id &#39;java&#39; id &#39;org.springframework.boot&#39; version &#39;2.7.11&#39; id &#39;io.spring.dependency-management&#39; version &#39;1.0.15.RELEASE&#39; } group = &#39;com.example&#39; version = &#39;0.0.1&#39; sourceCompatibility = &#39;11&#39; configurations { compileOnly { extendsFrom annotationProcessor } } repositories { mavenCentral() } dependencies { implementation &#39;org.springframework.boot:spring-boot-starter-web&#39; compileOnly &#39;org.projectlombok:lombok&#39; developmentOnly &#39;org.springframework.boot:spring-boot-devtools&#39; annotationProcessor &#39;org.springframework.boot:spring-boot-configuration-processor&#39; annotationProcessor &#39;org.projectlombok:lombok&#39; testImplementation &#39;org.springframework.boot:spring-boot-starter-test&#39; } tasks.named(&#39;test&#39;) { useJUnitPlatform() } import org.springframework.web.bind.annotation.GetMapping; import org.springframework.web.bind.annotation.RestController; @RestController public class TestController { @GetMapping(&#34;/test&#34;) public String getTest() { return &#34;test&#34;; } } 방법 로컬 테스트 인증파일 추출 cert-manager를 통해 생성된 secrets 파일을 보면 ca.crt, tls.crt, tls.key 파일이 있습니다. 이 중, tls.crt, tls.key 파일을 추출해보도록 합니다.
 secrets 파일을 json 형식으로 읽은 뒤, data.tls.key(crt)를 가져온 다음, 인코딩된 base64를 디코딩 한 다음, 파일로 만드는 명령어 입니다.
@@ -19,7 +45,8 @@ NodePort로 타입을 지정하여 pod에 접근 할 수 있도록 합니다.
 apiVersion: v1 kind: Service metadata: name: http2-test-service spec: type: NodePort selector: app.kubernetes.io/name: spring ports: - protocol: TCP port: 8080 targetPort: spring-port name: http2-test-port 작성 완료된 yaml은 배포할 수 있도록 합니다.
 kubectl apply -f service.yaml 테스트 정상적으로 배포가 완료 되었다면 다음과 같이 실행하는 모습을 확인할 수 있습니다. 이제, NodePort로 생성된 port를 통해 접근하여, https와 http2 프로토콜이 정상적으로 적용되었는지 확인할 수 있도록 합니다. 정상적으로 동작하는 것을 확인할 수 있습니다.
 또한, deployment.yaml에서 volumeMount 이용하여 인증파일을 마운트 한 것은 다음과 같이 pod에 직접적으로 접근하여 확인할 수 있습니다.
-kubectl exec -it {pod명} -- bash # pod 내부에서 cd /etc/secret-volume ls 이것으로 cert-manager를 통해 spring boot http2 설정 및 테스트에 대해 알아봤습니다.
+kubectl exec -it {pod명} -- bash # pod 내부에서 cd /etc/secret-volume ls 예제코드는 아래 깃허브 주소 링크를 참고하시면 됩니다.
+https://github.com/devy1540/http2-test 이것으로 cert-manager를 통해 spring boot http2 설정 및 테스트에 대해 알아봤습니다.
 감사합니다.
 ]]></content></entry><entry><title>spring boot - certmanager를 통해 http2 설정 및 테스트 (1/2)</title><url>/post/spring/http2-certmanager-%EC%97%B0%EB%8F%99-1/</url><categories><category>spring</category></categories><tags><tag>java</tag><tag>spring</tag><tag>kubernetes</tag><tag>http2</tag></tags><content type="html">1. 개요 쿠버네티스를 사용하는 환경에서 spring boot로 서비스 진행을 하다보면, http2를 제공해야되는 상황이 필요할 수 있다.
 이때, 쿠버네티스의 cert-manager를 통해서 self-signed 인증서를 발급받아 간편하게 http2 인증을 할 수 있는 방법을 로컬환경과 쿠버네티스 환경에서 사용 및 테스트를 해볼 수 있도록 한다.
