@@ -18,16 +18,17 @@ import { useThemeStore } from '@/stores/useThemeStore';
 import { cn } from '@/lib/utils';
 import type { NavigationItem } from '@/types';
 
+// Navigation items configuration - extracted for reusability
+const navigationItems: NavigationItem[] = [
+  { to: '/', label: 'Home', icon: Home },
+  { to: '/posts', label: 'Posts', icon: FileText },
+  { to: '/about', label: 'About', icon: User },
+  { to: '/settings', label: 'Settings', icon: Settings, requiresAuth: true },
+];
+
 export function AppSidebar() {
   const { theme, toggleTheme, getEffectiveTheme } = useThemeStore();
   const effectiveTheme = getEffectiveTheme();
-
-  const navItems: NavigationItem[] = [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/posts', label: 'Posts', icon: FileText },
-    { to: '/about', label: 'About', icon: User },
-    { to: '/settings', label: 'Settings', icon: Settings, requiresAuth: true },
-  ];
 
   return (
     <Sidebar variant="inset" collapsible="icon" className="border-r">
@@ -69,7 +70,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              {navigationItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <SidebarMenuItem key={item.to}>
@@ -83,11 +84,14 @@ export function AppSidebar() {
                           )
                         }
                       >
-                        <IconComponent className="h-4 w-4" />
-                        <span>{item.label}</span>
+                        <IconComponent className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{item.label}</span>
                         {item.requiresAuth && (
-                          <div className="ml-auto w-2 h-2 rounded-full bg-orange-500 opacity-60" 
-                               title="로그인 필요" />
+                          <div 
+                            className="ml-auto w-2 h-2 rounded-full bg-orange-500 opacity-60 shrink-0" 
+                            title="로그인 필요" 
+                            aria-label="로그인 필요"
+                          />
                         )}
                       </NavLink>
                     </SidebarMenuButton>
@@ -107,15 +111,16 @@ export function AppSidebar() {
             onClick={toggleTheme}
             className="w-full justify-start gap-2 h-9"
             size="sm"
+            aria-label={`테마 전환: 현재 ${theme} 모드`}
           >
             {theme === 'system' ? (
-              <Monitor className="h-4 w-4" />
+              <Monitor className="h-4 w-4 shrink-0" />
             ) : effectiveTheme === 'dark' ? (
-              <Moon className="h-4 w-4" />
+              <Moon className="h-4 w-4 shrink-0" />
             ) : (
-              <Sun className="h-4 w-4" />
+              <Sun className="h-4 w-4 shrink-0" />
             )}
-            <span className="group-data-[collapsible=icon]:hidden">
+            <span className="group-data-[collapsible=icon]:hidden truncate">
               {theme === 'system' ? '시스템 설정' : effectiveTheme === 'dark' ? '다크 모드' : '라이트 모드'}
             </span>
           </Button>

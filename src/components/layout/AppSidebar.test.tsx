@@ -62,7 +62,8 @@ describe('AppSidebar', () => {
   it('includes theme toggle in footer', () => {
     renderWithProviders(<AppSidebar />);
     
-    const themeButton = screen.getByRole('button', { name: /라이트 모드/i });
+    // QA Enhancement: More descriptive aria-label for better accessibility
+    const themeButton = screen.getByRole('button', { name: /테마 전환: 현재 light 모드/i });
     expect(themeButton).toBeInTheDocument();
   });
 
