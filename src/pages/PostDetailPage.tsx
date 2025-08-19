@@ -72,8 +72,8 @@ export function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto flex justify-center items-center min-h-[400px]">
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="flex justify-center items-center min-h-[400px]">
           <LoadingSpinner />
         </div>
       </div>
@@ -82,32 +82,30 @@ export function PostDetailPage() {
 
   if (error || !post) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardContent className="text-center py-12">
-              <h2 className="text-2xl font-bold mb-4">
-                {error || 'Post not found'}
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                The post you're looking for doesn't exist or has been removed.
-              </p>
-              <Link to="/posts">
-                <Button>
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Posts
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <Card>
+          <CardContent className="text-center py-12">
+            <h2 className="text-2xl font-bold mb-4">
+              {error || 'Post not found'}
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              The post you're looking for doesn't exist or has been removed.
+            </p>
+            <Link to="/posts">
+              <Button>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Posts
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="space-y-6">
         {/* Back button */}
         <div className="mb-6">
           <Button

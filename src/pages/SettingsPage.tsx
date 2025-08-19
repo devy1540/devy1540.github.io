@@ -21,9 +21,9 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Settings</h1>
+    <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="space-y-8">
+        <h1 className="text-4xl font-bold">Settings</h1>
         
         <div className="space-y-6">
           <Card>

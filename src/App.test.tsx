@@ -53,14 +53,11 @@ describe('App Routing', () => {
     expect(screen.getByText('Welcome to My Blog')).toBeInTheDocument();
   });
 
-  it('includes header and footer on all pages', () => {
+  it('includes sidebar and footer on all pages', () => {
     render(<App />);
     
-    // Check header is present (mobile title in header)
-    const headerTitle = screen.getAllByText('My Blog').find(el => 
-      el.closest('header') !== null
-    );
-    expect(headerTitle).toBeInTheDocument();
+    // Check sidebar brand is present
+    expect(screen.getByText('My Blog')).toBeInTheDocument();
     
     // Check footer is present
     const currentYear = new Date().getFullYear();
@@ -70,25 +67,23 @@ describe('App Routing', () => {
     const postsLink = screen.getByRole('link', { name: /posts/i });
     fireEvent.click(postsLink);
     
-    // Header should still be present
-    const headerTitleAfterNav = screen.getAllByText('My Blog').find(el => 
-      el.closest('header') !== null
-    );
-    expect(headerTitleAfterNav).toBeInTheDocument();
+    // Sidebar should still be present
+    expect(screen.getByText('My Blog')).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`© ${currentYear}`, 'i'))).toBeInTheDocument();
   });
 
   it('maintains theme toggle functionality across pages', () => {
     render(<App />);
     
-    const themeButton = screen.getByRole('button', { name: /switch theme/i });
+    // Theme toggle now in sidebar with enhanced aria-label
+    const themeButton = screen.getByRole('button', { name: /테마 전환/i });
     expect(themeButton).toBeInTheDocument();
     
     // Navigate to another page
     const postsLink = screen.getByRole('link', { name: /posts/i });
     fireEvent.click(postsLink);
     
-    // Theme button should still be present
-    expect(screen.getByRole('button', { name: /switch theme/i })).toBeInTheDocument();
+    // Theme button should still be present in sidebar
+    expect(screen.getByRole('button', { name: /테마 전환/i })).toBeInTheDocument();
   });
 });

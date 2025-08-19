@@ -28,8 +28,8 @@ export function PostsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto flex justify-center items-center min-h-[400px]">
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="flex justify-center items-center min-h-[400px]">
           <LoadingSpinner />
         </div>
       </div>
@@ -38,19 +38,17 @@ export function PostsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">
-            <p className="text-destructive">{error}</p>
-          </div>
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="text-center py-8">
+          <p className="text-destructive">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="space-y-8">
         <h1 className="text-4xl font-bold mb-8">All Posts</h1>
         <PostList posts={posts} />
       </div>

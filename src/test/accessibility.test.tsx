@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { BrowserRouter } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { HomePage } from '@/pages/HomePage';
@@ -21,16 +20,7 @@ const RouterWrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe('Accessibility Tests', () => {
-  it('Header component should have no accessibility violations', async () => {
-    const { container } = render(
-      <RouterWrapper>
-        <Header />
-      </RouterWrapper>
-    );
-    
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
+  // Header component removed - navigation now handled by AppSidebar
 
   it('Footer component should have no accessibility violations', async () => {
     const { container } = render(<Footer />);
@@ -115,7 +105,7 @@ describe('Accessibility Tests', () => {
   it('should have keyboard accessible interactive elements', async () => {
     const { container } = render(
       <RouterWrapper>
-        <Header />
+        <SettingsPage />
       </RouterWrapper>
     );
     
@@ -130,7 +120,7 @@ describe('Accessibility Tests', () => {
   it('should have proper semantic structure', async () => {
     const { container } = render(
       <RouterWrapper>
-        <Header />
+        <HomePage />
       </RouterWrapper>
     );
     

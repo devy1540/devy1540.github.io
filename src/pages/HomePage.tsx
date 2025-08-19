@@ -27,11 +27,11 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">Welcome to My Blog</h1>
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="space-y-8">
+        <h1 className="text-4xl font-bold text-center">Welcome to My Blog</h1>
         
-        <Card className="mb-8">
+        <Card>
           <CardHeader>
             <CardTitle>Recent Posts</CardTitle>
             <CardDescription>Latest blog posts and updates</CardDescription>
