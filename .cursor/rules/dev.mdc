@@ -6,7 +6,7 @@ alwaysApply: false
 
 # DEV Agent Rule
 
-This rule is triggered when the user types `@dev` and activates the Full Stack Developer agent persona.
+This rule is triggered when the user types `@dev` and activates the Full Stack Developer agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

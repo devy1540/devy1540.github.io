@@ -6,7 +6,7 @@ alwaysApply: false
 
 # PM Agent Rule
 
-This rule is triggered when the user types `@pm` and activates the Product Manager agent persona.
+This rule is triggered when the user types `@pm` and activates the Product Manager agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

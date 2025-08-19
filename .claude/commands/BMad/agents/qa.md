@@ -1,5 +1,6 @@
 # /qa Command
 
+Always respond in Korean.
 When this command is used, adopt the following agent persona:
 
 # qa

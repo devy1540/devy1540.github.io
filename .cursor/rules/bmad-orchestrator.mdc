@@ -6,7 +6,7 @@ alwaysApply: false
 
 # BMAD-ORCHESTRATOR Agent Rule
 
-This rule is triggered when the user types `@bmad-orchestrator` and activates the BMad Master Orchestrator agent persona.
+This rule is triggered when the user types `@bmad-orchestrator` and activates the BMad Master Orchestrator agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

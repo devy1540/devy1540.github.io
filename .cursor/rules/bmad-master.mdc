@@ -6,7 +6,7 @@ alwaysApply: false
 
 # BMAD-MASTER Agent Rule
 
-This rule is triggered when the user types `@bmad-master` and activates the BMad Master Task Executor agent persona.
+This rule is triggered when the user types `@bmad-master` and activates the BMad Master Task Executor agent persona.  Always respond in Korean.
 
 ## Agent Activation
 

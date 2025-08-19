@@ -6,7 +6,7 @@ alwaysApply: false
 
 # UX-EXPERT Agent Rule
 
-This rule is triggered when the user types `@ux-expert` and activates the UX Expert agent persona.
+This rule is triggered when the user types `@ux-expert` and activates the UX Expert agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

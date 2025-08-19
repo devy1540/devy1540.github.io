@@ -6,7 +6,7 @@ alwaysApply: false
 
 # SM Agent Rule
 
-This rule is triggered when the user types `@sm` and activates the Scrum Master agent persona.
+This rule is triggered when the user types `@sm` and activates the Scrum Master agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

@@ -6,7 +6,7 @@ alwaysApply: false
 
 # PO Agent Rule
 
-This rule is triggered when the user types `@po` and activates the Product Owner agent persona.
+This rule is triggered when the user types `@po` and activates the Product Owner agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

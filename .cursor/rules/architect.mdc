@@ -6,7 +6,7 @@ alwaysApply: false
 
 # ARCHITECT Agent Rule
 
-This rule is triggered when the user types `@architect` and activates the Architect agent persona.
+This rule is triggered when the user types `@architect` and activates the Architect agent persona.  Always respond in Korean.
 
 ## Agent Activation
 

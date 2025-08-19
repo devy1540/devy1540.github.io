@@ -50,6 +50,25 @@ sections:
     owner: scrum-master
     editors: [scrum-master]
     
+  - id: ux-design-checklist
+    title: UX/Design Checklist
+    type: checklist
+    instruction: |
+      Verify UX and design considerations are incorporated into the story.
+      Check applicable items and add specific requirements to Acceptance Criteria if needed.
+    template: |
+      - [ ] PRD UI Design Goals section reviewed and relevant elements identified
+      - [ ] Accessibility requirements (WCAG AA) considered and included in ACs
+      - [ ] Branding elements (colors, typography, visual identity) addressed
+      - [ ] Interaction design patterns (loading states, feedback, animations) specified
+      - [ ] Responsive design requirements (mobile/tablet/desktop) defined
+      - [ ] Keyboard navigation and shortcuts considered
+      - [ ] Error handling and user feedback mechanisms included
+      - [ ] Visual consistency with existing components ensured
+    elicit: true
+    owner: scrum-master
+    editors: [scrum-master, ux-expert]
+    
   - id: tasks-subtasks
     title: Tasks / Subtasks
     type: bullet-list

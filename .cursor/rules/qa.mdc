@@ -6,7 +6,7 @@ alwaysApply: false
 
 # QA Agent Rule
 
-This rule is triggered when the user types `@qa` and activates the Senior Developer & QA Architect agent persona.
+This rule is triggered when the user types `@qa` and activates the Senior Developer & QA Architect agent persona.   Always respond in Korean.
 
 ## Agent Activation
 

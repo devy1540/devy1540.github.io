@@ -1,56 +1,56 @@
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useThemeStore } from '@/stores/useThemeStore';
-import { Moon, Sun } from 'lucide-react';
+import { Layout } from '@/components/layout/Layout';
+import { ScrollToTop } from '@/components/common/ScrollToTop';
+import { TopLoadingBar } from '@/components/common/TopLoadingBar';
+import { Toaster } from '@/components/ui/sonner';
+import { HomePage } from '@/pages/HomePage';
+import { PostsPage } from '@/pages/PostsPage';
+import { PostDetailPage } from '@/pages/PostDetailPage';
+import { AboutPage } from '@/pages/AboutPage';
+import { SettingsPage } from '@/pages/SettingsPage';
+import { TestPage } from '@/pages/TestPage';
+import { NotFoundPage } from '@/pages/NotFoundPage';
+
+function RedirectHandler() {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Handle GitHub Pages SPA fallback redirect
+    const redirectPath = window.sessionStorage.getItem('redirectPath');
+    if (redirectPath) {
+      window.sessionStorage.removeItem('redirectPath');
+      navigate(redirectPath, { replace: true });
+    }
+  }, [navigate]);
+  
+  return null;
+}
 
 export function App() {
-  const { theme, toggleTheme } = useThemeStore();
+  const { theme, applyCurrentTheme } = useThemeStore();
 
   useEffect(() => {
-    // Apply initial theme
-    const root = document.documentElement;
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-      root.classList.toggle('dark', systemTheme === 'dark');
-    } else {
-      root.classList.toggle('dark', theme === 'dark');
-    }
-  }, [theme]);
+    // Apply theme on mount and when theme changes
+    applyCurrentTheme();
+  }, [theme, applyCurrentTheme]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">
-            Hello World! 🚀
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center text-gray-600 dark:text-gray-300">
-            Welcome to your new React + TypeScript + Vite project
-          </p>
-          <div className="flex justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={toggleTheme}
-              className="transition-transform hover:scale-110"
-            >
-              {theme === 'dark' ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
-          <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-            Current theme: {theme}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <BrowserRouter>
+      <RedirectHandler />
+      <TopLoadingBar />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
+        <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
+        <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+        <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+        <Route path="/test" element={<Layout><TestPage /></Layout>} />
+        <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+      </Routes>
+      <Toaster richColors closeButton />
+    </BrowserRouter>
   );
 }
