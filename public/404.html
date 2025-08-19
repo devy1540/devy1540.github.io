@@ -9,16 +9,10 @@
       // GitHub Pages SPA fallback
       // Store the current URL to restore after React Router loads
       var currentPath = window.location.pathname + window.location.search + window.location.hash;
-      var basePath = '/devy1540/';
-      
-      // Remove base path from current path for internal routing
-      if (currentPath.startsWith(basePath)) {
-        currentPath = currentPath.substring(basePath.length - 1); // Keep leading slash
-      }
       
       if (currentPath !== '/') {
         window.sessionStorage.setItem('redirectPath', currentPath);
-        window.location.replace(basePath);
+        window.location.replace('/');
       }
     </script>
   </head>
