@@ -56,8 +56,11 @@ describe('App Routing', () => {
   it('includes header and footer on all pages', () => {
     render(<App />);
     
-    // Check header is present
-    expect(screen.getByText('My Blog')).toBeInTheDocument();
+    // Check header is present (mobile title in header)
+    const headerTitle = screen.getAllByText('My Blog').find(el => 
+      el.closest('header') !== null
+    );
+    expect(headerTitle).toBeInTheDocument();
     
     // Check footer is present
     const currentYear = new Date().getFullYear();
@@ -67,7 +70,11 @@ describe('App Routing', () => {
     const postsLink = screen.getByRole('link', { name: /posts/i });
     fireEvent.click(postsLink);
     
-    expect(screen.getByText('My Blog')).toBeInTheDocument();
+    // Header should still be present
+    const headerTitleAfterNav = screen.getAllByText('My Blog').find(el => 
+      el.closest('header') !== null
+    );
+    expect(headerTitleAfterNav).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`© ${currentYear}`, 'i'))).toBeInTheDocument();
   });
 

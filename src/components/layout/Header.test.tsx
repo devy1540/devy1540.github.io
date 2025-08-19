@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Header } from './Header';
 
 // Mock the theme store
@@ -13,100 +14,56 @@ vi.mock('@/stores/useThemeStore', () => ({
 }));
 
 const renderWithRouter = (component: React.ReactElement) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
+  return render(
+    <BrowserRouter>
+      <SidebarProvider>
+        {component}
+      </SidebarProvider>
+    </BrowserRouter>
+  );
 };
 
 describe('Header', () => {
-  it('renders the blog title', () => {
+  it('renders simplified header for sidebar layout', () => {
     renderWithRouter(<Header />);
+    // Header should be much simpler now with sidebar integration
+    const header = screen.getByRole('banner');
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveClass('sticky', 'top-0');
+  });
+
+  it('shows mobile blog title and sidebar trigger on small screens', () => {
+    renderWithRouter(<Header />);
+    // Mobile title should be visible
     expect(screen.getByText('My Blog')).toBeInTheDocument();
+    
+    // Sidebar trigger should be present (by screen reader text)
+    const sidebarTrigger = screen.getByRole('button', { name: /toggle sidebar/i });
+    expect(sidebarTrigger).toBeInTheDocument();
   });
 
-  it('renders navigation links with icons', () => {
-    renderWithRouter(<Header />);
-    expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /posts/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /settings/i })).toBeInTheDocument();
-  });
-
-  it('renders theme toggle button', () => {
+  it('renders mobile theme toggle button', () => {
     renderWithRouter(<Header />);
     const themeButton = screen.getByRole('button', { name: /switch theme/i });
     expect(themeButton).toBeInTheDocument();
+    expect(themeButton).toHaveClass('lg:hidden');
   });
 
-  it('shows mobile menu button on small screens', () => {
+  it('shows appropriate elements for mobile layout', () => {
     renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    expect(menuButton).toBeInTheDocument();
-    expect(menuButton).toHaveClass('md:hidden');
+    
+    // Mobile title should have lg:hidden class
+    const titleLink = screen.getByRole('link', { name: /my blog/i });
+    expect(titleLink).toHaveClass('lg:hidden');
+    
+    // Theme button should be mobile-only
+    const themeButton = screen.getByRole('button', { name: /switch theme/i });
+    expect(themeButton).toHaveClass('lg:hidden');
   });
 
-  it('opens mobile navigation sheet when menu button is clicked', () => {
+  it('header has proper z-index for sidebar layout', () => {
     renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    
-    fireEvent.click(menuButton);
-    
-    // Check if the sheet content appears (using unique description text)
-    expect(screen.getByText('개발 여정을 기록하는 공간')).toBeInTheDocument();
-    
-    // Check if the sheet title is rendered (by role)
-    expect(screen.getByRole('heading', { name: 'My Blog' })).toBeInTheDocument();
-  });
-
-  it('hides desktop navigation on mobile', () => {
-    renderWithRouter(<Header />);
-    const nav = screen.getByRole('navigation');
-    expect(nav).toHaveClass('hidden', 'md:flex');
-  });
-
-  it('shows theme toggle in mobile menu when opened', () => {
-    renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    
-    fireEvent.click(menuButton);
-    
-    // Check if theme toggle appears in the mobile menu
-    const mobileThemeButton = screen.getByRole('button', { name: /시스템 설정|다크 모드|라이트 모드/i });
-    expect(mobileThemeButton).toBeInTheDocument();
-  });
-
-  it('displays user section placeholder in mobile menu', () => {
-    renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    
-    fireEvent.click(menuButton);
-    
-    // Check if user section appears
-    expect(screen.getByText('로그인하여')).toBeInTheDocument();
-    expect(screen.getByText('더 많은 기능을 사용하세요')).toBeInTheDocument();
-  });
-
-  it('shows enhanced navigation with icons in mobile menu', () => {
-    renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    
-    fireEvent.click(menuButton);
-    
-    // Check navigation items are rendered in mobile menu
-    const mobileNavLinks = screen.getAllByRole('link');
-    const homeLink = mobileNavLinks.find(link => link.textContent === 'Home');
-    const postsLink = mobileNavLinks.find(link => link.textContent === 'Posts');
-    
-    expect(homeLink).toBeInTheDocument();
-    expect(postsLink).toBeInTheDocument();
-  });
-
-  it('hamburger menu button shows visual feedback when active', () => {
-    renderWithRouter(<Header />);
-    const menuButton = screen.getByRole('button', { name: /메뉴 열기/i });
-    
-    fireEvent.click(menuButton);
-    
-    // Check if button shows active state
-    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    expect(menuButton).toHaveAttribute('aria-label', '메뉴 닫기');
+    const header = screen.getByRole('banner');
+    expect(header).toHaveClass('z-40');
   });
 });

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { BrowserRouter } from 'react-router-dom';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SettingsPage } from '@/pages/SettingsPage';
@@ -10,9 +11,13 @@ import { HomePage } from '@/pages/HomePage';
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
 
-// Wrapper component for React Router
+// Wrapper component for React Router and Sidebar
 const RouterWrapper = ({ children }: { children: React.ReactNode }) => (
-  <BrowserRouter>{children}</BrowserRouter>
+  <BrowserRouter>
+    <SidebarProvider>
+      {children}
+    </SidebarProvider>
+  </BrowserRouter>
 );
 
 describe('Accessibility Tests', () => {
