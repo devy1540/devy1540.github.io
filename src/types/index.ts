@@ -23,6 +23,9 @@ export interface Post {
 export interface NavigationItem {
   to: string;
   label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  requiresAuth?: boolean;
+  badge?: string;
 }
 
 export interface SocialLink {
