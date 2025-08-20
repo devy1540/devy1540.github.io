@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useThemeStore } from '@/stores/useThemeStore';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { Layout } from '@/components/layout/Layout';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
@@ -43,8 +43,8 @@ export function App() {
       <SidebarProvider defaultOpen={true}>
         <div className="flex min-h-screen bg-background">
           <AppSidebar />
-          <div className="flex-1 flex justify-center items-start min-w-0 overflow-hidden">
-            <main className="w-full max-w-4xl mx-auto px-8 lg:px-12">
+          <SidebarInset>
+            <div className="max-w-4xl mx-auto px-6 md:px-8 lg:px-12">
               <RedirectHandler />
               <TopLoadingBar />
               <ScrollToTop />
@@ -57,8 +57,8 @@ export function App() {
                 <Route path="/test" element={<Layout><TestPage /></Layout>} />
                 <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
               </Routes>
-            </main>
-          </div>
+            </div>
+          </SidebarInset>
         </div>
         <Toaster richColors closeButton />
       </SidebarProvider>
