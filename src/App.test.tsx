@@ -56,8 +56,8 @@ describe('App Routing', () => {
   it('includes sidebar and footer on all pages', () => {
     render(<App />);
     
-    // Check sidebar brand is present
-    expect(screen.getByText('My Blog')).toBeInTheDocument();
+    // Check sidebar brand is present (use getAllByText since it appears in both sidebar and mobile header)
+    expect(screen.getAllByText('My Blog')).toHaveLength(2);
     
     // Check footer is present
     const currentYear = new Date().getFullYear();
@@ -68,7 +68,7 @@ describe('App Routing', () => {
     fireEvent.click(postsLink);
     
     // Sidebar should still be present
-    expect(screen.getByText('My Blog')).toBeInTheDocument();
+    expect(screen.getAllByText('My Blog')).toHaveLength(2);
     expect(screen.getByText(new RegExp(`© ${currentYear}`, 'i'))).toBeInTheDocument();
   });
 
