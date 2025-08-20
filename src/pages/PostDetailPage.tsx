@@ -72,7 +72,7 @@ export function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="w-full py-12">
         <div className="flex justify-center items-center min-h-[400px]">
           <LoadingSpinner />
         </div>
@@ -82,7 +82,7 @@ export function PostDetailPage() {
 
   if (error || !post) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="w-full py-12">
         <Card>
           <CardContent className="text-center py-12">
             <h2 className="text-2xl font-bold mb-4">
@@ -104,7 +104,7 @@ export function PostDetailPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="w-full py-12">
       <div className="space-y-6">
         {/* Back button */}
         <div className="mb-6">

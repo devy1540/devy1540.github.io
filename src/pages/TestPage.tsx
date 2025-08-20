@@ -1,6 +1,6 @@
 export function TestPage() {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="w-full py-12">
       <h1 className="text-4xl font-bold mb-8">Test Page</h1>
       <div className="bg-card text-card-foreground p-6 rounded-lg border shadow-sm">
         <h2 className="text-xl font-semibold mb-4">Card Test</h2>

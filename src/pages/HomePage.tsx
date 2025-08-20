@@ -27,7 +27,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="w-full py-12">
       <div className="space-y-8">
         <h1 className="text-4xl font-bold text-center">Welcome to My Blog</h1>
         

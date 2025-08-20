@@ -43,20 +43,22 @@ export function App() {
       <SidebarProvider defaultOpen={true}>
         <div className="flex min-h-screen bg-background">
           <AppSidebar />
-          <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <RedirectHandler />
-            <TopLoadingBar />
-            <ScrollToTop />
-            <Routes>
-              <Route path="/" element={<Layout><HomePage /></Layout>} />
-              <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
-              <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
-              <Route path="/about" element={<Layout><AboutPage /></Layout>} />
-              <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
-              <Route path="/test" element={<Layout><TestPage /></Layout>} />
-              <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
-            </Routes>
-          </main>
+          <div className="flex-1 flex justify-center items-start min-w-0 overflow-hidden">
+            <main className="w-full max-w-4xl mx-auto px-8 lg:px-12">
+              <RedirectHandler />
+              <TopLoadingBar />
+              <ScrollToTop />
+              <Routes>
+                <Route path="/" element={<Layout><HomePage /></Layout>} />
+                <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
+                <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
+                <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+                <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+                <Route path="/test" element={<Layout><TestPage /></Layout>} />
+                <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+              </Routes>
+            </main>
+          </div>
         </div>
         <Toaster richColors closeButton />
       </SidebarProvider>

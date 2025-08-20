@@ -7,7 +7,7 @@ export function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-md mx-auto px-6 py-8 mt-16">
+    <div className="w-full py-12 mt-16 flex justify-center">
       <div>
         <Card>
           <CardHeader className="text-center">
