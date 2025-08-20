@@ -28,7 +28,7 @@ export function PostsPage() {
 
   if (loading) {
     return (
-      <div className="w-full py-12">
+      <div className="w-full max-w-6xl mx-auto py-12">
         <div className="flex justify-center items-center min-h-[400px]">
           <LoadingSpinner />
         </div>
@@ -38,7 +38,7 @@ export function PostsPage() {
 
   if (error) {
     return (
-      <div className="w-full py-12">
+      <div className="w-full max-w-6xl mx-auto py-12">
         <div className="text-center py-8">
           <p className="text-destructive">{error}</p>
         </div>
@@ -47,9 +47,14 @@ export function PostsPage() {
   }
 
   return (
-    <div className="w-full py-12">
+    <div className="w-full max-w-6xl mx-auto py-12">
       <div className="space-y-8">
-        <h1 className="text-4xl font-bold mb-8">All Posts</h1>
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold">All Posts</h1>
+          <p className="text-muted-foreground text-lg">
+            Discover all my thoughts and insights
+          </p>
+        </div>
         <PostList posts={posts} />
       </div>
     </div>

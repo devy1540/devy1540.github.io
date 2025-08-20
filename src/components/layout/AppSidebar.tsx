@@ -31,7 +31,7 @@ export function AppSidebar() {
   const effectiveTheme = getEffectiveTheme();
 
   return (
-    <Sidebar variant="inset" collapsible="icon" className="border-r">
+    <Sidebar variant="sidebar" collapsible="icon" className="border-r">
       {/* Brand Header */}
       <SidebarHeader className="border-b">
         <div className="flex items-center space-x-2 px-2 py-3">

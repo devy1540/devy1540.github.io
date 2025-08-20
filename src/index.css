@@ -27,6 +27,7 @@
 }
 
 .dark {
+  /* Core theme variables */
   --color-background: oklch(12% 0 0);
   --color-foreground: oklch(98% 0 0);
   --color-card: oklch(12% 0 0);
@@ -53,6 +54,7 @@ body {
 }
 
 :root {
+  /* Sidebar variables - back to working HSL values */
   --sidebar: hsl(0 0% 98%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
@@ -73,6 +75,19 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+/* Dark mode sidebar override - MUST come after @theme inline */
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(0 0% 98%);
+  --sidebar-primary-foreground: hsl(240 5.9% 10%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
 
 @layer base {
   * {

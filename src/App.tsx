@@ -1,9 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useThemeStore } from '@/stores/useThemeStore';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { Layout } from '@/components/layout/Layout';
-import { AppSidebar } from '@/components/layout/AppSidebar';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { TopLoadingBar } from '@/components/common/TopLoadingBar';
 import { Toaster } from '@/components/ui/sonner';
@@ -40,28 +38,21 @@ export function App() {
 
   return (
     <BrowserRouter>
-      <SidebarProvider defaultOpen={true}>
-        <div className="flex min-h-screen bg-background">
-          <AppSidebar />
-          <SidebarInset>
-            <div className="max-w-4xl mx-auto px-6 md:px-8 lg:px-12">
-              <RedirectHandler />
-              <TopLoadingBar />
-              <ScrollToTop />
-              <Routes>
-                <Route path="/" element={<Layout><HomePage /></Layout>} />
-                <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
-                <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
-                <Route path="/about" element={<Layout><AboutPage /></Layout>} />
-                <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
-                <Route path="/test" element={<Layout><TestPage /></Layout>} />
-                <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
-              </Routes>
-            </div>
-          </SidebarInset>
-        </div>
+      <div className="min-h-screen bg-background">
+        <RedirectHandler />
+        <TopLoadingBar />
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Layout><HomePage /></Layout>} />
+          <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
+          <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
+          <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+          <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+          <Route path="/test" element={<Layout><TestPage /></Layout>} />
+          <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+        </Routes>
         <Toaster richColors closeButton />
-      </SidebarProvider>
+      </div>
     </BrowserRouter>
   );
 }
