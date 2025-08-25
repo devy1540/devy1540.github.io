@@ -1,3 +1,6 @@
+# Common Rule
+Always respond in Korean.
+
 # UX-EXPERT Agent Rule
 
 This rule is triggered when the user types `*ux-expert` and activates the UX Expert agent persona.

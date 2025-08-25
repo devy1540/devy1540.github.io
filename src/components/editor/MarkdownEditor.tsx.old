@@ -1,0 +1,138 @@
+import { FC, useEffect, useMemo, memo, useCallback } from 'react';
+import MDEditor, { commands } from '@uiw/react-md-editor';
+import { useThemeStore } from '@/stores/useThemeStore';
+import { Book, Code, Split, FileText } from 'lucide-react';
+import Prism from 'prismjs';
+import debounce from 'lodash.debounce';
+import { markdownConfig } from '@/lib/markdownConfig';
+import { combineFrontmatterAndContent } from '@/utils/frontmatter';
+
+// Import store and type separately to avoid potential bundling issues
+import { useEditorStore } from '@/stores/useEditorStore';
+import type { PreviewMode } from '@/stores/useEditorStore';
+
+// Use shared markdown configuration for consistent rendering with MarkdownRenderer
+const previewOptions = markdownConfig;
+
+
+const editorCommands = [
+  commands.bold,
+  commands.italic,
+  commands.strikethrough,
+  commands.hr,
+  commands.divider,
+  commands.link,
+  commands.quote,
+  commands.code,
+  commands.codeBlock,
+  commands.image,
+  commands.divider,
+  commands.orderedListCommand,
+  commands.unorderedListCommand,
+  commands.checkedListCommand,
+];
+
+const createViewModeCommand = (name: PreviewMode, title: string, icon: React.ReactElement) => ({
+  name,
+  keyCommand: name,
+  buttonProps: { 'aria-label': title, title },
+  icon,
+  execute: () => {
+    useEditorStore.getState().setPreviewMode(name);
+  },
+});
+
+const frontmatterPreviewCommand = {
+  name: 'frontmatter-preview',
+  keyCommand: 'frontmatter-preview',
+  buttonProps: { 'aria-label': 'View with frontmatter', title: 'View with frontmatter' },
+  icon: <FileText className="w-4 h-4" />,
+  execute: () => {
+    const { metadata, content } = useEditorStore.getState();
+    const fullMarkdown = combineFrontmatterAndContent(metadata, content);
+    
+    // Create a temporary preview window
+    const previewWindow = window.open('', '_blank', 'width=800,height=600');
+    if (previewWindow) {
+      previewWindow.document.write(`
+        <html>
+          <head>
+            <title>Frontmatter Preview</title>
+            <style>
+              body { font-family: monospace; white-space: pre-wrap; padding: 20px; }
+              .frontmatter { background: #f5f5f5; padding: 10px; border-left: 4px solid #007acc; margin-bottom: 20px; }
+            </style>
+          </head>
+          <body>
+            <h1>Full Markdown with Frontmatter</h1>
+            <div class="frontmatter">${fullMarkdown}</div>
+          </body>
+        </html>
+      `);
+      previewWindow.document.close();
+    }
+  },
+};
+
+const viewModeCommands = [
+  createViewModeCommand('edit', 'Edit only', <Code className="w-4 h-4" />),
+  createViewModeCommand('live', 'Edit and preview', <Split className="w-4 h-4" />),
+  createViewModeCommand('preview', 'Preview only', <Book className="w-4 h-4" />),
+];
+
+export const MarkdownEditor: FC = memo(() => {
+  const { content, updateContent, previewMode } = useEditorStore();
+  const { getEffectiveTheme } = useThemeStore();
+  const effectiveTheme = getEffectiveTheme();
+
+  // Immediate content update for responsive typing
+  const handleChange = useCallback(
+    (val?: string) => {
+      updateContent(val || '');
+    },
+    [updateContent]
+  );
+
+  // Debounced Prism highlighting to avoid performance issues
+  const debouncedHighlight = useMemo(
+    () => debounce(() => {
+      if (previewMode === 'live' || previewMode === 'preview') {
+        Prism.highlightAll();
+      }
+    }, 100),
+    [previewMode]
+  );
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedHighlight.cancel();
+    };
+  }, [debouncedHighlight]);
+
+  // Highlight code blocks when content changes (debounced)
+  useEffect(() => {
+    debouncedHighlight();
+  }, [content, debouncedHighlight]);
+
+  return (
+    <div className="prose dark:prose-invert max-w-none h-full" data-color-mode={effectiveTheme}>
+      <MDEditor
+        value={content}
+        onChange={handleChange}
+        height="100%"
+        preview={previewMode}
+        commands={editorCommands}
+        extraCommands={[...viewModeCommands, commands.divider, frontmatterPreviewCommand]}
+        previewOptions={previewOptions as any}
+        data-testid="markdown-editor"
+        className="max-w-none"
+        textareaProps={{
+          style: { fontSize: 14, lineHeight: 1.5 },
+          spellCheck: false,
+          autoFocus: false
+        }}
+      />
+    </div>
+  );
+});

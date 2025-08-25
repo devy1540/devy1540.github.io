@@ -5,11 +5,14 @@ import { Layout } from '@/components/layout/Layout';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { TopLoadingBar } from '@/components/common/TopLoadingBar';
 import { Toaster } from '@/components/ui/sonner';
+import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { HomePage } from '@/pages/HomePage';
 import { PostsPage } from '@/pages/PostsPage';
 import { PostDetailPage } from '@/pages/PostDetailPage';
 import { AboutPage } from '@/pages/AboutPage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { EditorPage } from '@/pages/EditorPage';
+import { DraftsPage } from '@/pages/DraftsPage';
 import { TestPage } from '@/pages/TestPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
@@ -48,6 +51,22 @@ export function App() {
           <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
           <Route path="/about" element={<Layout><AboutPage /></Layout>} />
           <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
+          <Route 
+            path="/editor" 
+            element={
+              <ProtectedRoute>
+                <Layout><EditorPage /></Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/drafts" 
+            element={
+              <ProtectedRoute>
+                <Layout><DraftsPage /></Layout>
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/test" element={<Layout><TestPage /></Layout>} />
           <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
         </Routes>

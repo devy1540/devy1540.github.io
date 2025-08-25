@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import { act } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Footer } from '@/components/layout/Footer';
@@ -30,13 +31,18 @@ describe('Accessibility Tests', () => {
   });
 
   it('HomePage should have no accessibility violations', async () => {
-    const { container } = render(
-      <RouterWrapper>
-        <HomePage />
-      </RouterWrapper>
-    );
+    let container: HTMLElement;
     
-    const results = await axe(container);
+    await act(async () => {
+      const renderResult = render(
+        <RouterWrapper>
+          <HomePage />
+        </RouterWrapper>
+      );
+      container = renderResult.container;
+    });
+    
+    const results = await axe(container!);
     expect(results).toHaveNoViolations();
   });
 
@@ -52,17 +58,22 @@ describe('Accessibility Tests', () => {
   });
 
   it('should have proper heading hierarchy', async () => {
-    const { container } = render(
-      <RouterWrapper>
-        <HomePage />
-      </RouterWrapper>
-    );
+    let container: HTMLElement;
+    
+    await act(async () => {
+      const renderResult = render(
+        <RouterWrapper>
+          <HomePage />
+        </RouterWrapper>
+      );
+      container = renderResult.container;
+    });
     
     // Check that h1 exists and there's proper heading hierarchy
-    const h1 = container.querySelector('h1');
+    const h1 = container!.querySelector('h1');
     expect(h1).toBeTruthy();
     
-    const results = await axe(container, {
+    const results = await axe(container!, {
       rules: {
         'heading-order': { enabled: true }
       }
@@ -118,13 +129,18 @@ describe('Accessibility Tests', () => {
   });
 
   it('should have proper semantic structure', async () => {
-    const { container } = render(
-      <RouterWrapper>
-        <HomePage />
-      </RouterWrapper>
-    );
+    let container: HTMLElement;
     
-    const results = await axe(container, {
+    await act(async () => {
+      const renderResult = render(
+        <RouterWrapper>
+          <HomePage />
+        </RouterWrapper>
+      );
+      container = renderResult.container;
+    });
+    
+    const results = await axe(container!, {
       rules: {
         'landmark-one-main': { enabled: true },
         'region': { enabled: true }
