@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "echo 'Creating fake build for deployment' && mkdir -p dist && echo '<!DOCTYPE html><html><head><title>Build Bypassed</title></head><body><h1>Deployment restored, fixing in progress...</h1></body></html>' > dist/index.html",
-    "lint": "echo 'Skipping lint for deployment' || eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 4",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 4",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "test": "echo 'Skipping tests for deployment' || vitest"
+    "test": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
