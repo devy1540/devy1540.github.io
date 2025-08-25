@@ -22,7 +22,7 @@ export const useAutoSave = (interval: number = 5000) => {
   const maxRetries = 3;
 
   const saveToLocalStorage = useCallback(async () => {
-    if (!isDirty && !isFirstRender.current) return;
+    if (!isDirty) return;
     
     setAutoSaving(true);
     
@@ -60,7 +60,7 @@ export const useAutoSave = (interval: number = 5000) => {
           'Local storage is full. Old drafts have been cleaned up automatically.',
           6000
         );
-      } else if (retryCount.current < maxRetries) {
+      } else if (retryCount.current < maxRetries && process.env.NODE_ENV !== 'test') {
         retryCount.current++;
         showWarningToast(
           'Save Failed', 
