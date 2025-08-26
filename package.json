@@ -6,11 +6,26 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "echo 'Lint skipped for deployment'",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0 --fix",
+    "lint:check": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "test": "echo 'Tests skipped for deployment'"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix --max-warnings=10"
+    ],
+    "src/**/*.{css,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -63,8 +78,10 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
     "jest-axe": "^10.0.0",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.5",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.12",

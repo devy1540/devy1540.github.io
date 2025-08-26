@@ -29,7 +29,8 @@ interface DraftCardProps {
 export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
   const navigate = useNavigate();
   const { deleteDraft } = useDraftStore();
-  const { updateContent, updateMetadata, setCurrentDraftId, reset, isDirty } = useEditorStore();
+  const { updateContent, updateMetadata, setCurrentDraftId, reset, isDirty } =
+    useEditorStore();
   const { saveNow } = useAutoSave();
   const { error: showErrorToast, success: showSuccessToast } = useToastStore();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -60,7 +61,10 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
       loadDraftIntoEditor();
     } catch (error) {
       console.error('Failed to save before switching:', error);
-      showErrorToast('저장 실패', '현재 작업을 저장할 수 없습니다. 다시 시도해주세요.');
+      showErrorToast(
+        '저장 실패',
+        '현재 작업을 저장할 수 없습니다. 다시 시도해주세요.'
+      );
     }
   };
 
@@ -77,10 +81,16 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
     try {
       await deleteDraft(draft.id);
       setIsDeleteDialogOpen(false);
-      showSuccessToast('삭제 완료', `"${draft.title || 'Untitled'}" 초안이 삭제되었습니다.`);
+      showSuccessToast(
+        '삭제 완료',
+        `"${draft.title || 'Untitled'}" 초안이 삭제되었습니다.`
+      );
     } catch (error) {
       console.error('Failed to delete draft:', error);
-      showErrorToast('삭제 실패', '초안을 삭제할 수 없습니다. 다시 시도해주세요.');
+      showErrorToast(
+        '삭제 실패',
+        '초안을 삭제할 수 없습니다. 다시 시도해주세요.'
+      );
     }
   };
 
@@ -97,32 +107,32 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
       .replace(/\n+/g, ' ') // Replace newlines with spaces
       .trim();
 
-    return plainText.length > maxLength 
+    return plainText.length > maxLength
       ? `${plainText.substring(0, maxLength)}...`
       : plainText;
   };
 
   const formatRelativeTime = (date: Date) => {
     try {
-      return formatDistanceToNow(date, { 
-        addSuffix: true, 
-        locale: ko 
+      return formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: ko,
       });
-    } catch (error) {
+    } catch {
       return '알 수 없음';
     }
   };
 
   return (
     <>
-      <Card 
+      <Card
         className="group hover:shadow-md transition-shadow cursor-pointer"
         role="article"
         aria-labelledby={`draft-title-${draft.id}`}
         aria-describedby={`draft-preview-${draft.id}`}
       >
         <CardHeader className="pb-3">
-          <CardTitle 
+          <CardTitle
             id={`draft-title-${draft.id}`}
             className="text-base line-clamp-2 mb-1"
           >
@@ -135,20 +145,20 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
             </time>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pt-0">
-          <p 
+          <p
             id={`draft-preview-${draft.id}`}
             className="text-sm text-muted-foreground mb-4 line-clamp-3 min-h-[3rem]"
           >
             {getPreviewText(draft.content)}
           </p>
-          
+
           <div className="flex items-center justify-between">
             <div className="text-xs text-muted-foreground">
               {Math.ceil(draft.content.length / 500)} 분 읽기
             </div>
-            
+
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 variant="ghost"
@@ -189,7 +199,10 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
         onCancel={handleCancelSwitch}
       />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>초안을 삭제하시겠습니까?</AlertDialogTitle>
@@ -199,7 +212,10 @@ export const DraftCard: FC<DraftCardProps> = ({ draft }) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               삭제
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -14,7 +14,7 @@ export const useFocusManagement = (options: FocusOptions = {}) => {
   const {
     trap = false,
     restoreOnUnmount = true,
-    initialFocus = false
+    initialFocus = false,
   } = options;
 
   const containerRef = useRef<HTMLElement>(null);
@@ -35,7 +35,7 @@ export const useFocusManagement = (options: FocusOptions = {}) => {
         firstFocusable.focus();
       }
     }
-  }, [initialFocus]);
+  }, [initialFocus, getFocusableElements]);
 
   // Restore focus on unmount
   useEffect(() => {
@@ -47,79 +47,95 @@ export const useFocusManagement = (options: FocusOptions = {}) => {
   }, [restoreOnUnmount]);
 
   // Get all focusable elements within container
-  const getFocusableElements = useCallback((container: HTMLElement): HTMLElement[] => {
-    const focusableSelectors = [
-      'a[href]',
-      'button:not([disabled])',
-      'textarea:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
-    ].join(', ');
+  const getFocusableElements = useCallback(
+    (container: HTMLElement): HTMLElement[] => {
+      const focusableSelectors = [
+        'a[href]',
+        'button:not([disabled])',
+        'textarea:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])',
+        '[contenteditable="true"]',
+      ].join(', ');
 
-    return Array.from(container.querySelectorAll(focusableSelectors)) as HTMLElement[];
-  }, []);
+      return Array.from(
+        container.querySelectorAll(focusableSelectors)
+      ) as HTMLElement[];
+    },
+    []
+  );
 
   // Handle keyboard navigation within container
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (!trap || !containerRef.current) return;
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (!trap || !containerRef.current) return;
 
-    const focusableElements = getFocusableElements(containerRef.current);
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+      const focusableElements = getFocusableElements(containerRef.current);
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
 
-    if (event.key === 'Tab') {
-      // If only one focusable element, prevent tabbing
-      if (focusableElements.length === 1) {
-        event.preventDefault();
-        return;
-      }
-
-      // Trap focus within container
-      if (event.shiftKey) {
-        // Shift + Tab (backward)
-        if (document.activeElement === firstElement) {
+      if (event.key === 'Tab') {
+        // If only one focusable element, prevent tabbing
+        if (focusableElements.length === 1) {
           event.preventDefault();
-          lastElement?.focus();
+          return;
         }
-      } else {
-        // Tab (forward)
-        if (document.activeElement === lastElement) {
-          event.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    }
 
-    // Handle arrow key navigation for toolbar-like components
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-      const currentIndex = focusableElements.findIndex(el => el === document.activeElement);
-      if (currentIndex !== -1) {
-        event.preventDefault();
-        let nextIndex;
-        
-        if (event.key === 'ArrowLeft') {
-          nextIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+        // Trap focus within container
+        if (event.shiftKey) {
+          // Shift + Tab (backward)
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement?.focus();
+          }
         } else {
-          nextIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0;
+          // Tab (forward)
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement?.focus();
+          }
         }
-        
-        focusableElements[nextIndex]?.focus();
       }
-    }
 
-    // Handle Home/End keys
-    if (event.key === 'Home') {
-      event.preventDefault();
-      firstElement?.focus();
-    }
-    
-    if (event.key === 'End') {
-      event.preventDefault();
-      lastElement?.focus();
-    }
-  }, [trap, getFocusableElements]);
+      // Handle arrow key navigation for toolbar-like components
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        const currentIndex = focusableElements.findIndex(
+          (el) => el === document.activeElement
+        );
+        if (currentIndex !== -1) {
+          event.preventDefault();
+          let nextIndex;
+
+          if (event.key === 'ArrowLeft') {
+            nextIndex =
+              currentIndex > 0
+                ? currentIndex - 1
+                : focusableElements.length - 1;
+          } else {
+            nextIndex =
+              currentIndex < focusableElements.length - 1
+                ? currentIndex + 1
+                : 0;
+          }
+
+          focusableElements[nextIndex]?.focus();
+        }
+      }
+
+      // Handle Home/End keys
+      if (event.key === 'Home') {
+        event.preventDefault();
+        firstElement?.focus();
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault();
+        lastElement?.focus();
+      }
+    },
+    [trap, getFocusableElements]
+  );
 
   // Focus first focusable element
   const focusFirst = useCallback(() => {
@@ -153,6 +169,7 @@ export const useFocusManagement = (options: FocusOptions = {}) => {
     focusFirst,
     focusLast,
     containsFocus,
-    getFocusableElements: () => containerRef.current ? getFocusableElements(containerRef.current) : [],
+    getFocusableElements: () =>
+      containerRef.current ? getFocusableElements(containerRef.current) : [],
   };
 };

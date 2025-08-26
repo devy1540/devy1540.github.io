@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useAutoSave } from '../useAutoSave';
 import { useEditorStore } from '@/stores/useEditorStore';
 import { useDraftStore } from '@/stores/useDraftStore';
@@ -8,8 +8,12 @@ import { useDraftStore } from '@/stores/useDraftStore';
 vi.mock('@/stores/useEditorStore');
 vi.mock('@/stores/useDraftStore');
 
-const mockUseEditorStore = useEditorStore as any;
-const mockUseDraftStore = useDraftStore as any;
+const mockUseEditorStore = useEditorStore as vi.MockedFunction<
+  typeof useEditorStore
+>;
+const mockUseDraftStore = useDraftStore as vi.MockedFunction<
+  typeof useDraftStore
+>;
 
 describe('useAutoSave', () => {
   const mockCreateDraft = vi.fn();
@@ -21,7 +25,7 @@ describe('useAutoSave', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
-    
+
     mockUseEditorStore.mockReturnValue({
       content: 'test content',
       metadata: { title: 'Test Title' },
@@ -59,7 +63,7 @@ describe('useAutoSave', () => {
   });
 
   it('should create a new draft when no current draft exists', async () => {
-    const { result } = renderHook(() => useAutoSave(1000));
+    renderHook(() => useAutoSave(1000));
 
     // Wait for the hook to initialize and potentially trigger auto-save
     await act(async () => {
@@ -93,7 +97,7 @@ describe('useAutoSave', () => {
       reset: vi.fn(),
     });
 
-    const { result } = renderHook(() => useAutoSave(1000));
+    renderHook(() => useAutoSave(1000));
 
     // Wait for the hook to initialize and potentially trigger auto-save
     await act(async () => {
@@ -111,7 +115,7 @@ describe('useAutoSave', () => {
   it('should not save when content is not dirty', async () => {
     // Clear previous calls first
     vi.clearAllMocks();
-    
+
     // Override mock with isDirty: false before rendering hook
     mockUseEditorStore.mockReturnValue({
       content: 'test content',
@@ -130,7 +134,7 @@ describe('useAutoSave', () => {
       reset: vi.fn(),
     });
 
-    const { result } = renderHook(() => useAutoSave(1000));
+    renderHook(() => useAutoSave(1000));
 
     // Wait for potential auto-save triggers but with isDirty = false
     await act(async () => {
@@ -145,7 +149,7 @@ describe('useAutoSave', () => {
     mockCreateDraft.mockRejectedValue(new Error('Save failed'));
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation();
 
-    const { result } = renderHook(() => useAutoSave(1000));
+    renderHook(() => useAutoSave(1000));
 
     // Wait for the hook to trigger auto-save
     await act(async () => {
@@ -154,13 +158,16 @@ describe('useAutoSave', () => {
 
     // Should attempt to create draft and handle error
     expect(mockCreateDraft).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith('Auto-save failed:', expect.any(Error));
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Auto-save failed:',
+      expect.any(Error)
+    );
 
     consoleSpy.mockRestore();
   });
 
   it('should provide manual save function', async () => {
-    const { result } = renderHook(() => useAutoSave(1000));
+    renderHook(() => useAutoSave(1000));
 
     // Call the manual save function
     await act(async () => {

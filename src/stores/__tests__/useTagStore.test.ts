@@ -48,7 +48,7 @@ describe('useTagStore', () => {
 
   it('gets popular tags', () => {
     const { addItem, incrementPostCount, getPopular } = useTagStore.getState();
-    const react = addItem('React');
+    addItem('React');
     const vue = addItem('Vue');
     incrementPostCount(vue.id);
     const popular = getPopular();

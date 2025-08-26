@@ -4,7 +4,10 @@ import type { Post } from '@/types';
 /**
  * Parses YAML frontmatter from markdown content using gray-matter.
  */
-export function parseFrontmatter(markdown: string): { metadata: Partial<Post>; content: string } {
+export function parseFrontmatter(markdown: string): {
+  metadata: Partial<Post>;
+  content: string;
+} {
   try {
     const { data, content } = matter(markdown);
     return { metadata: data as Partial<Post>, content };
@@ -17,10 +20,15 @@ export function parseFrontmatter(markdown: string): { metadata: Partial<Post>; c
 /**
  * Combines frontmatter and content into a complete markdown string using gray-matter.
  */
-export function combineFrontmatterAndContent(metadata: Partial<Post>, content: string): string {
+export function combineFrontmatterAndContent(
+  metadata: Partial<Post>,
+  content: string
+): string {
   // Filter out empty or null values from metadata before stringifying
   const filteredMetadata = Object.fromEntries(
-    Object.entries(metadata).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    Object.entries(metadata).filter(
+      ([, value]) => value !== null && value !== undefined && value !== ''
+    )
   );
 
   if (Object.keys(filteredMetadata).length === 0) {
@@ -48,8 +56,8 @@ export function generateSlug(title: string): string {
  */
 export function calculateReadingTime(content: string): number {
   const plainText = content
-    .replace(/!(\[[^\]]*\])(\([^\)]*\))/g, '') // Remove images
-    .replace(/(\[[^\]]*\])(\([^\)]*\))/g, '') // Remove links
+    .replace(/!(\[[^\]]*\])(\([^)]*\))/g, '') // Remove images
+    .replace(/(\[[^\]]*\])(\([^)]*\))/g, '') // Remove links
     .replace(/```[\s\S]*?```/g, '') // Remove code blocks
     .replace(/`[^`]*`/g, '') // Remove inline code
     .replace(/#+\s/g, '') // Remove headers
@@ -65,7 +73,10 @@ export function calculateReadingTime(content: string): number {
 /**
  * Validates metadata for completeness.
  */
-export function validateMetadata(metadata: Partial<Post>): { isValid: boolean; errors: string[] } {
+export function validateMetadata(metadata: Partial<Post>): {
+  isValid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!metadata.title?.trim()) {

@@ -48,8 +48,9 @@ describe('useCategoryStore', () => {
   });
 
   it('gets popular categories', () => {
-    const { addItem, incrementPostCount, getPopular } = useCategoryStore.getState();
-    const tech = addItem('Tech');
+    const { addItem, incrementPostCount, getPopular } =
+      useCategoryStore.getState();
+    addItem('Tech');
     const travel = addItem('Travel');
     incrementPostCount(travel.id);
     const popular = getPopular();

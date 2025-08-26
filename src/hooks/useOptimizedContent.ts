@@ -11,14 +11,10 @@ interface OptimizedContentOptions {
  * Provides debouncing, chunking, and memory optimization
  */
 export const useOptimizedContent = (
-  content: string, 
+  content: string,
   options: OptimizedContentOptions = {}
 ) => {
-  const { 
-    debounceMs = 100, 
-    chunkSize = 5000,
-    maxLength = 50000
-  } = options;
+  const { chunkSize = 5000, maxLength = 50000 } = options;
 
   const lastProcessedRef = useRef<string>('');
   const processingRef = useRef<boolean>(false);
@@ -28,14 +24,14 @@ export const useOptimizedContent = (
     const length = content.length;
     const lines = content.split('\n').length;
     const words = content.trim() ? content.trim().split(/\s+/).length : 0;
-    
+
     return {
       length,
       lines,
       words,
       isLarge: length > maxLength,
       needsChunking: length > chunkSize,
-      estimatedRenderTime: Math.ceil(length / 1000) // rough estimate in ms
+      estimatedRenderTime: Math.ceil(length / 1000), // rough estimate in ms
     };
   }, [content, maxLength, chunkSize]);
 
@@ -53,24 +49,32 @@ export const useOptimizedContent = (
   }, [content, contentMetrics.needsChunking, chunkSize]);
 
   // Optimized content processing
-  const processContent = useCallback((rawContent: string) => {
-    if (processingRef.current) return rawContent;
-    
-    processingRef.current = true;
-    
-    try {
-      // For very large content, limit processing
-      if (rawContent.length > maxLength) {
-        console.warn(`Content exceeds recommended length (${rawContent.length} > ${maxLength})`);
-        return rawContent.substring(0, maxLength) + '\n\n...(content truncated for performance)';
-      }
+  const processContent = useCallback(
+    (rawContent: string) => {
+      if (processingRef.current) return rawContent;
 
-      lastProcessedRef.current = rawContent;
-      return rawContent;
-    } finally {
-      processingRef.current = false;
-    }
-  }, [maxLength]);
+      processingRef.current = true;
+
+      try {
+        // For very large content, limit processing
+        if (rawContent.length > maxLength) {
+          console.warn(
+            `Content exceeds recommended length (${rawContent.length} > ${maxLength})`
+          );
+          return (
+            rawContent.substring(0, maxLength) +
+            '\n\n...(content truncated for performance)'
+          );
+        }
+
+        lastProcessedRef.current = rawContent;
+        return rawContent;
+      } finally {
+        processingRef.current = false;
+      }
+    },
+    [maxLength]
+  );
 
   // Memory-efficient content getter
   const getOptimizedContent = useCallback(() => {
@@ -80,15 +84,19 @@ export const useOptimizedContent = (
   // Performance recommendations
   const performanceRecommendations = useMemo(() => {
     const recommendations: string[] = [];
-    
+
     if (contentMetrics.isLarge) {
-      recommendations.push('Consider enabling virtualization for better performance');
+      recommendations.push(
+        'Consider enabling virtualization for better performance'
+      );
     }
-    
+
     if (contentMetrics.lines > 1000) {
-      recommendations.push('Large number of lines detected - consider lazy loading');
+      recommendations.push(
+        'Large number of lines detected - consider lazy loading'
+      );
     }
-    
+
     if (contentMetrics.estimatedRenderTime > 100) {
       recommendations.push('Consider debouncing content updates');
     }
@@ -116,25 +124,31 @@ export const useOptimizedEditor = (
   const updateTimeoutRef = useRef<NodeJS.Timeout>();
   const lastUpdateRef = useRef<string>(content);
 
-  const debouncedUpdate = useCallback((newContent: string) => {
-    // Skip identical updates
-    if (newContent === lastUpdateRef.current) {
-      return;
-    }
+  const debouncedUpdate = useCallback(
+    (newContent: string) => {
+      // Skip identical updates
+      if (newContent === lastUpdateRef.current) {
+        return;
+      }
 
-    clearTimeout(updateTimeoutRef.current);
-    
-    updateTimeoutRef.current = setTimeout(() => {
+      clearTimeout(updateTimeoutRef.current);
+
+      updateTimeoutRef.current = setTimeout(() => {
+        updateContent(newContent);
+        lastUpdateRef.current = newContent;
+      }, debounceMs);
+    },
+    [updateContent, debounceMs]
+  );
+
+  const immediateUpdate = useCallback(
+    (newContent: string) => {
+      clearTimeout(updateTimeoutRef.current);
       updateContent(newContent);
       lastUpdateRef.current = newContent;
-    }, debounceMs);
-  }, [updateContent, debounceMs]);
-
-  const immediateUpdate = useCallback((newContent: string) => {
-    clearTimeout(updateTimeoutRef.current);
-    updateContent(newContent);
-    lastUpdateRef.current = newContent;
-  }, [updateContent]);
+    },
+    [updateContent]
+  );
 
   return {
     debouncedUpdate,

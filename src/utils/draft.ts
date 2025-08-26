@@ -45,12 +45,12 @@ export const draftUtils = {
     try {
       const draftData = localStorage.getItem(`${DRAFT_STORAGE_PREFIX}${id}`);
       if (!draftData) return null;
-      
+
       const draft = JSON.parse(draftData);
       // Convert date strings back to Date objects
       draft.createdAt = new Date(draft.createdAt);
       draft.updatedAt = new Date(draft.updatedAt);
-      
+
       return draft;
     } catch (error) {
       console.error('Failed to load draft:', error);
@@ -61,8 +61,11 @@ export const draftUtils = {
   // Save single draft to storage
   saveDraft(draft: Draft): void {
     try {
-      localStorage.setItem(`${DRAFT_STORAGE_PREFIX}${draft.id}`, JSON.stringify(draft));
-      
+      localStorage.setItem(
+        `${DRAFT_STORAGE_PREFIX}${draft.id}`,
+        JSON.stringify(draft)
+      );
+
       // Update draft list
       const ids = this.getDraftIds();
       if (!ids.includes(draft.id)) {
@@ -79,10 +82,10 @@ export const draftUtils = {
   deleteDraft(id: string): void {
     try {
       localStorage.removeItem(`${DRAFT_STORAGE_PREFIX}${id}`);
-      
+
       // Update draft list
       const ids = this.getDraftIds();
-      const updatedIds = ids.filter(draftId => draftId !== id);
+      const updatedIds = ids.filter((draftId) => draftId !== id);
       this.saveDraftIds(updatedIds);
     } catch (error) {
       console.error('Failed to delete draft:', error);
@@ -94,14 +97,14 @@ export const draftUtils = {
   loadAllDrafts(): Draft[] {
     const ids = this.getDraftIds();
     const drafts: Draft[] = [];
-    
+
     for (const id of ids) {
       const draft = this.loadDraft(id);
       if (draft) {
         drafts.push(draft);
       }
     }
-    
+
     // Sort by updatedAt (most recent first)
     return drafts.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   },
@@ -113,12 +116,11 @@ export const draftUtils = {
       const testKey = 'storage-test';
       localStorage.setItem(testKey, 'test');
       localStorage.removeItem(testKey);
-    } catch (error) {
+    } catch {
       // Storage is full, clean old drafts
       this.cleanOldDrafts(20);
     }
   },
-
 
   // Get storage usage info
   getStorageInfo(): { used: number; available: number; total: number } {
@@ -149,33 +151,36 @@ export const draftUtils = {
   // Ensure storage space is available, clean if necessary
   ensureStorageSpace(): boolean {
     const usagePercentage = this.getStorageUsagePercentage();
-    
+
     // If using more than 80% of storage, clean up old drafts
     if (usagePercentage > 80) {
       this.cleanOldDrafts(15); // Keep only 15 most recent drafts
       return this.getStorageUsagePercentage() < 90; // Check if we freed enough space
     }
-    
+
     // If using more than 90%, be more aggressive
     if (usagePercentage > 90) {
       this.cleanOldDrafts(10); // Keep only 10 most recent drafts
       return this.getStorageUsagePercentage() < 95;
     }
-    
+
     return true;
   },
 
   // Enhanced clean old drafts with configurable keep count
   cleanOldDrafts(keepCount: number = 20): void {
     try {
-      const allDrafts = this.loadAllDrafts().sort((a, b) => 
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      const allDrafts = this.loadAllDrafts().sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
-      
+
       if (allDrafts.length > keepCount) {
         const draftsToDelete = allDrafts.slice(keepCount);
-        console.log(`Cleaning up ${draftsToDelete.length} old drafts to free space`);
-        
+        console.log(
+          `Cleaning up ${draftsToDelete.length} old drafts to free space`
+        );
+
         for (const draft of draftsToDelete) {
           this.deleteDraft(draft.id);
         }
@@ -183,5 +188,5 @@ export const draftUtils = {
     } catch (error) {
       console.error('Failed to clean old drafts:', error);
     }
-  }
+  },
 };

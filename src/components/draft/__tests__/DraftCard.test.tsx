@@ -14,10 +14,16 @@ vi.mock('@/stores/useEditorStore');
 vi.mock('@/hooks/useAutoSave');
 vi.mock('@/stores/useToastStore');
 
-const mockUseDraftStore = useDraftStore as any;
-const mockUseEditorStore = useEditorStore as any;
-const mockUseAutoSave = useAutoSave as any;
-const mockUseToastStore = useToastStore as any;
+const mockUseDraftStore = useDraftStore as vi.MockedFunction<
+  typeof useDraftStore
+>;
+const mockUseEditorStore = useEditorStore as vi.MockedFunction<
+  typeof useEditorStore
+>;
+const mockUseAutoSave = useAutoSave as vi.MockedFunction<typeof useAutoSave>;
+const mockUseToastStore = useToastStore as vi.MockedFunction<
+  typeof useToastStore
+>;
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -89,7 +95,9 @@ describe('DraftCard', () => {
 
     expect(screen.getByText('Test Draft Title')).toBeInTheDocument();
     expect(screen.getByText(/전 저장됨/)).toBeInTheDocument();
-    expect(screen.getByText('This is a test draft content.')).toBeInTheDocument();
+    expect(
+      screen.getByText('This is a test draft content.')
+    ).toBeInTheDocument();
     expect(screen.getByText(/분 읽기/)).toBeInTheDocument();
   });
 
@@ -131,7 +139,11 @@ describe('DraftCard', () => {
 
     // Should show save confirmation dialog
     expect(screen.getByText('저장하지 않은 변경사항')).toBeInTheDocument();
-    expect(screen.getByText('현재 편집 중인 내용이 저장되지 않았습니다. 계속 진행하시겠습니까?')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '현재 편집 중인 내용이 저장되지 않았습니다. 계속 진행하시겠습니까?'
+      )
+    ).toBeInTheDocument();
   });
 
   it('should handle save and continue action', async () => {
@@ -153,7 +165,10 @@ describe('DraftCard', () => {
 
     await waitFor(() => {
       expect(mockSaveNow).toHaveBeenCalled();
-      expect(mockShowSuccess).toHaveBeenCalledWith('저장 완료', '현재 작업이 저장되었습니다.');
+      expect(mockShowSuccess).toHaveBeenCalledWith(
+        '저장 완료',
+        '현재 작업이 저장되었습니다.'
+      );
       expect(mockNavigate).toHaveBeenCalledWith('/editor');
     });
   });
@@ -185,15 +200,19 @@ describe('DraftCard', () => {
     renderDraftCard();
 
     const deleteButton = screen.getAllByRole('button').find(
-      button => button.querySelector('svg') // Find delete button with trash icon
+      (button) => button.querySelector('svg') // Find delete button with trash icon
     );
-    
+
     if (deleteButton) {
       fireEvent.click(deleteButton);
     }
 
     expect(screen.getByText('초안을 삭제하시겠습니까?')).toBeInTheDocument();
-    expect(screen.getByText('이 작업은 되돌릴 수 없습니다. 초안이 영구적으로 삭제됩니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '이 작업은 되돌릴 수 없습니다. 초안이 영구적으로 삭제됩니다.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('should handle delete action successfully', async () => {
@@ -201,9 +220,9 @@ describe('DraftCard', () => {
 
     // Find and click delete button
     const deleteButton = screen.getAllByRole('button').find(
-      button => button.querySelector('svg') // Find delete button with trash icon
+      (button) => button.querySelector('svg') // Find delete button with trash icon
     );
-    
+
     if (deleteButton) {
       fireEvent.click(deleteButton);
     }
@@ -213,19 +232,22 @@ describe('DraftCard', () => {
 
     await waitFor(() => {
       expect(mockDeleteDraft).toHaveBeenCalledWith(mockDraft.id);
-      expect(mockShowSuccess).toHaveBeenCalledWith('삭제 완료', `"${mockDraft.title}" 초안이 삭제되었습니다.`);
+      expect(mockShowSuccess).toHaveBeenCalledWith(
+        '삭제 완료',
+        `"${mockDraft.title}" 초안이 삭제되었습니다.`
+      );
     });
   });
 
   it('should handle delete error', async () => {
     mockDeleteDraft.mockRejectedValue(new Error('Delete failed'));
-    
+
     renderDraftCard();
 
-    const deleteButton = screen.getAllByRole('button').find(
-      button => button.querySelector('svg')
-    );
-    
+    const deleteButton = screen
+      .getAllByRole('button')
+      .find((button) => button.querySelector('svg'));
+
     if (deleteButton) {
       fireEvent.click(deleteButton);
     }
@@ -234,7 +256,10 @@ describe('DraftCard', () => {
     fireEvent.click(confirmDeleteButton);
 
     await waitFor(() => {
-      expect(mockShowError).toHaveBeenCalledWith('삭제 실패', '초안을 삭제할 수 없습니다. 다시 시도해주세요.');
+      expect(mockShowError).toHaveBeenCalledWith(
+        '삭제 실패',
+        '초안을 삭제할 수 없습니다. 다시 시도해주세요.'
+      );
     });
   });
 
@@ -257,20 +282,28 @@ describe('DraftCard', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockShowError).toHaveBeenCalledWith('저장 실패', '현재 작업을 저장할 수 없습니다. 다시 시도해주세요.');
+      expect(mockShowError).toHaveBeenCalledWith(
+        '저장 실패',
+        '현재 작업을 저장할 수 없습니다. 다시 시도해주세요.'
+      );
     });
   });
 
   it('should format preview text correctly', () => {
     const draftWithMarkdown = {
       ...mockDraft,
-      content: '# Header\n\n**Bold text** and *italic text* and `code` and [link](url) and ![image](url)\n\n```\ncode block\n```\n\nRegular text continues...',
+      content:
+        '# Header\n\n**Bold text** and *italic text* and `code` and [link](url) and ![image](url)\n\n```\ncode block\n```\n\nRegular text continues...',
     };
 
     renderDraftCard(draftWithMarkdown);
 
     // Should strip markdown and show plain text preview
-    expect(screen.getByText(/Header Bold text and italic text and code and \[링크\] and \[이미지\]/)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Header Bold text and italic text and code and \[링크\] and \[이미지\]/
+      )
+    ).toBeInTheDocument();
   });
 
   it('should calculate reading time correctly', () => {

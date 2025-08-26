@@ -4,7 +4,6 @@ import { useTagStore } from '@/stores/useTagStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Image, Tag, Folder } from 'lucide-react';
 import { generateSlug } from '@/utils/frontmatter';
@@ -17,69 +16,94 @@ interface MetadataFormProps {
 export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
   const { metadata, updateMetadata } = useEditorStore();
   const { addItem: addTag, getSuggestions: getTagSuggestions } = useTagStore();
-  const { addItem: addCategory, getSuggestions: getCategorySuggestions } = useCategoryStore();
-  
+  const { addItem: addCategory, getSuggestions: getCategorySuggestions } =
+    useCategoryStore();
+
   const [localMetadata, setLocalMetadata] = useState(metadata);
   const [newTag, setNewTag] = useState('');
   const [categoryInput, setCategoryInput] = useState('');
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const [showCategorySuggestions, setShowCategorySuggestions] = useState(false);
-  
+
   const tagInputRef = useRef<HTMLInputElement>(null);
   const categoryInputRef = useRef<HTMLInputElement>(null);
 
   // Handle title change with auto-slug
-  const handleTitleChange = useCallback((title: string) => {
-    const slug = generateSlug(title);
-    const updates = { title, slug };
-    setLocalMetadata(prev => ({ ...prev, ...updates }));
-    updateMetadata(updates);
-  }, [updateMetadata]);
+  const handleTitleChange = useCallback(
+    (title: string) => {
+      const slug = generateSlug(title);
+      const updates = { title, slug };
+      setLocalMetadata((prev) => ({ ...prev, ...updates }));
+      updateMetadata(updates);
+    },
+    [updateMetadata]
+  );
 
   // Handle metadata field updates
-  const handleFieldChange = useCallback((field: keyof Post, value: unknown) => {
-    const updates = { [field]: value };
-    setLocalMetadata(prev => ({ ...prev, ...updates }));
-    updateMetadata(updates);
-  }, [updateMetadata]);
+  const handleFieldChange = useCallback(
+    (field: keyof Post, value: unknown) => {
+      const updates = { [field]: value };
+      setLocalMetadata((prev) => ({ ...prev, ...updates }));
+      updateMetadata(updates);
+    },
+    [updateMetadata]
+  );
 
   // Handle SEO metadata updates
-  const handleSEOChange = useCallback((field: keyof Post['metadata'], value: string) => {
-    const seoMetadata = { ...localMetadata.metadata, [field]: value };
-    const updates = { metadata: seoMetadata };
-    setLocalMetadata(prev => ({ ...prev, ...updates }));
-    updateMetadata(updates);
-  }, [localMetadata.metadata, updateMetadata]);
+  const handleSEOChange = useCallback(
+    (field: keyof Post['metadata'], value: string) => {
+      const seoMetadata = { ...localMetadata.metadata, [field]: value };
+      const updates = { metadata: seoMetadata };
+      setLocalMetadata((prev) => ({ ...prev, ...updates }));
+      updateMetadata(updates);
+    },
+    [localMetadata.metadata, updateMetadata]
+  );
 
   // Tag management with auto-complete
-  const addTagToPost = useCallback((tagName: string) => {
-    if (!tagName.trim() || localMetadata.tags?.includes(tagName.trim())) return;
-    
-    // Add to global tag store
-    addTag(tagName.trim());
-    
-    const newTags = [...(localMetadata.tags || []), tagName.trim()];
-    handleFieldChange('tags', newTags);
-    setNewTag('');
-    setShowTagSuggestions(false);
-  }, [localMetadata.tags, handleFieldChange, addTag]);
+  const addTagToPost = useCallback(
+    (tagName: string) => {
+      if (!tagName.trim() || localMetadata.tags?.includes(tagName.trim()))
+        return;
 
-  const removeTag = useCallback((tagToRemove: string) => {
-    const newTags = localMetadata.tags?.filter(tag => tag !== tagToRemove) || [];
-    handleFieldChange('tags', newTags);
-  }, [localMetadata.tags, handleFieldChange]);
+      // Add to global tag store
+      addTag(tagName.trim());
+
+      const newTags = [...(localMetadata.tags || []), tagName.trim()];
+      handleFieldChange('tags', newTags);
+      setNewTag('');
+      setShowTagSuggestions(false);
+    },
+    [localMetadata.tags, handleFieldChange, addTag]
+  );
+
+  const removeTag = useCallback(
+    (tagToRemove: string) => {
+      const newTags =
+        localMetadata.tags?.filter((tag) => tag !== tagToRemove) || [];
+      handleFieldChange('tags', newTags);
+    },
+    [localMetadata.tags, handleFieldChange]
+  );
 
   // Handle tag input with suggestions
-  const handleTagKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTagToPost(newTag);
-    } else if (e.key === 'Backspace' && !newTag && localMetadata.tags?.length) {
-      removeTag(localMetadata.tags[localMetadata.tags.length - 1]);
-    } else if (e.key === 'Escape') {
-      setShowTagSuggestions(false);
-    }
-  }, [newTag, addTagToPost, removeTag, localMetadata.tags]);
+  const handleTagKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addTagToPost(newTag);
+      } else if (
+        e.key === 'Backspace' &&
+        !newTag &&
+        localMetadata.tags?.length
+      ) {
+        removeTag(localMetadata.tags[localMetadata.tags.length - 1]);
+      } else if (e.key === 'Escape') {
+        setShowTagSuggestions(false);
+      }
+    },
+    [newTag, addTagToPost, removeTag, localMetadata.tags]
+  );
 
   const handleTagInputChange = useCallback((value: string) => {
     setNewTag(value);
@@ -87,15 +111,18 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
   }, []);
 
   // Category management with auto-complete
-  const handleCategoryChange = useCallback((categoryName: string) => {
-    if (categoryName.trim()) {
-      // Add to global category store if it doesn't exist
-      addCategory(categoryName.trim());
-    }
-    handleFieldChange('category', categoryName.trim());
-    setCategoryInput(categoryName);
-    setShowCategorySuggestions(false);
-  }, [handleFieldChange, addCategory]);
+  const handleCategoryChange = useCallback(
+    (categoryName: string) => {
+      if (categoryName.trim()) {
+        // Add to global category store if it doesn't exist
+        addCategory(categoryName.trim());
+      }
+      handleFieldChange('category', categoryName.trim());
+      setCategoryInput(categoryName);
+      setShowCategorySuggestions(false);
+    },
+    [handleFieldChange, addCategory]
+  );
 
   const handleCategoryInputChange = useCallback((value: string) => {
     setCategoryInput(value);
@@ -186,8 +213,12 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
                   handleCategoryInputChange(e.target.value);
                   handleFieldChange('category', e.target.value);
                 }}
-                onFocus={() => setShowCategorySuggestions(categoryInput.length > 0)}
-                onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 200)}
+                onFocus={() =>
+                  setShowCategorySuggestions(categoryInput.length > 0)
+                }
+                onBlur={() =>
+                  setTimeout(() => setShowCategorySuggestions(false), 200)
+                }
                 placeholder="카테고리를 입력하세요"
                 className="w-full"
               />
@@ -205,14 +236,18 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
                       </Badge>
                     </div>
                   ))}
-                  {categoryInput.trim() && !getCategorySuggestions(categoryInput).find(c => c.name.toLowerCase() === categoryInput.toLowerCase()) && (
-                    <div
-                      className="px-3 py-2 hover:bg-muted cursor-pointer text-sm text-muted-foreground"
-                      onClick={() => handleCategoryChange(categoryInput)}
-                    >
-                      "{categoryInput}" 새 카테고리 생성
-                    </div>
-                  )}
+                  {categoryInput.trim() &&
+                    !getCategorySuggestions(categoryInput).find(
+                      (c) =>
+                        c.name.toLowerCase() === categoryInput.toLowerCase()
+                    ) && (
+                      <div
+                        className="px-3 py-2 hover:bg-muted cursor-pointer text-sm text-muted-foreground"
+                        onClick={() => handleCategoryChange(categoryInput)}
+                      >
+                        "{categoryInput}" 새 카테고리 생성
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -242,7 +277,9 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
                 onChange={(e) => handleTagInputChange(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 onFocus={() => setShowTagSuggestions(newTag.length > 0)}
-                onBlur={() => setTimeout(() => setShowTagSuggestions(false), 200)}
+                onBlur={() =>
+                  setTimeout(() => setShowTagSuggestions(false), 200)
+                }
                 placeholder="태그를 입력하고 Enter를 누르세요"
                 className="w-full"
               />
@@ -260,14 +297,17 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
                       </Badge>
                     </div>
                   ))}
-                  {newTag.trim() && !getTagSuggestions(newTag).find(t => t.name.toLowerCase() === newTag.toLowerCase()) && (
-                    <div
-                      className="px-3 py-2 hover:bg-muted cursor-pointer text-sm text-muted-foreground"
-                      onClick={() => addTagToPost(newTag)}
-                    >
-                      "{newTag}" 새 태그 생성
-                    </div>
-                  )}
+                  {newTag.trim() &&
+                    !getTagSuggestions(newTag).find(
+                      (t) => t.name.toLowerCase() === newTag.toLowerCase()
+                    ) && (
+                      <div
+                        className="px-3 py-2 hover:bg-muted cursor-pointer text-sm text-muted-foreground"
+                        onClick={() => addTagToPost(newTag)}
+                      >
+                        "{newTag}" 새 태그 생성
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -306,14 +346,19 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
         <CardContent className="space-y-4">
           {/* Thumbnail */}
           <div className="space-y-2">
-            <label htmlFor="thumbnail" className="text-sm font-medium flex items-center gap-2">
+            <label
+              htmlFor="thumbnail"
+              className="text-sm font-medium flex items-center gap-2"
+            >
               <Image className="h-4 w-4" />
               썸네일 URL
             </label>
             <Input
               id="thumbnail"
               value={localMetadata.thumbnail || ''}
-              onChange={(e) => handleFieldChange('thumbnail', e.target.value || null)}
+              onChange={(e) =>
+                handleFieldChange('thumbnail', e.target.value || null)
+              }
               placeholder="https://example.com/image.jpg"
               className="w-full"
             />
@@ -367,7 +412,6 @@ export const MetadataForm: React.FC<MetadataFormProps> = ({ className }) => {
           </div>
         </CardContent>
       </Card>
-
     </div>
   );
 };

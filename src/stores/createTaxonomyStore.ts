@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { generateSlug } from '@/utils/frontmatter';
 
 export interface TaxonomyItem {
   id: string;
@@ -48,30 +47,30 @@ export const createTaxonomyStore = <T extends TaxonomyItem>(
       if (existing) return existing;
 
       const newItem = createItem(name, extraData);
-      set(state => ({ items: [...state.items, newItem] }));
+      set((state) => ({ items: [...state.items, newItem] }));
       return newItem;
     },
 
     updateItem: (id: string, updates: Partial<T>) =>
-      set(state => ({
-        items: state.items.map(item =>
+      set((state) => ({
+        items: state.items.map((item) =>
           item.id === id ? { ...item, ...updates } : item
         ),
       })),
 
     deleteItem: (id: string) =>
-      set(state => ({ items: state.items.filter(item => item.id !== id) })),
+      set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
 
     incrementPostCount: (id: string) =>
-      set(state => ({
-        items: state.items.map(item =>
+      set((state) => ({
+        items: state.items.map((item) =>
           item.id === id ? { ...item, postCount: item.postCount + 1 } : item
         ),
       })),
 
     decrementPostCount: (id: string) =>
-      set(state => ({
-        items: state.items.map(item =>
+      set((state) => ({
+        items: state.items.map((item) =>
           item.id === id
             ? { ...item, postCount: Math.max(0, item.postCount - 1) }
             : item
@@ -84,7 +83,7 @@ export const createTaxonomyStore = <T extends TaxonomyItem>(
 
       return get()
         .items.filter(
-          item =>
+          (item) =>
             item.name.toLowerCase().includes(normalizedQuery) ||
             item.slug.toLowerCase().includes(normalizedQuery)
         )
@@ -100,13 +99,15 @@ export const createTaxonomyStore = <T extends TaxonomyItem>(
 
     findByName: (name: string) =>
       get().items.find(
-        item => item.name.toLowerCase() === name.toLowerCase().trim()
+        (item) => item.name.toLowerCase() === name.toLowerCase().trim()
       ),
 
-    findById: (id: string) => get().items.find(item => item.id === id),
+    findById: (id: string) => get().items.find((item) => item.id === id),
 
     getPopular: (limit = 10) =>
-      [...get().items].sort((a, b) => b.postCount - a.postCount).slice(0, limit),
+      [...get().items]
+        .sort((a, b) => b.postCount - a.postCount)
+        .slice(0, limit),
 
     setError: (error: string | null) => set({ error }),
     setLoading: (isLoading: boolean) => set({ isLoading }),

@@ -4,7 +4,8 @@ import { useDraftStore } from '@/stores/useDraftStore';
 import { draftUtils } from '@/utils/draft';
 
 export const useDraftRecovery = () => {
-  const { updateContent, updateMetadata, setCurrentDraftId, reset } = useEditorStore();
+  const { updateContent, updateMetadata, setCurrentDraftId, reset } =
+    useEditorStore();
   const { loadDrafts } = useDraftStore();
 
   useEffect(() => {
@@ -12,7 +13,7 @@ export const useDraftRecovery = () => {
       try {
         // Load all drafts first
         await loadDrafts();
-        
+
         // Try to recover the last edited draft
         const lastDraftId = localStorage.getItem('lastEditedDraftId');
         if (lastDraftId) {
@@ -21,16 +22,16 @@ export const useDraftRecovery = () => {
             // Check if this draft was recently edited (within the last hour)
             const timeDiff = Date.now() - draft.updatedAt.getTime();
             const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
-            
+
             if (timeDiff < oneHour) {
               // Reset editor state first
               reset();
-              
+
               // Load draft content
               updateContent(draft.content);
               updateMetadata(draft.metadata);
               setCurrentDraftId(draft.id);
-              
+
               console.log('Recovered last edited draft:', draft.title);
             } else {
               // Clean up old lastEditedDraftId
@@ -48,12 +49,12 @@ export const useDraftRecovery = () => {
 
     // Only run recovery on initial load
     recoverLastDraft();
-  }, []); // Empty dependency array - only run once on mount
+  }, [loadDrafts, reset, setCurrentDraftId, updateContent, updateMetadata]); // Add required dependencies
 
   // Track the current draft ID for future recovery
   useEffect(() => {
     const { currentDraftId } = useEditorStore.getState();
-    
+
     if (currentDraftId) {
       localStorage.setItem('lastEditedDraftId', currentDraftId);
     }

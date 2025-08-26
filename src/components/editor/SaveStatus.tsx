@@ -27,10 +27,10 @@ export const SaveStatus: FC = () => {
     if (lastSaved) {
       const timeAgo = new Date().getTime() - lastSaved.getTime();
       const minutes = Math.floor(timeAgo / 60000);
-      
+
       let timeText = '';
       let tooltipText = '';
-      
+
       if (minutes < 1) {
         timeText = '방금 저장됨';
         tooltipText = '모든 변경사항이 저장되었습니다.';
@@ -39,14 +39,14 @@ export const SaveStatus: FC = () => {
         tooltipText = `마지막 저장: ${lastSaved.toLocaleTimeString()}`;
       } else {
         try {
-          const relativeTime = formatDistanceToNow(lastSaved, { 
-            addSuffix: true, 
-            locale: ko 
+          const relativeTime = formatDistanceToNow(lastSaved, {
+            addSuffix: true,
+            locale: ko,
           });
           // Ensure consistent formatting by removing "전" and adding "저장됨"
           timeText = relativeTime.replace(' 전', '') + ' 저장됨';
           tooltipText = `마지막 저장: ${lastSaved.toLocaleString()}`;
-        } catch (error) {
+        } catch {
           timeText = lastSaved.toLocaleTimeString() + ' 저장됨';
           tooltipText = `마지막 저장: ${lastSaved.toLocaleString()}`;
         }
@@ -60,8 +60,8 @@ export const SaveStatus: FC = () => {
         icon: isDirty ? Clock : CheckCircle,
         text: timeText,
         tooltip: tooltipText,
-        className: isDirty 
-          ? 'text-amber-600 dark:text-amber-400' 
+        className: isDirty
+          ? 'text-amber-600 dark:text-amber-400'
           : 'text-green-600 dark:text-green-400',
         iconClassName: '',
       };
@@ -70,7 +70,8 @@ export const SaveStatus: FC = () => {
     return {
       icon: AlertCircle,
       text: '저장되지 않음',
-      tooltip: '아직 저장되지 않았습니다. Cmd+S를 누르거나 잠시 기다리면 자동 저장됩니다.',
+      tooltip:
+        '아직 저장되지 않았습니다. Cmd+S를 누르거나 잠시 기다리면 자동 저장됩니다.',
       className: 'text-red-600 dark:text-red-400',
       iconClassName: '',
     };
@@ -82,7 +83,9 @@ export const SaveStatus: FC = () => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className={`flex items-center gap-2 text-sm ${statusInfo.className} cursor-help`}>
+          <div
+            className={`flex items-center gap-2 text-sm ${statusInfo.className} cursor-help`}
+          >
             <Icon className={`h-4 w-4 ${statusInfo.iconClassName}`} />
             <span className="font-medium">{statusInfo.text}</span>
           </div>

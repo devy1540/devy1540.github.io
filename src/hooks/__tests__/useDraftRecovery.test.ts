@@ -11,9 +11,13 @@ vi.mock('@/stores/useEditorStore');
 vi.mock('@/stores/useDraftStore');
 vi.mock('@/utils/draft');
 
-const mockUseEditorStore = useEditorStore as any;
-const mockUseDraftStore = useDraftStore as any;
-const mockDraftUtils = draftUtils as any;
+const mockUseEditorStore = useEditorStore as vi.MockedFunction<
+  typeof useEditorStore
+>;
+const mockUseDraftStore = useDraftStore as vi.MockedFunction<
+  typeof useDraftStore
+>;
+const mockDraftUtils = draftUtils as vi.Mocked<typeof draftUtils>;
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -72,7 +76,7 @@ describe('useDraftRecovery', () => {
 
   it('should recover recent draft on mount', async () => {
     mockLocalStorage.getItem.mockReturnValue('test-draft-1');
-    
+
     renderHook(() => useDraftRecovery());
 
     // Wait for async operations
@@ -94,14 +98,16 @@ describe('useDraftRecovery', () => {
 
     mockLocalStorage.getItem.mockReturnValue('test-draft-1');
     mockDraftUtils.loadDraft.mockReturnValue(oldDraft);
-    
+
     renderHook(() => useDraftRecovery());
 
     // Wait for async operations
     await vi.waitFor(() => {
       expect(mockLoadDrafts).toHaveBeenCalled();
       expect(mockDraftUtils.loadDraft).toHaveBeenCalledWith('test-draft-1');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('lastEditedDraftId');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'lastEditedDraftId'
+      );
       expect(mockReset).not.toHaveBeenCalled();
       expect(mockUpdateContent).not.toHaveBeenCalled();
     });
@@ -110,20 +116,24 @@ describe('useDraftRecovery', () => {
   it('should handle case when draft no longer exists', async () => {
     mockLocalStorage.getItem.mockReturnValue('non-existent-draft');
     mockDraftUtils.loadDraft.mockReturnValue(null);
-    
+
     renderHook(() => useDraftRecovery());
 
     await vi.waitFor(() => {
       expect(mockLoadDrafts).toHaveBeenCalled();
-      expect(mockDraftUtils.loadDraft).toHaveBeenCalledWith('non-existent-draft');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('lastEditedDraftId');
+      expect(mockDraftUtils.loadDraft).toHaveBeenCalledWith(
+        'non-existent-draft'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'lastEditedDraftId'
+      );
       expect(mockReset).not.toHaveBeenCalled();
     });
   });
 
   it('should handle case when no last edited draft ID exists', async () => {
     mockLocalStorage.getItem.mockReturnValue(null);
-    
+
     renderHook(() => useDraftRecovery());
 
     await vi.waitFor(() => {
@@ -134,11 +144,10 @@ describe('useDraftRecovery', () => {
   });
 
   it('should track current draft ID changes', () => {
-    const mockSubscribe = vi.fn();
     const mockUnsubscribe = vi.fn();
-    
+
     mockUseEditorStore.subscribe.mockReturnValue(mockUnsubscribe);
-    
+
     const { unmount } = renderHook(() => useDraftRecovery());
 
     expect(mockUseEditorStore.subscribe).toHaveBeenCalled();
@@ -147,7 +156,10 @@ describe('useDraftRecovery', () => {
     const stateCallback = mockUseEditorStore.subscribe.mock.calls[0][0];
     stateCallback({ currentDraftId: 'new-draft-id' });
 
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('lastEditedDraftId', 'new-draft-id');
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      'lastEditedDraftId',
+      'new-draft-id'
+    );
 
     // Test cleanup
     unmount();
@@ -157,13 +169,16 @@ describe('useDraftRecovery', () => {
   it('should handle recovery errors gracefully', async () => {
     mockLocalStorage.getItem.mockReturnValue('test-draft-1');
     mockLoadDrafts.mockRejectedValue(new Error('Failed to load drafts'));
-    
+
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     renderHook(() => useDraftRecovery());
 
     await vi.waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Failed to recover last draft:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to recover last draft:',
+        expect.any(Error)
+      );
     });
 
     consoleSpy.mockRestore();
@@ -177,7 +192,10 @@ describe('useDraftRecovery', () => {
     renderHook(() => useDraftRecovery());
 
     // The effect should set the localStorage
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('lastEditedDraftId', 'existing-draft-id');
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      'lastEditedDraftId',
+      'existing-draft-id'
+    );
   });
 
   it('should not set lastEditedDraftId when current draft ID is null', () => {
@@ -192,7 +210,7 @@ describe('useDraftRecovery', () => {
 
   it('should only run recovery once on mount', async () => {
     mockLocalStorage.getItem.mockReturnValue('test-draft-1');
-    
+
     const { rerender } = renderHook(() => useDraftRecovery());
 
     await vi.waitFor(() => {
@@ -208,11 +226,14 @@ describe('useDraftRecovery', () => {
   it('should log recovery success', async () => {
     mockLocalStorage.getItem.mockReturnValue('test-draft-1');
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    
+
     renderHook(() => useDraftRecovery());
 
     await vi.waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Recovered last edited draft:', mockDraft.title);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Recovered last edited draft:',
+        mockDraft.title
+      );
     });
 
     consoleSpy.mockRestore();

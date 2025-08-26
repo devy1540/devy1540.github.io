@@ -1,5 +1,4 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { EnhancedMarkdownEditor } from '../EnhancedMarkdownEditor';
 import { EnhancedMarkdownEditorContainer } from '../EnhancedMarkdownEditorContainer';
@@ -18,7 +17,9 @@ vi.mock('@/stores/useThemeStore', () => ({
 }));
 
 vi.mock('@/components/post/MarkdownRenderer', () => ({
-  MarkdownRenderer: ({ content }: { content: string }) => <div data-testid="markdown-renderer">{content}</div>,
+  MarkdownRenderer: ({ content }: { content: string }) => (
+    <div data-testid="markdown-renderer">{content}</div>
+  ),
 }));
 
 describe('EnhancedMarkdownEditor', () => {
@@ -33,7 +34,7 @@ describe('EnhancedMarkdownEditor', () => {
 
   it('should render textarea with correct attributes', () => {
     render(<EnhancedMarkdownEditor />);
-    
+
     const textarea = screen.getByTestId('enhanced-markdown-editor');
     expect(textarea).toBeInTheDocument();
     expect(textarea).toHaveAttribute('spellcheck', 'false');
@@ -44,12 +45,14 @@ describe('EnhancedMarkdownEditor', () => {
 
   it('should handle text input changes', () => {
     render(<EnhancedMarkdownEditor />);
-    
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
-    
+
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
+
     // Simulate change event directly
     fireEvent.change(textarea, { target: { value: 'Hello World' } });
-    
+
     expect(mockUpdateContent).toHaveBeenCalledWith('Hello World');
   });
 
@@ -61,16 +64,24 @@ describe('EnhancedMarkdownEditor', () => {
     });
 
     render(<EnhancedMarkdownEditor />);
-    
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
-    
+
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
+
     // Mock selection
-    Object.defineProperty(textarea, 'selectionStart', { value: 0, writable: true });
-    Object.defineProperty(textarea, 'selectionEnd', { value: 4, writable: true });
-    
+    Object.defineProperty(textarea, 'selectionStart', {
+      value: 0,
+      writable: true,
+    });
+    Object.defineProperty(textarea, 'selectionEnd', {
+      value: 4,
+      writable: true,
+    });
+
     // Test Ctrl+B for bold
     fireEvent.keyDown(textarea, { key: 'b', ctrlKey: true });
-    
+
     expect(mockUpdateContent).toHaveBeenCalledWith('**test** text');
   });
 
@@ -82,16 +93,24 @@ describe('EnhancedMarkdownEditor', () => {
     });
 
     render(<EnhancedMarkdownEditor />);
-    
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
-    
+
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
+
     // Mock cursor position at end
-    Object.defineProperty(textarea, 'selectionStart', { value: 7, writable: true });
-    Object.defineProperty(textarea, 'selectionEnd', { value: 7, writable: true });
-    
+    Object.defineProperty(textarea, 'selectionStart', {
+      value: 7,
+      writable: true,
+    });
+    Object.defineProperty(textarea, 'selectionEnd', {
+      value: 7,
+      writable: true,
+    });
+
     // Test Tab for indentation
     fireEvent.keyDown(textarea, { key: 'Tab' });
-    
+
     expect(mockUpdateContent).toHaveBeenCalledWith('line 1\n  ');
   });
 
@@ -103,21 +122,25 @@ describe('EnhancedMarkdownEditor', () => {
     });
 
     render(<EnhancedMarkdownEditor />);
-    
-    expect(screen.queryByTestId('enhanced-markdown-editor')).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByTestId('enhanced-markdown-editor')
+    ).not.toBeInTheDocument();
   });
 
   it('should have auto-resize functionality', () => {
     render(<EnhancedMarkdownEditor />);
-    
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
-    
+
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
+
     // Textarea should have min height set from styles
     expect(textarea.style.minHeight).toBe('200px');
-    
+
     // Textarea should have resize: none style for controlled resizing
     expect(textarea.style.resize).toBe('none');
-    
+
     // Verify content changes trigger re-render (through store mock)
     fireEvent.change(textarea, { target: { value: 'test content' } });
     expect(mockUpdateContent).toHaveBeenCalledWith('test content');
@@ -136,7 +159,7 @@ describe('EnhancedMarkdownEditorContainer', () => {
 
   it('should render split view in live mode', () => {
     render(<EnhancedMarkdownEditorContainer />);
-    
+
     expect(screen.getByTestId('editor-container-live')).toBeInTheDocument();
     expect(screen.getByTestId('enhanced-markdown-editor')).toBeInTheDocument();
     expect(screen.getByTestId('markdown-preview')).toBeInTheDocument();
@@ -150,7 +173,7 @@ describe('EnhancedMarkdownEditorContainer', () => {
     });
 
     render(<EnhancedMarkdownEditorContainer />);
-    
+
     expect(screen.getByTestId('editor-container-edit')).toBeInTheDocument();
     expect(screen.getByTestId('enhanced-markdown-editor')).toBeInTheDocument();
     expect(screen.queryByTestId('markdown-preview')).not.toBeInTheDocument();
@@ -164,10 +187,12 @@ describe('EnhancedMarkdownEditorContainer', () => {
     });
 
     render(<EnhancedMarkdownEditorContainer />);
-    
+
     expect(screen.getByTestId('editor-container-preview')).toBeInTheDocument();
     expect(screen.getByTestId('markdown-preview')).toBeInTheDocument();
-    expect(screen.queryByTestId('enhanced-markdown-editor')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('enhanced-markdown-editor')
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -183,30 +208,34 @@ describe('Performance Tests', () => {
     const startTime = performance.now();
     render(<EnhancedMarkdownEditor />);
     const renderTime = performance.now() - startTime;
-    
+
     // Should render quickly even with large content
     expect(renderTime).toBeLessThan(100); // Less than 100ms
 
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
     expect(textarea.value).toBe(largeContent);
   });
 
   it('should have immediate typing response', () => {
     render(<EnhancedMarkdownEditor />);
-    
-    const textarea = screen.getByTestId('enhanced-markdown-editor') as HTMLTextAreaElement;
-    
+
+    const textarea = screen.getByTestId(
+      'enhanced-markdown-editor'
+    ) as HTMLTextAreaElement;
+
     const startTime = performance.now();
-    
+
     // Simulate typing "fast" - immediate update without debouncing
     fireEvent.change(textarea, { target: { value: 'fast' } });
-    
+
     const responseTime = performance.now() - startTime;
     console.log(`Enhanced editor response time: ${responseTime}ms`);
-    
+
     // Should be immediate response (much less than 100ms)
     expect(responseTime).toBeLessThan(100);
-    
+
     // Verify content was updated immediately
     expect(mockUpdateContent).toHaveBeenCalledWith('fast');
   });
