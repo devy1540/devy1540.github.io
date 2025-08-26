@@ -5,7 +5,7 @@ import { useEditorStore } from '@/stores/useEditorStore';
 
 // Mock the editor store
 vi.mock('@/stores/useEditorStore');
-const mockUseEditorStore = useEditorStore as any;
+const mockUseEditorStore = vi.mocked(useEditorStore);
 
 // Mock date-fns
 vi.mock('date-fns', async () => {
@@ -31,7 +31,9 @@ describe('SaveStatus', () => {
     render(<SaveStatus />);
 
     expect(screen.getByText('저장 중...')).toBeInTheDocument();
-    expect(screen.getByText('현재 자동 저장이 진행 중입니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText('현재 자동 저장이 진행 중입니다.')
+    ).toBeInTheDocument();
   });
 
   it('should show just saved status', () => {
@@ -86,7 +88,11 @@ describe('SaveStatus', () => {
     render(<SaveStatus />);
 
     expect(screen.getByText('저장되지 않음')).toBeInTheDocument();
-    expect(screen.getByText('아직 저장되지 않았습니다. Cmd+S를 누르거나 잠시 기다리면 자동 저장됩니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '아직 저장되지 않았습니다. Cmd+S를 누르거나 잠시 기다리면 자동 저장됩니다.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('should show tooltip on hover', async () => {
@@ -102,7 +108,9 @@ describe('SaveStatus', () => {
     const statusElement = screen.getByText('방금 저장됨');
     fireEvent.mouseEnter(statusElement);
 
-    expect(screen.getByText('모든 변경사항이 저장되었습니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText('모든 변경사항이 저장되었습니다.')
+    ).toBeInTheDocument();
   });
 
   it('should show different tooltip for dirty state', () => {

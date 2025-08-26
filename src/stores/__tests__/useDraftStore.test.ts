@@ -6,7 +6,7 @@ import type { Draft } from '@/utils/draft';
 
 // Mock the draft utils
 vi.mock('@/utils/draft');
-const mockDraftUtils = draftUtils as any;
+const mockDraftUtils = vi.mocked(draftUtils);
 
 const mockDraft: Draft = {
   id: 'test-draft-1',
@@ -116,7 +116,7 @@ describe('useDraftStore', () => {
 
   it('should handle update error when draft not found', async () => {
     mockDraftUtils.loadDraft.mockReturnValue(null);
-    
+
     const { result } = renderHook(() => useDraftStore());
 
     await act(async () => {

@@ -7,7 +7,7 @@ import type { Draft } from '@/utils/draft';
 
 // Mock the draft store
 vi.mock('@/stores/useDraftStore');
-const mockUseDraftStore = useDraftStore as any;
+const mockUseDraftStore = vi.mocked(useDraftStore);
 
 // Mock DraftCard component
 vi.mock('@/components/draft/DraftCard', () => ({
@@ -68,7 +68,9 @@ describe('DraftsPage', () => {
     renderDraftsPage();
 
     expect(screen.getByText('초안 목록')).toBeInTheDocument();
-    expect(screen.getByText('저장된 초안들을 관리하고 편집을 계속할 수 있습니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText('저장된 초안들을 관리하고 편집을 계속할 수 있습니다.')
+    ).toBeInTheDocument();
   });
 
   it('should load drafts on mount', async () => {
@@ -128,11 +130,11 @@ describe('DraftsPage', () => {
     renderDraftsPage();
 
     expect(screen.getByText('저장된 초안이 없습니다')).toBeInTheDocument();
-    expect(screen.getByText('에디터에서 글을 작성하면 자동으로 초안이 저장됩니다.')).toBeInTheDocument();
+    expect(
+      screen.getByText('에디터에서 글을 작성하면 자동으로 초안이 저장됩니다.')
+    ).toBeInTheDocument();
     expect(screen.getByText('새 글 작성하기')).toBeInTheDocument();
   });
-
-
 
   it('should render with responsive grid layout classes', () => {
     renderDraftsPage();
@@ -156,7 +158,6 @@ describe('DraftsPage', () => {
     const newPostButton = screen.getByText('새 글 작성하기');
     expect(newPostButton).toHaveAttribute('href', '/editor');
   });
-
 
   it('should maintain proper accessibility structure', () => {
     renderDraftsPage();
