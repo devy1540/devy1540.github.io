@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0 --fix",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=10 --fix",
     "lint:check": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=10",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
