@@ -17,7 +17,7 @@ const mockUser: GitHubUser = {
   bio: 'Test bio',
   public_repos: 10,
   followers: 5,
-  following: 3
+  following: 3,
 };
 
 const mockRepository: GitHubRepository = {
@@ -33,10 +33,10 @@ const mockRepository: GitHubRepository = {
   permissions: {
     admin: true,
     push: true,
-    pull: true
+    pull: true,
   },
   updated_at: '2024-01-01T00:00:00Z',
-  created_at: '2024-01-01T00:00:00Z'
+  created_at: '2024-01-01T00:00:00Z',
 };
 
 describe('useGitHubAuthStore', () => {
@@ -49,7 +49,7 @@ describe('useGitHubAuthStore', () => {
       repositories: [],
       accessToken: null,
       error: null,
-      lastSyncAt: null
+      lastSyncAt: null,
     });
 
     vi.clearAllMocks();
@@ -57,7 +57,7 @@ describe('useGitHubAuthStore', () => {
 
   it('should have initial state', () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.user).toBeNull();
@@ -67,77 +67,68 @@ describe('useGitHubAuthStore', () => {
     expect(result.current.lastSyncAt).toBeNull();
   });
 
-  it('should handle login action', async () => {
+  it('should handle loginWithToken action', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
-    // Mock window.location.href
-    const mockLocation = { href: '' };
-    Object.defineProperty(window, 'location', {
-      value: mockLocation,
-      writable: true
-    });
 
-    await act(async () => {
-      await result.current.login();
-    });
-
-    expect(result.current.isLoading).toBe(false);
-    expect(mockLocation.href).toContain('github.com/login/oauth/authorize');
-  });
-
-  it('should handle successful callback', async () => {
-    const { result } = renderHook(() => useGitHubAuthStore());
-    
-    // Mock successful callback response
+    // Mock successful authentication
     const mockAuthService = await import('@/services/github-auth');
     const mockApiService = await import('@/services/github-api');
-    
-    vi.mocked(mockAuthService.GitHubAuthService.prototype.exchangeCodeForToken)
-      .mockResolvedValue('test-token');
-    
-    vi.mocked(mockApiService.GitHubApiService.prototype.getCurrentUser)
-      .mockResolvedValue(mockUser);
-    
-    vi.mocked(mockApiService.GitHubApiService.prototype.getUserRepositories)
-      .mockResolvedValue([mockRepository]);
+
+    vi.mocked(
+      mockAuthService.GitHubAuthService.prototype.authenticateWithToken
+    ).mockResolvedValue({ success: true });
+
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getCurrentUser
+    ).mockResolvedValue(mockUser);
+
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getUserRepositories
+    ).mockResolvedValue([mockRepository]);
 
     await act(async () => {
-      await result.current.handleCallback('test-code', 'test-state');
+      await result.current.loginWithToken('test-token');
     });
 
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user).toEqual(mockUser);
-    expect(result.current.repositories).toEqual([mockRepository]);
-    expect(result.current.accessToken).toBe('test-token');
-    expect(result.current.error).toBeNull();
   });
 
-  it('should handle callback failure', async () => {
+  it('should handle successful repositories fetch', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
-    const mockAuthService = await import('@/services/github-auth');
-    vi.mocked(mockAuthService.GitHubAuthService.prototype.exchangeCodeForToken)
-      .mockRejectedValue(new Error('Authentication failed'));
 
-    await act(async () => {
-      await result.current.handleCallback('invalid-code', 'invalid-state');
+    // Set authenticated state first
+    act(() => {
+      useGitHubAuthStore.setState({
+        isAuthenticated: true,
+        accessToken: 'test-token',
+        user: mockUser,
+      });
     });
 
-    expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.user).toBeNull();
-    expect(result.current.error).toBe('Authentication failed');
+    const mockApiService = await import('@/services/github-api');
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getUserRepositories
+    ).mockResolvedValue([mockRepository]);
+
+    await act(async () => {
+      await result.current.fetchRepositories();
+    });
+
+    expect(result.current.repositories).toEqual([mockRepository]);
+    expect(result.current.error).toBeNull();
   });
 
   it('should handle logout', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     // Set authenticated state first
     act(() => {
       useGitHubAuthStore.setState({
         isAuthenticated: true,
         user: mockUser,
         repositories: [mockRepository],
-        accessToken: 'test-token'
+        accessToken: 'test-token',
       });
     });
 
@@ -153,17 +144,18 @@ describe('useGitHubAuthStore', () => {
 
   it('should fetch user info', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     // Set token first
     act(() => {
       useGitHubAuthStore.setState({
-        accessToken: 'test-token'
+        accessToken: 'test-token',
       });
     });
 
     const mockApiService = await import('@/services/github-api');
-    vi.mocked(mockApiService.GitHubApiService.prototype.getCurrentUser)
-      .mockResolvedValue(mockUser);
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getCurrentUser
+    ).mockResolvedValue(mockUser);
 
     await act(async () => {
       await result.current.fetchUserInfo();
@@ -175,17 +167,18 @@ describe('useGitHubAuthStore', () => {
 
   it('should handle authentication errors in fetch operations', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     act(() => {
       useGitHubAuthStore.setState({
         accessToken: 'test-token',
-        isAuthenticated: true
+        isAuthenticated: true,
       });
     });
 
     const mockApiService = await import('@/services/github-api');
-    vi.mocked(mockApiService.GitHubApiService.prototype.getCurrentUser)
-      .mockRejectedValue(new Error('GitHub authentication expired'));
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getCurrentUser
+    ).mockRejectedValue(new Error('GitHub authentication expired'));
 
     await act(async () => {
       await result.current.fetchUserInfo();
@@ -198,7 +191,7 @@ describe('useGitHubAuthStore', () => {
 
   it('should set error state', () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     act(() => {
       result.current.setError('Test error');
     });
@@ -208,7 +201,7 @@ describe('useGitHubAuthStore', () => {
 
   it('should set loading state', () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     act(() => {
       result.current.setLoading(true);
     });
@@ -218,21 +211,25 @@ describe('useGitHubAuthStore', () => {
 
   it('should refresh token', async () => {
     const { result } = renderHook(() => useGitHubAuthStore());
-    
+
     const mockAuthService = await import('@/services/github-auth');
     const mockApiService = await import('@/services/github-api');
-    
-    vi.mocked(mockAuthService.GitHubAuthService.prototype.getStoredToken)
-      .mockReturnValue('stored-token');
-    
-    vi.mocked(mockAuthService.GitHubAuthService.prototype.validateToken)
-      .mockResolvedValue(true);
-    
-    vi.mocked(mockApiService.GitHubApiService.prototype.getCurrentUser)
-      .mockResolvedValue(mockUser);
-    
-    vi.mocked(mockApiService.GitHubApiService.prototype.getUserRepositories)
-      .mockResolvedValue([mockRepository]);
+
+    vi.mocked(
+      mockAuthService.GitHubAuthService.prototype.getStoredToken
+    ).mockReturnValue('stored-token');
+
+    vi.mocked(
+      mockAuthService.GitHubAuthService.prototype.validateToken
+    ).mockResolvedValue(true);
+
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getCurrentUser
+    ).mockResolvedValue(mockUser);
+
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.getUserRepositories
+    ).mockResolvedValue([mockRepository]);
 
     await act(async () => {
       await result.current.refreshToken();

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { RateLimitStatus } from '../RateLimitStatus';
 import type { GitHubRateLimit } from '@/types/github';
 
@@ -148,6 +148,8 @@ vi.mock('@/lib/utils', () => ({
 describe('RateLimitStatus', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    // Set a fixed time for consistent testing
+    vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
   });
 
   afterEach(() => {
@@ -161,7 +163,7 @@ describe('RateLimitStatus', () => {
     limit: 5000,
     used: 100,
     remaining: 4900,
-    reset: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
+    reset: Math.floor(new Date('2024-01-01T13:01:05Z').getTime() / 1000), // Fixed time: 1 hour 1 minute 5 seconds from base time
     ...overrides,
   });
 
@@ -283,41 +285,39 @@ describe('RateLimitStatus', () => {
 
   describe('Time Until Reset', () => {
     it('should calculate and display time until reset', () => {
-      const resetTime = Math.floor(Date.now() / 1000) + 3665; // 1 hour, 1 minute, 5 seconds
       const rateLimit = createMockRateLimit({
-        reset: resetTime,
         remaining: 50, // Show reset time for warning status
       });
 
       render(<RateLimitStatus rateLimit={rateLimit} />);
 
-      // Should show time in format like "61m 5s"
+      // Should show time in format like "61m 5s" (1 hour 1 minute 5 seconds)
       expect(screen.getByText(/61m 5s/)).toBeInTheDocument();
     });
 
     it('should update countdown every second', () => {
-      const resetTime = Math.floor(Date.now() / 1000) + 65; // 1 minute, 5 seconds
       const rateLimit = createMockRateLimit({
-        reset: resetTime,
+        reset: Math.floor(new Date('2024-01-01T12:01:05Z').getTime() / 1000), // 1 minute 5 seconds from base time
         remaining: 50,
       });
 
       render(<RateLimitStatus rateLimit={rateLimit} />);
 
-      // Initial time
+      // Initial time should be 1m 5s
       expect(screen.getByText(/1m 5s/)).toBeInTheDocument();
 
       // Advance time by 1 second
-      vi.advanceTimersByTime(1000);
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
 
-      // Time should update
+      // Time should update to 1m 4s
       expect(screen.getByText(/1m 4s/)).toBeInTheDocument();
     });
 
     it('should handle reset time in seconds only', () => {
-      const resetTime = Math.floor(Date.now() / 1000) + 30; // 30 seconds
       const rateLimit = createMockRateLimit({
-        reset: resetTime,
+        reset: Math.floor(new Date('2024-01-01T12:00:30Z').getTime() / 1000), // 30 seconds from base time
         remaining: 50,
       });
 
@@ -328,16 +328,17 @@ describe('RateLimitStatus', () => {
 
     it('should call onRefresh when reset time is reached', () => {
       const onRefresh = vi.fn();
-      const resetTime = Math.floor(Date.now() / 1000) + 1; // 1 second
       const rateLimit = createMockRateLimit({
-        reset: resetTime,
+        reset: Math.floor(new Date('2024-01-01T12:00:01Z').getTime() / 1000), // 1 second from base time
         remaining: 50,
       });
 
       render(<RateLimitStatus rateLimit={rateLimit} onRefresh={onRefresh} />);
 
       // Advance time past reset
-      vi.advanceTimersByTime(2000);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
 
       expect(onRefresh).toHaveBeenCalled();
       expect(screen.getByText(/Reset available/)).toBeInTheDocument();

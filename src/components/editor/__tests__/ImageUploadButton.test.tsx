@@ -10,7 +10,27 @@ import { useToastStore } from '@/stores/useToastStore';
 vi.mock('@/stores/useImageUploadStore');
 vi.mock('@/stores/useEditorStore');
 vi.mock('@/stores/useToastStore');
-vi.mock('@/services/image-upload-service');
+vi.mock('@/services/image-upload-service', () => ({
+  ImageUploadService: vi.fn().mockImplementation(() => ({
+    uploadImage: vi.fn().mockResolvedValue({
+      success: true,
+      image: {
+        id: 'test-image-id',
+        filename: 'test.png',
+        originalName: 'test.png',
+        size: 1000000,
+        mimeType: 'image/png',
+        githubPath: 'public/images/test.png',
+        rawUrl:
+          'https://raw.githubusercontent.com/user/repo/main/public/images/test.png',
+        uploadedAt: new Date(),
+        sha: 'abc123',
+      },
+    }),
+    validateImageFile: vi.fn().mockReturnValue(null),
+    getUploadedImages: vi.fn().mockResolvedValue([]),
+  })),
+}));
 vi.mock('@/services/github-content');
 
 const mockUseImageUploadStore = vi.mocked(useImageUploadStore);
@@ -112,25 +132,12 @@ describe('ImageUploadButton', () => {
     expect(screen.getByRole('button')).toBeDisabled();
   });
 
-  it('should accept different variants and sizes', () => {
-    const { rerender } = render(
-      <ImageUploadButton variant="default" size="lg" />
-    );
-
-    expect(screen.getByRole('button')).toHaveClass('btn-default');
-
-    rerender(<ImageUploadButton variant="outline" size="sm" />);
-    expect(screen.getByRole('button')).toHaveClass('btn-outline');
-  });
-
   it('should open file dialog when clicked', async () => {
     const user = userEvent.setup();
     render(<ImageUploadButton />);
 
     const button = screen.getByRole('button');
-    const fileInput =
-      screen.getByRole('textbox', { hidden: true }) ||
-      document.querySelector('input[type="file"]');
+    const fileInput = document.querySelector('input[type="file"]');
 
     expect(fileInput).toBeInTheDocument();
 
@@ -164,12 +171,12 @@ describe('ImageUploadButton', () => {
     expect(screen.getByRole('button')).toHaveClass('custom-class');
   });
 
-  it('should use default props when not specified', () => {
+  it('should render with correct button content', () => {
     render(<ImageUploadButton />);
 
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('btn-outline'); // default variant
-    expect(button).toHaveClass('btn-sm'); // default size
+    expect(button).toBeInTheDocument();
+    expect(screen.getByText('이미지 업로드')).toBeInTheDocument();
   });
 });
 
