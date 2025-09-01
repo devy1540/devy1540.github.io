@@ -38,7 +38,9 @@ describe('ImageUploadService', () => {
     });
 
     it('should reject unsupported file formats', () => {
-      const unsupportedFile = new File([''], 'test.txt', { type: 'text/plain' });
+      const unsupportedFile = new File([''], 'test.txt', {
+        type: 'text/plain',
+      });
 
       const error = service.validateImageFile(unsupportedFile);
       expect(error).not.toBeNull();
@@ -47,10 +49,18 @@ describe('ImageUploadService', () => {
     });
 
     it('should accept all supported image formats', () => {
-      const formats = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
-      
-      formats.forEach(format => {
-        const file = new File([''], `test.${format.split('/')[1]}`, { type: format });
+      const formats = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+        'image/webp',
+      ];
+
+      formats.forEach((format) => {
+        const file = new File([''], `test.${format.split('/')[1]}`, {
+          type: format,
+        });
         Object.defineProperty(file, 'size', { value: 1000000 }); // 1MB
 
         const error = service.validateImageFile(file);
@@ -76,16 +86,20 @@ describe('ImageUploadService', () => {
     });
 
     it('should add timestamp when generateUniqueFilename is true', () => {
-      const service = new ImageUploadService(mockGitHubService, { generateUniqueFilename: true });
+      const service = new ImageUploadService(mockGitHubService, {
+        generateUniqueFilename: true,
+      });
       const result = service.sanitizeFilename('test.png');
-      
+
       expect(result).toMatch(/test-\d+\.png$/);
     });
 
     it('should not add timestamp when generateUniqueFilename is false', () => {
-      const service = new ImageUploadService(mockGitHubService, { generateUniqueFilename: false });
+      const service = new ImageUploadService(mockGitHubService, {
+        generateUniqueFilename: false,
+      });
       const result = service.sanitizeFilename('test.png');
-      
+
       expect(result).toBe('test.png');
     });
   });
@@ -109,7 +123,9 @@ describe('ImageUploadService', () => {
     });
 
     it('should upload valid image successfully', async () => {
-      const file = new File(['test content'], 'test.png', { type: 'image/png' });
+      const file = new File(['test content'], 'test.png', {
+        type: 'image/png',
+      });
       Object.defineProperty(file, 'size', { value: 1000000 });
 
       const mockProgress = vi.fn();
@@ -120,7 +136,7 @@ describe('ImageUploadService', () => {
       expect(result.image?.originalName).toBe('test.png');
       expect(result.image?.mimeType).toBe('image/png');
       expect(result.image?.size).toBe(1000000);
-      
+
       // Check progress callbacks
       expect(mockProgress).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -128,7 +144,7 @@ describe('ImageUploadService', () => {
           progress: 10,
         })
       );
-      
+
       expect(mockProgress).toHaveBeenCalledWith(
         expect.objectContaining({
           status: 'completed',
@@ -139,7 +155,7 @@ describe('ImageUploadService', () => {
 
     it('should fail validation for invalid files', async () => {
       const file = new File([''], 'test.txt', { type: 'text/plain' });
-      
+
       const result = await service.uploadImage(file);
 
       expect(result.success).toBe(false);
@@ -169,17 +185,19 @@ describe('ImageUploadService', () => {
       // Mock createFile to throw rate limit error
       const rateLimitError = new Error('API rate limit exceeded');
       (rateLimitError as unknown as { status: number }).status = 403;
-      
+
       (mockGitHubService.createFile as Mock).mockRejectedValue(rateLimitError);
 
       // Mock the private sleep method to avoid actual delays
-      const sleepSpy = vi.spyOn(service as any, 'sleep').mockResolvedValue(undefined);
+      const sleepSpy = vi
+        .spyOn(service as unknown as { sleep: () => Promise<void> }, 'sleep')
+        .mockResolvedValue(undefined);
 
       const result = await service.uploadImage(file);
 
       expect(result.success).toBe(false);
       expect(result.error?.type).toBe('rate_limit');
-      
+
       sleepSpy.mockRestore();
     });
   });

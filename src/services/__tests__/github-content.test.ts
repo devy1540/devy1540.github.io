@@ -62,7 +62,7 @@ describe('GitHubContentService', () => {
 
     it('should throw error when no repository is set', () => {
       const newService = new GitHubContentService(mockApiService);
-      
+
       // @ts-expect-error - Testing private method
       expect(() => newService.getOwnerAndRepo()).toThrow(
         'No repository selected. Please set a current repository first.'
@@ -125,7 +125,7 @@ describe('GitHubContentService', () => {
 
     it('should return empty structure when content folder does not exist', async () => {
       const error = new Error('Not Found');
-      (error as any).status = 404;
+      (error as unknown as { status: number }).status = 404;
       mockApiService.getDirectoryContents.mockRejectedValueOnce(error);
 
       const result = await service.getContentDirectoryListing('content');
@@ -156,7 +156,9 @@ describe('GitHubContentService', () => {
       const decodedContent = '# Test Post\n\nThis is a test post.';
 
       mockApiService.getFileContent.mockResolvedValueOnce(mockFileContent);
-      mockApiService.getDecodedFileContent.mockResolvedValueOnce(decodedContent);
+      mockApiService.getDecodedFileContent.mockResolvedValueOnce(
+        decodedContent
+      );
 
       const result = await service.getFileContent('content/posts/test.md');
 
@@ -189,7 +191,9 @@ describe('GitHubContentService', () => {
         },
       ];
 
-      mockApiService.getDirectoryContentsRecursive.mockResolvedValueOnce(mockFiles);
+      mockApiService.getDirectoryContentsRecursive.mockResolvedValueOnce(
+        mockFiles
+      );
 
       const result = await service.getAllContentFiles('content');
 
@@ -214,15 +218,6 @@ describe('GitHubContentService', () => {
         html_url: 'https://github.com/test',
         download_url: null,
         _links: { self: '', git: '', html: '' },
-      };
-
-      const mockFile = {
-        name: 'test-post.md',
-        path: 'content/posts/test-post.md',
-        sha: 'file123',
-        size: 500,
-        type: 'file',
-        downloadUrl: 'https://raw.githubusercontent.com/test',
       };
 
       const mockContent = `---
@@ -280,7 +275,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
         },
       });
 
-      expect(result[0].excerpt).toContain('This is the content of the test post.');
+      expect(result[0].excerpt).toContain(
+        'This is the content of the test post.'
+      );
       expect(result[0].readingTime).toBeGreaterThan(0);
     });
 
@@ -316,7 +313,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
       expect(mockApiService.createOrUpdateFile).toHaveBeenCalledWith(
         'testuser',
         'test-blog',
-        expect.stringMatching(/content\/posts\/\d{4}-\d{2}-\d{2}-test-title\.md/),
+        expect.stringMatching(
+          /content\/posts\/\d{4}-\d{2}-\d{2}-test-title\.md/
+        ),
         expect.stringContaining('---\ntitle: "Test Title"'),
         expect.objectContaining({
           message: 'Add new blog post: Test Title',
@@ -342,7 +341,11 @@ draft: true
 This is the actual content.`;
 
       // Access private method for testing
-      const metadata = (service as any).extractPostMetadata(content);
+      const metadata = (
+        service as unknown as {
+          extractPostMetadata: (content: string) => Record<string, unknown>;
+        }
+      ).extractPostMetadata(content);
 
       expect(metadata).toEqual({
         title: 'Test Post',
@@ -368,17 +371,31 @@ This is the first paragraph that should be used as excerpt.
 
 This should not be included in the excerpt.`;
 
-      const excerpt = (service as any).extractExcerpt(content, 100);
+      const excerpt = (
+        service as unknown as {
+          extractExcerpt: (content: string, length: number) => string;
+        }
+      ).extractExcerpt(content, 100);
 
-      expect(excerpt).toBe('This is the first paragraph that should be used as excerpt.');
+      expect(excerpt).toBe(
+        'This is the first paragraph that should be used as excerpt.'
+      );
     });
 
     it('should calculate reading time', () => {
       const shortContent = 'Short content with few words.';
       const longContent = 'Lorem ipsum '.repeat(200); // ~400 words
 
-      const shortTime = (service as any).calculateReadingTime(shortContent);
-      const longTime = (service as any).calculateReadingTime(longContent);
+      const shortTime = (
+        service as unknown as {
+          calculateReadingTime: (content: string) => number;
+        }
+      ).calculateReadingTime(shortContent);
+      const longTime = (
+        service as unknown as {
+          calculateReadingTime: (content: string) => number;
+        }
+      ).calculateReadingTime(longContent);
 
       expect(shortTime).toBe(1); // Minimum 1 minute
       expect(longTime).toBeGreaterThan(1);
@@ -544,7 +561,7 @@ This should not be included in the excerpt.`;
 
     it('should return empty config when files do not exist', async () => {
       const error = new Error('Not Found');
-      (error as any).status = 404;
+      (error as unknown as { status: number }).status = 404;
       mockApiService.getFileContent.mockRejectedValue(error);
 
       const categories = await service.getCategories();
@@ -566,7 +583,9 @@ This should not be included in the excerpt.`;
       ];
 
       for (const testCase of testCases) {
-        const slug = (service as any).generateSlug(testCase.input);
+        const slug = (
+          service as unknown as { generateSlug: (input: string) => string }
+        ).generateSlug(testCase.input);
         expect(slug).toBe(testCase.expected);
       }
     });

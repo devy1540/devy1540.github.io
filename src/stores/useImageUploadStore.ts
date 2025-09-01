@@ -1,23 +1,27 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { ImageUploadProgress, UploadedImage, ImageGalleryItem } from '@/types/image-upload';
+import {
+  ImageUploadProgress,
+  UploadedImage,
+  ImageGalleryItem,
+} from '@/types/image-upload';
 
 interface ImageUploadStore {
   // 업로드 진행 상태
   uploads: Record<string, ImageUploadProgress>;
-  
+
   // 업로드된 이미지 목록
   images: ImageGalleryItem[];
-  
+
   // UI 상태
   isUploading: boolean;
   isGalleryOpen: boolean;
-  
+
   // 업로드 진행 상태 관리
   setUploadProgress: (uploadId: string, progress: ImageUploadProgress) => void;
   removeUpload: (uploadId: string) => void;
   clearUploads: () => void;
-  
+
   // 업로드된 이미지 관리
   addImage: (image: UploadedImage) => void;
   removeImage: (imageId: string) => void;
@@ -25,7 +29,7 @@ interface ImageUploadStore {
   selectImage: (imageId: string, selected: boolean) => void;
   getSelectedImages: () => ImageGalleryItem[];
   clearSelection: () => void;
-  
+
   // UI 상태 관리
   setUploading: (uploading: boolean) => void;
   setGalleryOpen: (open: boolean) => void;
@@ -49,7 +53,9 @@ export const useImageUploadStore = create<ImageUploadStore>()(
                 ...state.uploads,
                 [uploadId]: progress,
               },
-              isUploading: progress.status === 'uploading' || progress.status === 'processing',
+              isUploading:
+                progress.status === 'uploading' ||
+                progress.status === 'processing',
             }),
             false,
             'setUploadProgress'
@@ -58,11 +64,14 @@ export const useImageUploadStore = create<ImageUploadStore>()(
         removeUpload: (uploadId) =>
           set(
             (state) => {
-              const { [uploadId]: removed, ...remainingUploads } = state.uploads;
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const { [uploadId]: _, ...remainingUploads } = state.uploads;
               return {
                 uploads: remainingUploads,
                 isUploading: Object.values(remainingUploads).some(
-                  (upload) => upload.status === 'uploading' || upload.status === 'processing'
+                  (upload) =>
+                    upload.status === 'uploading' ||
+                    upload.status === 'processing'
                 ),
               };
             },
@@ -71,11 +80,7 @@ export const useImageUploadStore = create<ImageUploadStore>()(
           ),
 
         clearUploads: () =>
-          set(
-            { uploads: {}, isUploading: false },
-            false,
-            'clearUploads'
-          ),
+          set({ uploads: {}, isUploading: false }, false, 'clearUploads'),
 
         // 업로드된 이미지 관리
         addImage: (image) =>

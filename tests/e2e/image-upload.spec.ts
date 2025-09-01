@@ -187,7 +187,7 @@ test.describe('Image Upload E2E Tests', () => {
       // Override File constructor to simulate large file
       const originalFile = window.File;
       window.File = class extends originalFile {
-        constructor(bits: any, name: string, options: any) {
+        constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
           super(bits, name, options);
           if (name.includes('large')) {
             Object.defineProperty(this, 'size', {

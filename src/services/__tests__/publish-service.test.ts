@@ -21,19 +21,19 @@ const mockContentService = {
 
 describe('PublishService', () => {
   let publishService: PublishService;
-  let mockStore: any;
+  let mockStore: Record<string, unknown>;
 
   beforeEach(() => {
     publishService = new PublishService(mockContentService);
-    
+
     mockStore = {
       setPublishing: vi.fn(),
       updatePublishStage: vi.fn(),
       setPublishStatus: vi.fn(),
     };
-    
+
     (usePublishStore.getState as Mock).mockReturnValue(mockStore);
-    
+
     vi.clearAllMocks();
   });
 
@@ -83,7 +83,7 @@ describe('PublishService', () => {
       };
 
       const message = publishService.generateCommitMessage(postData);
-      
+
       expect(message).toContain('feat: add new blog post "My Test Post"');
       expect(message).toContain('Category: tech');
       expect(message).toContain('Tags: test, demo');
@@ -102,7 +102,7 @@ describe('PublishService', () => {
       };
 
       const message = publishService.generateCommitMessage(postData);
-      
+
       expect(message).toContain('feat: add new blog post "Simple Post"');
       expect(message).toContain('Category: uncategorized');
       expect(message).toContain('Tags: none');
@@ -127,7 +127,7 @@ describe('PublishService', () => {
       };
 
       const markdown = publishService.generateMarkdownContent(postData);
-      
+
       expect(markdown).toContain('---');
       expect(markdown).toContain('title: "Test Post"');
       expect(markdown).toContain('description: "A test post"');
@@ -153,7 +153,7 @@ describe('PublishService', () => {
       };
 
       const markdown = publishService.generateMarkdownContent(postData);
-      
+
       expect(markdown).toContain('title: "Minimal Post"');
       expect(markdown).not.toContain('description:');
       expect(markdown).not.toContain('tags:');
@@ -172,7 +172,7 @@ describe('PublishService', () => {
       };
 
       const result = publishService.validatePostData(postData);
-      
+
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
     });
@@ -186,7 +186,7 @@ describe('PublishService', () => {
       };
 
       const result = publishService.validatePostData(postData);
-      
+
       expect(result.valid).toBe(false);
       expect(result.errors).toContain('제목이 필요합니다');
     });
@@ -202,7 +202,7 @@ describe('PublishService', () => {
       };
 
       const result = publishService.validatePostData(postData);
-      
+
       expect(result.valid).toBe(false);
       expect(result.errors).toContain('내용이 필요합니다');
     });
@@ -218,9 +218,11 @@ describe('PublishService', () => {
       };
 
       const result = publishService.validatePostData(postData);
-      
+
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('슬러그는 영문, 숫자, 한글, 하이픈만 사용 가능합니다');
+      expect(result.errors).toContain(
+        '슬러그는 영문, 숫자, 한글, 하이픈만 사용 가능합니다'
+      );
     });
   });
 
@@ -243,14 +245,22 @@ describe('PublishService', () => {
       const mockRepository = { full_name: 'user/repo' };
       const mockCommitInfo = { sha: 'abc123' };
 
-      (mockContentService.getCurrentRepository as Mock).mockReturnValue(mockRepository);
-      (mockContentService.getFileContent as Mock).mockRejectedValue(new Error('File not found'));
+      (mockContentService.getCurrentRepository as Mock).mockReturnValue(
+        mockRepository
+      );
+      (mockContentService.getFileContent as Mock).mockRejectedValue(
+        new Error('File not found')
+      );
       (mockContentService.createFile as Mock).mockResolvedValue(mockCommitInfo);
 
       await publishService.publishPost(postData, config);
 
       expect(mockStore.setPublishing).toHaveBeenCalledWith(true);
-      expect(mockStore.updatePublishStage).toHaveBeenCalledWith('validating', '포스트 데이터 검증 중...', 10);
+      expect(mockStore.updatePublishStage).toHaveBeenCalledWith(
+        'validating',
+        '포스트 데이터 검증 중...',
+        10
+      );
       expect(mockContentService.createFile).toHaveBeenCalled();
     });
 
@@ -273,8 +283,12 @@ describe('PublishService', () => {
       const mockExistingFile = { sha: 'existing123' };
       const mockCommitInfo = { sha: 'abc123' };
 
-      (mockContentService.getCurrentRepository as Mock).mockReturnValue(mockRepository);
-      (mockContentService.getFileContent as Mock).mockResolvedValue(mockExistingFile);
+      (mockContentService.getCurrentRepository as Mock).mockReturnValue(
+        mockRepository
+      );
+      (mockContentService.getFileContent as Mock).mockResolvedValue(
+        mockExistingFile
+      );
       (mockContentService.updateFile as Mock).mockResolvedValue(mockCommitInfo);
 
       await publishService.publishPost(postData, config);
@@ -294,7 +308,9 @@ describe('PublishService', () => {
         message: 'Test commit',
       };
 
-      await expect(publishService.publishPost(postData, config)).rejects.toThrow('검증 실패');
+      await expect(
+        publishService.publishPost(postData, config)
+      ).rejects.toThrow('검증 실패');
 
       expect(mockStore.updatePublishStage).toHaveBeenCalledWith(
         'failed',

@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ImageUploadProgress } from '../ImageUploadProgress';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
-import { ImageUploadProgress as ProgressType } from '@/types/image-upload';
 
 // Mock store
 vi.mock('@/stores/useImageUploadStore');
@@ -14,7 +13,7 @@ describe('ImageUploadProgress', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     mockUseImageUploadStore.mockReturnValue({
       removeUpload: mockRemoveUpload,
       setUploadProgress: vi.fn(),
@@ -103,7 +102,9 @@ describe('ImageUploadProgress', () => {
     render(<ImageUploadProgress uploads={uploads} />);
 
     expect(screen.getByText('완료')).toBeInTheDocument();
-    expect(screen.getByText('이미지가 성공적으로 업로드되었습니다')).toBeInTheDocument();
+    expect(
+      screen.getByText('이미지가 성공적으로 업로드되었습니다')
+    ).toBeInTheDocument();
   });
 
   it('should render failed status with error message', () => {
@@ -121,7 +122,9 @@ describe('ImageUploadProgress', () => {
 
     expect(screen.getByText('실패')).toBeInTheDocument();
     expect(screen.getByText('업로드 실패')).toBeInTheDocument();
-    expect(screen.getByText('Upload failed due to network error')).toBeInTheDocument();
+    expect(
+      screen.getByText('Upload failed due to network error')
+    ).toBeInTheDocument();
   });
 
   it('should show close button for completed uploads', async () => {
@@ -206,7 +209,7 @@ describe('ImageUploadProgress', () => {
     expect(screen.getByText('test1.png')).toBeInTheDocument();
     expect(screen.getByText('test2.jpg')).toBeInTheDocument();
     expect(screen.getByText('test3.gif')).toBeInTheDocument();
-    
+
     expect(screen.getByText('업로드 중...')).toBeInTheDocument();
     expect(screen.getByText('완료')).toBeInTheDocument();
     expect(screen.getByText('실패')).toBeInTheDocument();

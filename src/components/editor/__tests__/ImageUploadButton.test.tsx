@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ImageUploadButton } from '../ImageUploadButton';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
@@ -23,7 +23,6 @@ describe('ImageUploadButton', () => {
   const mockSetUploading = vi.fn();
   const mockInsertImageAtCursor = vi.fn();
   const mockSetImageUploading = vi.fn();
-  const mockToast = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -83,7 +82,7 @@ describe('ImageUploadButton', () => {
 
   it('should render upload button', () => {
     render(<ImageUploadButton />);
-    
+
     expect(screen.getByRole('button')).toBeInTheDocument();
     expect(screen.getByText('이미지 업로드')).toBeInTheDocument();
   });
@@ -108,7 +107,7 @@ describe('ImageUploadButton', () => {
     });
 
     render(<ImageUploadButton />);
-    
+
     expect(screen.getByText('업로드 중...')).toBeInTheDocument();
     expect(screen.getByRole('button')).toBeDisabled();
   });
@@ -117,9 +116,9 @@ describe('ImageUploadButton', () => {
     const { rerender } = render(
       <ImageUploadButton variant="default" size="lg" />
     );
-    
+
     expect(screen.getByRole('button')).toHaveClass('btn-default');
-    
+
     rerender(<ImageUploadButton variant="outline" size="sm" />);
     expect(screen.getByRole('button')).toHaveClass('btn-outline');
   });
@@ -127,43 +126,47 @@ describe('ImageUploadButton', () => {
   it('should open file dialog when clicked', async () => {
     const user = userEvent.setup();
     render(<ImageUploadButton />);
-    
+
     const button = screen.getByRole('button');
-    const fileInput = screen.getByRole('textbox', { hidden: true }) || 
-                     document.querySelector('input[type="file"]');
-    
+    const fileInput =
+      screen.getByRole('textbox', { hidden: true }) ||
+      document.querySelector('input[type="file"]');
+
     expect(fileInput).toBeInTheDocument();
-    
+
     const mockClick = vi.fn();
     if (fileInput) {
       fileInput.click = mockClick;
     }
-    
+
     await user.click(button);
-    
+
     // Note: Due to testing limitations, we can't fully test file input interaction
     // but we can verify the button click handler is working
   });
 
   it('should have correct file input attributes', () => {
     render(<ImageUploadButton />);
-    
+
     const fileInput = document.querySelector('input[type="file"]');
-    
+
     expect(fileInput).toBeInTheDocument();
-    expect(fileInput).toHaveAttribute('accept', 'image/png,image/jpeg,image/jpg,image/gif,image/webp');
+    expect(fileInput).toHaveAttribute(
+      'accept',
+      'image/png,image/jpeg,image/jpg,image/gif,image/webp'
+    );
     expect(fileInput).toHaveClass('hidden');
   });
 
   it('should apply custom className', () => {
     render(<ImageUploadButton className="custom-class" />);
-    
+
     expect(screen.getByRole('button')).toHaveClass('custom-class');
   });
 
   it('should use default props when not specified', () => {
     render(<ImageUploadButton />);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('btn-outline'); // default variant
     expect(button).toHaveClass('btn-sm'); // default size
@@ -177,11 +180,13 @@ describe('ImageUploadButton Integration', () => {
     Object.defineProperty(mockFile, 'size', { value: 1000000 });
 
     const user = userEvent.setup();
-    
+
     render(<ImageUploadButton />);
-    
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    
+
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+
     if (fileInput) {
       await user.upload(fileInput, mockFile);
     }

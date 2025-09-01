@@ -1,4 +1,4 @@
-import type { 
+import type {
   GitHubCommitInfo,
   FileOperationOptions,
   GitHubRepository,
@@ -65,7 +65,9 @@ export class GitHubContentService {
    */
   private getOwnerAndRepo(): { owner: string; repo: string } {
     if (!this.currentRepo) {
-      throw new Error('No repository selected. Please set a current repository first.');
+      throw new Error(
+        'No repository selected. Please set a current repository first.'
+      );
     }
 
     const [owner, repo] = this.currentRepo.full_name.split('/');
@@ -75,12 +77,18 @@ export class GitHubContentService {
   /**
    * /content 폴더의 파일 목록 조회
    */
-  async getContentDirectoryListing(path: string = 'content'): Promise<ContentDirectory> {
+  async getContentDirectoryListing(
+    path: string = 'content'
+  ): Promise<ContentDirectory> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
+
     try {
-      const items = await this.apiService.getDirectoryContents(owner, repo, path);
-      
+      const items = await this.apiService.getDirectoryContents(
+        owner,
+        repo,
+        path
+      );
+
       const files: ContentFile[] = [];
       const subdirectories: string[] = [];
 
@@ -105,7 +113,11 @@ export class GitHubContentService {
         subdirectories,
       };
     } catch (error) {
-      if (error instanceof Error && 'status' in error && (error as any).status === 404) {
+      if (
+        error instanceof Error &&
+        'status' in error &&
+        (error as unknown as { status: number }).status === 404
+      ) {
         // content 폴더가 없으면 빈 구조 반환
         return {
           path,
@@ -113,7 +125,10 @@ export class GitHubContentService {
           subdirectories: [],
         };
       }
-      console.error(`Failed to get content directory listing for ${path}:`, error);
+      console.error(
+        `Failed to get content directory listing for ${path}:`,
+        error
+      );
       throw error;
     }
   }
@@ -121,13 +136,23 @@ export class GitHubContentService {
   /**
    * 재귀적으로 content 디렉토리 탐색
    */
-  async getAllContentFiles(basePath: string = 'content'): Promise<GitHubFileMetadata[]> {
+  async getAllContentFiles(
+    basePath: string = 'content'
+  ): Promise<GitHubFileMetadata[]> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
+
     try {
-      return await this.apiService.getDirectoryContentsRecursive(owner, repo, basePath);
+      return await this.apiService.getDirectoryContentsRecursive(
+        owner,
+        repo,
+        basePath
+      );
     } catch (error) {
-      if (error instanceof Error && 'status' in error && (error as any).status === 404) {
+      if (
+        error instanceof Error &&
+        'status' in error &&
+        (error as unknown as { status: number }).status === 404
+      ) {
         return [];
       }
       console.error(`Failed to get all content files from ${basePath}:`, error);
@@ -140,10 +165,18 @@ export class GitHubContentService {
    */
   async getFileContent(filePath: string): Promise<ContentFile> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
-    const fileContent = await this.apiService.getFileContent(owner, repo, filePath);
-    const decodedContent = await this.apiService.getDecodedFileContent(owner, repo, filePath);
-    
+
+    const fileContent = await this.apiService.getFileContent(
+      owner,
+      repo,
+      filePath
+    );
+    const decodedContent = await this.apiService.getDecodedFileContent(
+      owner,
+      repo,
+      filePath
+    );
+
     return {
       name: fileContent.name,
       path: fileContent.path,
@@ -160,16 +193,21 @@ export class GitHubContentService {
    */
   async getBlogPosts(): Promise<BlogPost[]> {
     try {
-      const postsDirectory = await this.getContentDirectoryListing('content/posts');
+      const postsDirectory =
+        await this.getContentDirectoryListing('content/posts');
       const blogPosts: BlogPost[] = [];
 
       for (const file of postsDirectory.files) {
         if (file.name.endsWith('.md') || file.name.endsWith('.mdx')) {
           try {
             const contentFile = await this.getFileContent(file.path);
-            const metadata = this.extractPostMetadata(contentFile.content || '');
+            const metadata = this.extractPostMetadata(
+              contentFile.content || ''
+            );
             const excerpt = this.extractExcerpt(contentFile.content || '');
-            const readingTime = this.calculateReadingTime(contentFile.content || '');
+            const readingTime = this.calculateReadingTime(
+              contentFile.content || ''
+            );
 
             blogPosts.push({
               ...contentFile,
@@ -208,7 +246,7 @@ export class GitHubContentService {
   private extractPostMetadata(content: string): PostMetadata {
     const frontMatterRegex = /^---\s*\r?\n([\s\S]*?)\r?\n---/;
     const match = content.match(frontMatterRegex);
-    
+
     if (!match) {
       return {};
     }
@@ -219,7 +257,7 @@ export class GitHubContentService {
     try {
       // 간단한 YAML 파싱 (완전한 YAML 파서가 아님)
       const lines = yamlContent.split(/\r?\n/);
-      
+
       for (const line of lines) {
         const trimmedLine = line.trim();
         if (!trimmedLine || trimmedLine.startsWith('#')) continue;
@@ -253,7 +291,9 @@ export class GitHubContentService {
             metadata.category = cleanValue;
             break;
           case 'draft':
-            metadata.draft = ['true', '1', 'yes'].includes(cleanValue.toLowerCase());
+            metadata.draft = ['true', '1', 'yes'].includes(
+              cleanValue.toLowerCase()
+            );
             break;
           case 'tags':
             if (cleanValue.startsWith('[') && cleanValue.endsWith(']')) {
@@ -262,8 +302,8 @@ export class GitHubContentService {
                 const tagsStr = cleanValue.slice(1, -1);
                 metadata.tags = tagsStr
                   .split(',')
-                  .map(tag => tag.trim().replace(/^["'](.*)["']$/, '$1'))
-                  .filter(tag => tag.length > 0);
+                  .map((tag) => tag.trim().replace(/^["'](.*)["']$/, '$1'))
+                  .filter((tag) => tag.length > 0);
               } catch {
                 // 파싱 실패시 빈 배열
                 metadata.tags = [];
@@ -284,14 +324,20 @@ export class GitHubContentService {
    */
   private extractExcerpt(content: string, maxLength: number = 300): string {
     // Front matter 제거
-    const contentWithoutFrontMatter = content.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');
-    
+    const contentWithoutFrontMatter = content.replace(
+      /^---\s*\n[\s\S]*?\n---\s*\n/,
+      ''
+    );
+
     // 개행문자로 분할하고 빈 줄 제거
-    const lines = contentWithoutFrontMatter.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    
+    const lines = contentWithoutFrontMatter
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
     // 헤딩이 아닌 첫 번째 줄 찾기
-    const firstContentLine = lines.find(line => !line.startsWith('#')) || '';
-    
+    const firstContentLine = lines.find((line) => !line.startsWith('#')) || '';
+
     // 마크다운 문법 제거
     const plainText = firstContentLine
       .replace(/#+\s/g, '') // 헤딩
@@ -323,7 +369,8 @@ export class GitHubContentService {
    */
   async getPages(): Promise<ContentFile[]> {
     try {
-      const pagesDirectory = await this.getContentDirectoryListing('content/pages');
+      const pagesDirectory =
+        await this.getContentDirectoryListing('content/pages');
       const pages: ContentFile[] = [];
 
       for (const file of pagesDirectory.files) {
@@ -350,7 +397,9 @@ export class GitHubContentService {
    */
   async getCategories(): Promise<unknown[]> {
     try {
-      const categoriesFile = await this.getFileContent('content/categories.json');
+      const categoriesFile = await this.getFileContent(
+        'content/categories.json'
+      );
       return JSON.parse(categoriesFile.content || '[]');
     } catch (error) {
       console.warn('Failed to load categories:', error);
@@ -375,18 +424,18 @@ export class GitHubContentService {
    * 파일 생성
    */
   async createFile(
-    filePath: string, 
-    content: string, 
+    filePath: string,
+    content: string,
     options: FileOperationOptions = {}
   ): Promise<GitHubCommitInfo> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
+
     const commitMessage = options.message || `Create ${filePath}`;
     return await this.apiService.createOrUpdateFile(
-      owner, 
-      repo, 
-      filePath, 
-      content, 
+      owner,
+      repo,
+      filePath,
+      content,
       { ...options, message: commitMessage }
     );
   }
@@ -395,19 +444,19 @@ export class GitHubContentService {
    * 파일 수정
    */
   async updateFile(
-    filePath: string, 
-    content: string, 
+    filePath: string,
+    content: string,
     sha: string,
     options: FileOperationOptions = {}
   ): Promise<GitHubCommitInfo> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
+
     const commitMessage = options.message || `Update ${filePath}`;
     return await this.apiService.createOrUpdateFile(
-      owner, 
-      repo, 
-      filePath, 
-      content, 
+      owner,
+      repo,
+      filePath,
+      content,
       { ...options, message: commitMessage, sha }
     );
   }
@@ -416,20 +465,17 @@ export class GitHubContentService {
    * 파일 삭제
    */
   async deleteFile(
-    filePath: string, 
+    filePath: string,
     sha: string,
     options: FileOperationOptions = {}
   ): Promise<GitHubCommitInfo> {
     const { owner, repo } = this.getOwnerAndRepo();
-    
+
     const commitMessage = options.message || `Delete ${filePath}`;
-    return await this.apiService.deleteFile(
-      owner, 
-      repo, 
-      filePath, 
-      sha, 
-      { ...options, message: commitMessage }
-    );
+    return await this.apiService.deleteFile(owner, repo, filePath, sha, {
+      ...options,
+      message: commitMessage,
+    });
   }
 
   /**
@@ -443,16 +489,16 @@ export class GitHubContentService {
     const slug = this.generateSlug(title);
     const fileName = `${new Date().toISOString().split('T')[0]}-${slug}.md`;
     const filePath = `content/posts/${fileName}`;
-    
+
     const frontMatter = this.generateFrontMatter({
       title,
       date: new Date().toISOString().split('T')[0],
       draft: false,
       ...metadata,
     });
-    
+
     const fullContent = `${frontMatter}\n\n${content}`;
-    
+
     return await this.createFile(filePath, fullContent, {
       message: `Add new blog post: ${title}`,
     });
@@ -466,13 +512,15 @@ export class GitHubContentService {
       return 'untitled';
     }
 
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9가-힣\s-]/g, '') // 특수문자 제거
-      .replace(/\s+/g, '-') // 공백을 대시로
-      .replace(/-+/g, '-') // 연속 대시를 단일 대시로
-      .replace(/^-+|-+$/g, '') // 앞뒤 대시 제거
-      .trim() || 'untitled'; // 빈 문자열일 경우 기본값
+    return (
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9가-힣\s-]/g, '') // 특수문자 제거
+        .replace(/\s+/g, '-') // 공백을 대시로
+        .replace(/-+/g, '-') // 연속 대시를 단일 대시로
+        .replace(/^-+|-+$/g, '') // 앞뒤 대시 제거
+        .trim() || 'untitled'
+    ); // 빈 문자열일 경우 기본값
   }
 
   /**
@@ -480,19 +528,22 @@ export class GitHubContentService {
    */
   private generateFrontMatter(metadata: PostMetadata): string {
     const lines = ['---'];
-    
+
     if (metadata.title) lines.push(`title: "${metadata.title}"`);
-    if (metadata.description) lines.push(`description: "${metadata.description}"`);
+    if (metadata.description)
+      lines.push(`description: "${metadata.description}"`);
     if (metadata.author) lines.push(`author: "${metadata.author}"`);
     if (metadata.date) lines.push(`date: "${metadata.date}"`);
     if (metadata.category) lines.push(`category: "${metadata.category}"`);
     if (metadata.tags && metadata.tags.length > 0) {
-      lines.push(`tags: [${metadata.tags.map(tag => `"${tag}"`).join(', ')}]`);
+      lines.push(
+        `tags: [${metadata.tags.map((tag) => `"${tag}"`).join(', ')}]`
+      );
     }
     if (metadata.draft !== undefined) lines.push(`draft: ${metadata.draft}`);
-    
+
     lines.push('---');
-    
+
     return lines.join('\n');
   }
 }

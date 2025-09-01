@@ -13,9 +13,9 @@ export class GitHubActionsService {
     workflowId?: string,
     branch?: string,
     limit: number = 10
-  ): Promise<any[]> {
+  ): Promise<Record<string, unknown>[]> {
     try {
-      const params: any = {
+      const params: Record<string, unknown> = {
         per_page: limit,
         page: 1,
       };
@@ -29,7 +29,10 @@ export class GitHubActionsService {
         endpoint = `repos/${owner}/${repo}/actions/workflows/${workflowId}/runs`;
       }
 
-      const response = await this.apiService['octokit']!.request(`GET /${endpoint}`, params);
+      const response = await this.apiService['octokit']!.request(
+        `GET /${endpoint}`,
+        params
+      );
       return response.data.workflow_runs || [];
     } catch (error) {
       console.error('Failed to get workflow runs:', error);
@@ -58,12 +61,13 @@ export class GitHubActionsService {
       );
 
       const runs = response.data.workflow_runs || [];
-      
+
       // Find deployment-related workflow (common names: deploy, build-and-deploy, pages-build-deployment)
-      const deploymentRun = runs.find(run => 
-        run.name?.toLowerCase().includes('deploy') ||
-        run.name?.toLowerCase().includes('pages') ||
-        run.name?.toLowerCase().includes('build')
+      const deploymentRun = runs.find(
+        (run) =>
+          run.name?.toLowerCase().includes('deploy') ||
+          run.name?.toLowerCase().includes('pages') ||
+          run.name?.toLowerCase().includes('build')
       );
 
       if (!deploymentRun) {
@@ -78,7 +82,6 @@ export class GitHubActionsService {
         createdAt: deploymentRun.created_at,
         updatedAt: deploymentRun.updated_at,
       };
-
     } catch (error) {
       console.error('Failed to get deployment run:', error);
       return null;
@@ -105,16 +108,16 @@ export class GitHubActionsService {
       }
 
       const status = await this.getLatestDeploymentRun(owner, repo, sha);
-      
+
       if (status) {
         onUpdate(status);
-        
+
         // Continue polling if still in progress
         if (status.status === 'in_progress' || status.status === 'queued') {
           setTimeout(poll, pollInterval);
           return null;
         }
-        
+
         return status;
       }
 
@@ -133,7 +136,7 @@ export class GitHubActionsService {
     owner: string,
     repo: string,
     runId: number
-  ): Promise<any | null> {
+  ): Promise<Record<string, unknown> | null> {
     try {
       const response = await this.apiService['octokit']!.request(
         'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
@@ -180,9 +183,9 @@ export class GitHubActionsService {
     repo: string,
     environment?: string,
     limit: number = 10
-  ): Promise<any[]> {
+  ): Promise<Record<string, unknown>[]> {
     try {
-      const params: any = {
+      const params: Record<string, unknown> = {
         per_page: limit,
       };
 
@@ -213,7 +216,7 @@ export class GitHubActionsService {
     owner: string,
     repo: string,
     deploymentId: number
-  ): Promise<any[]> {
+  ): Promise<Record<string, unknown>[]> {
     try {
       const response = await this.apiService['octokit']!.request(
         'GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses',

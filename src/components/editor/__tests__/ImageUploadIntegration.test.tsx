@@ -25,7 +25,6 @@ describe('Image Upload Integration', () => {
   const mockSetUploading = vi.fn();
   const mockInsertImageAtCursor = vi.fn();
   const mockSetImageUploading = vi.fn();
-  const mockToast = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,7 +43,8 @@ describe('Image Upload Integration', () => {
           size: 1000000,
           mimeType: 'image/png',
           githubPath: 'public/images/existing-image.png',
-          rawUrl: 'https://raw.githubusercontent.com/user/repo/main/public/images/existing-image.png',
+          rawUrl:
+            'https://raw.githubusercontent.com/user/repo/main/public/images/existing-image.png',
           uploadedAt: new Date('2023-01-01'),
           sha: 'abc123',
           selected: false,
@@ -136,8 +136,12 @@ describe('Image Upload Integration', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('이미지를 여기에 드롭하세요')).toBeInTheDocument();
-        expect(screen.getByText('PNG, JPG, JPEG, GIF, WebP (최대 10MB)')).toBeInTheDocument();
+        expect(
+          screen.getByText('이미지를 여기에 드롭하세요')
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText('PNG, JPG, JPEG, GIF, WebP (최대 10MB)')
+        ).toBeInTheDocument();
       });
     });
 
@@ -168,7 +172,7 @@ describe('Image Upload Integration', () => {
   describe('Editor Integration', () => {
     it('should insert image markdown at cursor position', async () => {
       const user = userEvent.setup();
-      
+
       render(<ImageUploadButton />);
 
       const button = screen.getByRole('button');
@@ -176,17 +180,6 @@ describe('Image Upload Integration', () => {
 
       // Simulate successful upload by calling the callback directly
       // In real scenario, this would be triggered by file selection and upload
-      const mockImageData = {
-        id: 'new-img',
-        filename: 'new-image.png',
-        originalName: 'new-image.png',
-        size: 1000000,
-        mimeType: 'image/png',
-        githubPath: 'public/images/new-image.png',
-        rawUrl: 'https://raw.githubusercontent.com/user/repo/main/public/images/new-image.png',
-        uploadedAt: new Date(),
-        sha: 'def456',
-      };
 
       // Verify that the markdown insertion function would be called
       // This tests the integration between upload success and editor insertion
@@ -196,10 +189,12 @@ describe('Image Upload Integration', () => {
   describe('Gallery Integration', () => {
     it('should render gallery with existing images', async () => {
       const user = userEvent.setup();
-      
+
       render(<ImageGallery />);
 
-      const galleryButton = screen.getByRole('button', { name: /이미지 갤러리/ });
+      const galleryButton = screen.getByRole('button', {
+        name: /이미지 갤러리/,
+      });
       await user.click(galleryButton);
 
       // The dialog content testing would require more complex mocking
@@ -219,7 +214,9 @@ describe('Image Upload Integration', () => {
       render(<TestComponent />);
 
       const dropzone = screen.getByTestId('content').parentElement!;
-      const invalidFile = new File(['test'], 'test.txt', { type: 'text/plain' });
+      const invalidFile = new File(['test'], 'test.txt', {
+        type: 'text/plain',
+      });
 
       fireEvent.drop(dropzone, {
         dataTransfer: { files: [invalidFile] },
@@ -245,7 +242,9 @@ describe('Image Upload Integration', () => {
       render(<TestComponent />);
 
       const dropzone = screen.getByTestId('content').parentElement!;
-      const oversizedFile = new File(['test'], 'large.png', { type: 'image/png' });
+      const oversizedFile = new File(['test'], 'large.png', {
+        type: 'image/png',
+      });
       Object.defineProperty(oversizedFile, 'size', { value: 15 * 1024 * 1024 }); // 15MB
 
       fireEvent.drop(dropzone, {
