@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { Skeleton } from '@/components/ui/skeleton';
+import { GitHubAuthSection } from '@/components/settings/GitHubAuthSection';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useToastStore } from '@/stores/useToastStore';
 import { useState } from 'react';
@@ -26,6 +27,8 @@ export function SettingsPage() {
         <h1 className="text-4xl font-bold">Settings</h1>
         
         <div className="space-y-6">
+          <GitHubAuthSection />
+          
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>

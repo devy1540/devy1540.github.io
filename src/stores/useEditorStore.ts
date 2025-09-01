@@ -11,12 +11,19 @@ interface EditorState {
   lastSaved: Date | null;
   previewMode: PreviewMode;
   currentDraftId: string | null;
+  // 이미지 관련 상태
+  cursorPosition: number;
+  isImageUploading: boolean;
+  // 메서드
   updateContent: (content: string) => void;
   updateMetadata: (metadata: Partial<Post>) => void;
   setAutoSaving: (isAutoSaving: boolean) => void;
   setSaved: () => void;
   setPreviewMode: (mode: PreviewMode) => void;
   setCurrentDraftId: (id: string | null) => void;
+  setCursorPosition: (position: number) => void;
+  setImageUploading: (uploading: boolean) => void;
+  insertImageAtCursor: (imageMarkdown: string) => void;
   reset: () => void;
 }
 
@@ -41,6 +48,8 @@ const getInitialState = () => ({
   lastSaved: null,
   previewMode: 'live' as PreviewMode,
   currentDraftId: null,
+  cursorPosition: 0,
+  isImageUploading: false,
 });
 
 export const useEditorStore = create<EditorState>((set, get) => ({
@@ -52,5 +61,19 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setSaved: () => set({ lastSaved: new Date(), isDirty: false }),
   setPreviewMode: (mode: PreviewMode) => set({ previewMode: mode }),
   setCurrentDraftId: (id: string | null) => set({ currentDraftId: id }),
+  setCursorPosition: (position: number) => set({ cursorPosition: position }),
+  setImageUploading: (uploading: boolean) => set({ isImageUploading: uploading }),
+  insertImageAtCursor: (imageMarkdown: string) => {
+    const { content, cursorPosition } = get();
+    const newContent = 
+      content.slice(0, cursorPosition) + 
+      imageMarkdown + 
+      content.slice(cursorPosition);
+    set({ 
+      content: newContent, 
+      isDirty: true,
+      cursorPosition: cursorPosition + imageMarkdown.length 
+    });
+  },
   reset: () => set(getInitialState()),
 }));

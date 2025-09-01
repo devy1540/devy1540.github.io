@@ -199,9 +199,16 @@ describe('GitHubApiService - Permission Checks', () => {
         error
       );
 
+      // Mock retryWithBackoff to avoid actual retry delays
+      const retryBackoffSpy = vi
+        .spyOn(service, 'retryWithBackoff')
+        .mockRejectedValue(error);
+
       await expect(
         service.checkRepositoryPermission('owner', 'repo', 'user')
       ).rejects.toThrow();
+
+      retryBackoffSpy.mockRestore();
     });
 
     it('throws error when not authenticated', async () => {

@@ -50,3 +50,8 @@ export interface SocialLink {
   icon: React.ComponentType;
   external?: boolean;
 }
+
+// Re-export all other type modules
+export * from './github';
+export * from './publish';
+export * from './image-upload';
