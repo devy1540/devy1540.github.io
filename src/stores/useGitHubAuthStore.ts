@@ -6,8 +6,27 @@ import type { GitHubAuthState, GitHubAuthActions } from '@/types/github';
 
 type GitHubAuthStore = GitHubAuthState & GitHubAuthActions;
 
-const authService = new GitHubAuthService();
-const apiService = new GitHubApiService();
+let authService: GitHubAuthService | null = null;
+let apiService: GitHubApiService | null = null;
+
+const getAuthService = () => {
+  if (!authService) {
+    try {
+      authService = new GitHubAuthService();
+    } catch (error) {
+      console.warn('GitHub Client ID not configured:', error);
+      return null;
+    }
+  }
+  return authService;
+};
+
+const getApiService = () => {
+  if (!apiService) {
+    apiService = new GitHubApiService();
+  }
+  return apiService;
+};
 
 export const useGitHubAuthStore = create<GitHubAuthStore>()(
   persist(
@@ -28,19 +47,26 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
         try {
           set({ isLoading: true, error: null });
 
+          const authSvc = getAuthService();
+          if (!authSvc) {
+            throw new Error('GitHub authentication service not available');
+          }
+
           // Personal Access Token으로 인증
-          const result = await authService.authenticateWithToken(token);
+          const result = await authSvc.authenticateWithToken(token);
 
           if (!result.success) {
             throw new Error(result.error || '토큰 인증에 실패했습니다.');
           }
 
+          const apiSvc = getApiService();
+
           // API 서비스 초기화
-          apiService.initialize(token);
+          apiSvc.initialize(token);
 
           // 사용자 정보 가져오기
-          const user = await apiService.getCurrentUser();
-          const repositories = await apiService.getUserRepositories();
+          const user = await apiSvc.getCurrentUser();
+          const repositories = await apiSvc.getUserRepositories();
 
           set({
             isAuthenticated: true,
@@ -75,8 +101,11 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
           set({ isLoading: true });
 
           // 토큰 삭제
-          authService.clearToken();
-          apiService.destroy();
+          const authSvc = getAuthService();
+          const apiSvc = getApiService();
+
+          if (authSvc) authSvc.clearToken();
+          if (apiSvc) apiSvc.destroy();
 
           // 상태 초기화
           set({
@@ -110,8 +139,13 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
         try {
           set({ isLoading: true, error: null });
 
-          apiService.initialize(accessToken);
-          const user = await apiService.getCurrentUser();
+          const apiSvc = getApiService();
+          if (!apiSvc) {
+            throw new Error('GitHub API service not available');
+          }
+
+          apiSvc.initialize(accessToken);
+          const user = await apiSvc.getCurrentUser();
 
           set({
             user,
@@ -148,8 +182,13 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
         try {
           set({ isLoading: true, error: null });
 
-          apiService.initialize(accessToken);
-          const repositories = await apiService.getUserRepositories();
+          const apiSvc = getApiService();
+          if (!apiSvc) {
+            throw new Error('GitHub API service not available');
+          }
+
+          apiSvc.initialize(accessToken);
+          const repositories = await apiSvc.getUserRepositories();
 
           set({
             repositories,
@@ -179,26 +218,36 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
         try {
           set({ isLoading: true, error: null });
 
-          const storedToken = authService.getStoredToken();
+          const authSvc = getAuthService();
+          if (!authSvc) {
+            throw new Error('GitHub authentication service not available');
+          }
+
+          const storedToken = authSvc.getStoredToken();
 
           if (!storedToken) {
             throw new Error('No stored token found');
           }
 
           // 토큰 유효성 검사
-          const isValid = await authService.validateToken(storedToken);
+          const isValid = await authSvc.validateToken(storedToken);
 
           if (!isValid) {
             throw new Error('Token is no longer valid');
           }
 
           // API 서비스 재초기화
-          apiService.initialize(storedToken);
+          const apiSvc = getApiService();
+          if (!apiSvc) {
+            throw new Error('GitHub API service not available');
+          }
+
+          apiSvc.initialize(storedToken);
 
           // 사용자 정보 및 저장소 갱신
           const [user, repositories] = await Promise.all([
-            apiService.getCurrentUser(),
-            apiService.getUserRepositories(),
+            apiSvc.getCurrentUser(),
+            apiSvc.getUserRepositories(),
           ]);
 
           set({
@@ -237,8 +286,13 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
         try {
           set({ isLoading: true, error: null });
 
-          apiService.initialize(accessToken);
-          const permissionResult = await apiService.checkRepositoryPermission(
+          const apiSvc = getApiService();
+          if (!apiSvc) {
+            throw new Error('GitHub API service not available');
+          }
+
+          apiSvc.initialize(accessToken);
+          const permissionResult = await apiSvc.checkRepositoryPermission(
             owner,
             repo
           );
@@ -287,21 +341,34 @@ export const initializeGitHubAuth = async () => {
   const store = useGitHubAuthStore.getState();
 
   try {
-    const storedToken = authService.getStoredToken();
+    const authSvc = getAuthService();
+    if (!authSvc) {
+      console.warn(
+        'GitHub authentication service not available during initialization'
+      );
+      return;
+    }
+
+    const storedToken = authSvc.getStoredToken();
 
     if (storedToken && !store.isAuthenticated) {
       // 토큰이 있지만 인증 상태가 아닌 경우 토큰 검증 후 상태 복원
-      const isValid = await authService.validateToken(storedToken);
+      const isValid = await authSvc.validateToken(storedToken);
 
       if (isValid) {
-        apiService.initialize(storedToken);
+        const apiSvc = getApiService();
+        if (!apiSvc) {
+          throw new Error('GitHub API service not available');
+        }
+
+        apiSvc.initialize(storedToken);
 
         store.setLoading(true);
 
         try {
           const [user, repositories] = await Promise.all([
-            apiService.getCurrentUser(),
-            apiService.getUserRepositories(),
+            apiSvc.getCurrentUser(),
+            apiSvc.getUserRepositories(),
           ]);
 
           useGitHubAuthStore.setState({
@@ -315,12 +382,12 @@ export const initializeGitHubAuth = async () => {
           });
         } catch (error) {
           console.error('Failed to restore auth state:', error);
-          authService.clearToken();
+          authSvc.clearToken();
           store.setLoading(false);
         }
       } else {
         // 토큰이 유효하지 않으면 삭제
-        authService.clearToken();
+        authSvc.clearToken();
       }
     }
   } catch (error) {

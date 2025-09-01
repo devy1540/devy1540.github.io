@@ -86,6 +86,13 @@ describe('useGitHubAuthStore', () => {
       mockApiService.GitHubApiService.prototype.getUserRepositories
     ).mockResolvedValue([mockRepository]);
 
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.checkRepositoryPermission
+    ).mockResolvedValue({
+      hasWriteAccess: true,
+      checkedAt: new Date(),
+    });
+
     await act(async () => {
       await result.current.loginWithToken('test-token');
     });
@@ -230,6 +237,13 @@ describe('useGitHubAuthStore', () => {
     vi.mocked(
       mockApiService.GitHubApiService.prototype.getUserRepositories
     ).mockResolvedValue([mockRepository]);
+
+    vi.mocked(
+      mockApiService.GitHubApiService.prototype.checkRepositoryPermission
+    ).mockResolvedValue({
+      hasWriteAccess: true,
+      checkedAt: new Date(),
+    });
 
     await act(async () => {
       await result.current.refreshToken();
