@@ -1,4 +1,13 @@
-import { Home, FileText, User, Settings, Monitor, Moon, Sun } from 'lucide-react';
+import {
+  Home,
+  FileText,
+  User,
+  Settings,
+  Monitor,
+  Moon,
+  Sun,
+  PenTool,
+} from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import {
   Sidebar,
@@ -15,6 +24,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
 import { cn } from '@/lib/utils';
 import type { NavigationItem } from '@/types';
 
@@ -26,8 +36,14 @@ const navigationItems: NavigationItem[] = [
   { to: '/settings', label: 'Settings', icon: Settings, requiresAuth: true },
 ];
 
+const authorOnlyItems: NavigationItem[] = [
+  { to: '/editor', label: 'New Post', icon: PenTool, requiresAuth: true },
+  { to: '/drafts', label: 'Drafts', icon: FileText, requiresAuth: true },
+];
+
 export function AppSidebar() {
   const { theme, toggleTheme, getEffectiveTheme } = useThemeStore();
+  const { isAuthenticated, hasWriteAccess } = useGitHubAuthStore();
   const effectiveTheme = getEffectiveTheme();
 
   return (
@@ -36,11 +52,15 @@ export function AppSidebar() {
       <SidebarHeader className="border-b">
         <div className="flex items-center space-x-2 px-2 py-3">
           <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">MB</span>
+            <span className="text-primary-foreground font-bold text-sm">
+              MB
+            </span>
           </div>
           <div className="flex-1 group-data-[collapsible=icon]:hidden">
             <h3 className="font-semibold text-sidebar-foreground">My Blog</h3>
-            <p className="text-xs text-sidebar-foreground/60">개발 여정을 기록하는 공간</p>
+            <p className="text-xs text-sidebar-foreground/60">
+              개발 여정을 기록하는 공간
+            </p>
           </div>
         </div>
       </SidebarHeader>
@@ -54,8 +74,12 @@ export function AppSidebar() {
                 <User className="h-4 w-4 text-sidebar-accent-foreground" />
               </div>
               <div className="flex-1 group-data-[collapsible=icon]:hidden">
-                <p className="text-sm font-medium text-sidebar-foreground">로그인하여</p>
-                <p className="text-xs text-sidebar-foreground/60">더 많은 기능을 사용하세요</p>
+                <p className="text-sm font-medium text-sidebar-foreground">
+                  로그인하여
+                </p>
+                <p className="text-xs text-sidebar-foreground/60">
+                  더 많은 기능을 사용하세요
+                </p>
               </div>
             </div>
           </SidebarGroupContent>
@@ -79,17 +103,18 @@ export function AppSidebar() {
                         to={item.to}
                         className={({ isActive }) =>
                           cn(
-                            "group/nav-link",
-                            isActive && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                            'group/nav-link',
+                            isActive &&
+                              'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
                           )
                         }
                       >
                         <IconComponent className="h-4 w-4 shrink-0" />
                         <span className="truncate">{item.label}</span>
                         {item.requiresAuth && (
-                          <div 
-                            className="ml-auto w-2 h-2 rounded-full bg-orange-500 opacity-60 shrink-0" 
-                            title="로그인 필요" 
+                          <div
+                            className="ml-auto w-2 h-2 rounded-full bg-orange-500 opacity-60 shrink-0"
+                            title="로그인 필요"
                             aria-label="로그인 필요"
                           />
                         )}
@@ -101,6 +126,44 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Author-only Navigation */}
+        {isAuthenticated && hasWriteAccess && (
+          <>
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+                Author
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {authorOnlyItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <SidebarMenuItem key={item.to}>
+                        <SidebarMenuButton asChild tooltip={item.label}>
+                          <NavLink
+                            to={item.to}
+                            className={({ isActive }) =>
+                              cn(
+                                'group/nav-link',
+                                isActive &&
+                                  'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                              )
+                            }
+                          >
+                            <IconComponent className="h-4 w-4 shrink-0" />
+                            <span className="truncate">{item.label}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
       </SidebarContent>
 
       {/* Theme Toggle Footer */}
@@ -121,7 +184,11 @@ export function AppSidebar() {
               <Sun className="h-4 w-4 shrink-0" />
             )}
             <span className="group-data-[collapsible=icon]:hidden truncate">
-              {theme === 'system' ? '시스템 설정' : effectiveTheme === 'dark' ? '다크 모드' : '라이트 모드'}
+              {theme === 'system'
+                ? '시스템 설정'
+                : effectiveTheme === 'dark'
+                  ? '다크 모드'
+                  : '라이트 모드'}
             </span>
           </Button>
         </div>

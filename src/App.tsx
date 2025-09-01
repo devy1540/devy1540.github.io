@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { initializeGitHubAuth } from '@/stores/useGitHubAuthStore';
 import { Layout } from '@/components/layout/Layout';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { TopLoadingBar } from '@/components/common/TopLoadingBar';
@@ -14,11 +15,12 @@ import { SettingsPage } from '@/pages/SettingsPage';
 import { EditorPage } from '@/pages/EditorPage';
 import { DraftsPage } from '@/pages/DraftsPage';
 import { TestPage } from '@/pages/TestPage';
+import { AuthCallbackPage } from '@/pages/AuthCallbackPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 function RedirectHandler() {
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     // Handle GitHub Pages SPA fallback redirect
     const redirectPath = window.sessionStorage.getItem('redirectPath');
@@ -27,7 +29,7 @@ function RedirectHandler() {
       navigate(redirectPath, { replace: true });
     }
   }, [navigate]);
-  
+
   return null;
 }
 
@@ -39,6 +41,11 @@ export function App() {
     applyCurrentTheme();
   }, [theme, applyCurrentTheme]);
 
+  useEffect(() => {
+    // Initialize GitHub auth on app start
+    initializeGitHubAuth();
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-background">
@@ -46,29 +53,83 @@ export function App() {
         <TopLoadingBar />
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Layout><HomePage /></Layout>} />
-          <Route path="/posts" element={<Layout><PostsPage /></Layout>} />
-          <Route path="/post/:slug" element={<Layout><PostDetailPage /></Layout>} />
-          <Route path="/about" element={<Layout><AboutPage /></Layout>} />
-          <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
-          <Route 
-            path="/editor" 
+          <Route
+            path="/"
             element={
-              <ProtectedRoute>
-                <Layout><EditorPage /></Layout>
-              </ProtectedRoute>
-            } 
+              <Layout>
+                <HomePage />
+              </Layout>
+            }
           />
-          <Route 
-            path="/drafts" 
+          <Route
+            path="/posts"
             element={
-              <ProtectedRoute>
-                <Layout><DraftsPage /></Layout>
-              </ProtectedRoute>
-            } 
+              <Layout>
+                <PostsPage />
+              </Layout>
+            }
           />
-          <Route path="/test" element={<Layout><TestPage /></Layout>} />
-          <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+          <Route
+            path="/post/:slug"
+            element={
+              <Layout>
+                <PostDetailPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Layout>
+                <AboutPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Layout>
+                <SettingsPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/editor"
+            element={
+              <ProtectedRoute requireWriteAccess={true}>
+                <Layout>
+                  <EditorPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/drafts"
+            element={
+              <ProtectedRoute requireWriteAccess={true}>
+                <Layout>
+                  <DraftsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/auth/github/callback" element={<AuthCallbackPage />} />
+          <Route
+            path="/test"
+            element={
+              <Layout>
+                <TestPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <NotFoundPage />
+              </Layout>
+            }
+          />
         </Routes>
         <Toaster richColors closeButton />
       </div>
