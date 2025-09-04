@@ -1,14 +1,14 @@
 import { FC, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
@@ -19,9 +19,18 @@ import { GitHubLoginButton } from './GitHubLoginButton';
 import { GitHubUserInfo } from './GitHubUserInfo';
 
 export const GitHubAuthSection: FC = () => {
-  const { isAuthenticated, logout, isLoading } = useGitHubAuthStore();
+  const { isAuthenticated, logout, isLoading, user, error } =
+    useGitHubAuthStore();
   const { success, error: showError } = useToastStore();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // 디버깅을 위한 로그
+  console.log('GitHubAuthSection 렌더링:', {
+    isAuthenticated,
+    isLoading,
+    hasUser: !!user,
+    error,
+  });
 
   const handleLogout = async () => {
     try {
@@ -44,17 +53,22 @@ export const GitHubAuthSection: FC = () => {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            GitHub 계정을 연결하여 저장소에 블로그 콘텐츠를 직접 게시할 수 있습니다.
+            GitHub 계정을 연결하여 저장소에 블로그 콘텐츠를 직접 게시할 수
+            있습니다.
           </p>
-          
+
           {!isAuthenticated && (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 연결 시 다음 권한이 필요합니다:
               </p>
               <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-                <li>• <strong>repo</strong>: 저장소 읽기/쓰기 권한</li>
-                <li>• <strong>user</strong>: 사용자 정보 읽기 권한</li>
+                <li>
+                  • <strong>repo</strong>: 저장소 읽기/쓰기 권한
+                </li>
+                <li>
+                  • <strong>user</strong>: 사용자 정보 읽기 권한
+                </li>
               </ul>
             </div>
           )}
@@ -63,7 +77,7 @@ export const GitHubAuthSection: FC = () => {
         {isAuthenticated ? (
           <div className="space-y-4">
             <GitHubUserInfo />
-            
+
             <div className="flex items-center justify-between pt-4 border-t">
               <div>
                 <h4 className="font-medium text-sm">계정 연결 관리</h4>
@@ -71,11 +85,11 @@ export const GitHubAuthSection: FC = () => {
                   GitHub 계정 연결을 해제할 수 있습니다.
                 </p>
               </div>
-              
+
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     size="sm"
                     disabled={isLoggingOut || isLoading}
                     className="flex items-center gap-2"
@@ -84,18 +98,19 @@ export const GitHubAuthSection: FC = () => {
                     연결 해제
                   </Button>
                 </AlertDialogTrigger>
-                
+
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>GitHub 연결 해제</AlertDialogTitle>
                     <AlertDialogDescription>
-                      GitHub 계정 연결을 해제하시겠습니까? 
-                      해제 후에는 저장소에 콘텐츠를 게시할 수 없습니다.
-                      <br /><br />
+                      GitHub 계정 연결을 해제하시겠습니까? 해제 후에는 저장소에
+                      콘텐츠를 게시할 수 없습니다.
+                      <br />
+                      <br />
                       저장된 인증 토큰과 사용자 정보가 모두 삭제됩니다.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  
+
                   <AlertDialogFooter>
                     <AlertDialogCancel>취소</AlertDialogCancel>
                     <AlertDialogAction

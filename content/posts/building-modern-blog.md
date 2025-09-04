@@ -76,7 +76,7 @@ Set up routing with React Router:
 
 ```tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
+SyntaxError: Importing binding name 'UploadedImage' is not found.
 function App() {
   return (
     <BrowserRouter>

@@ -1,5 +1,5 @@
 import { GitHubContentService } from './github-content';
-import {
+import type {
   UploadedImage,
   ImageUploadProgress,
   ImageUploadError,
@@ -23,7 +23,10 @@ export class ImageUploadService {
   private githubService: GitHubContentService;
   private options: ImageUploadOptions;
 
-  constructor(githubService: GitHubContentService, options: ImageUploadOptions = {}) {
+  constructor(
+    githubService: GitHubContentService,
+    options: ImageUploadOptions = {}
+  ) {
     this.githubService = githubService;
     this.options = {
       maxSize: DEFAULT_MAX_SIZE,
@@ -42,7 +45,7 @@ export class ImageUploadService {
       return {
         type: 'size',
         message: `파일 크기가 너무 큽니다. 최대 ${Math.round((this.options.maxSize || DEFAULT_MAX_SIZE) / 1024 / 1024)}MB까지 가능합니다.`,
-        details: `현재 파일 크기: ${Math.round(file.size / 1024 / 1024 * 100) / 100}MB`,
+        details: `현재 파일 크기: ${Math.round((file.size / 1024 / 1024) * 100) / 100}MB`,
       };
     }
 
@@ -101,7 +104,8 @@ export class ImageUploadService {
           reject(new Error('파일을 읽을 수 없습니다.'));
         }
       };
-      reader.onerror = () => reject(new Error('파일 읽기 중 오류가 발생했습니다.'));
+      reader.onerror = () =>
+        reject(new Error('파일 읽기 중 오류가 발생했습니다.'));
       reader.readAsDataURL(file);
     });
   }
@@ -131,8 +135,9 @@ export class ImageUploadService {
       try {
         return await operation();
       } catch (error) {
-        lastError = error instanceof Error ? error : new Error('알 수 없는 오류');
-        
+        lastError =
+          error instanceof Error ? error : new Error('알 수 없는 오류');
+
         // Rate limit 에러인지 확인
         if (this.isRateLimitError(lastError)) {
           const waitTime = this.extractRetryAfter(lastError) || delay * attempt;
@@ -141,7 +146,7 @@ export class ImageUploadService {
             continue;
           }
         }
-        
+
         // 마지막 시도가 아니라면 대기 후 재시도
         if (attempt < maxAttempts) {
           await this.sleep(delay * attempt);
@@ -156,9 +161,11 @@ export class ImageUploadService {
    * Rate limit 에러 확인
    */
   private isRateLimitError(error: Error): boolean {
-    return error.message.includes('rate limit') || 
-           error.message.includes('403') ||
-           error.message.includes('API rate limit exceeded');
+    return (
+      error.message.includes('rate limit') ||
+      error.message.includes('403') ||
+      error.message.includes('API rate limit exceeded')
+    );
   }
 
   /**
@@ -176,7 +183,7 @@ export class ImageUploadService {
    * 지정된 시간만큼 대기
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -255,13 +262,17 @@ export class ImageUploadService {
 
       return { success: true, image: uploadedImage };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+      const errorMessage =
+        error instanceof Error ? error.message : '알 수 없는 오류';
       let errorType: ImageUploadError['type'] = 'upload';
 
       // 에러 타입 분류
       if (this.isRateLimitError(error as Error)) {
         errorType = 'rate_limit';
-      } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+      } else if (
+        errorMessage.includes('network') ||
+        errorMessage.includes('fetch')
+      ) {
         errorType = 'network';
       }
 
@@ -309,11 +320,12 @@ export class ImageUploadService {
    */
   async getUploadedImages(): Promise<UploadedImage[]> {
     try {
-      const images = await this.githubService.getDirectoryContents('public/images');
-      
+      const images =
+        await this.githubService.getDirectoryContents('public/images');
+
       return images
-        .filter(item => item.type === 'file')
-        .map(item => ({
+        .filter((item) => item.type === 'file')
+        .map((item) => ({
           id: item.sha,
           filename: item.name,
           originalName: item.name,
@@ -335,7 +347,7 @@ export class ImageUploadService {
    */
   private getMimeTypeFromFilename(filename: string): string {
     const extension = filename.toLowerCase().split('.').pop();
-    
+
     // MIME 타입 매핑을 객체로 관리하여 유지보수성 향상
     const mimeTypeMap: Record<string, string> = {
       png: 'image/png',
@@ -344,7 +356,7 @@ export class ImageUploadService {
       gif: 'image/gif',
       webp: 'image/webp',
     };
-    
+
     return mimeTypeMap[extension || ''] || 'image/jpeg'; // 기본값
   }
 }

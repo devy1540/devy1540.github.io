@@ -66,26 +66,30 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* User Section - Future Enhancement */}
-        <SidebarGroup>
-          <SidebarGroupContent className="p-2">
-            <div className="flex items-center space-x-3 px-2 py-3 rounded-lg bg-sidebar-accent/50">
-              <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center">
-                <User className="h-4 w-4 text-sidebar-accent-foreground" />
-              </div>
-              <div className="flex-1 group-data-[collapsible=icon]:hidden">
-                <p className="text-sm font-medium text-sidebar-foreground">
-                  로그인하여
-                </p>
-                <p className="text-xs text-sidebar-foreground/60">
-                  더 많은 기능을 사용하세요
-                </p>
-              </div>
-            </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* User Section - Show actual login status */}
+        {isAuthenticated && (
+          <>
+            <SidebarGroup>
+              <SidebarGroupContent className="p-2">
+                <div className="flex items-center space-x-3 px-2 py-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1 group-data-[collapsible=icon]:hidden">
+                    <p className="text-sm font-medium text-sidebar-foreground">
+                      로그인됨
+                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-400">
+                      블로그를 관리할 수 있습니다
+                    </p>
+                  </div>
+                </div>
+              </SidebarGroupContent>
+            </SidebarGroup>
 
-        <SidebarSeparator />
+            <SidebarSeparator />
+          </>
+        )}
 
         {/* Main Navigation */}
         <SidebarGroup>

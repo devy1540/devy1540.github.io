@@ -6,7 +6,7 @@ import { useEditorStore } from '@/stores/useEditorStore';
 import { ImageUploadService } from '@/services/image-upload-service';
 import { GitHubContentService } from '@/services/github-content';
 import { useToastStore } from '@/stores/useToastStore';
-import { ImageUploadProgress } from '@/types/image-upload';
+import type { ImageUploadProgress } from '@/types/image-upload';
 
 interface ImageUploadButtonProps {
   className?: string;
@@ -14,21 +14,17 @@ interface ImageUploadButtonProps {
   size?: 'default' | 'sm' | 'lg';
 }
 
-export const ImageUploadButton = ({ 
-  className, 
-  variant = 'outline', 
-  size = 'sm' 
+export const ImageUploadButton = ({
+  className,
+  variant = 'outline',
+  size = 'sm',
 }: ImageUploadButtonProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { success, error } = useToastStore();
-  
-  const { 
-    setUploadProgress, 
-    addImage, 
-    setUploading,
-    isUploading 
-  } = useImageUploadStore();
-  
+
+  const { setUploadProgress, addImage, setUploading, isUploading } =
+    useImageUploadStore();
+
   const { insertImageAtCursor, setImageUploading } = useEditorStore();
 
   // 서비스 인스턴스를 메모이제이션하여 성능 최적화
@@ -41,12 +37,14 @@ export const ImageUploadButton = ({
     fileInputRef.current?.click();
   };
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    
+
     try {
       setUploading(true);
       setImageUploading(true);
@@ -67,9 +65,15 @@ export const ImageUploadButton = ({
         const imageMarkdown = `![${result.image.originalName}](${result.image.rawUrl})\n`;
         insertImageAtCursor(imageMarkdown);
 
-        success('이미지 업로드 완료', `${result.image.originalName} 파일이 성공적으로 업로드되었습니다.`);
+        success(
+          '이미지 업로드 완료',
+          `${result.image.originalName} 파일이 성공적으로 업로드되었습니다.`
+        );
       } else {
-        error('이미지 업로드 실패', result.error?.message || '알 수 없는 오류가 발생했습니다.');
+        error(
+          '이미지 업로드 실패',
+          result.error?.message || '알 수 없는 오류가 발생했습니다.'
+        );
       }
     } catch (err) {
       console.error('이미지 업로드 중 오류:', err);
@@ -106,7 +110,7 @@ export const ImageUploadButton = ({
           </>
         )}
       </Button>
-      
+
       <input
         type="file"
         ref={fileInputRef}

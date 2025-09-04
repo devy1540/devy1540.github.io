@@ -42,10 +42,14 @@ export interface GitHubAuthState {
   lastSyncAt: Date | null;
   hasWriteAccess: boolean;
   permissionCheckAt: Date | null;
+  deviceFlow: DeviceFlowState | null;
+  authMethod: 'token' | 'device_flow' | null;
 }
 
 export interface GitHubAuthActions {
   loginWithToken: (token: string) => Promise<void>;
+  loginWithDeviceFlow: () => Promise<void>;
+  cancelDeviceFlow: () => void;
   logout: () => Promise<void>;
   fetchUserInfo: () => Promise<void>;
   fetchRepositories: () => Promise<void>;
@@ -183,4 +187,43 @@ export interface PermissionCheckResult {
   hasWriteAccess: boolean;
   permission: 'admin' | 'write' | 'read' | 'none';
   checkedAt: Date;
+}
+
+export interface DeviceFlowState {
+  isActive: boolean;
+  deviceCode: string;
+  userCode: string;
+  verificationUri: string;
+  verificationUriComplete: string;
+  expiresIn: number;
+  interval: number;
+  startedAt: Date;
+}
+
+export interface DeviceFlowInitResponse {
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  verification_uri_complete: string;
+  expires_in: number;
+  interval: number;
+}
+
+export interface DeviceFlowTokenResponse {
+  access_token: string;
+  token_type: string;
+  scope: string;
+}
+
+export interface DeviceFlowError {
+  error:
+    | 'authorization_pending'
+    | 'slow_down'
+    | 'expired_token'
+    | 'unsupported_grant_type'
+    | 'incorrect_client_credentials'
+    | 'incorrect_device_code'
+    | 'access_denied';
+  error_description?: string;
+  error_uri?: string;
 }

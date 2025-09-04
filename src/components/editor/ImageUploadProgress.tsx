@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ImageUploadProgress as ProgressType } from '@/types/image-upload';
+import type { ImageUploadProgress as ProgressType } from '@/types/image-upload';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
 
 interface ImageUploadProgressProps {
@@ -11,11 +11,14 @@ interface ImageUploadProgressProps {
   className?: string;
 }
 
-export const ImageUploadProgress = ({ uploads, className }: ImageUploadProgressProps) => {
+export const ImageUploadProgress = ({
+  uploads,
+  className,
+}: ImageUploadProgressProps) => {
   const { removeUpload } = useImageUploadStore();
-  
+
   const uploadList = Object.values(uploads);
-  
+
   if (uploadList.length === 0) {
     return null;
   }
@@ -80,13 +83,19 @@ export const ImageUploadProgress = ({ uploads, className }: ImageUploadProgressP
                   {upload.filename}
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-2">
-                <span className={cn('text-xs font-medium', getStatusColor(upload.status))}>
+                <span
+                  className={cn(
+                    'text-xs font-medium',
+                    getStatusColor(upload.status)
+                  )}
+                >
                   {getStatusText(upload.status)}
                 </span>
-                
-                {(upload.status === 'completed' || upload.status === 'failed') && (
+
+                {(upload.status === 'completed' ||
+                  upload.status === 'failed') && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -102,10 +111,7 @@ export const ImageUploadProgress = ({ uploads, className }: ImageUploadProgressP
             {/* 진행률 표시 */}
             {upload.status !== 'completed' && upload.status !== 'failed' && (
               <div className="space-y-1">
-                <Progress 
-                  value={upload.progress} 
-                  className="h-2"
-                />
+                <Progress value={upload.progress} className="h-2" />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{upload.progress}%</span>
                   {upload.status === 'uploading' && (
