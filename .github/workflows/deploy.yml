@@ -39,15 +39,21 @@ jobs:
       - name: Run tests
         run: npm run test -- --run
         env:
+          VITE_GITHUB_APP_ID: ${{ secrets.VITE_GITHUB_APP_ID }}
           VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
+          VITE_GITHUB_PRIVATE_KEY: ${{ secrets.VITE_GITHUB_PRIVATE_KEY }}
           VITE_SITE_URL: https://devy1540.github.io
+
         
         
       - name: Build for production
         run: npm run build
         env:
+          VITE_GITHUB_APP_ID: ${{ secrets.VITE_GITHUB_APP_ID }}
           VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
+          VITE_GITHUB_PRIVATE_KEY: ${{ secrets.VITE_GITHUB_PRIVATE_KEY }}
           VITE_SITE_URL: https://devy1540.github.io
+
         
       - name: Setup Pages
         uses: actions/configure-pages@v3
