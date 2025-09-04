@@ -560,6 +560,10 @@ This should not be included in the excerpt.`;
     });
 
     it('should return empty config when files do not exist', async () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       const error = new Error('Not Found');
       (error as unknown as { status: number }).status = 404;
       mockApiService.getFileContent.mockRejectedValue(error);
@@ -569,6 +573,8 @@ This should not be included in the excerpt.`;
 
       expect(categories).toEqual([]);
       expect(config).toEqual({});
+
+      consoleSpy.mockRestore();
     });
   });
 

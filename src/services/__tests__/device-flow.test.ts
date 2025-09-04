@@ -60,6 +60,10 @@ describe('GitHubAuthService Device Flow', () => {
     });
 
     it('should handle device flow initialization errors', async () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 400,
@@ -68,6 +72,8 @@ describe('GitHubAuthService Device Flow', () => {
       await expect(authService.startDeviceFlow()).rejects.toThrow(
         'Device flow initialization failed: 400'
       );
+
+      consoleSpy.mockRestore();
     });
   });
 

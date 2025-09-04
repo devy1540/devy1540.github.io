@@ -297,6 +297,10 @@ describe('PublishService', () => {
     });
 
     it('should handle validation errors', async () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       const postData: PostData = {
         title: '', // Invalid: empty title
         content: 'Test content',
@@ -318,6 +322,8 @@ describe('PublishService', () => {
         0,
         expect.stringContaining('제목이 필요합니다')
       );
+
+      consoleSpy.mockRestore();
     });
   });
 
