@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,24 +6,56 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
 import { useToastStore } from '@/stores/useToastStore';
+import { GitHubAppAuthService } from '@/services/github-app-auth';
 
 export const GitHubCallback: FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [token, setToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { loginWithToken } = useGitHubAuthStore();
+  const [authService] = useState(() => new GitHubAppAuthService());
+  const { setUser } = useGitHubAuthStore();
   const { success, error } = useToastStore();
 
   const code = searchParams.get('code');
+  const state = searchParams.get('state');
   const errorParam = searchParams.get('error');
 
   useEffect(() => {
     if (errorParam) {
       error(`GitHub 인증 실패: ${errorParam}`);
       navigate('/settings');
+      return;
     }
-  }, [errorParam, error, navigate]);
+
+    // GitHub App 자동 인증 처리
+    if (code && state) {
+      handleGitHubAppAuth(code, state);
+    }
+  }, [code, state, errorParam, error, navigate, handleGitHubAppAuth]);
+
+  const handleGitHubAppAuth = useCallback(
+    async (code: string, state: string) => {
+      setIsLoading(true);
+      try {
+        const result = await authService.handleOAuthCallback(code, state);
+
+        if (result.success && result.user) {
+          setUser(result.user);
+          success('GitHub App 인증이 완료되었습니다!');
+          navigate('/settings');
+        } else {
+          error(result.error || 'GitHub App 인증에 실패했습니다.');
+        }
+      } catch (err) {
+        console.error('GitHub App authentication failed:', err);
+        error('GitHub App 인증 중 오류가 발생했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [authService, setUser, success, error, navigate]
+  );
 
   const handleTokenSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,9 +67,14 @@ export const GitHubCallback: FC = () => {
 
     setIsLoading(true);
     try {
-      await loginWithToken(token.trim());
-      success('GitHub 계정에 성공적으로 연결되었습니다!');
-      navigate('/settings');
+      const result = await authService.authenticateWithToken(token.trim());
+      if (result.success && result.user) {
+        setUser(result.user);
+        success('GitHub 계정에 성공적으로 연결되었습니다!');
+        navigate('/settings');
+      } else {
+        error(result.error || '인증에 실패했습니다. 토큰을 확인해주세요.');
+      }
     } catch (err) {
       error('인증에 실패했습니다. 토큰을 확인해주세요.');
       console.error('Token authentication failed:', err);
@@ -76,27 +113,34 @@ export const GitHubCallback: FC = () => {
           <div className="mx-auto mb-4">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
-          <CardTitle>GitHub OAuth 인증 완료</CardTitle>
+          <CardTitle>
+            GitHub App 인증 {isLoading ? '진행 중' : '완료'}
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <p className="text-muted-foreground text-center">
-            GitHub 인증이 성공적으로 완료되었습니다!
-          </p>
-
-          {code && (
-            <div className="bg-muted p-4 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">
-                인증 코드:{' '}
-                <code className="text-xs bg-background px-2 py-1 rounded">
-                  {code}
-                </code>
-              </p>
-              <p className="text-sm text-muted-foreground">
-                보안상의 이유로 GitHub에서는 브라우저에서 직접 토큰 교환이
-                불가능합니다. 아래에 Personal Access Token을 입력해주세요.
+          {isLoading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <p className="text-muted-foreground text-center">
+                GitHub App 인증을 처리하는 중입니다...
               </p>
             </div>
+          ) : (
+            <>
+              <p className="text-muted-foreground text-center">
+                GitHub App 인증이 완료되었습니다!
+              </p>
+
+              {code && !isLoading && (
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    인증이 자동으로 처리되지 않았다면, 아래에 Personal Access
+                    Token을 입력해주세요.
+                  </p>
+                </div>
+              )}
+            </>
           )}
 
           <form onSubmit={handleTokenSubmit} className="space-y-4">

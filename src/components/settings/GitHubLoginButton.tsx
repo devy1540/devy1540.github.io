@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
-import { GitHubAuthService } from '@/services/github-auth';
+import { GitHubAppAuthService } from '@/services/github-app-auth';
 
 interface GitHubLoginButtonProps {
   className?: string;
@@ -18,7 +18,7 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
 
   const [token, setToken] = useState('');
   const [showToken, setShowToken] = useState(false);
-  const [authService] = useState(() => new GitHubAuthService());
+  const [authService] = useState(() => new GitHubAppAuthService());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,13 +68,15 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    GitHub 계정으로 안전하게 로그인하세요.
+                    GitHub App을 통해 안전하게 로그인하세요.
                   </p>
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>
-                      • <strong>필요한 권한:</strong> repo, user
+                      • <strong>필요한 권한:</strong> Contents (Read/Write),
+                      Metadata (Read)
                     </p>
-                    <p>• 브라우저를 통해 GitHub에서 직접 인증됩니다</p>
+                    <p>• GitHub App을 통한 보안 강화된 인증</p>
+                    <p>• Personal Access Token 입력 불필요!</p>
                   </div>
                 </div>
 
@@ -95,9 +97,9 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
                   <p className="font-medium">로그인 방법:</p>
                   <ol className="space-y-1 ml-4">
                     <li>1. "GitHub으로 로그인" 버튼 클릭</li>
-                    <li>2. GitHub 인증 페이지로 이동</li>
-                    <li>3. GitHub 계정으로 로그인 및 권한 승인</li>
-                    <li>4. 자동으로 연결 완료</li>
+                    <li>2. GitHub App 설치 및 권한 승인</li>
+                    <li>3. 자동으로 토큰 교환 및 연결 완료</li>
+                    <li>4. Personal Access Token 입력 불필요!</li>
                   </ol>
                 </div>
               </div>
