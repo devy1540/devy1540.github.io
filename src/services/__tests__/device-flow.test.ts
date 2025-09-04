@@ -10,8 +10,13 @@ describe('GitHubAuthService Device Flow', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock environment variable
+    // Mock environment variables
     vi.stubEnv('VITE_GITHUB_CLIENT_ID', 'test-client-id');
+    // Mock DEV environment for proxy URL usage
+    Object.defineProperty(import.meta, 'env', {
+      value: { DEV: true },
+      writable: true,
+    });
     authService = new GitHubAuthService();
   });
 
@@ -34,17 +39,14 @@ describe('GitHubAuthService Device Flow', () => {
 
       const deviceFlowState = await authService.startDeviceFlow();
 
-      expect(fetch).toHaveBeenCalledWith(
-        'https://github.com/login/device/code',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: expect.any(URLSearchParams),
-        }
-      );
+      expect(fetch).toHaveBeenCalledWith('/api/github/login/device/code', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: expect.any(URLSearchParams),
+      });
 
       expect(deviceFlowState.isActive).toBe(true);
       expect(deviceFlowState.deviceCode).toBe('test-device-code');

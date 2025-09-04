@@ -18,28 +18,38 @@ describe('App Routing', () => {
   });
 
   it('navigates to Posts page', async () => {
-    render(<App />);
+    act(() => {
+      render(<App />);
+    });
 
     const postsLink = screen.getByRole('link', { name: /posts/i });
-    fireEvent.click(postsLink);
+    await act(async () => {
+      fireEvent.click(postsLink);
+      // Wait for async loading to complete
+      await screen.findByText('All Posts');
+    });
 
-    // Wait for async loading to complete
-    await screen.findByText('All Posts');
     expect(screen.getByText('All Posts')).toBeInTheDocument();
   });
 
   it('navigates to About page', () => {
-    render(<App />);
+    act(() => {
+      render(<App />);
+    });
 
     const aboutLink = screen.getByRole('link', { name: /about/i });
-    fireEvent.click(aboutLink);
+    act(() => {
+      fireEvent.click(aboutLink);
+    });
 
     expect(screen.getByRole('heading', { name: /about/i })).toBeInTheDocument();
   });
 
   it('shows 404 page for unknown routes', () => {
     window.history.pushState({}, '', '/unknown-route');
-    render(<App />);
+    act(() => {
+      render(<App />);
+    });
 
     expect(screen.getByText('404')).toBeInTheDocument();
     expect(screen.getByText('Page Not Found')).toBeInTheDocument();
@@ -87,7 +97,9 @@ describe('App Routing', () => {
   });
 
   it('maintains theme toggle functionality across pages', () => {
-    render(<App />);
+    act(() => {
+      render(<App />);
+    });
 
     // Theme toggle now in sidebar with enhanced aria-label
     const themeButton = screen.getByRole('button', { name: /테마 전환/i });
@@ -95,7 +107,9 @@ describe('App Routing', () => {
 
     // Navigate to another page
     const postsLink = screen.getByRole('link', { name: /posts/i });
-    fireEvent.click(postsLink);
+    act(() => {
+      fireEvent.click(postsLink);
+    });
 
     // Theme button should still be present in sidebar
     expect(

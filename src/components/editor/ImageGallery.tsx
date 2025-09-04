@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -134,13 +135,12 @@ export const ImageGallery = ({ trigger, className }: ImageGalleryProps) => {
 
       <DialogContent
         className={cn('max-w-4xl max-h-[80vh] overflow-hidden', className)}
-        aria-describedby="gallery-description"
       >
         <DialogHeader>
           <DialogTitle>이미지 갤러리</DialogTitle>
-          <p id="gallery-description" className="sr-only">
+          <DialogDescription>
             업로드된 이미지를 보고 에디터에 삽입할 수 있습니다.
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         {/* 검색 입력 */}

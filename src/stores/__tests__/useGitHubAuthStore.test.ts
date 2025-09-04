@@ -53,6 +53,8 @@ describe('useGitHubAuthStore', () => {
     });
 
     vi.clearAllMocks();
+    // Mock console.error to reduce noise in test output for expected errors
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   it('should have initial state', () => {
