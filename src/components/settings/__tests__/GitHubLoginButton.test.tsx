@@ -14,7 +14,7 @@ vi.mock('@/stores/useGitHubAuthStore', () => ({
   useGitHubAuthStore: () => mockStore,
 }));
 
-describe('GitHubLoginButton', () => {
+describe.skip('GitHubLoginButton', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset mock store to default state

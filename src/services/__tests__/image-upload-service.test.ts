@@ -247,6 +247,10 @@ describe('ImageUploadService', () => {
     });
 
     it('should handle API errors gracefully', async () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       (mockGitHubService.getDirectoryContents as Mock).mockRejectedValue(
         new Error('API Error')
       );
@@ -254,6 +258,8 @@ describe('ImageUploadService', () => {
       const result = await service.getUploadedImages();
 
       expect(result).toHaveLength(0);
+
+      consoleSpy.mockRestore();
     });
   });
 

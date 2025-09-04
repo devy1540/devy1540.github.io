@@ -43,9 +43,7 @@ This is the content.`;
     });
 
     it('handles YAML parsing errors gracefully', () => {
-      const consoleSpy = vi
-        .spyOn(console, 'error')
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const markdown = `---
 title: Test Post

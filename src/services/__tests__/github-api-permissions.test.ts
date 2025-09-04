@@ -130,6 +130,8 @@ describe('GitHubApiService - Permission Checks', () => {
     });
 
     it('handles 404 error gracefully', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
       const error = new Error('Not Found');
       (error as unknown as { status: number }).status = 404;
 
@@ -157,9 +159,12 @@ describe('GitHubApiService - Permission Checks', () => {
       expect(result.checkedAt).toBeInstanceOf(Date);
 
       handleApiErrorSpy.mockRestore();
+      consoleSpy.mockRestore();
     });
 
     it('handles 403 error gracefully', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
       const error = new Error('Forbidden');
       (error as unknown as { status: number }).status = 403;
 
@@ -189,6 +194,7 @@ describe('GitHubApiService - Permission Checks', () => {
       expect(result.permission).toBe('none');
 
       handleApiErrorSpy.mockRestore();
+      consoleSpy.mockRestore();
     });
 
     it('throws other errors', async () => {

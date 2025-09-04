@@ -560,9 +560,7 @@ This should not be included in the excerpt.`;
     });
 
     it('should return empty config when files do not exist', async () => {
-      const consoleSpy = vi
-        .spyOn(console, 'error')
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const error = new Error('Not Found');
       (error as unknown as { status: number }).status = 404;
