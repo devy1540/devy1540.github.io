@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "env": {
+    "VITE_GITHUB_CLIENT_ID": "@vite_github_client_id",
+    "VITE_SITE_URL": "https://devy1540-blog.vercel.app"
+  }
+}

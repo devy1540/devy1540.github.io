@@ -175,10 +175,10 @@ export class GitHubAuthService {
    */
   async startDeviceFlow(): Promise<DeviceFlowState> {
     try {
-      // 개발환경에서는 Vite proxy 사용, 프로덕션에서는 직접 호출
+      // 개발환경에서는 Vite proxy, 프로덕션에서는 Vercel Functions 사용
       const apiUrl = import.meta.env.DEV
         ? '/api/github/login/device/code'
-        : 'https://github.com/login/device/code';
+        : `${this.siteUrl}/api/github/login/device/code`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -248,10 +248,10 @@ export class GitHubAuthService {
     }
 
     try {
-      // 개발환경에서는 Vite proxy 사용, 프로덕션에서는 직접 호출
+      // 개발환경에서는 Vite proxy, 프로덕션에서는 Vercel Functions 사용
       const apiUrl = import.meta.env.DEV
         ? '/api/github/login/oauth/access_token'
-        : 'https://github.com/login/oauth/access_token';
+        : `${this.siteUrl}/api/github/login/oauth/access_token`;
 
       console.log('🌐 Making token polling request to:', apiUrl);
       const response = await fetch(apiUrl, {
