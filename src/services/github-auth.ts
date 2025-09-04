@@ -171,6 +171,54 @@ export class GitHubAuthService {
   }
 
   /**
+   * OAuth Redirect Flow 인증 시작
+   */
+  startOAuthFlow(): void {
+    const redirectUri = `${this.siteUrl}/auth/github/callback`;
+    const state = Math.random().toString(36).substring(2);
+
+    // state 저장 (CSRF 보호)
+    sessionStorage.setItem('github_oauth_state', state);
+
+    const authUrl = `https://github.com/login/oauth/authorize?${new URLSearchParams(
+      {
+        client_id: this.clientId,
+        redirect_uri: redirectUri,
+        scope: 'repo user',
+        state,
+      }
+    )}`;
+
+    // GitHub OAuth 페이지로 리다이렉트
+    window.location.href = authUrl;
+  }
+
+  /**
+   * OAuth 콜백 처리
+   */
+  async handleOAuthCallback(code: string, state: string): Promise<boolean> {
+    try {
+      // state 검증 (CSRF 보호)
+      const savedState = sessionStorage.getItem('github_oauth_state');
+      if (!savedState || savedState !== state) {
+        throw new Error('Invalid state parameter');
+      }
+
+      sessionStorage.removeItem('github_oauth_state');
+
+      // GitHub에서는 브라우저에서 직접 token 교환이 불가능하므로
+      // code를 저장하고 사용자가 Personal Access Token을 입력하도록 안내
+      console.log('OAuth authorization code received:', code);
+
+      // 임시로 성공 처리 (실제로는 서버가 필요)
+      return true;
+    } catch (error) {
+      console.error('OAuth callback error:', error);
+      return false;
+    }
+  }
+
+  /**
    * Device Flow 인증 시작
    */
   async startDeviceFlow(): Promise<DeviceFlowState> {

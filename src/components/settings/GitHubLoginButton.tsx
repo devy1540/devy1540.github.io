@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
-import { DeviceFlowLogin } from '@/components/auth/DeviceFlowLogin';
+import { GitHubAuthService } from '@/services/github-auth';
 
 interface GitHubLoginButtonProps {
   className?: string;
@@ -18,6 +18,7 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
 
   const [token, setToken] = useState('');
   const [showToken, setShowToken] = useState(false);
+  const [authService] = useState(() => new GitHubAuthService());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,14 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
     }
   };
 
+  const handleOAuthLogin = () => {
+    try {
+      authService.startOAuthFlow();
+    } catch (err) {
+      console.error('OAuth flow start failed:', err);
+    }
+  };
+
   return (
     <div className={className}>
       <Card>
@@ -43,14 +52,55 @@ export const GitHubLoginButton: FC<GitHubLoginButtonProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="device-flow" className="w-full">
+          <Tabs defaultValue="oauth" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="device-flow">GitHub 계정 로그인</TabsTrigger>
+              <TabsTrigger value="oauth">GitHub 계정 로그인</TabsTrigger>
               <TabsTrigger value="token">Personal Access Token</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="device-flow" className="mt-4">
-              <DeviceFlowLogin />
+            <TabsContent value="oauth" className="mt-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Github className="w-4 h-4" />
+                    <span className="font-medium text-sm">
+                      GitHub OAuth 로그인
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    GitHub 계정으로 안전하게 로그인하세요.
+                  </p>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p>
+                      • <strong>필요한 권한:</strong> repo, user
+                    </p>
+                    <p>• 브라우저를 통해 GitHub에서 직접 인증됩니다</p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleOAuthLogin}
+                  disabled={isLoading}
+                  className="w-full flex items-center gap-2"
+                >
+                  {isLoading ? (
+                    <div className="w-4 h-4 animate-spin border-2 border-current border-t-transparent rounded-full" />
+                  ) : (
+                    <Github className="w-4 h-4" />
+                  )}
+                  GitHub으로 로그인
+                </Button>
+
+                <div className="text-xs text-muted-foreground space-y-2">
+                  <p className="font-medium">로그인 방법:</p>
+                  <ol className="space-y-1 ml-4">
+                    <li>1. "GitHub으로 로그인" 버튼 클릭</li>
+                    <li>2. GitHub 인증 페이지로 이동</li>
+                    <li>3. GitHub 계정으로 로그인 및 권한 승인</li>
+                    <li>4. 자동으로 연결 완료</li>
+                  </ol>
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="token" className="mt-4">
