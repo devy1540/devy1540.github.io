@@ -21,19 +21,6 @@ export const GitHubCallback: FC = () => {
   const state = searchParams.get('state');
   const errorParam = searchParams.get('error');
 
-  useEffect(() => {
-    if (errorParam) {
-      error(`GitHub 인증 실패: ${errorParam}`);
-      navigate('/settings');
-      return;
-    }
-
-    // GitHub App 자동 인증 처리
-    if (code && state) {
-      handleGitHubAppAuth(code, state);
-    }
-  }, [code, state, errorParam, error, navigate, handleGitHubAppAuth]);
-
   const handleGitHubAppAuth = useCallback(
     async (code: string, state: string) => {
       setIsLoading(true);
@@ -56,6 +43,24 @@ export const GitHubCallback: FC = () => {
     },
     [authService, setUser, success, error, navigate]
   );
+
+  useEffect(() => {
+    console.log('GitHubCallback useEffect:', { code, state, errorParam });
+
+    if (errorParam) {
+      error(`GitHub 인증 실패: ${errorParam}`);
+      navigate('/settings');
+      return;
+    }
+
+    // GitHub App 자동 인증 처리
+    if (code && state) {
+      console.log('Starting GitHub App authentication...');
+      handleGitHubAppAuth(code, state);
+    } else {
+      console.log('Missing code or state:', { code: !!code, state: !!state });
+    }
+  }, [code, state, errorParam, error, navigate, handleGitHubAppAuth]);
 
   const handleTokenSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,28 +1,8 @@
-import { generateGitHubAppJWT } from '@/utils/jwt';
 import type {
   GitHubAuthError,
   GitHubTokenValidationResult,
   GitHubTokenAuthResult,
 } from '@/types/github';
-
-/**
- * GitHub App 응답 타입들
- */
-interface GitHubAppInstallation {
-  id: number;
-  account: {
-    login: string;
-    id: number;
-    type: string;
-  };
-}
-
-interface GitHubAppTokenResponse {
-  token: string;
-  expires_at: string;
-  permissions: Record<string, string>;
-  repository_selection: string;
-}
 
 interface GitHubUser {
   login: string;
@@ -35,22 +15,31 @@ interface GitHubUser {
 export class GitHubAppAuthService {
   private appId: string;
   private clientId: string;
+  private clientSecret: string;
   private privateKey: string;
   private siteUrl: string;
 
   constructor() {
     this.appId = import.meta.env.VITE_GITHUB_APP_ID;
     this.clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+    this.clientSecret = import.meta.env.VITE_GITHUB_CLIENT_SECRET;
     this.privateKey = import.meta.env.VITE_GITHUB_PRIVATE_KEY;
     this.siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
 
-    if (!this.appId || !this.clientId || !this.privateKey) {
+    if (!this.appId || !this.clientId) {
       throw new Error('GitHub App credentials are not configured');
     }
   }
 
   /**
-   * GitHub App OAuth 인증 URL 생성
+   * GitHub App 설치 URL 생성 (OAuth 대신 Installation 방식)
+   */
+  generateInstallUrl(): string {
+    return `https://github.com/apps/devy1540-local/installations/new`;
+  }
+
+  /**
+   * GitHub App OAuth 인증 URL 생성 (백업용)
    */
   generateAuthUrl(): string {
     const state = this.generateState();
@@ -62,7 +51,7 @@ export class GitHubAppAuthService {
       state,
     });
 
-    return `https://github.com/apps/personal-blog-cms/installations/new?${params.toString()}`;
+    return `https://github.com/login/oauth/authorize?${params.toString()}`;
   }
 
   /**
@@ -70,6 +59,7 @@ export class GitHubAppAuthService {
    */
   startOAuthFlow(): void {
     const authUrl = this.generateAuthUrl();
+    console.log('Starting OAuth flow with URL:', authUrl);
     window.location.href = authUrl;
   }
 
@@ -91,8 +81,8 @@ export class GitHubAppAuthService {
 
       this.clearState();
 
-      // 2. GitHub App installation token 생성 (code는 현재 사용하지 않음)
-      const accessToken = await this.exchangeCodeForToken();
+      // 2. Authorization code를 access token으로 교환
+      const accessToken = await this.exchangeCodeForToken(code);
 
       // 3. 사용자 정보 조회
       const userResponse = await fetch('https://api.github.com/user', {
@@ -129,56 +119,41 @@ export class GitHubAppAuthService {
 
   /**
    * Authorization code를 access token으로 교환
-   * 현재는 GitHub App JWT를 사용하여 installation token을 직접 생성
+   * CORS 회피를 위해 GitHub의 proxy 사용
    */
-  private async exchangeCodeForToken(): Promise<string> {
+  private async exchangeCodeForToken(code: string): Promise<string> {
     try {
-      // 1. GitHub App JWT 생성
-      const jwt = await generateGitHubAppJWT(this.appId, this.privateKey);
+      // GitHub Pages CORS 회피를 위한 프록시 사용
+      const proxyUrl =
+        'https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token';
 
-      // 2. 설치된 앱의 installation ID 조회
-      const installationsResponse = await fetch(
-        'https://api.github.com/app/installations',
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-            Accept: 'application/vnd.github.v3+json',
-          },
-        }
-      );
-
-      if (!installationsResponse.ok) {
-        throw new Error('Failed to fetch app installations');
-      }
-
-      const installations: GitHubAppInstallation[] =
-        await installationsResponse.json();
-
-      if (installations.length === 0) {
-        throw new Error('GitHub App is not installed');
-      }
-
-      // 첫 번째 설치를 사용 (개인 계정용)
-      const installation = installations[0];
-
-      // 3. Installation access token 생성
-      const tokenResponse = await fetch(
-        `https://api.github.com/app/installations/${installation.id}/access_tokens`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-            Accept: 'application/vnd.github.v3+json',
-          },
-        }
-      );
+      const tokenResponse = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
+          code: code,
+        }),
+      });
 
       if (!tokenResponse.ok) {
-        throw new Error('Failed to create installation access token');
+        throw new Error(`Token exchange failed: ${tokenResponse.status}`);
       }
 
-      const tokenData: GitHubAppTokenResponse = await tokenResponse.json();
-      return tokenData.token;
+      const tokenData = await tokenResponse.json();
+
+      if (tokenData.error) {
+        throw new Error(
+          `OAuth error: ${tokenData.error_description || tokenData.error}`
+        );
+      }
+
+      return tokenData.access_token;
     } catch (error) {
       console.error('Token exchange failed:', error);
       throw new Error('Failed to exchange authorization code for token');
