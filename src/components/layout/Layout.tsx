@@ -1,7 +1,11 @@
 import React, { ReactNode } from 'react';
-import { Footer } from './Footer';
 import { AppSidebar } from './AppSidebar';
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { ThemeToggleFloating } from './ThemeToggleFloating';
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
 import { Menu } from 'lucide-react';
 
 interface LayoutProps {
@@ -14,7 +18,7 @@ export function Layout({ children }: LayoutProps) {
       <div className="flex min-h-screen w-full">
         {/* Left Sidebar */}
         <AppSidebar />
-        
+
         {/* Main Content Area */}
         <SidebarInset className="flex flex-col flex-1">
           {/* Mobile Header with Sidebar Toggle */}
@@ -27,15 +31,13 @@ export function Layout({ children }: LayoutProps) {
               <h1 className="text-lg font-semibold">My Blog</h1>
             </div>
           </header>
-          
+
           {/* Main Content */}
-          <main className="flex-1">
-            {children}
-          </main>
-          
-          {/* Footer */}
-          <Footer />
+          <main className="flex-1">{children}</main>
         </SidebarInset>
+
+        {/* Floating Theme Toggle Button */}
+        <ThemeToggleFloating />
       </div>
     </SidebarProvider>
   );

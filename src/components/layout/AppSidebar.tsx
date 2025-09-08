@@ -3,10 +3,11 @@ import {
   FileText,
   User,
   Settings,
-  Monitor,
-  Moon,
-  Sun,
   PenTool,
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import {
@@ -23,7 +24,6 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { useThemeStore } from '@/stores/useThemeStore';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
 import { cn } from '@/lib/utils';
 import type { NavigationItem } from '@/types';
@@ -41,10 +41,32 @@ const authorOnlyItems: NavigationItem[] = [
   { to: '/drafts', label: 'Drafts', icon: FileText, requiresAuth: true },
 ];
 
+// Social links configuration - with proper URLs and labels
+const socialLinks = [
+  {
+    href: 'https://github.com/devy1540',
+    icon: Github,
+    label: 'GitHub',
+  },
+  {
+    href: 'https://linkedin.com/in/devy1540',
+    icon: Linkedin,
+    label: 'LinkedIn',
+  },
+  {
+    href: 'https://twitter.com/devy1540',
+    icon: Twitter,
+    label: 'Twitter',
+  },
+  {
+    href: 'mailto:contact@devy1540.github.io',
+    icon: Mail,
+    label: 'Email',
+  },
+] as const;
+
 export function AppSidebar() {
-  const { theme, toggleTheme, getEffectiveTheme } = useThemeStore();
   const { isAuthenticated, hasWriteAccess } = useGitHubAuthStore();
-  const effectiveTheme = getEffectiveTheme();
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r">
@@ -170,31 +192,52 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      {/* Theme Toggle Footer */}
+      {/* Social Links Footer */}
       <SidebarFooter className="border-t">
         <div className="p-2">
-          <Button
-            variant="ghost"
-            onClick={toggleTheme}
-            className="w-full justify-start gap-2 h-9"
-            size="sm"
-            aria-label={`테마 전환: 현재 ${theme} 모드`}
-          >
-            {theme === 'system' ? (
-              <Monitor className="h-4 w-4 shrink-0" />
-            ) : effectiveTheme === 'dark' ? (
-              <Moon className="h-4 w-4 shrink-0" />
-            ) : (
-              <Sun className="h-4 w-4 shrink-0" />
-            )}
-            <span className="group-data-[collapsible=icon]:hidden truncate">
-              {theme === 'system'
-                ? '시스템 설정'
-                : effectiveTheme === 'dark'
-                  ? '다크 모드'
-                  : '라이트 모드'}
-            </span>
-          </Button>
+          <nav aria-label="소셜 미디어 링크">
+            <div
+              className={cn(
+                // 기본 가로 배치
+                'flex items-center justify-center gap-1',
+                // 축소 모드에서 세로 배치
+                'group-data-[collapsible=icon]:flex-col',
+                'group-data-[collapsible=icon]:gap-2'
+              )}
+            >
+              {socialLinks.map((link) => (
+                <Button
+                  key={link.label}
+                  variant="ghost"
+                  size="icon"
+                  asChild
+                  className={cn(
+                    'h-8 w-8',
+                    // 터치 영역 보장 (모바일)
+                    'sm:h-10 sm:w-10 md:h-8 md:w-8',
+                    // 최소 터치 영역 44px 보장
+                    'min-h-[44px] min-w-[44px] sm:min-h-[40px] sm:min-w-[40px] md:min-h-[32px] md:min-w-[32px]'
+                  )}
+                >
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${link.label} 프로필 보기 (새 탭에서 열림)`}
+                  >
+                    <link.icon className="h-4 w-4" />
+                  </a>
+                </Button>
+              ))}
+            </div>
+          </nav>
+
+          {/* Copyright */}
+          <div className="text-center mt-2 group-data-[collapsible=icon]:hidden">
+            <p className="text-xs text-sidebar-foreground/40">
+              © {new Date().getFullYear()} My Blog. All rights reserved.
+            </p>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>
