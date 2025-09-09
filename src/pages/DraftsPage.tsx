@@ -41,7 +41,7 @@ export const DraftsPage: FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight mb-2">초안 목록</h1>
         <p className="text-muted-foreground">
           저장된 초안들을 관리하고 편집을 계속할 수 있습니다.
@@ -64,7 +64,7 @@ export const DraftsPage: FC = () => {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {drafts.map(draft => (
+          {drafts.map((draft) => (
             <DraftCard key={draft.id} draft={draft} />
           ))}
         </div>

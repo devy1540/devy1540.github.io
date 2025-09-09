@@ -16,7 +16,7 @@ export function SettingsPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
     setSaving(false);
     success('Settings Saved!', 'Your preferences have been updated.');
   };
@@ -24,11 +24,11 @@ export function SettingsPage() {
   return (
     <div className="w-full max-w-6xl mx-auto py-12">
       <div className="space-y-8">
-        <h1 className="text-4xl font-bold">Settings</h1>
-        
+        <h1 className="text-4xl font-bold text-center">Settings</h1>
+
         <div className="space-y-6">
           <GitHubAuthSection />
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
@@ -36,7 +36,11 @@ export function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <h2 className="text-sm font-medium">Theme</h2>
-                <div className="flex gap-2" role="group" aria-label="Theme selection">
+                <div
+                  className="flex gap-2"
+                  role="group"
+                  aria-label="Theme selection"
+                >
                   <Button
                     variant={theme === 'light' ? 'default' : 'outline'}
                     size="sm"
@@ -63,56 +67,83 @@ export function SettingsPage() {
                   </Button>
                 </div>
               </div>
-              
+
               <AccentColorPicker />
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Toast Notifications</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">Test toast notification system</p>
+                <p className="text-sm text-muted-foreground">
+                  Test toast notification system
+                </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Button variant="default" size="sm" onClick={() => success('Success!', 'Settings saved successfully.')}>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() =>
+                      success('Success!', 'Settings saved successfully.')
+                    }
+                  >
                     Success
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => error('Error!', 'Failed to save settings.')}>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => error('Error!', 'Failed to save settings.')}
+                  >
                     Error
                   </Button>
-                  <Button variant="secondary" size="sm" onClick={() => warning('Warning!', 'Changes will take effect after refresh.')}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() =>
+                      warning(
+                        'Warning!',
+                        'Changes will take effect after refresh.'
+                      )
+                    }
+                  >
                     Warning
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => info('Info', 'New features are available.')}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => info('Info', 'New features are available.')}
+                  >
                     Info
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Loading States</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">Test loading components</p>
-                
+                <p className="text-sm text-muted-foreground">
+                  Test loading components
+                </p>
+
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Loading Button</h3>
                   <LoadingButton loading={saving} onClick={handleSave}>
                     Save Settings
                   </LoadingButton>
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Loading Spinner</h3>
                   <LoadingSpinner text="Loading..." />
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium">Skeleton Loading</h3>
                   <div className="space-y-2">
