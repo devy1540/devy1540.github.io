@@ -175,7 +175,7 @@ describe('PublishButton', () => {
     });
 
     mockUseToastStore.mockReturnValue({
-      addToast: mockAddToast,
+      error: mockAddToast,
     });
 
     render(<PublishButton onPublish={mockOnPublish} />);
@@ -205,7 +205,7 @@ describe('PublishButton', () => {
     });
 
     mockUseToastStore.mockReturnValue({
-      addToast: mockAddToast,
+      error: mockAddToast,
     });
 
     render(<PublishButton onPublish={mockOnPublish} />);

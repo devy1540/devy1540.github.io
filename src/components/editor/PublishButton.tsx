@@ -17,12 +17,12 @@ export const PublishButton: FC<PublishButtonProps> = ({
   onPublish,
   variant = 'default',
   size = 'sm',
-  className = ''
+  className = '',
 }) => {
   const { content, metadata } = useEditorStore();
   const { isAuthenticated } = useGitHubAuthStore();
   const { isPublishing } = usePublishStore();
-  const { addToast } = useToastStore();
+  const { error: showError } = useToastStore();
 
   const canPublish = useCallback(() => {
     if (!isAuthenticated) return false;
@@ -35,25 +35,32 @@ export const PublishButton: FC<PublishButtonProps> = ({
   const handleClick = useCallback(() => {
     if (!canPublish()) {
       if (!isAuthenticated) {
-        addToast('GitHub 인증이 필요합니다', 'error');
+        showError('GitHub 인증이 필요합니다');
         return;
       }
-      
+
       if (!metadata.title?.trim()) {
-        addToast('제목을 입력해주세요', 'error');
+        showError('제목을 입력해주세요');
         return;
       }
-      
+
       if (!content?.trim()) {
-        addToast('내용을 입력해주세요', 'error');
+        showError('내용을 입력해주세요');
         return;
       }
-      
+
       return;
     }
 
     onPublish();
-  }, [canPublish, onPublish, isAuthenticated, metadata.title, content, addToast]);
+  }, [
+    canPublish,
+    onPublish,
+    isAuthenticated,
+    metadata.title,
+    content,
+    showError,
+  ]);
 
   const getButtonText = () => {
     if (isPublishing) return '게시 중...';
