@@ -20,21 +20,32 @@ export const PublishButton: FC<PublishButtonProps> = ({
   className = '',
 }) => {
   const { content, metadata } = useEditorStore();
-  const { isAuthenticated } = useGitHubAuthStore();
+  const {
+    isAuthenticated,
+    accessToken,
+    isLoading: authLoading,
+  } = useGitHubAuthStore();
   const { isPublishing } = usePublishStore();
   const { error: showError } = useToastStore();
 
   const canPublish = useCallback(() => {
-    if (!isAuthenticated) return false;
-    if (isPublishing) return false;
+    if (!isAuthenticated || !accessToken) return false;
+    if (isPublishing || authLoading) return false;
     if (!metadata.title?.trim()) return false;
     if (!content?.trim()) return false;
     return true;
-  }, [isAuthenticated, isPublishing, metadata.title, content]);
+  }, [
+    isAuthenticated,
+    accessToken,
+    isPublishing,
+    authLoading,
+    metadata.title,
+    content,
+  ]);
 
   const handleClick = useCallback(() => {
     if (!canPublish()) {
-      if (!isAuthenticated) {
+      if (!isAuthenticated || !accessToken) {
         showError('GitHub 인증이 필요합니다');
         return;
       }
@@ -57,6 +68,7 @@ export const PublishButton: FC<PublishButtonProps> = ({
     canPublish,
     onPublish,
     isAuthenticated,
+    accessToken,
     metadata.title,
     content,
     showError,
@@ -64,7 +76,8 @@ export const PublishButton: FC<PublishButtonProps> = ({
 
   const getButtonText = () => {
     if (isPublishing) return '게시 중...';
-    if (!isAuthenticated) return 'GitHub 로그인 필요';
+    if (authLoading) return '인증 확인 중...';
+    if (!isAuthenticated || !accessToken) return 'GitHub 로그인 필요';
     if (!metadata.title?.trim() || !content?.trim()) return '게시할 수 없음';
     return '게시';
   };

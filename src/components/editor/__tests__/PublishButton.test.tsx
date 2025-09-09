@@ -39,6 +39,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -60,6 +62,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: false,
+      accessToken: null,
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -81,6 +85,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -102,6 +108,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -123,6 +131,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -144,6 +154,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -168,6 +180,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: false,
+      accessToken: null,
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -198,6 +212,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
@@ -226,6 +242,8 @@ describe('PublishButton', () => {
 
     mockUseGitHubAuthStore.mockReturnValue({
       isAuthenticated: true,
+      accessToken: 'mock-token',
+      isLoading: false,
     });
 
     mockUsePublishStore.mockReturnValue({
