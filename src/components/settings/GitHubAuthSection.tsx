@@ -2,12 +2,11 @@ import { FC, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Unlink, GitBranch } from 'lucide-react';
+import { Unlink, GitBranch, ChevronDown } from 'lucide-react';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
 import { useRepositoryStore } from '@/stores/useRepositoryStore';
 import { useToastStore } from '@/stores/useToastStore';
@@ -113,16 +112,24 @@ export const GitHubAuthSection: FC = () => {
               </div>
 
               {repositories.length > 0 ? (
-                <Select
-                  value={currentRepository?.full_name || ''}
-                  onValueChange={handleRepositorySelect}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="저장소를 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      {currentRepository
+                        ? currentRepository.full_name
+                        : '저장소를 선택하세요'}
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
                     {repositories.map((repo) => (
-                      <SelectItem key={repo.id} value={repo.full_name}>
+                      <DropdownMenuItem
+                        key={repo.id}
+                        onClick={() => handleRepositorySelect(repo.full_name)}
+                      >
                         <div className="flex items-center justify-between w-full">
                           <span>{repo.full_name}</span>
                           {repo.private && (
@@ -131,10 +138,10 @@ export const GitHubAuthSection: FC = () => {
                             </span>
                           )}
                         </div>
-                      </SelectItem>
+                      </DropdownMenuItem>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <p className="text-sm text-muted-foreground">
                   저장소를 불러오는 중...
