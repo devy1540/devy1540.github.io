@@ -2,6 +2,13 @@ import { FC, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -12,15 +19,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Unlink } from 'lucide-react';
+import { Unlink, GitBranch } from 'lucide-react';
 import { useGitHubAuthStore } from '@/stores/useGitHubAuthStore';
+import { useRepositoryStore } from '@/stores/useRepositoryStore';
 import { useToastStore } from '@/stores/useToastStore';
 import { GitHubLoginButton } from './GitHubLoginButton';
 import { GitHubUserInfo } from './GitHubUserInfo';
 
 export const GitHubAuthSection: FC = () => {
-  const { isAuthenticated, logout, isLoading, user, error } =
+  const { isAuthenticated, logout, isLoading, user, error, repositories } =
     useGitHubAuthStore();
+  const { currentRepository, setCurrentRepository } = useRepositoryStore();
   const { success, error: showError } = useToastStore();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -42,6 +51,19 @@ export const GitHubAuthSection: FC = () => {
       showError('연결 해제 실패', '다시 시도해 주세요.');
     } finally {
       setIsLoggingOut(false);
+    }
+  };
+
+  const handleRepositorySelect = (repoFullName: string) => {
+    const selectedRepo = repositories.find(
+      (repo) => repo.full_name === repoFullName
+    );
+    if (selectedRepo) {
+      setCurrentRepository(selectedRepo);
+      success(
+        '저장소 선택 완료',
+        `${selectedRepo.full_name}이 선택되었습니다.`
+      );
     }
   };
 
@@ -77,6 +99,54 @@ export const GitHubAuthSection: FC = () => {
         {isAuthenticated ? (
           <div className="space-y-4">
             <GitHubUserInfo />
+
+            {/* Repository Selection */}
+            <div className="space-y-3 pt-4 border-t">
+              <div>
+                <h4 className="font-medium text-sm flex items-center gap-2">
+                  <GitBranch className="w-4 h-4" />
+                  저장소 선택
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  블로그 콘텐츠를 게시할 저장소를 선택하세요.
+                </p>
+              </div>
+
+              {repositories.length > 0 ? (
+                <Select
+                  value={currentRepository?.full_name || ''}
+                  onValueChange={handleRepositorySelect}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="저장소를 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {repositories.map((repo) => (
+                      <SelectItem key={repo.id} value={repo.full_name}>
+                        <div className="flex items-center justify-between w-full">
+                          <span>{repo.full_name}</span>
+                          {repo.private && (
+                            <span className="text-xs text-muted-foreground ml-2">
+                              (Private)
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  저장소를 불러오는 중...
+                </p>
+              )}
+
+              {currentRepository && (
+                <div className="text-xs text-green-600 dark:text-green-400">
+                  ✓ 선택됨: {currentRepository.full_name}
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center justify-between pt-4 border-t">
               <div>

@@ -83,10 +83,21 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
           });
 
           // devy1540.github.io 저장소 우선 선택, 없으면 선택하지 않음
+          console.log(
+            '🔍 저장소 목록에서 블로그 저장소 찾기:',
+            repositories.map((r) => r.full_name)
+          );
+
           const targetRepo = repositories.find(
             (repo) =>
               repo.full_name === 'devy1540/devy1540.github.io' ||
-              repo.name === 'devy1540.github.io'
+              repo.name === 'devy1540.github.io' ||
+              repo.full_name.endsWith('.github.io')
+          );
+
+          console.log(
+            '🎯 찾은 블로그 저장소:',
+            targetRepo?.full_name || 'null'
           );
 
           if (targetRepo) {
@@ -99,7 +110,7 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
             await get().checkWritePermission(owner, repo);
           } else {
             console.log(
-              'ℹ️ devy1540.github.io 저장소를 찾을 수 없어 자동 선택하지 않습니다.'
+              'ℹ️ 블로그 저장소를 찾을 수 없어 자동 선택하지 않습니다. 사용자가 수동으로 선택해야 합니다.'
             );
           }
         } catch (error) {
@@ -185,10 +196,21 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
               });
 
               // devy1540.github.io 저장소 우선 선택, 없으면 선택하지 않음
+              console.log(
+                '🔍 Device Flow - 저장소 목록에서 블로그 저장소 찾기:',
+                repositories.map((r) => r.full_name)
+              );
+
               const targetRepo = repositories.find(
                 (repo) =>
                   repo.full_name === 'devy1540/devy1540.github.io' ||
-                  repo.name === 'devy1540.github.io'
+                  repo.name === 'devy1540.github.io' ||
+                  repo.full_name.endsWith('.github.io')
+              );
+
+              console.log(
+                '🎯 Device Flow - 찾은 블로그 저장소:',
+                targetRepo?.full_name || 'null'
               );
 
               if (targetRepo) {
@@ -204,7 +226,7 @@ export const useGitHubAuthStore = create<GitHubAuthStore>()(
                 await get().checkWritePermission(owner, repo);
               } else {
                 console.log(
-                  'ℹ️ devy1540.github.io 저장소를 찾을 수 없어 자동 선택하지 않습니다.'
+                  'ℹ️ Device Flow - 블로그 저장소를 찾을 수 없어 자동 선택하지 않습니다. 사용자가 수동으로 선택해야 합니다.'
                 );
               }
             } catch (error) {
@@ -577,10 +599,21 @@ export const initializeGitHubAuth = async () => {
           // devy1540.github.io 저장소 자동 선택 (현재 선택된 저장소가 없는 경우)
           const currentRepo = useRepositoryStore.getState().currentRepository;
           if (!currentRepo) {
+            console.log(
+              '🔍 초기화 - 저장소 목록에서 블로그 저장소 찾기:',
+              repositories.map((r) => r.full_name)
+            );
+
             const targetRepo = repositories.find(
               (repo) =>
                 repo.full_name === 'devy1540/devy1540.github.io' ||
-                repo.name === 'devy1540.github.io'
+                repo.name === 'devy1540.github.io' ||
+                repo.full_name.endsWith('.github.io')
+            );
+
+            console.log(
+              '🎯 초기화 - 찾은 블로그 저장소:',
+              targetRepo?.full_name || 'null'
             );
 
             if (targetRepo) {
@@ -591,7 +624,7 @@ export const initializeGitHubAuth = async () => {
               );
             } else {
               console.log(
-                'ℹ️ devy1540.github.io 저장소를 찾을 수 없어 자동 선택하지 않습니다.'
+                'ℹ️ 초기화 - 블로그 저장소를 찾을 수 없어 자동 선택하지 않습니다. 사용자가 수동으로 선택해야 합니다.'
               );
             }
           }
