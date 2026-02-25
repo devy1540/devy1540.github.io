@@ -9,9 +9,9 @@ export function RootLayout() {
       <ScrollToTop />
       <AppSidebar />
       <SidebarInset>
-        <header className="md:hidden sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
+        <header className="sticky top-0 z-40 flex h-14 items-center gap-2 bg-background px-4">
           <SidebarTrigger />
-          <span className="font-bold text-lg tracking-tight">Devy</span>
+          <span className="font-bold text-lg tracking-tight md:hidden">Devy</span>
         </header>
         <main className="px-4 py-8">
           <Outlet />
