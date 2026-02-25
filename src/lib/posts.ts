@@ -98,7 +98,7 @@ export function getAdjacentPosts(slug: string): { prev: PostMeta | null; next: P
   if (index === -1) return { prev: null, next: null }
 
   return {
-    prev: index < posts.length - 1 ? posts[index + 1] : null,
-    next: index > 0 ? posts[index - 1] : null,
+    prev: index < posts.length - 1 ? posts[index + 1] ?? null : null,
+    next: index > 0 ? posts[index - 1] ?? null : null,
   }
 }
