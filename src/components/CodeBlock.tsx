@@ -1,5 +1,6 @@
-import { type ComponentPropsWithoutRef, useEffect, useState } from "react"
+import { type ComponentPropsWithoutRef, useCallback, useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
+import { Copy, Check } from "lucide-react"
 
 export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
   const codeEl = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>
@@ -12,6 +13,14 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
   ).replace(/\n$/, "")
 
   const [highlightedHtml, setHighlightedHtml] = useState<string>("")
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [code])
 
   useEffect(() => {
     if (!code) return
@@ -36,9 +45,18 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
           <span className="size-3 rounded-full bg-[#febc2e]" />
           <span className="size-3 rounded-full bg-[#28c840]" />
         </div>
-        {language && (
-          <span className="ml-auto text-xs text-muted-foreground">{language}</span>
-        )}
+        <div className="ml-auto flex items-center gap-2">
+          {language && (
+            <span className="text-xs text-muted-foreground">{language}</span>
+          )}
+          <button
+            onClick={handleCopy}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="코드 복사"
+          >
+            {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+          </button>
+        </div>
       </div>
       {highlightedHtml ? (
         <div

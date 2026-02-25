@@ -4,18 +4,19 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
-import { getPostBySlug } from "@/lib/posts"
+import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
 import { getReadingTime } from "@/lib/reading-time"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
   const post = slug ? getPostBySlug(slug) : undefined
+  const { prev, next } = slug ? getAdjacentPosts(slug) : { prev: null, next: null }
 
   useEffect(() => {
     document.title = post ? `${post.title} | Devy's Blog` : "Devy's Blog"
@@ -79,6 +80,46 @@ export function PostPage() {
             {post.content}
           </ReactMarkdown>
         </div>
+
+        {(prev || next) && (
+          <>
+            <Separator className="my-10" />
+            <div className="flex justify-between gap-4">
+              {prev ? (
+                <Link
+                  to={`/posts/${prev.slug}`}
+                  className="group flex flex-col gap-1 max-w-[45%]"
+                >
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <ArrowLeft className="size-3" />
+                    이전 글
+                  </span>
+                  <span className="text-sm font-medium group-hover:text-foreground/80 transition-colors truncate">
+                    {prev.title}
+                  </span>
+                </Link>
+              ) : (
+                <div />
+              )}
+              {next ? (
+                <Link
+                  to={`/posts/${next.slug}`}
+                  className="group flex flex-col items-end gap-1 max-w-[45%]"
+                >
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    다음 글
+                    <ArrowRight className="size-3" />
+                  </span>
+                  <span className="text-sm font-medium group-hover:text-foreground/80 transition-colors truncate">
+                    {next.title}
+                  </span>
+                </Link>
+              ) : (
+                <div />
+              )}
+            </div>
+          </>
+        )}
       </article>
 
       <TableOfContents />

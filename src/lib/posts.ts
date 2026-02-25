@@ -91,3 +91,14 @@ export function getPostBySlug(slug: string): Post | undefined {
   if (!entry) return undefined
   return parsePost(entry[0], entry[1])
 }
+
+export function getAdjacentPosts(slug: string): { prev: PostMeta | null; next: PostMeta | null } {
+  const posts = getAllPosts()
+  const index = posts.findIndex((p) => p.slug === slug)
+  if (index === -1) return { prev: null, next: null }
+
+  return {
+    prev: index < posts.length - 1 ? posts[index + 1] : null,
+    next: index > 0 ? posts[index - 1] : null,
+  }
+}
