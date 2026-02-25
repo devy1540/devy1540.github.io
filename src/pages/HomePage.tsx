@@ -1,94 +1,26 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardAction, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { PostList } from '@/components/post/PostList';
-import { postService } from '@/services/postService';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import type { Post } from '@/types';
+import { getAllPosts } from "@/lib/posts"
+import { PostList } from "@/components/PostList"
 
 export function HomePage() {
-  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchRecentPosts = async () => {
-      try {
-        const posts = await postService.getPosts({ isDraft: false });
-        setRecentPosts(posts.slice(0, 3)); // Show only 3 most recent posts
-      } catch (error) {
-        console.error('Error fetching recent posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecentPosts();
-  }, []);
+  const posts = getAllPosts()
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-12">
-      <div className="space-y-8">
-        <h1 className="text-4xl font-bold text-center">Welcome to My Blog</h1>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Posts</CardTitle>
-            <CardDescription>Latest blog posts and updates</CardDescription>
-            <CardAction>
-              <Link to="/posts">
-                <Button variant="outline" size="sm">View All</Button>
-              </Link>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="flex justify-center py-8">
-                <LoadingSpinner />
-              </div>
-            ) : recentPosts.length > 0 ? (
-              <PostList posts={recentPosts} showExcerpt={false} />
-            ) : (
-              <p className="text-muted-foreground">
-                No posts available yet. Check back soon!
-              </p>
-            )}
-          </CardContent>
-        </Card>
+    <div className="max-w-2xl mx-auto">
+      <section className="py-12 md:py-20">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+          Devy's Blog
+        </h1>
+        <p className="text-muted-foreground text-lg mt-4">
+          개발 이야기를 기록합니다.
+        </p>
+      </section>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>About This Blog</CardTitle>
-              <CardDescription>Learn about the technology stack</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                A modern blog built with <span className="tech-term">React</span>, <span className="tech-term">TypeScript</span>, and <span className="tech-term">Vite</span>. 
-                Featuring a clean design and smooth navigation. Use <kbd>Ctrl</kbd> + <kbd>/</kbd> for keyboard shortcuts.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="ghost" size="sm">Learn More</Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Latest Updates</CardTitle>
-              <CardDescription>What's new and coming soon</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Stay tuned for exciting content coming soon!
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="secondary" size="sm">Get Notified</Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </div>
+      <section>
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
+          Recent Posts
+        </h2>
+        <PostList posts={posts} />
+      </section>
     </div>
-  );
+  )
 }
