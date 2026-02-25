@@ -40,7 +40,7 @@ export function PostPage() {
   return (
     <div className="max-w-5xl mx-auto flex gap-16 xl:gap-24">
       <article className="min-w-0 flex-1 max-w-2xl">
-        <Button asChild variant="ghost" size="sm" className="mb-6">
+        <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to="/">
             <ArrowLeft className="mr-2 h-4 w-4" />
             목록으로
