@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { TableOfContents } from "@/components/TableOfContents"
+import { CodeBlock } from "@/components/CodeBlock"
 import { ArrowLeft } from "lucide-react"
 
 export function PostPage() {
@@ -70,7 +71,11 @@ export function PostPage() {
         <Separator className="mb-8" />
 
         <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSlug]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeSlug]}
+            components={{ pre: CodeBlock }}
+          >
             {post.content}
           </ReactMarkdown>
         </div>
