@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
+import { Comments } from "@/components/Comments"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 export function PostPage() {
@@ -120,6 +121,8 @@ export function PostPage() {
             </div>
           </>
         )}
+
+        <Comments />
       </article>
 
       <TableOfContents />
