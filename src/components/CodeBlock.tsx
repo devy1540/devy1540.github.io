@@ -1,14 +1,35 @@
-import { type ComponentPropsWithoutRef } from "react"
+import { type ComponentPropsWithoutRef, useEffect, useState } from "react"
+import { codeToHtml } from "shiki"
 
 export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
-  // code 태그에서 언어 클래스 추출
   const codeEl = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>
   const className = codeEl?.props?.className || ""
   const match = className.match(/language-(\w+)/)
   const language = match ? match[1] : ""
+  const code = (typeof codeEl?.props?.children === "string"
+    ? codeEl.props.children
+    : ""
+  ).replace(/\n$/, "")
+
+  const [highlightedHtml, setHighlightedHtml] = useState<string>("")
+
+  useEffect(() => {
+    if (!code) return
+
+    codeToHtml(code, {
+      lang: language || "text",
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: false,
+    }).then((html) => {
+      setHighlightedHtml(html)
+    })
+  }, [code, language])
 
   return (
-    <div className="not-prose my-5 rounded-lg border border-border overflow-hidden bg-secondary">
+    <div className="not-prose my-5 rounded-lg border border-border overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 bg-secondary border-b border-border">
         <div className="flex gap-1.5">
           <span className="size-3 rounded-full bg-[#ff5f57]" />
@@ -19,12 +40,19 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
           <span className="ml-auto text-xs text-muted-foreground">{language}</span>
         )}
       </div>
-      <pre
-        {...props}
-        className="m-0 rounded-none border-0 bg-secondary text-secondary-foreground overflow-x-auto p-4"
-      >
-        {children}
-      </pre>
+      {highlightedHtml ? (
+        <div
+          className="[&>pre]:m-0 [&>pre]:rounded-none [&>pre]:border-0 [&>pre]:p-4 [&>pre]:overflow-x-auto [&>pre]:text-sm"
+          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+        />
+      ) : (
+        <pre
+          {...props}
+          className="m-0 rounded-none border-0 bg-secondary text-secondary-foreground overflow-x-auto p-4 text-sm"
+        >
+          {children}
+        </pre>
+      )}
     </div>
   )
 }

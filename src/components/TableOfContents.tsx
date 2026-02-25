@@ -23,7 +23,7 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
       .map((el) => ({
         id: el.id,
         text: el.textContent || "",
-        level: parseInt(el.tagName[1]),
+        level: parseInt(el.tagName.charAt(1)),
       }))
 
     setHeadings(items)

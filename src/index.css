@@ -114,6 +114,18 @@
   }
 }
 
+/* Shiki dual theme */
+.shiki,
+.shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
 /* Markdown prose code blocks */
 .prose pre {
   @apply bg-secondary text-secondary-foreground rounded-lg overflow-x-auto;
