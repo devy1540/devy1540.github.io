@@ -3,11 +3,13 @@ import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
+import rehypeSlug from "rehype-slug"
 import { getPostBySlug } from "@/lib/posts"
 import { getReadingTime } from "@/lib/reading-time"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { TableOfContents } from "@/components/TableOfContents"
 import { ArrowLeft } from "lucide-react"
 
 export function PostPage() {
@@ -36,41 +38,45 @@ export function PostPage() {
   }
 
   return (
-    <article className="max-w-2xl mx-auto">
-      <Button asChild variant="ghost" size="sm" className="mb-6">
-        <Link to="/">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          목록으로
-        </Link>
-      </Button>
+    <div className="max-w-5xl mx-auto flex gap-16 xl:gap-24">
+      <article className="min-w-0 flex-1 max-w-2xl">
+        <Button asChild variant="ghost" size="sm" className="mb-6">
+          <Link to="/">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            목록으로
+          </Link>
+        </Button>
 
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-3">
-          {post.title}
-        </h1>
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <time dateTime={post.date}>{post.date}</time>
-          <span aria-hidden>·</span>
-          <span>{getReadingTime(post.content)}</span>
-        </div>
-        {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {post.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight mb-3">
+            {post.title}
+          </h1>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <time dateTime={post.date}>{post.date}</time>
+            <span aria-hidden>·</span>
+            <span>{getReadingTime(post.content)}</span>
           </div>
-        )}
-      </header>
+          {post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {post.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </header>
 
-      <Separator className="mb-8" />
+        <Separator className="mb-8" />
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {post.content}
-        </ReactMarkdown>
-      </div>
-    </article>
+        <div className="prose prose-neutral dark:prose-invert max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSlug]}>
+            {post.content}
+          </ReactMarkdown>
+        </div>
+      </article>
+
+      <TableOfContents />
+    </div>
   )
 }

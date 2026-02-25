@@ -13,7 +13,7 @@ export function RootLayout() {
           <SidebarTrigger />
           <span className="font-bold text-lg tracking-tight md:hidden">Devy</span>
         </header>
-        <main className="px-4 py-8">
+        <main className="px-4 md:px-14 py-8">
           <Outlet />
         </main>
       </SidebarInset>
