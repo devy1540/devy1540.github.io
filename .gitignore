@@ -25,3 +25,6 @@ npm-debug.log*
 *.sln
 *.sw?
 .omc
+
+tsconfig.app.tsbuildinfo
+tsconfig.node.tsbuildinfo

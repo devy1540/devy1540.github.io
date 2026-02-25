@@ -14,6 +14,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes("shiki")) {
+            return "shiki"
+          }
           if (id.includes("react-markdown") || id.includes("remark") || id.includes("rehype") || id.includes("unified") || id.includes("mdast") || id.includes("hast") || id.includes("micromark")) {
             return "markdown"
           }
@@ -22,9 +25,6 @@ export default defineConfig({
           }
           if (id.includes("radix-ui") || id.includes("@radix")) {
             return "ui"
-          }
-          if (id.includes("node_modules")) {
-            return "vendor"
           }
         },
       },
