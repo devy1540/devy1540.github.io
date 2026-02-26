@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://devy1540.github.io/sitemap.xml

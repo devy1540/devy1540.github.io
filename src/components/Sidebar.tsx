@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
@@ -30,6 +31,7 @@ const navIcons = {
 export function AppSidebar() {
   const { pathname } = useLocation()
   const t = useT()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   const navItems = [
     { label: t.common.home, to: "/", icon: navIcons.home },
@@ -70,7 +72,7 @@ export function AppSidebar() {
                     isActive={isActive(item.to)}
                     tooltip={item.label}
                   >
-                    <NavLink to={item.to} viewTransition>
+                    <NavLink to={item.to} viewTransition onClick={() => isMobile && setOpenMobile(false)}>
                       <item.icon />
                       <span>{item.label}</span>
                     </NavLink>
