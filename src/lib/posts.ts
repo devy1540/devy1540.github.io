@@ -92,6 +92,22 @@ export function getPostBySlug(slug: string): Post | undefined {
   return parsePost(entry[0], entry[1])
 }
 
+export function searchPosts(query: string): PostMeta[] {
+  if (!query.trim()) return getAllPosts()
+  const q = query.toLowerCase()
+  return Object.entries(postFiles)
+    .map(([path, raw]) => parsePost(path, raw))
+    .filter(
+      (post) =>
+        post.title.toLowerCase().includes(q) ||
+        post.description.toLowerCase().includes(q) ||
+        post.tags.some((t) => t.toLowerCase().includes(q)) ||
+        post.content.toLowerCase().includes(q)
+    )
+    .map(({ content: _, ...meta }) => meta)
+    .sort((a, b) => (a.date > b.date ? -1 : 1))
+}
+
 export function getAdjacentPosts(slug: string): { prev: PostMeta | null; next: PostMeta | null } {
   const posts = getAllPosts()
   const index = posts.findIndex((p) => p.slug === slug)
