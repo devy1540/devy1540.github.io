@@ -12,19 +12,14 @@ export function HomePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <section className="py-16 md:py-24">
-        <p className="text-sm font-medium text-muted-foreground mb-3">
-          반갑습니다
-        </p>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-          Devy가 만드는
-          <br />
-          대박 개발 블로그
+      <section className="mb-10">
+        <h1 className="text-4xl font-bold tracking-tight mb-2">
+          Devy's Blog
         </h1>
-        <p className="text-muted-foreground text-lg mt-4 max-w-md">
+        <p className="text-muted-foreground">
           개발하며 배운 것들을 정리하고 공유합니다.
         </p>
-        <div className="flex gap-3 mt-8">
+        <div className="flex gap-3 mt-4">
           <Button asChild>
             <Link to="/posts" viewTransition>
               글 목록 보기
