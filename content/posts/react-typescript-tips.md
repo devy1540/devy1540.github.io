@@ -5,6 +5,7 @@ description: "React 프로젝트에서 TypeScript를 효과적으로 사용하�
 tags: ["react", "typescript"]
 series: "React 마스터하기"
 seriesOrder: 1
+draft: true
 ---
 
 React와 TypeScript를 함께 사용하면 코드의 안전성과 가독성이 크게 향상됩니다. 이 글에서는 실제 프로젝트에서 자주 활용하는 TypeScript 패턴들을 소개합니다.

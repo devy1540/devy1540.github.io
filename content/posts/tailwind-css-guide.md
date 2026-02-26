@@ -3,6 +3,7 @@ title: "Tailwind CSS 시작하기"
 date: "2026-02-15"
 description: "Tailwind CSS의 기본 개념과 활용법을 알아봅니다."
 tags: ["css", "tailwind"]
+draft: true
 ---
 
 Tailwind CSS는 유틸리티 퍼스트(Utility-First) 방식의 CSS 프레임워크입니다. 미리 정의된 클래스들을 조합해 스타일을 구성하기 때문에, 별도의 CSS 파일을 작성하지 않고도 빠르게 UI를 만들 수 있습니다.
