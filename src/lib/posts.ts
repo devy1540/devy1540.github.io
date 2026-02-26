@@ -58,6 +58,8 @@ function parsePost(filePath: string, raw: string): Post {
     date: (data.date as string) ?? "",
     description: (data.description as string) ?? "",
     tags: (data.tags as string[]) ?? [],
+    series: (data.series as string) || undefined,
+    seriesOrder: data.seriesOrder ? Number(data.seriesOrder) : undefined,
     content,
   }
 }
@@ -106,6 +108,39 @@ export function searchPosts(query: string): PostMeta[] {
     )
     .map(({ content: _, ...meta }) => meta)
     .sort((a, b) => (a.date > b.date ? -1 : 1))
+}
+
+export function advancedSearch(options: {
+  query?: string
+  dateFrom?: string
+  dateTo?: string
+  tag?: string
+}): PostMeta[] {
+  const { query, dateFrom, dateTo, tag } = options
+  const q = query?.toLowerCase().trim()
+
+  return Object.entries(postFiles)
+    .map(([path, raw]) => parsePost(path, raw))
+    .filter((post) => {
+      if (q && !(
+        post.title.toLowerCase().includes(q) ||
+        post.description.toLowerCase().includes(q) ||
+        post.tags.some((t) => t.toLowerCase().includes(q)) ||
+        post.content.toLowerCase().includes(q)
+      )) return false
+      if (dateFrom && post.date < dateFrom) return false
+      if (dateTo && post.date > dateTo) return false
+      if (tag && !post.tags.includes(tag)) return false
+      return true
+    })
+    .map(({ content: _, ...meta }) => meta)
+    .sort((a, b) => (a.date > b.date ? -1 : 1))
+}
+
+export function getSeriesPosts(seriesName: string): PostMeta[] {
+  return getAllPosts()
+    .filter((p) => p.series === seriesName)
+    .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0))
 }
 
 export function getAdjacentPosts(slug: string): { prev: PostMeta | null; next: PostMeta | null } {

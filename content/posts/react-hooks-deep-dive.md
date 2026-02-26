@@ -3,6 +3,8 @@ title: "React Hooks 딥다이브"
 date: "2026-02-26"
 description: "React Hooks의 동작 원리와 실전 패턴을 깊이 있게 살펴봅니다."
 tags: ["react", "hooks", "typescript"]
+series: "React 마스터하기"
+seriesOrder: 2
 ---
 
 # React Hooks 딥다이브

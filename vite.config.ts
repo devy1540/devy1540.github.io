@@ -76,7 +76,7 @@ function sitemapPlugin(): Plugin {
         .filter((f) => f.endsWith(".md"))
         .map((f) => f.replace(".md", ""))
 
-      const staticPages = ["/", "/posts", "/tags", "/about"]
+      const staticPages = ["/", "/posts", "/tags", "/search", "/about"]
       const today = new Date().toISOString().split("T")[0]
 
       const urls = [

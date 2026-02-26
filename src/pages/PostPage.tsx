@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
 import { Comments } from "@/components/Comments"
+import { SeriesNavigator } from "@/components/SeriesNavigator"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 
@@ -72,6 +73,10 @@ export function PostPage() {
 
         <Separator className="mb-8" />
 
+        {post.series && (
+          <SeriesNavigator series={post.series} currentSlug={post.slug} />
+        )}
+
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -125,7 +130,7 @@ export function PostPage() {
         <Comments />
       </article>
 
-      <TableOfContents />
+      <TableOfContents key={slug} />
     </div>
   )
 }

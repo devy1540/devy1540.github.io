@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom"
-import { Home, FileText, Tags, User } from "lucide-react"
+import { Home, FileText, Tags, User, Search } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -18,6 +18,7 @@ import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 const navItems = [
   { label: "Home", to: "/", icon: Home },
   { label: "Posts", to: "/posts", icon: FileText },
+  { label: "Search", to: "/search", icon: Search },
   { label: "Tags", to: "/tags", icon: Tags },
   { label: "About", to: "/about", icon: User },
 ]

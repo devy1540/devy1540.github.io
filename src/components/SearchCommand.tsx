@@ -45,10 +45,6 @@ export function SearchCommand() {
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="size-4" />
-        <span className="hidden sm:inline text-xs">Search</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
       </Button>
       <CommandDialog
         open={open}

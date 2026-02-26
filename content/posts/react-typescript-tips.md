@@ -3,6 +3,8 @@ title: "React + TypeScript 실전 팁"
 date: "2026-02-20"
 description: "React 프로젝트에서 TypeScript를 효과적으로 사용하는 팁들을 정리합니다."
 tags: ["react", "typescript"]
+series: "React 마스터하기"
+seriesOrder: 1
 ---
 
 # React + TypeScript 실전 팁

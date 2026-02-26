@@ -4,6 +4,8 @@ export interface PostMeta {
   date: string
   description: string
   tags: string[]
+  series?: string
+  seriesOrder?: number
 }
 
 export interface Post extends PostMeta {

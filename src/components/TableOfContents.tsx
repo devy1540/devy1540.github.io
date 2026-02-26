@@ -29,27 +29,25 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
     setHeadings(items)
   }, [containerSelector])
 
-  // Intersection Observer로 현재 섹션 추적
+  // 스크롤 기반 현재 섹션 추적
   useEffect(() => {
     if (headings.length === 0) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
-          }
+    function onScroll() {
+      const offset = 80
+      let current = headings[0]?.id ?? ""
+      for (const heading of headings) {
+        const el = document.getElementById(heading.id)
+        if (el && el.getBoundingClientRect().top <= offset) {
+          current = heading.id
         }
-      },
-      { rootMargin: "0px 0px -80% 0px", threshold: 0 }
-    )
-
-    for (const heading of headings) {
-      const el = document.getElementById(heading.id)
-      if (el) observer.observe(el)
+      }
+      setActiveId(current)
     }
 
-    return () => observer.disconnect()
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [headings])
 
   if (headings.length === 0) return null
@@ -84,7 +82,7 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
                       heading.level === 3 ? "pl-6" : "pl-3"
                     } ${
                       activeId === heading.id
-                        ? "text-foreground border-l-2 border-foreground -ml-px"
+                        ? "text-primary font-medium border-l-2 border-primary -ml-px"
                         : "text-muted-foreground"
                     }`}
                   >
