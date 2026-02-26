@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ChevronRight, ListOrderedIcon } from "lucide-react"
 import { getSeriesPosts } from "@/lib/posts"
+import { analytics } from "@/lib/analytics"
 import type { PostMeta } from "@/types/post"
 
 interface SeriesNavigatorProps {
@@ -48,6 +49,7 @@ export function SeriesNavigator({ series, currentSlug }: SeriesNavigatorProps) {
                   <Link
                     to={`/posts/${post.slug}`}
                     viewTransition
+                    onClick={() => analytics.clickSeriesNav(series, post.slug)}
                     className="flex items-center gap-2 text-sm py-1 px-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
                   >
                     <span className="text-xs">{i + 1}.</span>

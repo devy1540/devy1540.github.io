@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/hooks/useTheme"
+import { analytics } from "@/lib/analytics"
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
@@ -25,21 +26,21 @@ export function ThemeToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuCheckboxItem
           checked={theme === "light"}
-          onCheckedChange={() => setTheme("light")}
+          onCheckedChange={() => { setTheme("light"); analytics.changeTheme("light") }}
         >
           <Sun className="size-4 mr-2" />
           Light
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === "dark"}
-          onCheckedChange={() => setTheme("dark")}
+          onCheckedChange={() => { setTheme("dark"); analytics.changeTheme("dark") }}
         >
           <Moon className="size-4 mr-2" />
           Dark
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === "system"}
-          onCheckedChange={() => setTheme("system")}
+          onCheckedChange={() => { setTheme("system"); analytics.changeTheme("system") }}
         >
           <Monitor className="size-4 mr-2" />
           System

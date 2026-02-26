@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { SearchIcon } from "lucide-react"
 import { searchPosts } from "@/lib/posts"
+import { analytics } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
@@ -31,6 +32,7 @@ export function SearchCommand() {
   }, [])
 
   function handleSelect(slug: string) {
+    if (query) analytics.search(query, results.length)
     setOpen(false)
     setQuery("")
     navigate(`/posts/${slug}`)

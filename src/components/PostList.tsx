@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
+import { Eye } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { usePageViews } from "@/hooks/usePageViews"
 import type { PostMeta } from "@/types/post"
 
 interface PostListProps {
@@ -14,6 +16,8 @@ export function PostList({
   viewMode = "list",
   emptyMessage = "아직 작성된 글이 없습니다.",
 }: PostListProps) {
+  const { getPostViews } = usePageViews()
+
   if (posts.length === 0) {
     return <p className="text-muted-foreground">{emptyMessage}</p>
   }
@@ -25,8 +29,17 @@ export function PostList({
           <Link key={post.slug} to={`/posts/${post.slug}`} viewTransition className="group">
             <Card className="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
-                <div className="text-xs text-muted-foreground mb-1">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                   <time dateTime={post.date}>{post.date}</time>
+                  {getPostViews(post.slug) !== null && (
+                    <>
+                      <span aria-hidden>·</span>
+                      <span className="flex items-center gap-1">
+                        <Eye className="size-3" />
+                        {getPostViews(post.slug)!.toLocaleString()}
+                      </span>
+                    </>
+                  )}
                 </div>
                 <CardTitle className="text-base group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
@@ -70,6 +83,15 @@ export function PostList({
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
               <time dateTime={post.date}>{post.date}</time>
+              {getPostViews(post.slug) !== null && (
+                <>
+                  <span aria-hidden>·</span>
+                  <span className="flex items-center gap-1">
+                    <Eye className="size-3" />
+                    {getPostViews(post.slug)!.toLocaleString()}
+                  </span>
+                </>
+              )}
             </div>
             <h3 className="text-lg font-medium">{post.title}</h3>
             {post.description && (

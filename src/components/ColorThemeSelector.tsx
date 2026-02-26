@@ -6,6 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { analytics } from "@/lib/analytics"
 
 const colorPresets = [
   { name: "Neutral", value: "", color: "bg-neutral-600" },
@@ -35,6 +36,7 @@ export function ColorThemeSelector() {
     setSelected(value)
     localStorage.setItem("color-theme", value)
     applyColor(value)
+    analytics.changeColorTheme(value || "neutral")
   }
 
   return (

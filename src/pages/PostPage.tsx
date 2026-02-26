@@ -12,13 +12,17 @@ import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft, ArrowRight, Eye } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
+import { usePageViews } from "@/hooks/usePageViews"
+import { analytics } from "@/lib/analytics"
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
   const post = slug ? getPostBySlug(slug) : undefined
   const { prev, next } = slug ? getAdjacentPosts(slug) : { prev: null, next: null }
+  const { getPostViews } = usePageViews()
+  const views = slug ? getPostViews(slug) : null
 
   useMetaTags({
     title: post?.title,
@@ -26,6 +30,10 @@ export function PostPage() {
     url: slug ? `/posts/${slug}` : undefined,
     type: "article",
   })
+
+  if (post && slug) {
+    analytics.viewPost(post.title, slug)
+  }
 
   if (!post) {
     return (
@@ -59,6 +67,15 @@ export function PostPage() {
             <time dateTime={post.date}>{post.date}</time>
             <span aria-hidden>·</span>
             <span>{getReadingTime(post.content)}</span>
+            {views !== null && (
+              <>
+                <span aria-hidden>·</span>
+                <span className="flex items-center gap-1">
+                  <Eye className="size-3" />
+                  {views.toLocaleString()} views
+                </span>
+              </>
+            )}
           </div>
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
