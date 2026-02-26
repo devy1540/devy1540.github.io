@@ -54,6 +54,9 @@ export function useMetaTags({
     setMeta("og:type", type)
     setMeta("og:site_name", siteName)
     setMeta("og:locale", ogLocale)
+    setMeta("og:image", `${BASE_URL}/og-image.png`)
+    setMeta("og:image:width", "1200")
+    setMeta("og:image:height", "630")
 
     return () => {
       document.title = siteName
