@@ -17,6 +17,11 @@ export interface Translations {
     subtitle: string
     viewPosts: string
     introduction: string
+    popularPosts: string
+    statsPosts: string
+    statsSeries: string
+    statsTags: string
+    statsViews: string
   }
   post: {
     notFound: string
@@ -118,6 +123,11 @@ export const ko: Translations = {
     subtitle: "개발하며 배운 것들을 정리하고 공유합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
+    popularPosts: "Popular Posts",
+    statsPosts: "posts",
+    statsSeries: "series",
+    statsTags: "tags",
+    statsViews: "views",
   },
   post: {
     notFound: "글을 찾을 수 없습니다",
@@ -219,6 +229,11 @@ export const en: Translations = {
     subtitle: "Documenting and sharing what I learn through development.",
     viewPosts: "View Posts",
     introduction: "About",
+    popularPosts: "Popular Posts",
+    statsPosts: "posts",
+    statsSeries: "series",
+    statsTags: "tags",
+    statsViews: "views",
   },
   post: {
     notFound: "Post not found",
