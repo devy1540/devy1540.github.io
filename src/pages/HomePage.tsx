@@ -4,7 +4,6 @@ import { useMetaTags } from "@/hooks/useMetaTags"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { VisitorCounter } from "@/components/VisitorCounter"
 import { DailyVisitsChart } from "@/components/DailyVisitsChart"
 
 export function HomePage() {
@@ -21,9 +20,6 @@ export function HomePage() {
         <p className="text-muted-foreground">
           개발하며 배운 것들을 정리하고 공유합니다.
         </p>
-        <div className="mt-3">
-          <VisitorCounter />
-        </div>
         <div className="flex gap-3 mt-4">
           <Button asChild>
             <Link to="/posts" viewTransition>
