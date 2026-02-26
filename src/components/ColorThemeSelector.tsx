@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { analytics } from "@/lib/analytics"
+import { useT } from "@/i18n"
 
 const colorPresets = [
   { name: "Neutral", value: "", color: "bg-neutral-600" },
@@ -31,6 +32,7 @@ export function ColorThemeSelector() {
     applyColor(stored)
     return stored
   })
+  const t = useT()
 
   function handleSelect(value: string) {
     setSelected(value)
@@ -42,7 +44,7 @@ export function ColorThemeSelector() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Change color theme">
+        <Button variant="ghost" size="icon" aria-label={t.components.colorTheme}>
           <PaletteIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>

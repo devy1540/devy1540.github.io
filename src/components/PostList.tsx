@@ -3,6 +3,7 @@ import { Eye } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { usePageViews } from "@/hooks/usePageViews"
+import { useT } from "@/i18n"
 import type { PostMeta } from "@/types/post"
 
 interface PostListProps {
@@ -14,12 +15,13 @@ interface PostListProps {
 export function PostList({
   posts,
   viewMode = "list",
-  emptyMessage = "아직 작성된 글이 없습니다.",
+  emptyMessage,
 }: PostListProps) {
   const { getPostViews } = usePageViews()
+  const t = useT()
 
   if (posts.length === 0) {
-    return <p className="text-muted-foreground">{emptyMessage}</p>
+    return <p className="text-muted-foreground">{emptyMessage ?? t.components.noPostsYet}</p>
   }
 
   if (viewMode === "grid") {

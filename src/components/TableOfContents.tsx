@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChevronRight } from "lucide-react"
+import { useT } from "@/i18n"
 
 interface TocItem {
   id: string
@@ -11,8 +12,8 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
   const [headings, setHeadings] = useState<TocItem[]>([])
   const [activeId, setActiveId] = useState<string>("")
   const [open, setOpen] = useState(true)
+  const t = useT()
 
-  // DOM에서 실제 헤딩 요소를 읽어옴
   useEffect(() => {
     const container = document.querySelector(containerSelector)
     if (!container) return
@@ -29,7 +30,6 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
     setHeadings(items)
   }, [containerSelector])
 
-  // 스크롤 기반 현재 섹션 추적
   useEffect(() => {
     if (headings.length === 0) return
 
@@ -62,7 +62,7 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
           <ChevronRight
             className={`size-4 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
           />
-          목차
+          {t.components.tableOfContents}
         </button>
         <div
           className="grid transition-[grid-template-rows] duration-200 ease-in-out"

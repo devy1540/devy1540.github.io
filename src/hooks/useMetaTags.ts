@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useLanguage } from "@/i18n"
 
 interface MetaTagsOptions {
   title?: string
@@ -7,8 +8,6 @@ interface MetaTagsOptions {
   type?: string
 }
 
-const SITE_NAME = "Devy's Blog"
-const DEFAULT_DESCRIPTION = "개발하며 배운 것들을 정리하고 공유합니다."
 const BASE_URL = "https://devy1540.github.io"
 
 function setMeta(property: string, content: string) {
@@ -37,10 +36,14 @@ export function useMetaTags({
   url,
   type = "website",
 }: MetaTagsOptions = {}) {
+  const { language, t } = useLanguage()
+
   useEffect(() => {
-    const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME
-    const desc = description || DEFAULT_DESCRIPTION
+    const siteName = t.meta.siteName
+    const fullTitle = title ? `${title} | ${siteName}` : siteName
+    const desc = description || t.meta.defaultDescription
     const fullUrl = url ? `${BASE_URL}${url}` : BASE_URL
+    const ogLocale = language === "ko" ? "ko_KR" : "en_US"
 
     document.title = fullTitle
 
@@ -49,10 +52,11 @@ export function useMetaTags({
     setMeta("og:description", desc)
     setMeta("og:url", fullUrl)
     setMeta("og:type", type)
-    setMeta("og:site_name", SITE_NAME)
+    setMeta("og:site_name", siteName)
+    setMeta("og:locale", ogLocale)
 
     return () => {
-      document.title = SITE_NAME
+      document.title = siteName
     }
-  }, [title, description, url, type])
+  }, [title, description, url, type, language, t])
 }

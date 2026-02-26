@@ -137,6 +137,32 @@ export function advancedSearch(options: {
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
 
+export interface SeriesInfo {
+  name: string
+  postCount: number
+  firstDate: string
+}
+
+export function getAllSeries(): SeriesInfo[] {
+  const posts = getAllPosts()
+  const seriesMap = new Map<string, { count: number; firstDate: string }>()
+
+  for (const post of posts) {
+    if (!post.series) continue
+    const existing = seriesMap.get(post.series)
+    if (existing) {
+      existing.count++
+      if (post.date < existing.firstDate) existing.firstDate = post.date
+    } else {
+      seriesMap.set(post.series, { count: 1, firstDate: post.date })
+    }
+  }
+
+  return [...seriesMap.entries()]
+    .map(([name, { count, firstDate }]) => ({ name, postCount: count, firstDate }))
+    .sort((a, b) => (a.firstDate > b.firstDate ? -1 : 1))
+}
+
 export function getSeriesPosts(seriesName: string): PostMeta[] {
   return getAllPosts()
     .filter((p) => p.series === seriesName)

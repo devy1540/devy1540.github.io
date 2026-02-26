@@ -4,9 +4,11 @@ import { getAllPosts } from "@/lib/posts"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PostList } from "@/components/PostList"
+import { useT } from "@/i18n"
 
 export function TagsPage() {
-  useMetaTags({ title: "Tags", description: "태그별 블로그 글 목록", url: "/tags" })
+  const t = useT()
+  useMetaTags({ title: "Tags", description: t.tags.description, url: "/tags" })
   const posts = getAllPosts()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedTag = searchParams.get("tag")
@@ -38,7 +40,7 @@ export function TagsPage() {
             </Link>
           ))}
           {allTags.length === 0 && (
-            <p className="text-muted-foreground">태그가 없습니다.</p>
+            <p className="text-muted-foreground">{t.tags.noTags}</p>
           )}
         </div>
       ) : (
@@ -50,13 +52,13 @@ export function TagsPage() {
               </Badge>
             </span>
             <Button variant="ghost" size="sm" onClick={clearTag}>
-              All tags
+              {t.tags.allTags}
             </Button>
           </div>
 
           <PostList
             posts={filteredPosts}
-            emptyMessage="해당 태그의 글이 없습니다."
+            emptyMessage={t.tags.noPostsWithTag}
           />
         </div>
       )}

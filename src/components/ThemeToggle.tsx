@@ -8,14 +8,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/hooks/useTheme"
 import { analytics } from "@/lib/analytics"
+import { useT } from "@/i18n"
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
+  const t = useT()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Toggle theme">
+        <Button variant="ghost" size="icon" aria-label={t.components.toggleTheme}>
           {resolvedTheme === "dark" ? (
             <Moon className="size-4" />
           ) : (
@@ -29,21 +31,21 @@ export function ThemeToggle() {
           onCheckedChange={() => { setTheme("light"); analytics.changeTheme("light") }}
         >
           <Sun className="size-4 mr-2" />
-          Light
+          {t.components.themeLight}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === "dark"}
           onCheckedChange={() => { setTheme("dark"); analytics.changeTheme("dark") }}
         >
           <Moon className="size-4 mr-2" />
-          Dark
+          {t.components.themeDark}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === "system"}
           onCheckedChange={() => { setTheme("system"); analytics.changeTheme("system") }}
         >
           <Monitor className="size-4 mr-2" />
-          System
+          {t.components.themeSystem}
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>

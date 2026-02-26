@@ -5,11 +5,13 @@ import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { DailyVisitsChart } from "@/components/DailyVisitsChart"
+import { useT } from "@/i18n"
 
 export function HomePage() {
   useMetaTags({ url: "/" })
   const posts = getAllPosts()
   const recentPosts = posts.slice(0, 5)
+  const t = useT()
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -18,17 +20,17 @@ export function HomePage() {
           Devy's Blog
         </h1>
         <p className="text-muted-foreground">
-          개발하며 배운 것들을 정리하고 공유합니다.
+          {t.home.subtitle}
         </p>
         <div className="flex gap-3 mt-4">
           <Button asChild>
             <Link to="/posts" viewTransition>
-              글 목록 보기
+              {t.home.viewPosts}
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to="/about" viewTransition>소개</Link>
+            <Link to="/about" viewTransition>{t.home.introduction}</Link>
           </Button>
         </div>
       </section>
@@ -40,7 +42,7 @@ export function HomePage() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Recent Posts
+            {t.common.recentPosts}
           </h2>
           {posts.length > 5 && (
             <Link
@@ -48,7 +50,7 @@ export function HomePage() {
               viewTransition
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
-              전체 보기
+              {t.common.viewAll}
               <ArrowRight className="size-3" />
             </Link>
           )}

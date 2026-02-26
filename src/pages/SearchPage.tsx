@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DatePicker } from "@/components/DatePicker"
 import { useMetaTags } from "@/hooks/useMetaTags"
+import { useT } from "@/i18n"
 
 export function SearchPage() {
-  useMetaTags({ title: "Search", description: "블로그 글 검색", url: "/search" })
+  const t = useT()
+  useMetaTags({ title: "Search", description: t.search.description, url: "/search" })
 
   const [query, setQuery] = useState("")
   const [dateFrom, setDateFrom] = useState("")
@@ -38,7 +40,7 @@ export function SearchPage() {
         <div className="relative">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="키워드 검색..."
+            placeholder={t.search.placeholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
@@ -47,17 +49,17 @@ export function SearchPage() {
 
         <div className="flex gap-3">
           <div className="flex-1">
-            <label className="text-xs text-muted-foreground mb-1 block">시작일</label>
-            <DatePicker value={dateFrom} onChange={setDateFrom} placeholder="시작일" />
+            <label className="text-xs text-muted-foreground mb-1 block">{t.search.dateFrom}</label>
+            <DatePicker value={dateFrom} onChange={setDateFrom} placeholder={t.search.dateFrom} />
           </div>
           <div className="flex-1">
-            <label className="text-xs text-muted-foreground mb-1 block">종료일</label>
-            <DatePicker value={dateTo} onChange={setDateTo} placeholder="종료일" />
+            <label className="text-xs text-muted-foreground mb-1 block">{t.search.dateTo}</label>
+            <DatePicker value={dateTo} onChange={setDateTo} placeholder={t.search.dateTo} />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-muted-foreground mb-2 block">태그 필터</label>
+          <label className="text-xs text-muted-foreground mb-2 block">{t.search.tagFilter}</label>
           <div className="flex flex-wrap gap-1.5">
             {allTags.map((tag) => (
               <Badge
@@ -75,20 +77,20 @@ export function SearchPage() {
         {hasFilters && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              {results.length}개의 결과
+              {t.search.resultCount(results.length)}
             </span>
             <Button variant="ghost" size="sm" onClick={clearFilters}>
               <XIcon className="size-3 mr-1" />
-              초기화
+              {t.search.reset}
             </Button>
           </div>
         )}
       </div>
 
       {hasFilters ? (
-        <PostList posts={results} emptyMessage="검색 결과가 없습니다." />
+        <PostList posts={results} emptyMessage={t.search.noResults} />
       ) : (
-        <p className="text-muted-foreground text-sm">키워드, 날짜, 태그를 선택하여 검색하세요.</p>
+        <p className="text-muted-foreground text-sm">{t.search.searchGuide}</p>
       )}
     </div>
   )

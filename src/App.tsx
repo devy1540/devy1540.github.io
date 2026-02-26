@@ -4,6 +4,7 @@ import { HomePage } from "./pages/HomePage"
 import { PostPage } from "./pages/PostPage"
 import { PostsPage } from "./pages/PostsPage"
 import { TagsPage } from "./pages/TagsPage"
+import { SeriesPage } from "./pages/SeriesPage"
 import { SearchPage } from "./pages/SearchPage"
 import { AboutPage } from "./pages/AboutPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "posts", element: <PostsPage /> },
       { path: "posts/:slug", element: <PostPage /> },
       { path: "tags", element: <TagsPage /> },
+      { path: "series", element: <SeriesPage /> },
       { path: "search", element: <SearchPage /> },
       { path: "about", element: <AboutPage /> },
       { path: "*", element: <NotFoundPage /> },

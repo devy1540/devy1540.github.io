@@ -16,6 +16,7 @@ import { ArrowLeft, ArrowRight, Eye } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { analytics } from "@/lib/analytics"
+import { useT } from "@/i18n"
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -23,6 +24,7 @@ export function PostPage() {
   const { prev, next } = slug ? getAdjacentPosts(slug) : { prev: null, next: null }
   const { getPostViews } = usePageViews()
   const views = slug ? getPostViews(slug) : null
+  const t = useT()
 
   useMetaTags({
     title: post?.title,
@@ -38,11 +40,11 @@ export function PostPage() {
   if (!post) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <h1 className="text-2xl font-bold mb-4">글을 찾을 수 없습니다</h1>
+        <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
           <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            홈으로 돌아가기
+            {t.post.backToHome}
           </Link>
         </Button>
       </div>
@@ -55,7 +57,7 @@ export function PostPage() {
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            목록으로
+            {t.post.backToList}
           </Link>
         </Button>
 
@@ -70,7 +72,7 @@ export function PostPage() {
             <span aria-hidden>·</span>
             <span className="flex items-center gap-1">
               <Eye className="size-3" />
-              {(views ?? 0).toLocaleString()} views
+              {(views ?? 0).toLocaleString()} {t.post.views}
             </span>
           </div>
           {post.tags.length > 0 && (
@@ -111,7 +113,7 @@ export function PostPage() {
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <ArrowLeft className="size-3" />
-                    이전 글
+                    {t.post.prevPost}
                   </span>
                   <span className="text-sm font-medium group-hover:text-foreground/80 transition-colors truncate">
                     {prev.title}
@@ -126,7 +128,7 @@ export function PostPage() {
                   className="group flex flex-col items-end gap-1 max-w-[45%]"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    다음 글
+                    {t.post.nextPost}
                     <ArrowRight className="size-3" />
                   </span>
                   <span className="text-sm font-medium group-hover:text-foreground/80 transition-colors truncate">

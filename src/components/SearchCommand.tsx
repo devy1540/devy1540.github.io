@@ -12,11 +12,13 @@ import {
   CommandGroup,
   CommandItem,
 } from "@/components/ui/command"
+import { useT } from "@/i18n"
 
 export function SearchCommand() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const navigate = useNavigate()
+  const t = useT()
 
   const results = searchPosts(query)
 
@@ -51,18 +53,18 @@ export function SearchCommand() {
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        title="Search Posts"
-        description="Search blog posts by title, description, tags, or content."
+        title={t.components.searchPosts}
+        description={t.components.searchPostsDescription}
         shouldFilter={false}
       >
         <CommandInput
-          placeholder="Search posts..."
+          placeholder={t.components.searchPlaceholder}
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Posts">
+          <CommandEmpty>{t.components.noResults}</CommandEmpty>
+          <CommandGroup heading={t.components.postsGroup}>
             {results.map((post) => (
               <CommandItem
                 key={post.slug}

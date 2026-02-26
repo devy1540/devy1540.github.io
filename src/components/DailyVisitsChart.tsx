@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePageViews } from "@/hooks/usePageViews"
+import { useT } from "@/i18n"
 
 const GA_API_URL =
   "https://script.google.com/macros/s/AKfycbxx7z1-AvZnCWurLcNBSWiWEDqMXwUoZeC7PsuiHQGloISAb0ZjQrUq0MWbC8pUiSMF/exec"
@@ -46,6 +47,7 @@ function mergeData(base: DailyData[], fetched: DailyData[]): DailyData[] {
 
 export function DailyVisitsChart() {
   const { totalViews } = usePageViews()
+  const t = useT()
   const [data, setData] = useState<DailyData[]>(() => {
     const cached = sessionStorage.getItem("daily-views")
     if (cached) return mergeData(generateLast30Days(), JSON.parse(cached))
@@ -97,7 +99,7 @@ export function DailyVisitsChart() {
           <div>
             <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
               <Eye className="size-3" />
-              Total Views
+              {t.components.totalViews}
             </p>
             <p className="text-2xl font-bold tabular-nums">
               {totalViews !== null ? totalViews.toLocaleString() : "-"}
@@ -106,7 +108,7 @@ export function DailyVisitsChart() {
           <div>
             <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
               <TrendingUp className="size-3" />
-              Last 30 Days
+              {t.components.last30Days}
             </p>
             <p className="text-2xl font-bold tabular-nums">
               {monthlyTotal.toLocaleString()}

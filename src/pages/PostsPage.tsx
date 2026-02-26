@@ -4,9 +4,11 @@ import { LayoutListIcon, LayoutGridIcon } from "lucide-react"
 import { getAllPosts } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
+import { useT } from "@/i18n"
 
 export function PostsPage() {
-  useMetaTags({ title: "Posts", description: "전체 블로그 글 목록", url: "/posts" })
+  const t = useT()
+  useMetaTags({ title: "Posts", description: t.posts.description, url: "/posts" })
   const posts = getAllPosts()
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
 
@@ -19,7 +21,7 @@ export function PostsPage() {
             variant={viewMode === "list" ? "secondary" : "ghost"}
             size="icon-sm"
             onClick={() => setViewMode("list")}
-            aria-label="List view"
+            aria-label={t.posts.listView}
           >
             <LayoutListIcon className="size-4" />
           </Button>
@@ -27,7 +29,7 @@ export function PostsPage() {
             variant={viewMode === "grid" ? "secondary" : "ghost"}
             size="icon-sm"
             onClick={() => setViewMode("grid")}
-            aria-label="Grid view"
+            aria-label={t.posts.gridView}
           >
             <LayoutGridIcon className="size-4" />
           </Button>

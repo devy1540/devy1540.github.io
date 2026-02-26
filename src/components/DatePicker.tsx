@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { useT } from "@/i18n"
 
 interface DatePickerProps {
   value?: string
@@ -12,9 +13,10 @@ interface DatePickerProps {
   placeholder?: string
 }
 
-export function DatePicker({ value, onChange, placeholder = "날짜 선택" }: DatePickerProps) {
+export function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
   const [open, setOpen] = useState(false)
   const date = value ? new Date(value + "T00:00:00") : undefined
+  const t = useT()
 
   return (
     <div className="flex gap-1">
@@ -28,7 +30,7 @@ export function DatePicker({ value, onChange, placeholder = "날짜 선택" }: D
             )}
           >
             <CalendarIcon className="mr-2 size-4" />
-            {date ? format(date, "yyyy-MM-dd") : placeholder}
+            {date ? format(date, "yyyy-MM-dd") : (placeholder ?? t.components.selectDate)}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

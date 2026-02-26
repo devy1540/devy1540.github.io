@@ -24,4 +24,7 @@ export const analytics = {
   clickSeriesNav(series: string, targetSlug: string) {
     trackEvent("click_series_nav", { series_name: series, target_slug: targetSlug })
   },
+  changeLanguage(lang: string) {
+    trackEvent("change_language", { language: lang })
+  },
 }

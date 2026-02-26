@@ -1,6 +1,7 @@
 import { type ComponentPropsWithoutRef, useCallback, useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
 import { Copy, Check } from "lucide-react"
+import { useT } from "@/i18n"
 
 export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
   const codeEl = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>
@@ -14,6 +15,7 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
 
   const [highlightedHtml, setHighlightedHtml] = useState<string>("")
   const [copied, setCopied] = useState(false)
+  const t = useT()
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(code).then(() => {
@@ -52,7 +54,7 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
           <button
             onClick={handleCopy}
             className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="코드 복사"
+            aria-label={t.components.copyCode}
           >
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
           </button>

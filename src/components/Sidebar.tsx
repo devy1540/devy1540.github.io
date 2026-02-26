@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom"
-import { Home, FileText, Tags, User, Search } from "lucide-react"
+import { Home, FileText, Tags, User, Search, Library } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -14,17 +14,30 @@ import {
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
+import { LanguageToggle } from "@/components/LanguageToggle"
+import { useT } from "@/i18n"
 
-const navItems = [
-  { label: "Home", to: "/", icon: Home },
-  { label: "Posts", to: "/posts", icon: FileText },
-  { label: "Search", to: "/search", icon: Search },
-  { label: "Tags", to: "/tags", icon: Tags },
-  { label: "About", to: "/about", icon: User },
-]
+const navIcons = {
+  home: Home,
+  posts: FileText,
+  series: Library,
+  search: Search,
+  tags: Tags,
+  about: User,
+} as const
 
 export function AppSidebar() {
   const { pathname } = useLocation()
+  const t = useT()
+
+  const navItems = [
+    { label: t.common.home, to: "/", icon: navIcons.home },
+    { label: t.common.posts, to: "/posts", icon: navIcons.posts },
+    { label: t.common.series, to: "/series", icon: navIcons.series },
+    { label: t.common.search, to: "/search", icon: navIcons.search },
+    { label: t.common.tags, to: "/tags", icon: navIcons.tags },
+    { label: t.common.about, to: "/about", icon: navIcons.about },
+  ]
 
   function isActive(to: string) {
     if (to === "/") return pathname === "/"
@@ -71,6 +84,7 @@ export function AppSidebar() {
         <div className="flex items-center justify-center gap-1 group-data-[state=collapsed]:flex-col">
           <ThemeToggle />
           <ColorThemeSelector />
+          <LanguageToggle />
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy
