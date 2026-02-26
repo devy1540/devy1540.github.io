@@ -16,6 +16,7 @@ import {
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
+import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
 import { useT } from "@/i18n"
 
 const navIcons = {
@@ -89,6 +90,7 @@ export function AppSidebar() {
           <ThemeToggle />
           <ColorThemeSelector />
           <LanguageToggle />
+          <KeyboardShortcuts />
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy

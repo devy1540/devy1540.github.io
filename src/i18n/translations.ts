@@ -113,6 +113,10 @@ export interface Translations {
     selectDate: string
     scrollToTop: string
     toggleLanguage: string
+    keyboardShortcuts: string
+    shortcutSearch: string
+    shortcutHelp: string
+    general: string
   }
   meta: {
     siteName: string
@@ -233,6 +237,11 @@ export const ko: Translations = {
     selectDate: "날짜 선택",
     scrollToTop: "Scroll to top",
     toggleLanguage: "Toggle language",
+    keyboardShortcuts: "단축키",
+    shortcutSearch: "검색 열기",
+    shortcutHelp: "단축키 안내 열기",
+    shortcutSidebar: "사이드바 토글",
+    general: "일반",
   },
   meta: {
     siteName: "Devy's Blog",
@@ -353,6 +362,11 @@ export const en: Translations = {
     selectDate: "Select date",
     scrollToTop: "Scroll to top",
     toggleLanguage: "Toggle language",
+    keyboardShortcuts: "Keyboard Shortcuts",
+    shortcutSearch: "Open search",
+    shortcutHelp: "Open shortcuts guide",
+    shortcutSidebar: "Toggle sidebar",
+    general: "General",
   },
   meta: {
     siteName: "Devy's Blog",
