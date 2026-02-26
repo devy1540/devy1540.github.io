@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/Sidebar"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SearchCommand } from "@/components/SearchCommand"
+import { ScrollToTopButton } from "@/components/ScrollToTopButton"
 
 export function RootLayout() {
   return (
@@ -20,6 +21,7 @@ export function RootLayout() {
         <main className="px-4 md:px-14 py-8">
           <Outlet />
         </main>
+        <ScrollToTopButton />
       </SidebarInset>
     </SidebarProvider>
   )
