@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -13,18 +12,19 @@ import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
 import { Comments } from "@/components/Comments"
 import { ArrowLeft, ArrowRight } from "lucide-react"
+import { useMetaTags } from "@/hooks/useMetaTags"
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
   const post = slug ? getPostBySlug(slug) : undefined
   const { prev, next } = slug ? getAdjacentPosts(slug) : { prev: null, next: null }
 
-  useEffect(() => {
-    document.title = post ? `${post.title} | Devy's Blog` : "Devy's Blog"
-    return () => {
-      document.title = "Devy's Blog"
-    }
-  }, [post])
+  useMetaTags({
+    title: post?.title,
+    description: post?.description,
+    url: slug ? `/posts/${slug}` : undefined,
+    type: "article",
+  })
 
   if (!post) {
     return (

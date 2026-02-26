@@ -1,10 +1,12 @@
 import { useState } from "react"
+import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon } from "lucide-react"
 import { getAllPosts } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 
 export function PostsPage() {
+  useMetaTags({ title: "Posts", description: "전체 블로그 글 목록", url: "/posts" })
   const posts = getAllPosts()
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
 

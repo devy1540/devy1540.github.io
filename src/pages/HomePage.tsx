@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom"
 import { getAllPosts } from "@/lib/posts"
+import { useMetaTags } from "@/hooks/useMetaTags"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
 export function HomePage() {
+  useMetaTags({ url: "/" })
   const posts = getAllPosts()
   const recentPosts = posts.slice(0, 5)
 

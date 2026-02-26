@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { useMetaTags } from "@/hooks/useMetaTags"
 
 export function NotFoundPage() {
+  useMetaTags({ title: "404" })
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
       <p className="text-8xl font-bold tracking-tight mb-4 text-muted-foreground">

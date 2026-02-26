@@ -1,10 +1,12 @@
 import { Link, useSearchParams } from "react-router-dom"
+import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts } from "@/lib/posts"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PostList } from "@/components/PostList"
 
 export function TagsPage() {
+  useMetaTags({ title: "Tags", description: "태그별 블로그 글 목록", url: "/tags" })
   const posts = getAllPosts()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedTag = searchParams.get("tag")

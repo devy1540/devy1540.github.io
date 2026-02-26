@@ -1,7 +1,9 @@
 import { Github } from "lucide-react"
+import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 
 export function AboutPage() {
+  useMetaTags({ title: "About", description: "소프트웨어 개발자입니다. 기술과 개발 경험을 기록합니다.", url: "/about" })
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-4xl font-bold tracking-tight mb-6">About</h1>

@@ -5,10 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Devy's Blog</title>
+    <meta name="description" content="개발하며 배운 것들을 정리하고 공유합니다." />
+    <meta property="og:title" content="Devy's Blog" />
+    <meta property="og:description" content="개발하며 배운 것들을 정리하고 공유합니다." />
+    <meta property="og:url" content="https://devy1540.github.io" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Devy's Blog" />
+    <link rel="alternate" type="application/rss+xml" title="Devy's Blog RSS" href="https://devy1540.github.io/rss.xml" />
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
     <script>
-      // Prevent dark mode FOUC
-      (function(){var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")})();
+      // Prevent theme FOUC
+      (function(){var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark");var c=localStorage.getItem("color-theme");if(c)document.documentElement.setAttribute("data-color",c)})();
     </script>
   </head>
   <body>

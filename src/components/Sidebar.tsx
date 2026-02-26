@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom"
-import { Home, FileText, Tags, User, Github } from "lucide-react"
+import { Home, FileText, Tags, User } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -13,6 +13,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 
 const navItems = [
   { label: "Home", to: "/", icon: Home },
@@ -66,17 +67,9 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
-        <div className="flex items-center justify-between group-data-[state=collapsed]:justify-center">
+        <div className="flex items-center justify-center gap-1 group-data-[state=collapsed]:flex-col">
           <ThemeToggle />
-          <a
-            href="https://github.com/devy1540"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors p-2 group-data-[state=collapsed]:hidden"
-          >
-            <Github className="size-4" />
-          </a>
+          <ColorThemeSelector />
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy
