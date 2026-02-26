@@ -1,16 +1,31 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon } from "lucide-react"
 import { getAllPosts } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
+import type { PostMeta } from "@/types/post"
 
 export function PostsPage() {
   const t = useT()
   useMetaTags({ title: "Posts", description: t.posts.description, url: "/posts" })
   const posts = getAllPosts()
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
+
+  const groupedByYear = useMemo(() => {
+    const groups = new Map<string, PostMeta[]>()
+    for (const post of posts) {
+      const year = post.date.slice(0, 4)
+      const list = groups.get(year)
+      if (list) {
+        list.push(post)
+      } else {
+        groups.set(year, [post])
+      }
+    }
+    return groups
+  }, [posts])
 
   return (
     <div className={viewMode === "grid" ? "max-w-4xl mx-auto" : "max-w-2xl mx-auto"}>
@@ -35,7 +50,15 @@ export function PostsPage() {
           </Button>
         </div>
       </div>
-      <PostList posts={posts} viewMode={viewMode} />
+
+      {[...groupedByYear.entries()].map(([year, yearPosts]) => (
+        <div key={year} className="mb-8">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+            {year}
+          </h2>
+          <PostList posts={yearPosts} viewMode={viewMode} />
+        </div>
+      ))}
     </div>
   )
 }
