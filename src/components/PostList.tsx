@@ -83,15 +83,11 @@ export function PostList({
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
               <time dateTime={post.date}>{post.date}</time>
-              {getPostViews(post.slug) !== null && (
-                <>
-                  <span aria-hidden>·</span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="size-3" />
-                    {getPostViews(post.slug)!.toLocaleString()}
-                  </span>
-                </>
-              )}
+              <span aria-hidden>·</span>
+              <span className="flex items-center gap-1">
+                <Eye className="size-3" />
+                {(getPostViews(post.slug) ?? 0).toLocaleString()}
+              </span>
             </div>
             <h3 className="text-lg font-medium">{post.title}</h3>
             {post.description && (

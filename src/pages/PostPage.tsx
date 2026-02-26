@@ -67,15 +67,11 @@ export function PostPage() {
             <time dateTime={post.date}>{post.date}</time>
             <span aria-hidden>·</span>
             <span>{getReadingTime(post.content)}</span>
-            {views !== null && (
-              <>
-                <span aria-hidden>·</span>
-                <span className="flex items-center gap-1">
-                  <Eye className="size-3" />
-                  {views.toLocaleString()} views
-                </span>
-              </>
-            )}
+            <span aria-hidden>·</span>
+            <span className="flex items-center gap-1">
+              <Eye className="size-3" />
+              {(views ?? 0).toLocaleString()} views
+            </span>
           </div>
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
