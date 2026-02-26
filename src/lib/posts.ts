@@ -60,6 +60,7 @@ function parsePost(filePath: string, raw: string): Post {
     tags: (data.tags as string[]) ?? [],
     series: (data.series as string) || undefined,
     seriesOrder: data.seriesOrder ? Number(data.seriesOrder) : undefined,
+    draft: data.draft === true || data.draft === "true",
     content,
   }
 }
@@ -70,6 +71,7 @@ export function getAllPosts(): PostMeta[] {
       const { content: _, ...meta } = parsePost(path, raw)
       return meta
     })
+    .filter((post) => !import.meta.env.PROD || !post.draft)
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
 
@@ -77,6 +79,7 @@ export function getAllTags(): string[] {
   const tags = new Set<string>()
   for (const [path, raw] of Object.entries(postFiles)) {
     const post = parsePost(path, raw)
+    if (import.meta.env.PROD && post.draft) continue
     post.tags.forEach((t) => tags.add(t))
   }
   return [...tags].sort()
@@ -91,7 +94,9 @@ export function getPostBySlug(slug: string): Post | undefined {
     path.endsWith(`/${slug}.md`)
   )
   if (!entry) return undefined
-  return parsePost(entry[0], entry[1])
+  const post = parsePost(entry[0], entry[1])
+  if (import.meta.env.PROD && post.draft) return undefined
+  return post
 }
 
 export function searchPosts(query: string): PostMeta[] {
@@ -99,13 +104,15 @@ export function searchPosts(query: string): PostMeta[] {
   const q = query.toLowerCase()
   return Object.entries(postFiles)
     .map(([path, raw]) => parsePost(path, raw))
-    .filter(
-      (post) =>
+    .filter((post) => {
+      if (import.meta.env.PROD && post.draft) return false
+      return (
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||
         post.tags.some((t) => t.toLowerCase().includes(q)) ||
         post.content.toLowerCase().includes(q)
-    )
+      )
+    })
     .map(({ content: _, ...meta }) => meta)
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
@@ -122,6 +129,7 @@ export function advancedSearch(options: {
   return Object.entries(postFiles)
     .map(([path, raw]) => parsePost(path, raw))
     .filter((post) => {
+      if (import.meta.env.PROD && post.draft) return false
       if (q && !(
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||

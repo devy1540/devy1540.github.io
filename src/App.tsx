@@ -9,11 +9,13 @@ import { SearchPage } from "./pages/SearchPage"
 import { AnalyticsPage } from "./pages/AnalyticsPage"
 import { AboutPage } from "./pages/AboutPage"
 import { ProjectDetailPage } from "./pages/ProjectDetailPage"
+import { ErrorPage } from "./pages/ErrorPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
 
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "posts", element: <PostsPage /> },

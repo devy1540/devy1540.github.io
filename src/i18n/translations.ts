@@ -62,6 +62,8 @@ export interface Translations {
   }
   notFound: {
     title: string
+    errorTitle: string
+    errorMessage: string
   }
   analytics: {
     description: string
@@ -75,6 +77,7 @@ export interface Translations {
     tagDistribution: string
     monthlyPosts: string
     postsCount: string
+    others: string
     noData: string
   }
   about: {
@@ -176,6 +179,8 @@ export const ko: Translations = {
   },
   notFound: {
     title: "페이지를 찾을 수 없습니다",
+    errorTitle: "문제가 발생했습니다",
+    errorMessage: "페이지를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.",
   },
   analytics: {
     description: "블로그 통계 및 분석",
@@ -189,6 +194,7 @@ export const ko: Translations = {
     tagDistribution: "태그 분포",
     monthlyPosts: "월별 포스팅 현황",
     postsCount: "글 수",
+    others: "기타",
     noData: "데이터 없음",
   },
   about: {
@@ -290,6 +296,8 @@ export const en: Translations = {
   },
   notFound: {
     title: "Page not found",
+    errorTitle: "Something went wrong",
+    errorMessage: "An error occurred while loading the page. Please try again.",
   },
   analytics: {
     description: "Blog statistics and analytics",
@@ -303,6 +311,7 @@ export const en: Translations = {
     tagDistribution: "Tag Distribution",
     monthlyPosts: "Monthly Posts",
     postsCount: "Posts",
+    others: "Others",
     noData: "No data",
   },
   about: {

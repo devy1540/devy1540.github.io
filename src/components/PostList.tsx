@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { Eye } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { usePageViews } from "@/hooks/usePageViews"
@@ -44,6 +45,9 @@ export function PostList({
                   )}
                 </div>
                 <CardTitle className="text-base group-hover:text-primary transition-colors line-clamp-2">
+                  {import.meta.env.DEV && post.draft && (
+                    <Badge variant="destructive" className="mr-1.5 text-[10px] px-1.5 py-0 align-middle">DRAFT</Badge>
+                  )}
                   {post.title}
                 </CardTitle>
                 {post.description && (
@@ -91,7 +95,12 @@ export function PostList({
                 {(getPostViews(post.slug) ?? 0).toLocaleString()}
               </span>
             </div>
-            <h3 className="text-lg font-medium">{post.title}</h3>
+            <h3 className="text-lg font-medium">
+              {import.meta.env.DEV && post.draft && (
+                <Badge variant="destructive" className="mr-1.5 text-[10px] px-1.5 py-0 align-middle">DRAFT</Badge>
+              )}
+              {post.title}
+            </h3>
             {post.description && (
               <p className="text-muted-foreground mt-1 text-sm line-clamp-2">
                 {post.description}

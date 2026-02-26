@@ -62,6 +62,12 @@ export function PostPage() {
         </Button>
 
         <header className="mb-8">
+          {import.meta.env.DEV && post.draft && (
+            <div className="mb-3 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
+              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">DRAFT</Badge>
+              이 글은 아직 작성 중이며, 프로덕션에서는 표시되지 않습니다.
+            </div>
+          )}
           <h1 className="text-3xl font-bold tracking-tight mb-3">
             {post.title}
           </h1>

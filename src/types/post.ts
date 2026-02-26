@@ -6,6 +6,7 @@ export interface PostMeta {
   tags: string[]
   series?: string
   seriesOrder?: number
+  draft?: boolean
 }
 
 export interface Post extends PostMeta {

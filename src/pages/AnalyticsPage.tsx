@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { Eye, FileText, Library, Tags, Hash } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Eye, FileText, Library, Tags } from "lucide-react"
+import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartContainer,
@@ -14,6 +14,19 @@ import { usePageViews } from "@/hooks/usePageViews"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
 import { useT } from "@/i18n"
+
+const TAG_COLORS = [
+  "oklch(0.65 0.2 250)",   // blue
+  "oklch(0.65 0.2 150)",   // green
+  "oklch(0.65 0.2 20)",    // rose
+  "oklch(0.7 0.2 50)",     // orange
+  "oklch(0.6 0.25 290)",   // violet
+  "oklch(0.65 0.15 200)",  // teal
+  "oklch(0.65 0.2 330)",   // pink
+  "oklch(0.7 0.15 90)",    // lime
+  "oklch(0.6 0.2 270)",    // indigo
+  "oklch(0.7 0.15 60)",    // amber
+]
 
 const monthlyChartConfig = {
   count: {
@@ -51,10 +64,33 @@ export function AnalyticsPage() {
         map.set(tag, (map.get(tag) ?? 0) + 1)
       }
     }
-    return [...map.entries()]
+    const sorted = [...map.entries()]
       .map(([tag, count]) => ({ tag, count }))
       .sort((a, b) => b.count - a.count)
-  }, [posts])
+
+    const top = sorted.slice(0, 5)
+    const restCount = sorted.slice(5).reduce((s, d) => s + d.count, 0)
+
+    const result = top.map((item, i) => ({
+      tag: item.tag,
+      count: item.count,
+      fill: TAG_COLORS[i]!,
+    }))
+
+    if (restCount > 0) {
+      result.push({ tag: t.analytics.others, count: restCount, fill: "var(--muted-foreground)" })
+    }
+
+    return result
+  }, [posts, t])
+
+  const tagChartConfig = useMemo(() => {
+    const config: ChartConfig = { count: { label: "Posts" } }
+    for (const item of tagDistribution) {
+      config[item.tag] = { label: item.tag, color: item.fill }
+    }
+    return config
+  }, [tagDistribution])
 
   const monthlyPosts = useMemo(() => {
     const map = new Map<string, number>()
@@ -149,32 +185,37 @@ export function AnalyticsPage() {
             {tagDistribution.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t.analytics.noData}</p>
             ) : (
-              <div className="space-y-1.5">
-                {tagDistribution.map((item) => (
-                  <Link
-                    key={item.tag}
-                    to={`/tags?tag=${encodeURIComponent(item.tag)}`}
-                    viewTransition
-                    className="flex items-center gap-2 group"
+              <ChartContainer config={tagChartConfig} className="mx-auto aspect-square max-h-[300px]">
+                <PieChart>
+                  <ChartTooltip content={<ChartTooltipContent nameKey="tag" hideLabel />} />
+                  <Pie
+                    data={tagDistribution}
+                    dataKey="count"
+                    nameKey="tag"
+                    innerRadius={60}
+                    strokeWidth={2}
+                    stroke="var(--background)"
                   >
-                    <Hash className="size-3 text-muted-foreground shrink-0" />
-                    <span className="text-sm w-28 truncate group-hover:text-primary transition-colors">
-                      {item.tag}
-                    </span>
-                    <div className="flex-1 h-5 bg-muted rounded-sm overflow-hidden">
-                      <div
-                        className="h-full bg-primary/20 group-hover:bg-primary/30 transition-colors rounded-sm"
-                        style={{
-                          width: `${(item.count / (tagDistribution[0]?.count ?? 1)) * 100}%`,
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs text-muted-foreground tabular-nums w-6 text-right">
-                      {item.count}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+                    <Label
+                      content={({ viewBox }) => {
+                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          const total = tagDistribution.reduce((s, d) => s + d.count, 0)
+                          return (
+                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                              <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
+                                {total}
+                              </tspan>
+                              <tspan x={viewBox.cx} y={(viewBox.cy ?? 0) + 24} className="fill-muted-foreground text-sm">
+                                Posts
+                              </tspan>
+                            </text>
+                          )
+                        }
+                      }}
+                    />
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
             )}
           </CardContent>
         </Card>

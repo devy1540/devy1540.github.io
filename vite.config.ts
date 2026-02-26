@@ -38,8 +38,10 @@ function rssPlugin(): Plugin {
             title: data.title || f.replace(".md", ""),
             description: data.description || "",
             date: data.date || "",
+            draft: data.draft === "true",
           }
         })
+        .filter((p) => !p.draft)
         .sort((a, b) => (a.date > b.date ? -1 : 1))
 
       const items = posts.map((p) => `    <item>
@@ -74,6 +76,11 @@ function sitemapPlugin(): Plugin {
       const postsDir = path.resolve(__dirname, "content/posts")
       const slugs = fs.readdirSync(postsDir)
         .filter((f) => f.endsWith(".md"))
+        .filter((f) => {
+          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
+          const { data } = parseFrontmatter(raw)
+          return data.draft !== "true"
+        })
         .map((f) => f.replace(".md", ""))
 
       const staticPages = ["/", "/posts", "/tags", "/series", "/search", "/about"]
@@ -94,8 +101,19 @@ ${urls.join("\n")}
   }
 }
 
+function spa404Plugin(): Plugin {
+  return {
+    name: "copy-index-to-404",
+    closeBundle() {
+      const indexPath = path.resolve(__dirname, "dist/index.html")
+      const notFoundPath = path.resolve(__dirname, "dist/404.html")
+      fs.copyFileSync(indexPath, notFoundPath)
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), sitemapPlugin(), rssPlugin()],
+  plugins: [react(), sitemapPlugin(), rssPlugin(), spa404Plugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

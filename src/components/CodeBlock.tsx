@@ -5,93 +5,111 @@ import { useT } from "@/i18n"
 import { useTheme } from "@/hooks/useTheme"
 import mermaid from "mermaid"
 
-const MERMAID_LIGHT = {
-  theme: "base" as const,
-  themeVariables: {
-    primaryColor: "#f4f4f5",
-    primaryTextColor: "#18181b",
-    primaryBorderColor: "#d4d4d8",
-    secondaryColor: "#fafafa",
-    secondaryTextColor: "#3f3f46",
-    secondaryBorderColor: "#e4e4e7",
-    tertiaryColor: "#f4f4f5",
-    lineColor: "#a1a1aa",
-    textColor: "#27272a",
-    mainBkg: "#f4f4f5",
-    nodeBorder: "#d4d4d8",
-    clusterBkg: "#fafafa",
-    clusterBorder: "#e4e4e7",
-    titleColor: "#18181b",
-    edgeLabelBackground: "#ffffff",
-    nodeTextColor: "#18181b",
-    actorBkg: "#f4f4f5",
-    actorBorder: "#d4d4d8",
-    actorTextColor: "#18181b",
-    actorLineColor: "#a1a1aa",
-    signalColor: "#18181b",
-    signalTextColor: "#18181b",
-    noteBkgColor: "#fef9c3",
-    noteTextColor: "#713f12",
-    noteBorderColor: "#fde047",
-    activationBkgColor: "#e4e4e7",
-    activationBorderColor: "#a1a1aa",
-    sequenceNumberColor: "#ffffff",
-    sectionBkgColor: "#f4f4f5",
-    altSectionBkgColor: "#fafafa",
-    gridColor: "#e4e4e7",
-    fontFamily: "ui-sans-serif, system-ui, sans-serif",
-    fontSize: "14px",
-  },
+function getCssHex(varName: string): string {
+  const temp = document.createElement("div")
+  temp.style.color = `var(${varName})`
+  document.body.appendChild(temp)
+  const computed = getComputedStyle(temp).color
+  temp.remove()
+
+  // rgb(r, g, b) or rgba(r, g, b, a)
+  const rgbMatch = computed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+  if (rgbMatch) {
+    return "#" + [rgbMatch[1], rgbMatch[2], rgbMatch[3]]
+      .map(n => parseInt(n!).toString(16).padStart(2, "0")).join("")
+  }
+
+  // color(srgb r g b) — values 0-1
+  const srgbMatch = computed.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/)
+  if (srgbMatch) {
+    return "#" + [srgbMatch[1], srgbMatch[2], srgbMatch[3]]
+      .map(n => Math.round(parseFloat(n!) * 255).toString(16).padStart(2, "0")).join("")
+  }
+
+  // Fallback: draw on canvas to resolve any color format
+  const canvas = document.createElement("canvas")
+  canvas.width = canvas.height = 1
+  const ctx = canvas.getContext("2d")!
+  ctx.fillStyle = computed
+  ctx.fillRect(0, 0, 1, 1)
+  const d = ctx.getImageData(0, 0, 1, 1).data
+  return "#" + [d[0]!, d[1]!, d[2]!].map(n => n.toString(16).padStart(2, "0")).join("")
 }
 
-const MERMAID_DARK = {
-  theme: "base" as const,
-  themeVariables: {
-    primaryColor: "#27272a",
-    primaryTextColor: "#fafafa",
-    primaryBorderColor: "#3f3f46",
-    secondaryColor: "#1c1c1e",
-    secondaryTextColor: "#d4d4d8",
-    secondaryBorderColor: "#3f3f46",
-    tertiaryColor: "#27272a",
-    lineColor: "#71717a",
-    textColor: "#e4e4e7",
-    mainBkg: "#27272a",
-    nodeBorder: "#3f3f46",
-    clusterBkg: "#1c1c1e",
-    clusterBorder: "#3f3f46",
-    titleColor: "#fafafa",
-    edgeLabelBackground: "#18181b",
-    nodeTextColor: "#fafafa",
-    actorBkg: "#27272a",
-    actorBorder: "#3f3f46",
-    actorTextColor: "#fafafa",
-    actorLineColor: "#71717a",
-    signalColor: "#fafafa",
-    signalTextColor: "#fafafa",
-    noteBkgColor: "#422006",
-    noteTextColor: "#fef9c3",
-    noteBorderColor: "#854d0e",
-    activationBkgColor: "#3f3f46",
-    activationBorderColor: "#71717a",
-    sequenceNumberColor: "#18181b",
-    sectionBkgColor: "#27272a",
-    altSectionBkgColor: "#1c1c1e",
-    gridColor: "#3f3f46",
-    fontFamily: "ui-sans-serif, system-ui, sans-serif",
-    fontSize: "14px",
-  },
+function blendHex(a: string, b: string, ratio: number): string {
+  const parse = (h: string, i: number) => parseInt(h.slice(1 + i * 2, 3 + i * 2), 16)
+  const mix = (i: number) => Math.round(parse(a, i) + (parse(b, i) - parse(a, i)) * ratio)
+  return "#" + [0, 1, 2].map(i => mix(i).toString(16).padStart(2, "0")).join("")
+}
+
+function buildMermaidTheme(isDark: boolean) {
+  const primary = getCssHex("--primary")
+  const fg = getCssHex("--foreground")
+  const bg = getCssHex("--background")
+  const muted = getCssHex("--muted")
+  const mutedFg = getCssHex("--muted-foreground")
+  const border = getCssHex("--border")
+
+  const nodeBg = isDark ? blendHex(primary, bg, 0.6) : blendHex(primary, bg, 0.85)
+  const nodeBorder = primary
+  const clusterBg = isDark ? blendHex(bg, primary, 0.05) : blendHex(bg, primary, 0.03)
+
+  return {
+    theme: "base" as const,
+    themeVariables: {
+      primaryColor: nodeBg,
+      primaryTextColor: fg,
+      primaryBorderColor: nodeBorder,
+      secondaryColor: muted,
+      secondaryTextColor: fg,
+      secondaryBorderColor: border,
+      tertiaryColor: isDark ? blendHex(primary, bg, 0.7) : blendHex(primary, bg, 0.9),
+      lineColor: mutedFg,
+      textColor: fg,
+      mainBkg: nodeBg,
+      nodeBorder: nodeBorder,
+      clusterBkg: clusterBg,
+      clusterBorder: border,
+      titleColor: fg,
+      edgeLabelBackground: bg,
+      nodeTextColor: fg,
+      actorBkg: nodeBg,
+      actorBorder: nodeBorder,
+      actorTextColor: fg,
+      actorLineColor: mutedFg,
+      signalColor: fg,
+      signalTextColor: fg,
+      noteBkgColor: isDark ? "#422006" : "#fefce8",
+      noteTextColor: isDark ? "#fef9c3" : "#713f12",
+      noteBorderColor: isDark ? "#854d0e" : "#fde047",
+      activationBkgColor: nodeBg,
+      activationBorderColor: nodeBorder,
+      sequenceNumberColor: bg,
+      sectionBkgColor: nodeBg,
+      altSectionBkgColor: muted,
+      gridColor: border,
+      fontFamily: "ui-sans-serif, system-ui, sans-serif",
+      fontSize: "15px",
+    },
+  }
 }
 
 function MermaidBlock({ code }: { code: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const id = useId().replace(/:/g, "_")
   const { resolvedTheme } = useTheme()
+  const [colorKey, setColorKey] = useState(0)
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => setColorKey(k => k + 1))
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-color", "class"] })
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!containerRef.current || !code) return
 
-    const config = resolvedTheme === "dark" ? MERMAID_DARK : MERMAID_LIGHT
+    const config = buildMermaidTheme(resolvedTheme === "dark")
     mermaid.initialize({ startOnLoad: false, securityLevel: "loose", ...config })
 
     const el = containerRef.current
@@ -99,14 +117,41 @@ function MermaidBlock({ code }: { code: string }) {
 
     mermaid.render(`mermaid${id}_${resolvedTheme}`, code).then(({ svg }) => {
       el.innerHTML = svg
+      const svgEl = el.querySelector("svg")
+      if (svgEl) {
+        svgEl.removeAttribute("height")
+        svgEl.style.width = "100%"
+        svgEl.style.maxWidth = "100%"
+
+        // Rounded corners on all rect nodes
+        svgEl.querySelectorAll("rect.basic, rect.label-container, .node rect, .cluster rect").forEach((rect) => {
+          rect.setAttribute("rx", "8")
+          rect.setAttribute("ry", "8")
+        })
+
+        // Thicker edges
+        svgEl.querySelectorAll(".edge-pattern-solid, .flowchart-link, path.path").forEach((path) => {
+          path.setAttribute("stroke-width", "2")
+        })
+
+        // Drop shadow filter
+        const defs = svgEl.querySelector("defs") ?? svgEl.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "defs"), svgEl.firstChild)
+        const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter")
+        filter.setAttribute("id", `shadow_${id}`)
+        filter.innerHTML = `<feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08" />`
+        defs.appendChild(filter)
+        svgEl.querySelectorAll(".node rect, .node polygon, .node circle, .cluster rect").forEach((node) => {
+          node.setAttribute("filter", `url(#shadow_${id})`)
+        })
+      }
     }).catch(() => {
       el.textContent = code
     })
-  }, [code, id, resolvedTheme])
+  }, [code, id, resolvedTheme, colorKey])
 
   return (
-    <div className="not-prose my-6 flex justify-center rounded-xl border border-border bg-white px-4 py-8 overflow-x-auto shadow-sm dark:bg-zinc-950">
-      <div ref={containerRef} className="[&>svg]:max-w-full" />
+    <div className="not-prose my-6 rounded-xl border border-border bg-white px-4 py-8 overflow-x-auto shadow-sm dark:bg-zinc-950">
+      <div ref={containerRef} className="w-full" />
     </div>
   )
 }
