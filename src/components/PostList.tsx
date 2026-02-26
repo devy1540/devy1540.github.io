@@ -1,18 +1,61 @@
 import { Link } from "react-router-dom"
 import { Separator } from "@/components/ui/separator"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import type { PostMeta } from "@/types/post"
 
 interface PostListProps {
   posts: PostMeta[]
+  viewMode?: "list" | "grid"
   emptyMessage?: string
 }
 
 export function PostList({
   posts,
+  viewMode = "list",
   emptyMessage = "아직 작성된 글이 없습니다.",
 }: PostListProps) {
   if (posts.length === 0) {
     return <p className="text-muted-foreground">{emptyMessage}</p>
+  }
+
+  if (viewMode === "grid") {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {posts.map((post) => (
+          <Link key={post.slug} to={`/posts/${post.slug}`} viewTransition className="group">
+            <Card className="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+              <CardHeader>
+                <div className="text-xs text-muted-foreground mb-1">
+                  <time dateTime={post.date}>{post.date}</time>
+                </div>
+                <CardTitle className="text-base group-hover:text-primary transition-colors line-clamp-2">
+                  {post.title}
+                </CardTitle>
+                {post.description && (
+                  <CardDescription className="line-clamp-2">
+                    {post.description}
+                  </CardDescription>
+                )}
+              </CardHeader>
+              {post.tags.length > 0 && (
+                <CardContent>
+                  <div className="flex flex-wrap gap-1.5">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-0.5"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          </Link>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -22,6 +65,7 @@ export function PostList({
           {i > 0 && <Separator />}
           <Link
             to={`/posts/${post.slug}`}
+            viewTransition
             className="block rounded-md px-3 py-4 -mx-3 transition-colors hover:bg-accent/50"
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">

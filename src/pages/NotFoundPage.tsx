@@ -11,7 +11,7 @@ export function NotFoundPage() {
         페이지를 찾을 수 없습니다
       </h1>
       <Button asChild>
-        <Link to="/">홈으로 돌아가기</Link>
+        <Link to="/" viewTransition>홈으로 돌아가기</Link>
       </Button>
     </div>
   )

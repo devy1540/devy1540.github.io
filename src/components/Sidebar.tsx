@@ -34,6 +34,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
         <NavLink
           to="/"
+          viewTransition
           className="text-lg font-bold tracking-tight hover:opacity-80 transition-opacity group-data-[collapsible=icon]:text-center"
         >
           <span className="group-data-[state=collapsed]:hidden">Devy</span>
@@ -52,7 +53,7 @@ export function AppSidebar() {
                     isActive={isActive(item.to)}
                     tooltip={item.label}
                   >
-                    <NavLink to={item.to}>
+                    <NavLink to={item.to} viewTransition>
                       <item.icon />
                       <span>{item.label}</span>
                     </NavLink>

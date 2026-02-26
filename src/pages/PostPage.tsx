@@ -31,7 +31,7 @@ export function PostPage() {
       <div className="max-w-2xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold mb-4">글을 찾을 수 없습니다</h1>
         <Button asChild variant="ghost">
-          <Link to="/">
+          <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
             홈으로 돌아가기
           </Link>
@@ -44,7 +44,7 @@ export function PostPage() {
     <div className="max-w-5xl mx-auto flex gap-16 xl:gap-24">
       <article className="min-w-0 flex-1 max-w-2xl">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-          <Link to="/">
+          <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
             목록으로
           </Link>
@@ -88,7 +88,7 @@ export function PostPage() {
             <div className="flex justify-between gap-4">
               {prev ? (
                 <Link
-                  to={`/posts/${prev.slug}`}
+                  to={`/posts/${prev.slug}`} viewTransition
                   className="group flex flex-col gap-1 max-w-[45%]"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -104,7 +104,7 @@ export function PostPage() {
               )}
               {next ? (
                 <Link
-                  to={`/posts/${next.slug}`}
+                  to={`/posts/${next.slug}`} viewTransition
                   className="group flex flex-col items-end gap-1 max-w-[45%]"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">

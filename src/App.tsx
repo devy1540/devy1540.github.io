@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { RootLayout } from "./layouts/RootLayout"
 import { HomePage } from "./pages/HomePage"
 import { PostPage } from "./pages/PostPage"
@@ -7,17 +7,20 @@ import { TagsPage } from "./pages/TagsPage"
 import { AboutPage } from "./pages/AboutPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
 
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "posts", element: <PostsPage /> },
+      { path: "posts/:slug", element: <PostPage /> },
+      { path: "tags", element: <TagsPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "*", element: <NotFoundPage /> },
+    ],
+  },
+])
+
 export function App() {
-  return (
-    <Routes>
-      <Route element={<RootLayout />}>
-        <Route index element={<HomePage />} />
-        <Route path="posts" element={<PostsPage />} />
-        <Route path="posts/:slug" element={<PostPage />} />
-        <Route path="tags" element={<TagsPage />} />
-        <Route path="about" element={<AboutPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
-  )
+  return <RouterProvider router={router} />
 }

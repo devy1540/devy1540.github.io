@@ -26,7 +26,7 @@ export function TagsPage() {
       {!selectedTag ? (
         <div className="flex flex-wrap gap-3">
           {allTags.map((tag) => (
-            <Link key={tag} to={`/tags?tag=${encodeURIComponent(tag)}`}>
+            <Link key={tag} to={`/tags?tag=${encodeURIComponent(tag)}`} viewTransition>
               <Badge
                 variant="secondary"
                 className="text-sm px-3 py-1 cursor-pointer hover:bg-accent"

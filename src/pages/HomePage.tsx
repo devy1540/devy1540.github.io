@@ -24,13 +24,13 @@ export function HomePage() {
         </p>
         <div className="flex gap-3 mt-8">
           <Button asChild>
-            <Link to="/posts">
+            <Link to="/posts" viewTransition>
               글 목록 보기
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to="/about">소개</Link>
+            <Link to="/about" viewTransition>소개</Link>
           </Button>
         </div>
       </section>
@@ -43,6 +43,7 @@ export function HomePage() {
           {posts.length > 5 && (
             <Link
               to="/posts"
+              viewTransition
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               전체 보기
