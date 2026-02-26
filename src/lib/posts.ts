@@ -61,8 +61,15 @@ function parsePost(filePath: string, raw: string): Post {
     series: (data.series as string) || undefined,
     seriesOrder: data.seriesOrder ? Number(data.seriesOrder) : undefined,
     draft: data.draft === true || data.draft === "true",
+    publishDate: (data.publishDate as string) || undefined,
     content,
   }
+}
+
+function isHidden(post: Pick<PostMeta, "draft" | "publishDate">): boolean {
+  if (post.draft) return true
+  if (post.publishDate && post.publishDate > new Date().toISOString().split("T")[0]!) return true
+  return false
 }
 
 export function getAllPosts(): PostMeta[] {
@@ -71,7 +78,7 @@ export function getAllPosts(): PostMeta[] {
       const { content: _, ...meta } = parsePost(path, raw)
       return meta
     })
-    .filter((post) => !import.meta.env.PROD || !post.draft)
+    .filter((post) => !import.meta.env.PROD || !isHidden(post))
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
 
@@ -79,7 +86,7 @@ export function getAllTags(): string[] {
   const tags = new Set<string>()
   for (const [path, raw] of Object.entries(postFiles)) {
     const post = parsePost(path, raw)
-    if (import.meta.env.PROD && post.draft) continue
+    if (import.meta.env.PROD && isHidden(post)) continue
     post.tags.forEach((t) => tags.add(t))
   }
   return [...tags].sort()
@@ -95,7 +102,7 @@ export function getPostBySlug(slug: string): Post | undefined {
   )
   if (!entry) return undefined
   const post = parsePost(entry[0], entry[1])
-  if (import.meta.env.PROD && post.draft) return undefined
+  if (import.meta.env.PROD && isHidden(post)) return undefined
   return post
 }
 
@@ -105,7 +112,7 @@ export function searchPosts(query: string): PostMeta[] {
   return Object.entries(postFiles)
     .map(([path, raw]) => parsePost(path, raw))
     .filter((post) => {
-      if (import.meta.env.PROD && post.draft) return false
+      if (import.meta.env.PROD && isHidden(post)) return false
       return (
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||
@@ -129,7 +136,7 @@ export function advancedSearch(options: {
   return Object.entries(postFiles)
     .map(([path, raw]) => parsePost(path, raw))
     .filter((post) => {
-      if (import.meta.env.PROD && post.draft) return false
+      if (import.meta.env.PROD && isHidden(post)) return false
       if (q && !(
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||

@@ -39,9 +39,10 @@ function rssPlugin(): Plugin {
             description: data.description || "",
             date: data.date || "",
             draft: data.draft === "true",
+            publishDate: data.publishDate || "",
           }
         })
-        .filter((p) => !p.draft)
+        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
         .sort((a, b) => (a.date > b.date ? -1 : 1))
 
       const items = posts.map((p) => `    <item>
@@ -79,7 +80,9 @@ function sitemapPlugin(): Plugin {
         .filter((f) => {
           const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
           const { data } = parseFrontmatter(raw)
-          return data.draft !== "true"
+          if (data.draft === "true") return false
+          if (data.publishDate && data.publishDate > new Date().toISOString().split("T")[0]!) return false
+          return true
         })
         .map((f) => f.replace(".md", ""))
 

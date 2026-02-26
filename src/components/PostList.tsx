@@ -48,6 +48,9 @@ export function PostList({
                   {import.meta.env.DEV && post.draft && (
                     <Badge variant="destructive" className="mr-1.5 text-[10px] px-1.5 py-0 align-middle">DRAFT</Badge>
                   )}
+                  {import.meta.env.DEV && !post.draft && post.publishDate && post.publishDate > new Date().toISOString().split("T")[0]! && (
+                    <Badge className="mr-1.5 text-[10px] px-1.5 py-0 align-middle bg-amber-500 text-white">SCHEDULED</Badge>
+                  )}
                   {post.title}
                 </CardTitle>
                 {post.description && (
@@ -98,6 +101,9 @@ export function PostList({
             <h3 className="text-lg font-medium">
               {import.meta.env.DEV && post.draft && (
                 <Badge variant="destructive" className="mr-1.5 text-[10px] px-1.5 py-0 align-middle">DRAFT</Badge>
+              )}
+              {import.meta.env.DEV && !post.draft && post.publishDate && post.publishDate > new Date().toISOString().split("T")[0]! && (
+                <Badge className="mr-1.5 text-[10px] px-1.5 py-0 align-middle bg-amber-500 text-white">SCHEDULED</Badge>
               )}
               {post.title}
             </h3>

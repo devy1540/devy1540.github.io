@@ -26,11 +26,15 @@ export function PostPage() {
   const views = slug ? getPostViews(slug) : null
   const t = useT()
 
+  const isDraft = post?.draft ?? false
+  const isScheduled = !!(post?.publishDate && post.publishDate > new Date().toISOString().split("T")[0]!)
+
   useMetaTags({
     title: post?.title,
     description: post?.description,
     url: slug ? `/posts/${slug}` : undefined,
     type: "article",
+    noindex: isDraft || isScheduled,
   })
 
   if (post && slug) {
@@ -62,10 +66,16 @@ export function PostPage() {
         </Button>
 
         <header className="mb-8">
-          {import.meta.env.DEV && post.draft && (
+          {import.meta.env.DEV && isDraft && (
             <div className="mb-3 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
               <Badge variant="destructive" className="text-[10px] px-1.5 py-0">DRAFT</Badge>
-              이 글은 아직 작성 중이며, 프로덕션에서는 표시되지 않습니다.
+              {t.post.draftBanner}
+            </div>
+          )}
+          {import.meta.env.DEV && isScheduled && (
+            <div className="mb-3 flex items-center gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
+              <Badge className="bg-amber-500 text-white text-[10px] px-1.5 py-0">SCHEDULED</Badge>
+              {t.post.scheduledBanner(post!.publishDate!)}
             </div>
           )}
           <h1 className="text-3xl font-bold tracking-tight mb-3">

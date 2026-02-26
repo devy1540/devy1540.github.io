@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { Eye, FileText, Library, Tags } from "lucide-react"
+import { Eye, FileText, Library, PenLine, Tags } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -103,11 +103,18 @@ export function AnalyticsPage() {
       .sort((a, b) => a.month.localeCompare(b.month))
   }, [posts])
 
+  const draftCount = import.meta.env.DEV
+    ? posts.filter((p) => p.draft || (p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!)).length
+    : 0
+
   const summaryCards = [
     { label: t.analytics.totalViews, value: totalViews?.toLocaleString() ?? "-", icon: Eye },
     { label: t.analytics.totalPosts, value: posts.length, icon: FileText },
     { label: t.analytics.totalSeries, value: series.length, icon: Library },
     { label: t.analytics.totalTags, value: tags.length, icon: Tags },
+    ...(import.meta.env.DEV && draftCount > 0
+      ? [{ label: t.analytics.draftPosts, value: draftCount, icon: PenLine }]
+      : []),
   ]
 
   return (

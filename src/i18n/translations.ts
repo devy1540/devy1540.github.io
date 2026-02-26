@@ -30,6 +30,8 @@ export interface Translations {
     prevPost: string
     nextPost: string
     views: string
+    draftBanner: string
+    scheduledBanner: (date: string) => string
   }
   posts: {
     description: string
@@ -71,6 +73,7 @@ export interface Translations {
     totalPosts: string
     totalSeries: string
     totalTags: string
+    draftPosts: string
     popularPosts: string
     rank: string
     views: string
@@ -147,6 +150,8 @@ export const ko: Translations = {
     prevPost: "이전 글",
     nextPost: "다음 글",
     views: "views",
+    draftBanner: "이 글은 아직 작성 중이며, 프로덕션에서는 표시되지 않습니다.",
+    scheduledBanner: (date) => `이 글은 ${date}에 발행 예정이며, 그 전까지 프로덕션에서 표시되지 않습니다.`,
   },
   posts: {
     description: "전체 블로그 글 목록",
@@ -188,6 +193,7 @@ export const ko: Translations = {
     totalPosts: "전체 글 수",
     totalSeries: "시리즈 수",
     totalTags: "태그 수",
+    draftPosts: "작성 중인 글",
     popularPosts: "인기 글 Top 10",
     rank: "순위",
     views: "조회수",
@@ -264,6 +270,8 @@ export const en: Translations = {
     prevPost: "Previous",
     nextPost: "Next",
     views: "views",
+    draftBanner: "This post is a draft and will not be visible in production.",
+    scheduledBanner: (date) => `This post is scheduled for ${date} and will not be visible in production until then.`,
   },
   posts: {
     description: "All blog posts",
@@ -305,6 +313,7 @@ export const en: Translations = {
     totalPosts: "Total Posts",
     totalSeries: "Total Series",
     totalTags: "Total Tags",
+    draftPosts: "Drafts",
     popularPosts: "Popular Posts Top 10",
     rank: "Rank",
     views: "Views",

@@ -7,6 +7,7 @@ export interface PostMeta {
   series?: string
   seriesOrder?: number
   draft?: boolean
+  publishDate?: string
 }
 
 export interface Post extends PostMeta {

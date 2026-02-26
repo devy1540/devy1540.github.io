@@ -6,6 +6,7 @@ interface MetaTagsOptions {
   description?: string
   url?: string
   type?: string
+  noindex?: boolean
 }
 
 const BASE_URL = "https://devy1540.github.io"
@@ -35,6 +36,7 @@ export function useMetaTags({
   description,
   url,
   type = "website",
+  noindex = false,
 }: MetaTagsOptions = {}) {
   const { language, t } = useLanguage()
 
@@ -48,6 +50,7 @@ export function useMetaTags({
     document.title = fullTitle
 
     setNameMeta("description", desc)
+    setNameMeta("robots", noindex ? "noindex, nofollow" : "index, follow")
     setMeta("og:title", fullTitle)
     setMeta("og:description", desc)
     setMeta("og:url", fullUrl)
@@ -61,5 +64,5 @@ export function useMetaTags({
     return () => {
       document.title = siteName
     }
-  }, [title, description, url, type, language, t])
+  }, [title, description, url, type, noindex, language, t])
 }
