@@ -7,8 +7,6 @@ series: "React 블로그 만들기"
 seriesOrder: 5
 ---
 
-# 블로그 만들기 #5 — Google Analytics 연동 & 방문자 수 표시
-
 ## 문제: 정적 사이트에서 GA 데이터 보여주기
 
 Google Analytics를 추가하는 것 자체는 간단합니다. `index.html`에 스크립트 태그를 넣으면 끝입니다.

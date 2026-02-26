@@ -7,8 +7,6 @@ series: "React 블로그 만들기"
 seriesOrder: 2
 ---
 
-# 블로그 만들기 #2 — Command Palette 검색 & View Transitions
-
 ## Command Palette 검색 (Cmd+K)
 
 VS Code나 Raycast처럼 `Cmd+K`로 빠르게 검색할 수 있는 Command Palette를 구현했습니다.

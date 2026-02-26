@@ -79,6 +79,14 @@ export interface Translations {
   }
   about: {
     description: string
+    introduction: string
+    skills: string
+    experience: string
+    projects: string
+    contact: string
+    tasks: string
+    achievements: string
+    backToAbout: string
   }
   components: {
     noPostsYet: string
@@ -184,7 +192,15 @@ export const ko: Translations = {
     noData: "데이터 없음",
   },
   about: {
-    description: "소프트웨어 개발자입니다. 기술과 개발 경험을 기록합니다.",
+    description: "복잡한 비즈니스 요구사항을 빠르게 제품으로 만들어내는 백엔드 엔지니어입니다.",
+    introduction: "자기소개",
+    skills: "기술 스택",
+    experience: "경력",
+    projects: "프로젝트",
+    contact: "연락처",
+    tasks: "수행 내용",
+    achievements: "성과",
+    backToAbout: "About으로 돌아가기",
   },
   components: {
     noPostsYet: "아직 작성된 글이 없습니다.",
@@ -290,7 +306,15 @@ export const en: Translations = {
     noData: "No data",
   },
   about: {
-    description: "Software developer. Documenting technology and development experiences.",
+    description: "Backend engineer who rapidly turns complex business requirements into products.",
+    introduction: "About Me",
+    skills: "Skills",
+    experience: "Experience",
+    projects: "Projects",
+    contact: "Contact",
+    tasks: "Tasks",
+    achievements: "Achievements",
+    backToAbout: "Back to About",
   },
   components: {
     noPostsYet: "No posts yet.",
