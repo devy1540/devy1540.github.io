@@ -7,6 +7,7 @@ export interface Translations {
     series: string
     search: string
     tags: string
+    analytics: string
     about: string
     recentPosts: string
     goHome: string
@@ -57,6 +58,20 @@ export interface Translations {
   notFound: {
     title: string
   }
+  analytics: {
+    description: string
+    totalViews: string
+    totalPosts: string
+    totalSeries: string
+    totalTags: string
+    popularPosts: string
+    rank: string
+    views: string
+    tagDistribution: string
+    monthlyPosts: string
+    postsCount: string
+    noData: string
+  }
   about: {
     description: string
   }
@@ -93,6 +108,7 @@ export const ko: Translations = {
     series: "시리즈",
     search: "검색",
     tags: "태그",
+    analytics: "분석",
     about: "소개",
     recentPosts: "Recent Posts",
     goHome: "홈으로 돌아가기",
@@ -143,6 +159,20 @@ export const ko: Translations = {
   notFound: {
     title: "페이지를 찾을 수 없습니다",
   },
+  analytics: {
+    description: "블로그 통계 및 분석",
+    totalViews: "전체 조회수",
+    totalPosts: "전체 글 수",
+    totalSeries: "시리즈 수",
+    totalTags: "태그 수",
+    popularPosts: "인기 글 Top 10",
+    rank: "순위",
+    views: "조회수",
+    tagDistribution: "태그 분포",
+    monthlyPosts: "월별 포스팅 현황",
+    postsCount: "글 수",
+    noData: "데이터 없음",
+  },
   about: {
     description: "소프트웨어 개발자입니다. 기술과 개발 경험을 기록합니다.",
   },
@@ -179,6 +209,7 @@ export const en: Translations = {
     series: "Series",
     search: "Search",
     tags: "Tags",
+    analytics: "Analytics",
     about: "About",
     recentPosts: "Recent Posts",
     goHome: "Go Home",
@@ -228,6 +259,20 @@ export const en: Translations = {
   },
   notFound: {
     title: "Page not found",
+  },
+  analytics: {
+    description: "Blog statistics and analytics",
+    totalViews: "Total Views",
+    totalPosts: "Total Posts",
+    totalSeries: "Total Series",
+    totalTags: "Total Tags",
+    popularPosts: "Popular Posts Top 10",
+    rank: "Rank",
+    views: "Views",
+    tagDistribution: "Tag Distribution",
+    monthlyPosts: "Monthly Posts",
+    postsCount: "Posts",
+    noData: "No data",
   },
   about: {
     description: "Software developer. Documenting technology and development experiences.",

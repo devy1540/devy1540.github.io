@@ -44,6 +44,7 @@ export function usePageViews() {
 
   return {
     totalViews: data?.totalViews ?? null,
+    allPageViews: data?.pages ?? null,
     getPostViews(slug: string): number | null {
       if (!data) return null
       return data.pages[`/posts/${slug}`] ?? data.pages[`/posts/${slug}/`] ?? null

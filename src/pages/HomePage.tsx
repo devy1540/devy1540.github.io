@@ -4,7 +4,6 @@ import { useMetaTags } from "@/hooks/useMetaTags"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { DailyVisitsChart } from "@/components/DailyVisitsChart"
 import { useT } from "@/i18n"
 
 export function HomePage() {
@@ -33,10 +32,6 @@ export function HomePage() {
             <Link to="/about" viewTransition>{t.home.introduction}</Link>
           </Button>
         </div>
-      </section>
-
-      <section className="mb-10">
-        <DailyVisitsChart />
       </section>
 
       <section>

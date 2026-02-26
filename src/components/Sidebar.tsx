@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom"
-import { Home, FileText, Tags, User, Search, Library } from "lucide-react"
+import { Home, FileText, Tags, User, Search, Library, BarChart3 } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -23,6 +23,7 @@ const navIcons = {
   series: Library,
   search: Search,
   tags: Tags,
+  analytics: BarChart3,
   about: User,
 } as const
 
@@ -36,6 +37,7 @@ export function AppSidebar() {
     { label: t.common.series, to: "/series", icon: navIcons.series },
     { label: t.common.search, to: "/search", icon: navIcons.search },
     { label: t.common.tags, to: "/tags", icon: navIcons.tags },
+    { label: t.common.analytics, to: "/analytics", icon: navIcons.analytics },
     { label: t.common.about, to: "/about", icon: navIcons.about },
   ]
 

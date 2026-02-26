@@ -22,7 +22,7 @@ interface DailyData {
 const chartConfig = {
   views: {
     label: "Views",
-    color: "oklch(var(--primary))",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig
 
