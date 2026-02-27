@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { Home, FileText, Tags, User, Search, Library, BarChart3 } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
@@ -32,7 +32,17 @@ const navIcons = {
 export function AppSidebar() {
   const { pathname } = useLocation()
   const t = useT()
+  const navigate = useNavigate()
   const { isMobile, setOpenMobile } = useSidebar()
+
+  function handleMobileNav(e: React.MouseEvent, to: string) {
+    if (!isMobile) return
+    e.preventDefault()
+    setOpenMobile(false)
+    setTimeout(() => {
+      document.startViewTransition(() => navigate(to))
+    }, 300)
+  }
 
   const navItems = [
     { label: t.common.home, to: "/", icon: navIcons.home },
@@ -73,7 +83,7 @@ export function AppSidebar() {
                     isActive={isActive(item.to)}
                     tooltip={item.label}
                   >
-                    <NavLink to={item.to} viewTransition onClick={() => isMobile && setOpenMobile(false)}>
+                    <NavLink to={item.to} viewTransition onClick={(e) => handleMobileNav(e, item.to)}>
                       <item.icon />
                       <span>{item.label}</span>
                     </NavLink>
