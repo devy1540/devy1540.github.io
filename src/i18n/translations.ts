@@ -115,6 +115,7 @@ export interface Translations {
     toggleLanguage: string
     keyboardShortcuts: string
     shortcutSearch: string
+    shortcutSidebar: string
     shortcutHelp: string
     general: string
   }

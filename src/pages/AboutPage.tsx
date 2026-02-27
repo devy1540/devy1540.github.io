@@ -1,4 +1,5 @@
-import { Github, Mail, ChevronRight } from "lucide-react"
+import { useRef, useCallback } from "react"
+import { Github, Mail, ChevronRight, ChevronDown } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
@@ -6,6 +7,11 @@ import { useT } from "@/i18n"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible"
 
 const SKILLS = {
   Backend: ["Java", "Spring Boot", "QueryDSL", "MyBatis", "JPA", "Kafka"],
@@ -50,6 +56,63 @@ const CERTIFICATIONS = [
   { name: "SQLD", year: "2022" },
   { name: "정보처리기사", year: "2019" },
 ]
+
+function CompanySection({ company, defaultOpen }: { company: typeof COMPANIES[number]; defaultOpen: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (open) {
+      setTimeout(() => {
+        ref.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 100)
+    }
+  }, [])
+
+  return (
+    <Collapsible
+      ref={ref}
+      defaultOpen={defaultOpen}
+      className="group/collapsible relative pl-6 border-l-2 border-muted"
+      onOpenChange={handleOpenChange}
+    >
+      <div className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-primary" />
+      <CollapsibleTrigger className="flex w-full items-center gap-2 text-left cursor-pointer">
+        <div className="flex-1">
+          <h3 className="font-semibold">{company.name}</h3>
+          <p className="text-sm text-muted-foreground">
+            {company.role} · {company.period}
+          </p>
+        </div>
+        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 -rotate-90 group-data-[state=open]/collapsible:rotate-0" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="overflow-hidden">
+        <div className="mt-4 space-y-2">
+          {company.projects.map((project, projectIndex) => (
+            <Link
+              key={project.slug}
+              to={`/about/projects/${project.slug}`}
+              viewTransition
+              className="group flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 animate-in fade-in slide-in-from-left-2 fill-mode-both"
+              style={{ animationDelay: `${projectIndex * 50}ms` }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm group-hover:text-primary transition-colors">
+                  {project.name}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {project.period}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  {project.summary}
+                </p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />
+            </Link>
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
 
 export function AboutPage() {
   const t = useT()
@@ -143,37 +206,8 @@ export function AboutPage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.experience}</h2>
         <div className="space-y-8">
-          {COMPANIES.map((company) => (
-            <div key={company.name} className="relative pl-6 border-l-2 border-muted">
-              <div className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-primary" />
-              <h3 className="font-semibold">{company.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {company.role} · {company.period}
-              </p>
-              <div className="mt-4 space-y-2">
-                {company.projects.map((project) => (
-                  <Link
-                    key={project.slug}
-                    to={`/about/projects/${project.slug}`}
-                    viewTransition
-                    className="group flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm group-hover:text-primary transition-colors">
-                        {project.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {project.period}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                        {project.summary}
-                      </p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </Link>
-                ))}
-              </div>
-            </div>
+          {COMPANIES.map((company, index) => (
+            <CompanySection key={company.name} company={company} defaultOpen={index === 0} />
           ))}
         </div>
       </section>
