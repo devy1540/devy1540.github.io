@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -5,6 +6,7 @@ import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
 import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
 import { getReadingTime } from "@/lib/reading-time"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -12,7 +14,7 @@ import { TableOfContents } from "@/components/TableOfContents"
 import { CodeBlock } from "@/components/CodeBlock"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
-import { ArrowLeft, ArrowRight, Eye } from "lucide-react"
+import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { analytics } from "@/lib/analytics"
@@ -37,13 +39,15 @@ export function PostPage() {
     noindex: isDraft || isScheduled,
   })
 
-  if (post && slug) {
-    analytics.viewPost(post.title, slug)
-  }
+  useEffect(() => {
+    if (post && slug) {
+      analytics.viewPost(post.title, slug)
+    }
+  }, [slug]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!post) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-20">
+      <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
           <Link to="/" viewTransition>
@@ -57,7 +61,7 @@ export function PostPage() {
 
   return (
     <div className="max-w-5xl mx-auto flex gap-16 xl:gap-24">
-      <article className="min-w-0 flex-1 max-w-2xl">
+      <article className="min-w-0 flex-1 max-w-4xl">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -67,16 +71,16 @@ export function PostPage() {
 
         <header className="mb-8">
           {import.meta.env.DEV && isDraft && (
-            <div className="mb-3 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
-              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">DRAFT</Badge>
-              {t.post.draftBanner}
-            </div>
+            <Alert variant="destructive" className="mb-3">
+              <AlertCircle className="size-4" />
+              <AlertDescription>{t.post.draftBanner}</AlertDescription>
+            </Alert>
           )}
           {import.meta.env.DEV && isScheduled && (
-            <div className="mb-3 flex items-center gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
-              <Badge className="bg-amber-500 text-white text-[10px] px-1.5 py-0">SCHEDULED</Badge>
-              {t.post.scheduledBanner(post!.publishDate!)}
-            </div>
+            <Alert className="mb-3 border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400">
+              <Clock className="size-4" />
+              <AlertDescription>{t.post.scheduledBanner(post!.publishDate!)}</AlertDescription>
+            </Alert>
           )}
           <h1 className="text-3xl font-bold tracking-tight mb-3">
             {post.title}

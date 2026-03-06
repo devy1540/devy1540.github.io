@@ -13,6 +13,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
@@ -97,10 +98,22 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
         <div className="flex items-center justify-center gap-1 group-data-[state=collapsed]:flex-col">
-          <ThemeToggle />
-          <ColorThemeSelector />
-          <LanguageToggle />
-          <KeyboardShortcuts />
+          <Tooltip>
+            <TooltipTrigger asChild><ThemeToggle /></TooltipTrigger>
+            <TooltipContent side="top">{t.components.toggleTheme}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild><ColorThemeSelector /></TooltipTrigger>
+            <TooltipContent side="top">{t.components.colorTheme}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild><LanguageToggle /></TooltipTrigger>
+            <TooltipContent side="top">{t.components.toggleLanguage}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild><KeyboardShortcuts /></TooltipTrigger>
+            <TooltipContent side="top">{t.components.keyboardShortcuts}</TooltipContent>
+          </Tooltip>
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy

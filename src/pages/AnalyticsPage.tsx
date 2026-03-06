@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { Eye, FileText, Library, PenLine, Tags } from "lucide-react"
+import { AlertCircle, Eye, FileText, Library, PenLine, Tags } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -39,7 +39,7 @@ export function AnalyticsPage() {
   const t = useT()
   useMetaTags({ title: "Analytics", description: t.analytics.description, url: "/analytics" })
 
-  const { totalViews, allPageViews } = usePageViews()
+  const { totalViews, allPageViews, isError, lastUpdated } = usePageViews()
   const posts = getAllPosts()
   const series = getAllSeries()
   const tags = getAllTags()
@@ -51,8 +51,10 @@ export function AnalyticsPage() {
       .map(([path, views]) => {
         const slug = path.replace("/posts/", "").replace(/\/$/, "")
         const post = posts.find((p) => p.slug === slug)
-        return { slug, title: post?.title ?? slug, views }
+        if (!post) return null
+        return { slug, title: post.title, views }
       })
+      .filter((p): p is NonNullable<typeof p> => p !== null)
       .sort((a, b) => b.views - a.views)
       .slice(0, 10)
   }, [allPageViews, posts])
@@ -118,10 +120,21 @@ export function AnalyticsPage() {
   ]
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <section className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
         <p className="text-muted-foreground">{t.analytics.description}</p>
+        {isError && (
+          <div className="mt-3 flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <AlertCircle className="size-4 shrink-0" />
+            {t.analytics.loadError}
+          </div>
+        )}
+        {lastUpdated && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t.analytics.lastUpdated}: {new Date(lastUpdated).toLocaleString()}
+          </p>
+        )}
       </section>
 
       {/* Summary Cards */}

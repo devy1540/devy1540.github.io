@@ -47,6 +47,7 @@ export function SearchCommand() {
         size="sm"
         className="gap-2 text-muted-foreground"
         onClick={() => setOpen(true)}
+        aria-label={t.components.searchPosts}
       >
         <SearchIcon className="size-4" />
       </Button>

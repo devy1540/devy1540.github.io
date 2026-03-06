@@ -45,7 +45,7 @@ export function DatePicker({ value, onChange, placeholder }: DatePickerProps) {
         </PopoverContent>
       </Popover>
       {value && (
-        <Button variant="ghost" size="icon" onClick={() => onChange("")}>
+        <Button variant="ghost" size="icon" onClick={() => onChange("")} aria-label={t.search.reset}>
           <XIcon className="size-3" />
         </Button>
       )}

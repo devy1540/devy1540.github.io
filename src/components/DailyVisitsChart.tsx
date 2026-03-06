@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Eye, TrendingUp } from "lucide-react"
 import {
@@ -8,16 +7,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
-import { usePageViews } from "@/hooks/usePageViews"
+import { usePageViews, type DailyData } from "@/hooks/usePageViews"
 import { useT } from "@/i18n"
-
-const GA_API_URL =
-  "https://script.google.com/macros/s/AKfycbxx7z1-AvZnCWurLcNBSWiWEDqMXwUoZeC7PsuiHQGloISAb0ZjQrUq0MWbC8pUiSMF/exec"
-
-interface DailyData {
-  date: string
-  views: number
-}
 
 const chartConfig = {
   views: {
@@ -46,33 +37,11 @@ function mergeData(base: DailyData[], fetched: DailyData[]): DailyData[] {
 }
 
 export function DailyVisitsChart() {
-  const { totalViews } = usePageViews()
+  const { totalViews, daily, isLoading } = usePageViews()
   const t = useT()
-  const [data, setData] = useState<DailyData[]>(() => {
-    const cached = sessionStorage.getItem("daily-views")
-    if (cached) return mergeData(generateLast30Days(), JSON.parse(cached))
-    return generateLast30Days()
-  })
-  const [fetched, setFetched] = useState(() => !!sessionStorage.getItem("daily-views"))
 
-  useEffect(() => {
-    if (fetched) return
-
-    fetch(`${GA_API_URL}?type=daily`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.daily) {
-          const merged = mergeData(generateLast30Days(), res.daily)
-          setData(merged)
-          sessionStorage.setItem("daily-views", JSON.stringify(res.daily))
-        }
-        setFetched(true)
-      })
-      .catch(() => setFetched(true))
-  }, [fetched])
-
+  const data = mergeData(generateLast30Days(), daily)
   const monthlyTotal = data.reduce((sum, d) => sum + d.views, 0)
-  const isLoading = totalViews === null && !fetched
 
   if (isLoading) {
     return (

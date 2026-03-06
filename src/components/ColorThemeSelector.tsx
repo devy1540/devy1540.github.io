@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { analytics } from "@/lib/analytics"
@@ -50,14 +51,15 @@ export function ColorThemeSelector() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="grid grid-cols-3 gap-1.5 p-2 w-auto">
         {colorPresets.map((preset) => (
-          <button
+          <DropdownMenuItem
             key={preset.name}
             onClick={() => handleSelect(preset.value)}
-            className={`flex flex-col items-center gap-1 rounded-md p-2 text-xs transition-colors hover:bg-accent ${selected === preset.value ? "bg-accent" : ""}`}
+            className={`flex flex-col items-center gap-1 rounded-md p-2 text-xs cursor-pointer ${selected === preset.value ? "bg-accent" : ""}`}
+            aria-label={`${preset.name} theme`}
           >
             <span className={`size-5 rounded-full ${preset.color} ${selected === preset.value ? "ring-2 ring-ring ring-offset-2 ring-offset-background" : ""}`} />
             <span className="text-muted-foreground">{preset.name}</span>
-          </button>
+          </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

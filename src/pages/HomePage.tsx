@@ -32,7 +32,7 @@ export function HomePage() {
   }, [allPageViews, posts])
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       {/* Hero */}
       <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards">
         <h1 className="text-4xl font-bold tracking-tight mb-2">

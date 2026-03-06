@@ -82,6 +82,9 @@ export interface Translations {
     postsCount: string
     others: string
     noData: string
+    lastUpdated: string
+    loadError: string
+    showingCachedData: string
   }
   about: {
     description: string
@@ -207,6 +210,9 @@ export const ko: Translations = {
     postsCount: "글 수",
     others: "기타",
     noData: "데이터 없음",
+    lastUpdated: "마지막 업데이트",
+    loadError: "조회수 데이터를 불러올 수 없습니다",
+    showingCachedData: "캐시된 데이터를 표시합니다",
   },
   about: {
     description: "복잡한 비즈니스 요구사항을 빠르게 제품으로 만들어내는 백엔드 엔지니어입니다.",
@@ -332,6 +338,9 @@ export const en: Translations = {
     postsCount: "Posts",
     others: "Others",
     noData: "No data",
+    lastUpdated: "Last updated",
+    loadError: "Could not load view data",
+    showingCachedData: "Showing cached data",
   },
   about: {
     description: "Backend engineer who rapidly turns complex business requirements into products.",

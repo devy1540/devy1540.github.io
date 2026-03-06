@@ -63,12 +63,9 @@ export function PostList({
                 <CardContent>
                   <div className="flex flex-wrap gap-1.5">
                     {post.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-0.5"
-                      >
+                      <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
                         {tag}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 </CardContent>
@@ -115,12 +112,9 @@ export function PostList({
             {post.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-0.5"
-                  >
+                  <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
                     {tag}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             )}

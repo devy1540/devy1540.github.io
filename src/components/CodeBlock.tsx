@@ -1,6 +1,7 @@
 import { type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
 import { codeToHtml } from "shiki"
 import { Copy, Check } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 import { useTheme } from "@/hooks/useTheme"
 import mermaid from "mermaid"
@@ -195,13 +196,15 @@ function ShikiBlock({ code, language, children, preProps }: { code: string; lang
           {language && (
             <span className="text-xs text-muted-foreground">{language}</span>
           )}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 text-muted-foreground hover:text-foreground"
             onClick={handleCopy}
-            className="text-muted-foreground hover:text-foreground transition-colors"
             aria-label={t.components.copyCode}
           >
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-          </button>
+          </Button>
         </div>
       </div>
       {highlightedHtml ? (

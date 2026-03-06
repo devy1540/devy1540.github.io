@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 
 interface TocItem {
@@ -55,15 +56,19 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
   return (
     <nav className="hidden xl:block" aria-label="Table of contents">
       <div className="sticky top-20">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 -ml-2 mb-3"
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 text-sm font-medium text-foreground mb-3 hover:text-foreground/80 transition-colors"
+          aria-expanded={open}
+          aria-label={t.components.tableOfContents}
         >
           <ChevronRight
             className={`size-4 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
           />
           {t.components.tableOfContents}
-        </button>
+        </Button>
         <div
           className="grid transition-[grid-template-rows] duration-200 ease-in-out"
           style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
