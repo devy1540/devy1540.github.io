@@ -26,6 +26,7 @@ export interface ProjectDetail {
   tech: string[]
   tasks: TaskItem[]
   achievements?: string[]
+  relatedPosts?: string[]
 }
 
 export interface Certification {
@@ -105,6 +106,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "AI 진단/피드백 파이프라인 구축",
     period: "2025.10 — 2026.01",
     tech: ["Spring AI", "Gemini", "Amazon Bedrock", "OpenAI", "Spring Boot"],
+    relatedPosts: ["spring-ai-pipeline-real-world"],
     tasks: [
       {
         content: "python MVP로 제공한 단일 프롬프트로 처리하던 진단 프로세스를 **Spring AI** 를 이용하여 **5단계 AI 파이프라인**(STT 파싱 → Semantic Chunking → LLM 피드백 → 다국어 번역 → 하이라이트)으로 재설계",

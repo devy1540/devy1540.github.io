@@ -95,6 +95,7 @@ export interface Translations {
     contact: string
     tasks: string
     achievements: string
+    relatedPosts: string
     backToAbout: string
   }
   components: {
@@ -223,6 +224,7 @@ export const ko: Translations = {
     contact: "연락처",
     tasks: "수행 내용",
     achievements: "성과",
+    relatedPosts: "관련 글",
     backToAbout: "About으로 돌아가기",
   },
   components: {
@@ -351,6 +353,7 @@ export const en: Translations = {
     contact: "Contact",
     tasks: "Tasks",
     achievements: "Achievements",
+    relatedPosts: "Related Posts",
     backToAbout: "Back to About",
   },
   components: {

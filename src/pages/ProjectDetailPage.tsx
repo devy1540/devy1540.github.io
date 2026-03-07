@@ -1,11 +1,12 @@
 import { useParams, Link } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, FileText } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useT } from "@/i18n"
 import { PROJECTS } from "@/data/resume"
+import { getPostBySlug } from "@/lib/posts"
 import { renderBold } from "@/lib/utils"
 
 export function ProjectDetailPage() {
@@ -100,6 +101,38 @@ export function ProjectDetailPage() {
           </section>
         </>
       )}
+
+      {project.relatedPosts && project.relatedPosts.length > 0 && (() => {
+        const posts = project.relatedPosts.map(getPostBySlug).filter(Boolean)
+        if (posts.length === 0) return null
+        return (
+          <>
+            <Separator className="my-6" />
+            <section>
+              <h2 className="text-xl font-semibold mb-4">{t.about.relatedPosts}</h2>
+              <div className="space-y-3">
+                {posts.map((post) => (
+                  <Link
+                    key={post!.slug}
+                    to={`/posts/${post!.slug}`}
+                    viewTransition
+                    className="block rounded-lg border p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <FileText className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-semibold text-sm">{post!.title}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{post!.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{post!.date}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </>
+        )
+      })()}
     </div>
   )
 }
