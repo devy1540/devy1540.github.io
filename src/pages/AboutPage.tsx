@@ -96,26 +96,26 @@ function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
                       ))}
                     </ul>
                   )}
-                  {project.relatedPosts && project.relatedPosts.length > 0 && (() => {
-                    const relatedPostData = project.relatedPosts.map(getPostBySlug).filter(Boolean)
-                    if (relatedPostData.length === 0) return null
-                    return (
-                      <div className="border-t border-dashed pt-2 space-y-1.5">
-                        {relatedPostData.map((rp) => (
-                          <a
-                            key={rp!.slug}
-                            href={`/posts/${rp!.slug}`}
-                            className="flex items-center gap-2 text-sm text-primary hover:underline"
-                          >
-                            <FileText className="h-3.5 w-3.5 shrink-0" />
-                            <span>{rp!.title}</span>
-                          </a>
-                        ))}
-                      </div>
-                    )
-                  })()}
                 </div>
               </CollapsibleContent>
+              {project.relatedPosts && project.relatedPosts.length > 0 && (() => {
+                const relatedPostData = project.relatedPosts.map(getPostBySlug).filter(Boolean)
+                if (relatedPostData.length === 0) return null
+                return (
+                  <div className="border-t border-dashed px-3 py-2 space-y-1.5">
+                    {relatedPostData.map((rp) => (
+                      <a
+                        key={rp!.slug}
+                        href={`/posts/${rp!.slug}`}
+                        className="flex items-center gap-2 text-sm text-primary hover:underline"
+                      >
+                        <FileText className="h-3.5 w-3.5 shrink-0" />
+                        <span>{rp!.title}</span>
+                      </a>
+                    ))}
+                  </div>
+                )
+              })()}
             </Collapsible>
           )
         })}

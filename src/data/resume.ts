@@ -165,6 +165,10 @@ export const PROJECTS: ProjectDetail[] = [
         ],
       },
     ],
+    relatedPosts: [
+      "payment-system-migration-php-to-spring",
+      "payment-system-redesign-sync-api",
+    ],
   },
   {
     slug: "notification-server",
