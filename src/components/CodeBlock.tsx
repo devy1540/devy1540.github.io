@@ -100,12 +100,37 @@ function MermaidBlock({ code }: { code: string }) {
   const id = useId().replace(/:/g, "_")
   const { resolvedTheme } = useTheme()
   const [colorKey, setColorKey] = useState(0)
+  const [expanded, setExpanded] = useState(false)
+  const rawSvgRef = useRef<string>("")
 
   useEffect(() => {
     const observer = new MutationObserver(() => setColorKey(k => k + 1))
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-color", "class"] })
     return () => observer.disconnect()
   }, [])
+
+  const decorateSvg = useCallback((svgEl: SVGSVGElement) => {
+    // Rounded corners on all rect nodes
+    svgEl.querySelectorAll("rect.basic, rect.label-container, .node rect, .cluster rect").forEach((rect) => {
+      rect.setAttribute("rx", "8")
+      rect.setAttribute("ry", "8")
+    })
+
+    // Thicker edges
+    svgEl.querySelectorAll(".edge-pattern-solid, .flowchart-link, path.path").forEach((path) => {
+      path.setAttribute("stroke-width", "2")
+    })
+
+    // Drop shadow filter
+    const defs = svgEl.querySelector("defs") ?? svgEl.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "defs"), svgEl.firstChild)
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter")
+    filter.setAttribute("id", `shadow_${id}`)
+    filter.innerHTML = `<feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08" />`
+    defs.appendChild(filter)
+    svgEl.querySelectorAll(".node rect, .node polygon, .node circle, .cluster rect").forEach((node) => {
+      node.setAttribute("filter", `url(#shadow_${id})`)
+    })
+  }, [id])
 
   useEffect(() => {
     if (!containerRef.current || !code) return
@@ -124,29 +149,15 @@ function MermaidBlock({ code }: { code: string }) {
       const svgEl = el.querySelector("svg")
       if (svgEl) {
         svgEl.removeAttribute("height")
-        svgEl.style.width = "100%"
+        decorateSvg(svgEl)
+
+        // Store raw SVG before applying inline size constraints
+        rawSvgRef.current = el.innerHTML
+
+        svgEl.style.height = "auto"
         svgEl.style.maxWidth = "100%"
-
-        // Rounded corners on all rect nodes
-        svgEl.querySelectorAll("rect.basic, rect.label-container, .node rect, .cluster rect").forEach((rect) => {
-          rect.setAttribute("rx", "8")
-          rect.setAttribute("ry", "8")
-        })
-
-        // Thicker edges
-        svgEl.querySelectorAll(".edge-pattern-solid, .flowchart-link, path.path").forEach((path) => {
-          path.setAttribute("stroke-width", "2")
-        })
-
-        // Drop shadow filter
-        const defs = svgEl.querySelector("defs") ?? svgEl.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "defs"), svgEl.firstChild)
-        const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter")
-        filter.setAttribute("id", `shadow_${id}`)
-        filter.innerHTML = `<feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08" />`
-        defs.appendChild(filter)
-        svgEl.querySelectorAll(".node rect, .node polygon, .node circle, .cluster rect").forEach((node) => {
-          node.setAttribute("filter", `url(#shadow_${id})`)
-        })
+        svgEl.style.display = "block"
+        svgEl.style.margin = "0 auto"
       }
     }).catch(() => {
       if (cancelled) return
@@ -154,12 +165,43 @@ function MermaidBlock({ code }: { code: string }) {
     })
 
     return () => { cancelled = true }
-  }, [code, id, resolvedTheme, colorKey])
+  }, [code, id, resolvedTheme, colorKey, decorateSvg])
+
+  useEffect(() => {
+    if (expanded) {
+      document.body.style.overflow = "hidden"
+      const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(false) }
+      window.addEventListener("keydown", handleKey)
+      return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", handleKey) }
+    }
+  }, [expanded])
 
   return (
-    <div className="not-prose my-6 rounded-xl border border-border bg-white px-4 py-8 overflow-x-auto shadow-sm dark:bg-zinc-950">
-      <div ref={containerRef} className="w-full" />
-    </div>
+    <>
+      <div
+        className="not-prose my-6 rounded-xl border border-border bg-white px-4 py-8 overflow-x-auto shadow-sm dark:bg-zinc-950 cursor-zoom-in"
+        onClick={() => setExpanded(true)}
+      >
+        <div ref={containerRef} className="w-full" />
+      </div>
+
+      {expanded && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm cursor-zoom-out"
+          onClick={() => setExpanded(false)}
+        >
+          <div
+            className="w-[95vw] max-h-[95vh] overflow-auto rounded-2xl border border-border bg-white p-8 shadow-2xl dark:bg-zinc-950"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              dangerouslySetInnerHTML={{ __html: rawSvgRef.current }}
+              className="[&_svg]:w-full [&_svg]:h-auto"
+            />
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 

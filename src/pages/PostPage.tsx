@@ -149,11 +149,11 @@ export function PostPage() {
         {(prev || next) && (
           <>
             <Separator className="my-10" />
-            <div className="flex justify-between gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {prev ? (
                 <Link
                   to={`/posts/${prev.slug}`} viewTransition
-                  className="group flex flex-col gap-1 max-w-[45%]"
+                  className="group flex flex-col gap-1 min-w-0 overflow-hidden"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <ArrowLeft className="size-3" />
@@ -169,7 +169,7 @@ export function PostPage() {
               {next ? (
                 <Link
                   to={`/posts/${next.slug}`} viewTransition
-                  className="group flex flex-col items-end gap-1 max-w-[45%]"
+                  className="group flex flex-col items-end gap-1 min-w-0 overflow-hidden"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     {t.post.nextPost}
