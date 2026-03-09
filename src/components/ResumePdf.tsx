@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Font,
   Link,
+  type Styles,
 } from "@react-pdf/renderer"
 import {
   PROFILE,
@@ -99,7 +100,7 @@ const s = StyleSheet.create({
 })
 
 /** Parse **bold** markdown into Text elements */
-function BoldText({ style, children }: { style: Record<string, unknown> | Record<string, unknown>[]; children: string }) {
+function BoldText({ style, children }: { style: Styles[string]; children: string }) {
   const parts = children.split(/(\*\*[^*]+\*\*)/)
   return (
     <Text style={style}>
