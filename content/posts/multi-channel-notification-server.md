@@ -1,5 +1,5 @@
 ---
-title: "멀티채널 알림 서버 구축기 — PHP 스크립트에서 독립 서비스로"
+title: "멀티채널 알림 서버 구축기 - php 레거시에서 Java/Spring으로"
 date: "2026-03-09"
 description: "PHP 파일에 흩어져 있던 알림 로직을 Spring Boot 기반 독립 알림 서버로 구축한 과정. 카카오 알림톡, SMS, 이메일, 푸시, Slack까지 6개 채널을 하나의 서버에서 처리하는 구조를 만들기까지."
 tags: ["java", "spring-boot", "notification", "sqs", "architecture"]
@@ -375,7 +375,7 @@ flowchart TB
 | **예약 발송** | 크론 파일 추가 | REST API + 스케줄러 |
 | **발송 이력** | DB 테이블 | DynamoDB |
 | **멀티 서비스** | 불가 | API Key 기반 |
-| **발송 실패 추적** | Sentry | 이력 API 조회 |
+| **발송 실패 추적** | slack 메시지 | 이력 API 조회 |
 | **메인 서버 영향** | 직접 호출 (영향 있음) | 분리 (독립 스케일링) |
 
 ## 성과

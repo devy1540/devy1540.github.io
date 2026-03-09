@@ -178,6 +178,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "멀티채널 알림서버 신규 구축",
     period: "2025.06 — 2025.10",
     tech: ["Spring Boot", "SQS", "Redis", "DynamoDB"],
+    relatedPosts: ["multi-channel-notification-server"],
     tasks: [
       {
         content: "카카오톡·SMS·앱푸시·Slack 등 **N개 채널을 통합**하는 독립 알림서버를 0→1로 설계 및 구현. 기존 백엔드·PHP에 분산된 알림 로직을 **Java/Spring** 기반 신규 서비스로 구축 및 통합",
