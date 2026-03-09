@@ -1,6 +1,6 @@
 ---
 title: "Spring AI 실전 적용기 — 7단계 AI 진단 파이프라인 구축"
-date: "2026-03-06"
+date: "2026-02-28"
 description: "HTTP 직접 호출 + 동기 단일 프롬프트 방식을 Spring AI 기반 7단계 파이프라인으로 재설계한 실전 경험을 공유합니다."
 tags: ["spring-ai", "spring-boot", "ai", "llm"]
 draft: false

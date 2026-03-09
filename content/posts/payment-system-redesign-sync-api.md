@@ -1,11 +1,11 @@
 ---
 title: "결제 시스템 재설계 (2) — SQS를 걷어내고 동기 API로"
-date: "2026-03-09"
+date: "2026-03-06"
 description: "이벤트 드리븐의 매력에 빠져 도입한 SQS였지만, 결제 도메인에서는 오히려 복잡도만 높였다. SQS를 제거하고 동기 API + Portone 웹훅 기반으로 전환하면서 결제 프로세스를 안정화한 이야기."
 tags: ["java", "spring-boot", "payment", "portone", "refactoring"]
 series: "결제 시스템 재설계"
 seriesOrder: 2
-draft: true
+draft: false
 ---
 
 ## 1편 요약
