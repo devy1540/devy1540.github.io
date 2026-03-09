@@ -21,7 +21,7 @@ function rehypeCodeBrFix() {
         return
       }
       for (const child of node.children) {
-        if (child.type === "element" || child.type === "root") {
+        if (child.type === "element") {
           walk(child as Element)
         }
       }
