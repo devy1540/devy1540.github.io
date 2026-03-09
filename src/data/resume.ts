@@ -64,7 +64,7 @@ export const COMPANIES: Company[] = [
       "ECS→EKS 마이그레이션, ArgoCD GitOps, LGTM 모니터링 등 **인프라 현대화**",
     ],
     projects: [
-      { slug: "ai-diagnostic-pipeline", name: "AI 진단/피드백 파이프라인 구축", period: "2025.10 — 2026.01", summary: "5단계 AI 파이프라인 재설계, CS 98% 감소" },
+      { slug: "ai-diagnostic-pipeline", name: "AI 진단/피드백 파이프라인 구축", period: "2025.10 — 2026.01", summary: "7단계 AI 파이프라인 재설계, CS 98% 감소" },
       { slug: "payment-system", name: "결제 시스템 전면 재설계", period: "2025.03 — 2025.09", summary: "PHP→Java 전면 이관, 중복 결제 0건 달성" },
       { slug: "notification-server", name: "멀티채널 알림서버 신규 구축", period: "2025.06 — 2025.10", summary: "4채널 통합 독립 알림서버 0→1 구축, 중복 발송률 0%" },
       { slug: "personalization-system", name: "유저 데이터 기반 개인화 시스템 구축", period: "2025.01 — 2026.01", summary: "세그멘테이션 기반 차등 쿠폰·해지방어 시스템" },
@@ -109,7 +109,7 @@ export const PROJECTS: ProjectDetail[] = [
     relatedPosts: ["spring-ai-pipeline-real-world"],
     tasks: [
       {
-        content: "python MVP로 제공한 단일 프롬프트로 처리하던 진단 프로세스를 **Spring AI** 를 이용하여 **5단계 AI 파이프라인**(STT 파싱 → Semantic Chunking → LLM 피드백 → 다국어 번역 → 하이라이트)으로 재설계",
+        content: "HTTP 직접 호출 + 동기 단일 프롬프트로 처리하던 진단 프로세스를 **Spring AI** 기반 **7단계 AI 파이프라인**(STT 로드 → Semantic Chunking → STT 보정 → 지표 산출 → LLM 피드백 → 문제 생성 → 알림)으로 재설계",
         details: [
           "진단 품질 개선으로 **CS 인입 98% 감소**",
           "기존 java/spring 환경으로 통합할 수 있어서 유지보수 완화 / 개발 난이도 완화",
@@ -125,7 +125,7 @@ export const PROJECTS: ProjectDetail[] = [
       {
         content: "AI 할루시네이션 대응 Correction 스텝 추가 및 각 파이프라인 별 포맷검증 실패 시 재시도 기능 추가",
         details: [
-          "진단 리포트 생성 시간 **6~10분 → 1~3분** (약 70% 단축)",
+          "진단 리포트 생성 시간 **6~7분 → 1~2분** (약 75% 단축)",
         ],
       },
     ],
