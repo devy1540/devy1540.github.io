@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Github, Mail, ChevronDown, Download, Loader2, FileText } from "lucide-react"
+import { Github, Mail, Phone, Linkedin, ChevronDown, Download, Loader2, FileText } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
@@ -53,19 +53,18 @@ function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
               <CollapsibleTrigger className="flex w-full items-center gap-2 text-left cursor-pointer p-3">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm">{project.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{project.period}</p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {project.tech.map((t) => (
+                      <Badge key={t} variant="secondary" className="text-[11px] px-1.5 py-0">
+                        {t}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 -rotate-90 group-data-[state=open]/project:rotate-0" />
               </CollapsibleTrigger>
               <CollapsibleContent className="overflow-hidden">
                 <div className="px-3 pb-3 space-y-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tech.map((t) => (
-                      <Badge key={t} variant="secondary" className="text-xs">
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
                   <ul className="space-y-2.5">
                     {project.tasks.map((task, i) => (
                       <li key={i}>
@@ -159,21 +158,27 @@ export function AboutPage() {
         <div className="text-center sm:text-left space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">{PROFILE.name}</h1>
           <p className="text-lg text-muted-foreground">{t.about.description}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground justify-center sm:justify-start">
+            <a href={`mailto:${PROFILE.email}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Mail className="h-3.5 w-3.5" />
+              {PROFILE.email}
+            </a>
+            <a href={`tel:${PROFILE.phone}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Phone className="h-3.5 w-3.5" />
+              {PROFILE.phone}
+            </a>
+          </div>
           <div className="flex gap-2 justify-center sm:justify-start">
             <Button asChild variant="outline" size="sm">
-              <a
-                href={PROFILE.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={PROFILE.github} target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </a>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <a href={`mailto:${PROFILE.email}`}>
-                <Mail className="mr-2 h-4 w-4" />
-                Email
+              <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer">
+                <Linkedin className="mr-2 h-4 w-4" />
+                LinkedIn
               </a>
             </Button>
             <Button
@@ -250,30 +255,6 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator />
-
-      {/* Contact */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">{t.about.contact}</h2>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button asChild variant="outline">
-            <a href={`mailto:${PROFILE.email}`}>
-              <Mail className="mr-2 h-4 w-4" />
-              {PROFILE.email}
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a
-              href={PROFILE.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="mr-2 h-4 w-4" />
-              {PROFILE.github.replace("https://", "")}
-            </a>
-          </Button>
-        </div>
-      </section>
     </div>
   )
 }

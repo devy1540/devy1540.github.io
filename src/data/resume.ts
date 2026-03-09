@@ -36,7 +36,9 @@ export interface Certification {
 
 export const PROFILE = {
   name: "윤혁준",
+  phone: "010-6709-1540",
   github: "https://github.com/devy1540",
+  linkedin: "https://www.linkedin.com/in/%ED%98%81%EC%A4%80-%EC%9C%A4-21a3bb22a/",
   email: "gurwns1540@gmail.com",
   introduction:
     "결제·구독·수업·인증 등 서비스 핵심 도메인을 End-to-End로 설계하고 운영해온 5년차 백엔드 엔지니어입니다.\n결제 시스템 전면 재설계, 멀티채널 알림서버 신규 구축, 도메인 모델 리팩토링 등 비즈니스 임팩트가 큰 프로젝트를 오너십 있게 이끌었습니다.\nOpenAI·Gemini·Bedrock 기반 LLM 파이프라인과 AI 코드리뷰 자동화를 프로덕션에 적용하며, AI를 제품과 개발 생산성 양쪽에 녹여내고 있습니다.",

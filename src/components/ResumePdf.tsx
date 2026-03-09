@@ -73,20 +73,46 @@ const s = StyleSheet.create({
   companyPeriod: { fontSize: 8.5, color: colors.muted },
   companyRole: { fontSize: 9, color: colors.muted, marginBottom: 6 },
   // Project
-  projectBox: { marginBottom: 8, paddingLeft: 8, borderLeftWidth: 2, borderLeftColor: colors.border },
-  projectHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
-  projectName: { fontSize: 9.5, fontWeight: 600 },
+  projectBox: { marginBottom: 14, paddingLeft: 8, borderLeftWidth: 2, borderLeftColor: colors.border },
+  projectHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 },
+  projectName: { fontSize: 9.5, fontWeight: 600, marginBottom: 2 },
   projectPeriod: { fontSize: 8, color: colors.muted },
-  techRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 4 },
+  techRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 6 },
   techBadge: { fontSize: 7.5, color: colors.accent, backgroundColor: "#eff6ff", paddingHorizontal: 5, paddingVertical: 1.5, borderRadius: 3 },
-  taskItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 2, paddingLeft: 8, lineHeight: 1.5 },
-  achievementItem: { fontSize: 8.5, color: colors.primary, fontWeight: 500, marginBottom: 2, paddingLeft: 8, lineHeight: 1.5 },
-  subLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 2, marginTop: 4 },
+  taskItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
+  detailItem: { fontSize: 8, color: colors.muted, marginBottom: 3, marginTop: -4, paddingLeft: 20, lineHeight: 1.6 },
+  achievementItem: { fontSize: 8.5, color: colors.primary, fontWeight: 500, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
+  subLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 3, marginTop: 6 },
   // Certifications
   certRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 3 },
   certName: { fontSize: 9, color: colors.secondary },
   certYear: { fontSize: 8.5, color: colors.muted },
+  // Highlights
+  highlightBox: { backgroundColor: colors.bgLight, borderRadius: 4, padding: 10, marginBottom: 12 },
+  highlightLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 5 },
+  highlightItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 3, paddingLeft: 8, lineHeight: 1.6 },
+  boldText: { fontWeight: 700 },
+  contactText: { fontSize: 8.5, color: colors.muted },
+  // URLs
+  urlRow: { flexDirection: "row", marginBottom: 4 },
+  urlLabel: { width: 55, fontSize: 8.5, fontWeight: 600, color: colors.secondary },
 })
+
+/** Parse **bold** markdown into Text elements */
+function BoldText({ style, children }: { style: Record<string, unknown> | Record<string, unknown>[]; children: string }) {
+  const parts = children.split(/(\*\*[^*]+\*\*)/)
+  return (
+    <Text style={style}>
+      {parts.map((part, i) =>
+        part.startsWith("**") && part.endsWith("**") ? (
+          <Text key={i} style={s.boldText}>{part.slice(2, -2)}</Text>
+        ) : (
+          part
+        ),
+      )}
+    </Text>
+  )
+}
 
 function CompanySection({ company }: { company: Company }) {
   const companyProjects = company.projects
@@ -101,23 +127,28 @@ function CompanySection({ company }: { company: Company }) {
       </View>
       <Text style={s.companyRole}>{company.role}</Text>
 
+      {company.highlights && company.highlights.length > 0 && (
+        <View style={s.highlightBox}>
+          <Text style={s.highlightLabel}>주요 성과</Text>
+          {company.highlights.map((h, i) => (
+            <BoldText key={i} style={s.highlightItem}>{"• " + h}</BoldText>
+          ))}
+        </View>
+      )}
+
       {companyProjects.map((project) => (
-        <View key={project!.slug} style={s.projectBox} wrap={false}>
-          <View style={s.projectHeader}>
-            <Text style={s.projectName}>{project!.name}</Text>
-            <Text style={s.projectPeriod}>{project!.period}</Text>
-          </View>
+        <View key={project!.slug} style={s.projectBox}>
+          <Text style={s.projectName}>{project!.name}</Text>
           <View style={s.techRow}>
             {project!.tech.map((t) => (
               <Text key={t} style={s.techBadge}>{t}</Text>
             ))}
           </View>
-          <Text style={s.subLabel}>Tasks</Text>
           {project!.tasks.map((task, i) => (
             <View key={i}>
-              <Text style={s.taskItem}>- {task.content}</Text>
+              <BoldText style={s.taskItem}>{"- " + task.content}</BoldText>
               {task.details?.map((detail, j) => (
-                <Text key={j} style={s.achievementItem}>  - {detail}</Text>
+                <BoldText key={j} style={s.detailItem}>{"→ " + detail}</BoldText>
               ))}
             </View>
           ))}
@@ -125,7 +156,7 @@ function CompanySection({ company }: { company: Company }) {
             <>
               <Text style={s.subLabel}>Achievements</Text>
               {project!.achievements.map((ach, i) => (
-                <Text key={i} style={s.achievementItem}>- {ach}</Text>
+                <BoldText key={i} style={s.achievementItem}>{"- " + ach}</BoldText>
               ))}
             </>
           )}
@@ -145,10 +176,16 @@ export function ResumePdfDocument() {
           <Text style={s.role}>Backend Engineer</Text>
           <View style={s.contactRow}>
             <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
-            <Link src={PROFILE.github} style={s.contactLink}>{PROFILE.github}</Link>
+            <Text style={s.contactText}>{PROFILE.phone}</Text>
           </View>
           <Text style={s.intro}>{PROFILE.introduction}</Text>
         </View>
+
+        {/* Experience */}
+        <Text style={s.sectionTitle}>Experience</Text>
+        {COMPANIES.map((company) => (
+          <CompanySection key={company.name} company={company} />
+        ))}
 
         {/* Skills */}
         <Text style={s.sectionTitle}>Skills</Text>
@@ -168,11 +205,20 @@ export function ResumePdfDocument() {
           </View>
         ))}
 
-        {/* Experience */}
-        <Text style={s.sectionTitle}>Experience</Text>
-        {COMPANIES.map((company) => (
-          <CompanySection key={company.name} company={company} />
-        ))}
+        {/* URLs */}
+        <Text style={s.sectionTitle}>URLs</Text>
+        <View style={s.urlRow}>
+          <Text style={s.urlLabel}>GitHub</Text>
+          <Link src={PROFILE.github} style={s.contactLink}>{PROFILE.github}</Link>
+        </View>
+        <View style={s.urlRow}>
+          <Text style={s.urlLabel}>LinkedIn</Text>
+          <Link src={PROFILE.linkedin} style={s.contactLink}>linkedin.com/in/혁준-윤</Link>
+        </View>
+        <View style={s.urlRow}>
+          <Text style={s.urlLabel}>Blog</Text>
+          <Link src="https://devy1540.github.io" style={s.contactLink}>https://devy1540.github.io</Link>
+        </View>
       </Page>
     </Document>
   )
