@@ -4,6 +4,30 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
+import type { Root, Element, Text } from "hast"
+
+/** rehype-raw가 code 블록 안의 <br> 등을 HTML 엘리먼트로 변환하는 것을 원래 텍스트로 복원 */
+function rehypeCodeBrFix() {
+  return (tree: Root) => {
+    ;(function walk(node: Root | Element) {
+      if (!("children" in node)) return
+      if ((node as Element).tagName === "code") {
+        node.children = node.children.map((child) => {
+          if (child.type === "element" && (child as Element).tagName === "br") {
+            return { type: "text", value: "<br/>" } as Text
+          }
+          return child
+        })
+        return
+      }
+      for (const child of node.children) {
+        if (child.type === "element" || child.type === "root") {
+          walk(child as Element)
+        }
+      }
+    })(tree)
+  }
+}
 import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
 import { getReadingTime } from "@/lib/reading-time"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -115,7 +139,7 @@ export function PostPage() {
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeSlug]}
+            rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSlug]}
             components={{ pre: CodeBlock }}
           >
             {post.content}

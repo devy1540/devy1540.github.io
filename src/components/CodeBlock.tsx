@@ -109,6 +109,7 @@ function MermaidBlock({ code }: { code: string }) {
 
   useEffect(() => {
     if (!containerRef.current || !code) return
+    let cancelled = false
 
     const config = buildMermaidTheme(resolvedTheme === "dark")
     mermaid.initialize({ startOnLoad: false, securityLevel: "loose", ...config })
@@ -116,7 +117,9 @@ function MermaidBlock({ code }: { code: string }) {
     const el = containerRef.current
     el.innerHTML = ""
 
-    mermaid.render(`mermaid${id}_${resolvedTheme}`, code).then(({ svg }) => {
+    const renderId = `mermaid${id}_${resolvedTheme}_${colorKey}`
+    mermaid.render(renderId, code).then(({ svg }) => {
+      if (cancelled) return
       el.innerHTML = svg
       const svgEl = el.querySelector("svg")
       if (svgEl) {
@@ -146,8 +149,11 @@ function MermaidBlock({ code }: { code: string }) {
         })
       }
     }).catch(() => {
+      if (cancelled) return
       el.textContent = code
     })
+
+    return () => { cancelled = true }
   }, [code, id, resolvedTheme, colorKey])
 
   return (
@@ -224,15 +230,25 @@ function ShikiBlock({ code, language, children, preProps }: { code: string; lang
   )
 }
 
+function extractCode(node: React.ReactNode): string {
+  if (typeof node === "string") return node
+  if (typeof node === "number") return String(node)
+  if (!node) return ""
+  if (Array.isArray(node)) return node.map(extractCode).join("")
+  if (typeof node === "object" && "type" in node) {
+    const el = node as React.ReactElement<{ children?: React.ReactNode }>
+    if ((el.type as string) === "br" || el.type === "br") return "<br/>"
+    return extractCode(el.props?.children)
+  }
+  return ""
+}
+
 export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
   const codeEl = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>
   const className = codeEl?.props?.className || ""
   const match = className.match(/language-(\w+)/)
   const language = match?.[1] ?? ""
-  const code = (typeof codeEl?.props?.children === "string"
-    ? codeEl.props.children
-    : ""
-  ).replace(/\n$/, "")
+  const code = extractCode(codeEl?.props?.children).replace(/\n$/, "")
 
   if (language === "mermaid") {
     return <MermaidBlock code={code} />
