@@ -3,7 +3,7 @@ title: "Spring MVC에 Facade 패턴 도입기 — @Gateway 어노테이션으로
 date: "2026-03-10"
 description: "전통적인 Controller-Service-Repository 구조에 커스텀 @Gateway 어노테이션과 Facade 레이어를 도입하여 도메인별 단일 책임 원칙을 확보하고 팀 생산성을 높인 과정을 공유합니다."
 tags: ["java", "spring-boot", "architecture", "design-pattern", "facade"]
-draft: true
+draft: false
 ---
 
 ## 배경
