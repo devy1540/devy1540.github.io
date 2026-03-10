@@ -96,7 +96,7 @@ const s = StyleSheet.create({
   contactText: { fontSize: 8.5, color: colors.muted },
   // URLs
   urlRow: { flexDirection: "row", marginBottom: 4 },
-  urlLabel: { width: 55, fontSize: 8.5, fontWeight: 600, color: colors.secondary },
+  urlLabel: { width: 110, fontSize: 8.5, fontWeight: 600, color: colors.secondary },
 })
 
 /** Parse **bold** markdown into Text elements */
@@ -220,6 +220,12 @@ export function ResumePdfDocument() {
           <Text style={s.urlLabel}>Blog</Text>
           <Link src="https://devy1540.github.io" style={s.contactLink}>https://devy1540.github.io</Link>
         </View>
+        {PROJECTS.flatMap((p) => p.relatedLinks ?? []).map((link) => (
+          <View key={link.url} style={s.urlRow}>
+            <Text style={s.urlLabel}>{link.title}</Text>
+            <Link src={link.url} style={s.contactLink}>{link.url}</Link>
+          </View>
+        ))}
       </Page>
     </Document>
   )
