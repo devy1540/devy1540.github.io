@@ -18,6 +18,11 @@ export interface TaskItem {
   details?: string[]
 }
 
+export interface RelatedLink {
+  title: string
+  url: string
+}
+
 export interface ProjectDetail {
   slug: string
   company: string
@@ -27,6 +32,7 @@ export interface ProjectDetail {
   tasks: TaskItem[]
   achievements?: string[]
   relatedPosts?: string[]
+  relatedLinks?: RelatedLink[]
 }
 
 export interface Certification {
@@ -262,6 +268,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "개발 프로세스 개선",
     period: "2024.09 — 2026.02",
     tech: ["Java", "Spring Boot"],
+    relatedPosts: ["spring-facade-pattern-layered-architecture"],
     tasks: [
       {
         content: "전통적인 Spring MVC 패턴에 **Facade 패턴을 도입**하여 개발 규칙을 정립",
@@ -358,6 +365,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "SaaS형 모니터링 서비스 데이터 수집 파이프라인 구축",
     period: "2021.01 — 2021.09",
     tech: ["Kafka Stream", "Apache Druid", "Spring Boot", "Kubernetes"],
+    relatedLinks: [{ title: "Apache Druid 기고문", url: "https://ex-em.com/ko/academy/Part.1-Druid" }],
     tasks: [
       { content: "Kafka Stream을 이용하여 Kafka로부터 수집된 데이터를 재가공하여 필요한 데이터를 생성" },
       { content: "Apache Druid를 사용하여 실시간으로 데이터를 수집하고 수집된 데이터를 바로 사용할 수 있도록 관리" },
