@@ -85,7 +85,7 @@ export function PostPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto flex gap-16 xl:gap-24">
+    <div className="max-w-6xl mx-auto flex gap-16 xl:gap-32">
       <article className="min-w-0 flex-1 max-w-4xl">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to="/" viewTransition>
