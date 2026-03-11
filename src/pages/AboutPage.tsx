@@ -151,7 +151,8 @@ export function AboutPage() {
       const blob = await pdf(ResumePdfDocument()).toBlob()
       const fileName = `${PROFILE.name}_이력서.pdf`
       const file = new File([blob], fileName, { type: "application/pdf" })
-      if (navigator.canShare?.({ files: [file] })) {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      if (isMobile && navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] })
       } else {
         const url = URL.createObjectURL(blob)
