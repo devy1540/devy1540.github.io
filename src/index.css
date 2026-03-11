@@ -251,6 +251,34 @@
   to { opacity: 1; }
 }
 
+/* TOC scrollbar: hidden by default, thin on hover */
+.scrollbar-thin {
+  scrollbar-width: none;
+}
+.scrollbar-thin:hover {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 0;
+}
+.scrollbar-thin:hover::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+.scrollbar-thin:hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Prose heading scroll offset for sticky header */
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 5rem;
+}
+
 /* Markdown prose code blocks */
 .prose pre {
   @apply bg-secondary text-secondary-foreground rounded-lg overflow-x-auto;
