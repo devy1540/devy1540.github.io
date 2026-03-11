@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/devy1540/devy1540.github.io/compare/v1.4.0...v1.4.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* 모바일 Safari PDF 다운로드 오류 수정 ([df8cce4](https://github.com/devy1540/devy1540.github.io/commit/df8cce4587b0f5ed4171b654e9a5579c5a80409f))
+* 모바일 Safari에서 PDF 다운로드 시 webkitBlobResource 오류 수정 ([ba355df](https://github.com/devy1540/devy1540.github.io/commit/ba355dff2fe7caf25a00c663a9d0c36275e8b670))
+
 ## [1.4.0](https://github.com/devy1540/devy1540.github.io/compare/v1.3.2...v1.4.0) (2026-03-11)
 
 
