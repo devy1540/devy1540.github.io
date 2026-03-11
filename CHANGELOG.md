@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/devy1540/devy1540.github.io/compare/v1.1.1...v1.2.0) (2026-03-11)
+
+
+### Features
+
+* widen page layouts and publish api-response post ([5be3726](https://github.com/devy1540/devy1540.github.io/commit/5be3726a2ebfa92d60d0977b090e0bf119267e95))
+* widen page layouts and publish api-response post ([a2c5008](https://github.com/devy1540/devy1540.github.io/commit/a2c50088d16c9e3ba59ab32d3cf22332fb1ce552))
+
 ## [1.1.1](https://github.com/devy1540/devy1540.github.io/compare/v1.1.0...v1.1.1) (2026-03-11)
 
 
