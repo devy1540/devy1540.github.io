@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.3](https://github.com/devy1540/devy1540.github.io/compare/v1.4.2...v1.4.3) (2026-03-11)
+
+
+### Bug Fixes
+
+* 데스크탑에서는 기존 다운로드 방식 유지, 모바일만 share API 사용 ([a4165b4](https://github.com/devy1540/devy1540.github.io/commit/a4165b408f6beedcaa527c2a2948d35b4883abb3))
+* 모바일 Safari PDF 다운로드 - 데스크탑 공유시트 문제 수정 ([b72bb5e](https://github.com/devy1540/devy1540.github.io/commit/b72bb5e913a094fe9c235b6c80b6ea778ba6e1de))
+
 ## [1.4.2](https://github.com/devy1540/devy1540.github.io/compare/v1.4.1...v1.4.2) (2026-03-11)
 
 
