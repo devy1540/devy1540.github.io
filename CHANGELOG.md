@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/devy1540/devy1540.github.io/compare/v1.2.0...v1.3.0) (2026-03-11)
+
+
+### Features
+
+* add confetti easter egg ([dc99d3b](https://github.com/devy1540/devy1540.github.io/commit/dc99d3be7d2cfb3bf6cdeed675edd1f2d56dc78b))
+* add confetti easter egg triggered by secret key sequence ([4e7fc14](https://github.com/devy1540/devy1540.github.io/commit/4e7fc145acdb2b58a2d6b66d417c3c725c1d6b76))
+
 ## [1.2.0](https://github.com/devy1540/devy1540.github.io/compare/v1.1.1...v1.2.0) (2026-03-11)
 
 
