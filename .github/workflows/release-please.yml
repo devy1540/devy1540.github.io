@@ -13,5 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           release-type: node
+
+      - name: Auto-merge Release PR
+        if: steps.release.outputs.pr
+        run: gh pr merge ${{ fromJSON(steps.release.outputs.pr).number }} --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
