@@ -1,0 +1,18 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "changelog-sections": [
+        { "type": "feat", "section": "새로운 기능" },
+        { "type": "fix", "section": "버그 수정" },
+        { "type": "docs", "section": "문서" },
+        { "type": "style", "section": "스타일" },
+        { "type": "refactor", "section": "리팩터링" },
+        { "type": "perf", "section": "성능 개선" },
+        { "type": "test", "section": "테스트" },
+        { "type": "chore", "section": "기타", "hidden": true }
+      ]
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}
