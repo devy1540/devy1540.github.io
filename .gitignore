@@ -6,9 +6,8 @@ dist
 dist-ssr
 
 # Environment
-*.local
-.env
-.env.*
+.env.local
+.env.*.local
 
 # Logs
 *.log

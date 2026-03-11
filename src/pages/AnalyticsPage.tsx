@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { AlertCircle, Eye, FileText, Library, PenLine, Tags } from "lucide-react"
+import { AlertCircle, Eye, FileText, Library, PenLine, RefreshCw, Tags } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -39,7 +39,7 @@ export function AnalyticsPage() {
   const t = useT()
   useMetaTags({ title: "Analytics", description: t.analytics.description, url: "/analytics" })
 
-  const { totalViews, allPageViews, isError, lastUpdated } = usePageViews()
+  const { totalViews, allPageViews, isError, isLoading, lastUpdated, refresh } = usePageViews()
   const posts = getAllPosts()
   const series = getAllSeries()
   const tags = getAllTags()
@@ -123,7 +123,17 @@ export function AnalyticsPage() {
     <div className="max-w-4xl mx-auto">
       <section className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
-        <p className="text-muted-foreground">{t.analytics.description}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-muted-foreground flex-1">{t.analytics.description}</p>
+          <button
+            onClick={refresh}
+            disabled={isLoading}
+            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            {t.analytics.refresh}
+          </button>
+        </div>
         {isError && (
           <div className="mt-3 flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
             <AlertCircle className="size-4 shrink-0" />

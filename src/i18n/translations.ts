@@ -85,6 +85,7 @@ export interface Translations {
     lastUpdated: string
     loadError: string
     showingCachedData: string
+    refresh: string
   }
   about: {
     description: string
@@ -214,6 +215,7 @@ export const ko: Translations = {
     lastUpdated: "마지막 업데이트",
     loadError: "조회수 데이터를 불러올 수 없습니다",
     showingCachedData: "캐시된 데이터를 표시합니다",
+    refresh: "새로고침",
   },
   about: {
     description: "복잡한 비즈니스 요구사항을 빠르게 제품으로 만들어내는 백엔드 엔지니어입니다.",
@@ -343,6 +345,7 @@ export const en: Translations = {
     lastUpdated: "Last updated",
     loadError: "Could not load view data",
     showingCachedData: "Showing cached data",
+    refresh: "Refresh",
   },
   about: {
     description: "Backend engineer who rapidly turns complex business requirements into products.",
