@@ -265,7 +265,7 @@ public class ApiResponse<T> {
 }
 ```
 
-`resultCd`를 문자열에서 `int`로 바꾼 것도 의도적이다. 레거시의 `resultCd == "200"` 같은 실수가 구조적으로 불가능해진다.
+`resultCd`를 문자열에서 `int`로 바꾼 것도 의도적이다. 타입 자체가 달라지면서 레거시 코드와의 혼용이 구조적으로 방지된다.
 
 ### 에러 코드 중앙 관리 — ApiErrorCode
 
@@ -312,7 +312,6 @@ public enum ApiErrorCode {
 public class BaseException extends RuntimeException {
     private final ApiErrorCode errorCode;
     private final String message;
-    private String slackMessage;
 
     public BaseException(ApiErrorCode code) {
         super(code.getMessage());
@@ -325,17 +324,8 @@ public class BaseException extends RuntimeException {
         this.errorCode = code;
         this.message = message;
     }
-
-    public BaseException(ApiErrorCode code, String message, Supplier<String> slackMsg) {
-        super(message);
-        this.errorCode = code;
-        this.message = message;
-        this.slackMessage = slackMsg.get();
-    }
 }
 ```
-
-세 번째 생성자는 Slack 메시지를 `Supplier<String>`으로 받는다. 에러가 실제로 발생했을 때만 메시지를 생성하므로, 정상 흐름에서는 Slack 메시지 조합 비용이 들지 않는다.
 
 실제 사용은 이런 식이다:
 
@@ -345,11 +335,6 @@ throw new BaseException(ApiErrorCode.USER_NOT_FOUND);
 
 // 커스텀 메시지 — 상황에 맞는 구체적인 메시지
 throw new BaseException(ApiErrorCode.DUPLICATE_CARD, "이미 등록된 카드입니다.");
-
-// Slack 알림 — 운영팀이 즉시 알아야 하는 에러
-throw new BaseException(ApiErrorCode.ENCRYPT_ERROR,
-    "결제 토큰 암호화에 실패했습니다.",
-    () -> "토큰 암호화 실패: userId=" + userId);
 ```
 
 ### 전역 예외 핸들러 — GlobalExceptionHandler
@@ -521,7 +506,6 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 | **에러 판단 기준** | body.resultCd 문자열 비교 | HTTP 상태코드 |
 | **새 에러 추가** | 컨트롤러마다 응답 생성 코드 작성 | `ApiErrorCode`에 한 줄 추가 |
 | **장애 감지** | body를 파싱해야 감지 가능 | 5xx 급증 시 자동 알림 |
-| **코드 리뷰** | "왜 Map을 썼나요?" 반복 | 방법이 하나라 논쟁 없음 |
 
 실제 Tempo 트레이스를 보면 차이가 명확하다.
 
