@@ -1,5 +1,5 @@
 ---
-title: "블로그 만들기 #5 — Google Analytics 연동 & 방문자 수 표시"
+title: "블로그 만들기 #5 - Google Analytics 연동 & 방문자 수 표시"
 date: "2026-02-26"
 description: "정적 사이트에서 GA4 데이터를 활용해 방문자 수와 일별 조회수 차트를 표시하는 방법을 정리합니다."
 tags: ["react", "google-analytics", "shadcn-ui", "blog"]
@@ -37,7 +37,7 @@ Google Analytics를 추가하는 것 자체는 간단합니다. `index.html`에 
 
 하나의 스크립트에서 `type` 파라미터로 두 가지 데이터를 제공합니다.
 
-**Summary** (`?type=summary`) — 전체 조회수 + 페이지별 조회수
+**Summary** (`?type=summary`) - 전체 조회수 + 페이지별 조회수
 
 ```javascript
 function getSummary(propertyId) {
@@ -59,7 +59,7 @@ function getSummary(propertyId) {
 }
 ```
 
-**Daily** (`?type=daily`) — 최근 30일 일별 조회수
+**Daily** (`?type=daily`) - 최근 30일 일별 조회수
 
 ```javascript
 function getDailyViews(propertyId) {
@@ -74,11 +74,11 @@ function getDailyViews(propertyId) {
 
 ### Apps Script 설정 시 주의사항
 
-1. **고급 서비스 활성화** — Apps Script 에디터에서 `Google Analytics Data API` 서비스를 추가해야 합니다. 이걸 빠뜨리면 `AnalyticsData is not defined` 에러가 발생합니다.
+1. **고급 서비스 활성화** - Apps Script 에디터에서 `Google Analytics Data API` 서비스를 추가해야 합니다. 이걸 빠뜨리면 `AnalyticsData is not defined` 에러가 발생합니다.
 
-2. **Property ID vs Measurement ID** — API에는 숫자로 된 Property ID가 필요합니다. `G-XXXXXXXXXX` 형태의 Measurement ID가 아닙니다. GA 관리 > 속성 설정에서 확인할 수 있습니다.
+2. **Property ID vs Measurement ID** - API에는 숫자로 된 Property ID가 필요합니다. `G-XXXXXXXXXX` 형태의 Measurement ID가 아닙니다. GA 관리 > 속성 설정에서 확인할 수 있습니다.
 
-3. **배포 버전 관리** — 코드를 수정한 후 "새 배포"가 아니라 기존 배포를 "수정"해서 새 버전을 적용해야 같은 URL이 유지됩니다.
+3. **배포 버전 관리** - 코드를 수정한 후 "새 배포"가 아니라 기존 배포를 "수정"해서 새 버전을 적용해야 같은 URL이 유지됩니다.
 
 ## 블로그 측 구현
 
