@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
-const GA_API_URL =
-  "https://script.google.com/macros/s/AKfycbxx7z1-AvZnCWurLcNBSWiWEDqMXwUoZeC7PsuiHQGloISAb0ZjQrUq0MWbC8pUiSMF/exec"
+const GA_API_URL = import.meta.env.VITE_GA_API_URL as string | undefined
 
 export interface DailyData {
   date: string
@@ -15,7 +14,7 @@ interface PageViewsData {
   lastUpdated: string | null
 }
 
-const CACHE_TTL = 60 * 60 * 1000 // 1시간
+const CACHE_TTL = 15 * 60 * 1000 // 15분
 
 let cached: PageViewsData | null = null
 let fetching: Promise<PageViewsData | null> | null = null
@@ -27,14 +26,18 @@ function isCacheValid(): boolean {
   return Date.now() - Number(ts) < CACHE_TTL
 }
 
-function fetchPageViews(): Promise<PageViewsData | null> {
-  if (cached && isCacheValid()) return Promise.resolve(cached)
-  if (fetching) return fetching
+function fetchPageViews(ignoreCache = false): Promise<PageViewsData | null> {
+  if (!GA_API_URL) return Promise.resolve(null)
 
-  const stored = sessionStorage.getItem("page-views")
-  if (stored && isCacheValid()) {
-    cached = JSON.parse(stored)
-    return Promise.resolve(cached)
+  if (!ignoreCache && cached && isCacheValid()) return Promise.resolve(cached)
+  if (!ignoreCache && fetching) return fetching
+
+  if (!ignoreCache) {
+    const stored = sessionStorage.getItem("page-views")
+    if (stored && isCacheValid()) {
+      cached = JSON.parse(stored)
+      return Promise.resolve(cached)
+    }
   }
 
   cached = null
@@ -84,6 +87,20 @@ export function usePageViews() {
     })
   }, [])
 
+  const refresh = useCallback(() => {
+    setIsLoading(true)
+    setIsError(false)
+    fetchPageViews(true).then((d) => {
+      if (d) {
+        setData(d)
+        setIsError(false)
+      } else {
+        setIsError(fetchError)
+      }
+      setIsLoading(false)
+    })
+  }, [])
+
   return {
     totalViews: data?.totalViews ?? null,
     allPageViews: data?.pages ?? null,
@@ -91,9 +108,11 @@ export function usePageViews() {
     isLoading,
     isError,
     lastUpdated: data?.lastUpdated ?? null,
+    refresh,
     getPostViews(slug: string): number | null {
       if (!data) return null
-      return data.pages[`/posts/${slug}`] ?? data.pages[`/posts/${slug}/`] ?? null
+      const normalized = `/posts/${slug}`
+      return data.pages[normalized] ?? null
     },
   }
 }
