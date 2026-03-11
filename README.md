@@ -1,55 +1,112 @@
+<div align="center">
+
 # Devy's Blog
 
-React + TypeScript + Vite로 만든 개인 기술 블로그입니다.
+**React + TypeScript + Vite로 만든 개인 기술 블로그**
 
-**Live**: https://devy1540.github.io
+[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=Deploy&logo=github)](https://devy1540.github.io)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-## Tech Stack
+[**Live Demo**](https://devy1540.github.io) · [**RSS Feed**](https://devy1540.github.io/rss.xml)
 
-- **Framework**: React 19, TypeScript, Vite 7
-- **Styling**: Tailwind CSS 4, shadcn/ui (Radix UI)
-- **Routing**: React Router v7
-- **Markdown**: react-markdown, remark-gfm, rehype-raw, rehype-slug
-- **Code Highlight**: Shiki
-- **Diagrams**: Mermaid
-- **Charts**: Recharts
-- **Comments**: Giscus
-- **i18n**: Custom implementation (ko/en)
-- **Deploy**: GitHub Pages
+</div>
+
+---
 
 ## Features
 
-- Markdown 기반 블로그 포스팅 (GFM, 코드 하이라이팅, Mermaid 다이어그램)
-- 시리즈/태그 분류 및 전체 검색 (고급 검색 포함)
-- 다크/라이트 테마 + 컬러 테마 커스터마이징
-- 한국어/영어 다국어 지원
-- Google Analytics 연동 분석 대시보드
-- RSS 피드 및 Sitemap 자동 생성
-- Draft / 예약 발행 (개발 모드에서만 표시)
-- 키보드 단축키 지원
-- SEO 최적화 (Open Graph, robots meta)
+| | Feature | Description |
+|---|---------|-------------|
+| :memo: | **Markdown 블로그** | GFM, 코드 하이라이팅(Shiki), Mermaid 다이어그램 지원 |
+| :mag: | **고급 검색** | 키워드, 날짜 범위, 태그 필터 기반 전체 검색 |
+| :bookmark: | **시리즈 & 태그** | 글 분류 및 시리즈 네비게이션 |
+| :crescent_moon: | **테마** | 다크/라이트/시스템 + 컬러 테마 커스터마이징 |
+| :globe_with_meridians: | **다국어** | 한국어/영어 전환 |
+| :bar_chart: | **Analytics** | Google Analytics 연동 통계 대시보드 |
+| :speech_balloon: | **댓글** | Giscus (GitHub Discussions 기반) |
+| :satellite: | **SEO** | Open Graph, RSS, Sitemap 자동 생성 |
+| :calendar: | **예약 발행** | Draft / Scheduled 포스트 관리 |
+
+## Tech Stack
+
+<table>
+<tr>
+<td align="center" width="96"><b>Category</b></td>
+<td><b>Technologies</b></td>
+</tr>
+<tr>
+<td align="center">Frontend</td>
+<td>React 19 · TypeScript · Vite 7</td>
+</tr>
+<tr>
+<td align="center">Styling</td>
+<td>Tailwind CSS 4 · shadcn/ui (Radix UI) · Lucide Icons</td>
+</tr>
+<tr>
+<td align="center">Routing</td>
+<td>React Router v7</td>
+</tr>
+<tr>
+<td align="center">Markdown</td>
+<td>react-markdown · remark-gfm · rehype-raw · rehype-slug</td>
+</tr>
+<tr>
+<td align="center">Code</td>
+<td>Shiki (dual theme: github-light / github-dark)</td>
+</tr>
+<tr>
+<td align="center">Diagrams</td>
+<td>Mermaid.js (CSS 변수 기반 동적 테마)</td>
+</tr>
+<tr>
+<td align="center">Charts</td>
+<td>Recharts</td>
+</tr>
+<tr>
+<td align="center">Comments</td>
+<td>Giscus (GitHub Discussions)</td>
+</tr>
+<tr>
+<td align="center">Analytics</td>
+<td>Google Analytics · Google Apps Script API</td>
+</tr>
+<tr>
+<td align="center">Deploy</td>
+<td>GitHub Pages</td>
+</tr>
+</table>
 
 ## Getting Started
 
 ```bash
-# Install dependencies
+# 의존성 설치
 npm install
 
-# Development server
+# 개발 서버
 npm run dev
 
-# Production build
+# 프로덕션 빌드
 npm run build
 
-# Preview production build
+# 빌드 미리보기
 npm run preview
+```
 
-# Type check
+<details>
+<summary><b>기타 명령어</b></summary>
+
+```bash
+# TypeScript 타입 체크
 npm run type-check
 
-# Lint
+# ESLint
 npm run lint
 ```
+
+</details>
 
 ## Writing Posts
 
@@ -61,54 +118,40 @@ title: "포스트 제목"
 date: "2026-02-26"
 description: "포스트 설명"
 tags: ["react", "typescript"]
-series: "시리즈 이름"
-seriesOrder: 1
+series: "시리즈 이름"       # optional
+seriesOrder: 1              # optional
+draft: true                 # optional
+publishDate: "2026-03-15"   # optional (예약 발행)
 ---
 ```
 
-### Draft / 예약 발행
-
-```yaml
----
-title: "작성 중인 글"
-date: "2026-02-26"
-draft: true
----
-```
-
-```yaml
----
-title: "예약 발행 글"
-date: "2026-02-26"
-publishDate: "2026-03-15"
----
-```
-
-| 환경 | draft / 예약 포스트 |
-|------|---------------------|
-| `npm run dev` | 목록에 DRAFT/SCHEDULED 배지와 함께 표시 |
-| `npm run build` | 목록/검색/태그/시리즈/RSS/sitemap 모두 제외 |
+> **Note**
+> `draft: true` 또는 미래 `publishDate`가 설정된 글은 `npm run dev`에서만 배지와 함께 표시되며, 프로덕션 빌드에서는 자동 제외됩니다.
 
 ## Project Structure
 
 ```
-├── content/posts/       # Markdown 블로그 포스트
-├── public/              # Static assets
-├── src/
-│   ├── components/      # UI 컴포넌트
-│   │   └── ui/          # shadcn/ui 컴포넌트
-│   ├── hooks/           # Custom hooks
-│   ├── i18n/            # 다국어 번역
-│   ├── lib/             # 유틸리티 (posts, analytics, utils)
-│   ├── pages/           # 페이지 컴포넌트
-│   └── types/           # TypeScript 타입 정의
-└── vite.config.ts       # Vite 설정 (RSS, Sitemap, SPA 404)
+content/posts/           # Markdown 블로그 포스트
+public/                  # 정적 파일 (favicon, og-image)
+src/
+├── components/          # UI 컴포넌트
+│   └── ui/              #   shadcn/ui
+├── hooks/               # Custom hooks (theme, pageViews, meta)
+├── i18n/                # 다국어 (ko/en)
+├── layouts/             # 공통 레이아웃 (Sidebar + Header)
+├── lib/                 # 유틸리티 (posts, analytics)
+├── pages/               # 페이지 컴포넌트
+└── types/               # TypeScript 타입 정의
 ```
 
 ## Keyboard Shortcuts
 
-| 단축키 | 동작 |
-|--------|------|
-| `⌘/Ctrl + K` | 검색 열기 |
-| `⌘/Ctrl + B` | 사이드바 토글 |
-| `Shift + /` | 단축키 안내 |
+| Shortcut | Action |
+|:--------:|--------|
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | 검색 열기 |
+| <kbd>Cmd</kbd> + <kbd>B</kbd> | 사이드바 토글 |
+| <kbd>Shift</kbd> + <kbd>/</kbd> | 단축키 안내 |
+
+## License
+
+MIT
