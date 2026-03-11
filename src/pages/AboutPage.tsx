@@ -149,17 +149,18 @@ export function AboutPage() {
         import("@/components/ResumePdf"),
       ])
       const blob = await pdf(ResumePdfDocument()).toBlob()
-      const url = URL.createObjectURL(blob)
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      if (isIOS) {
-        window.open(url, "_blank")
+      const fileName = `${PROFILE.name}_이력서.pdf`
+      const file = new File([blob], fileName, { type: "application/pdf" })
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] })
       } else {
+        const url = URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = url
-        a.download = `${PROFILE.name}_이력서.pdf`
+        a.download = fileName
         a.click()
+        setTimeout(() => URL.revokeObjectURL(url), 60_000)
       }
-      setTimeout(() => URL.revokeObjectURL(url), 60_000)
     } finally {
       setPdfLoading(false)
     }
