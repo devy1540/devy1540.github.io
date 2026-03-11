@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/devy1540/devy1540.github.io/compare/v1.3.1...v1.3.2) (2026-03-11)
+
+
+### Bug Fixes
+
+* use PAT for release-please auto-merge ([bc40fa8](https://github.com/devy1540/devy1540.github.io/commit/bc40fa8de3c64bc2dc36e23c1320ff6aa341a27f))
+* use PAT_TOKEN for auto-merge to trigger subsequent workflows ([ada00e2](https://github.com/devy1540/devy1540.github.io/commit/ada00e2cae30b2a140ce289b4a17870644145770))
+
 ## [1.3.1](https://github.com/devy1540/devy1540.github.io/compare/v1.3.0...v1.3.1) (2026-03-11)
 
 
