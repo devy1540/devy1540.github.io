@@ -28,7 +28,7 @@ const SEQUENCE_TIMEOUT = 2000
 export function Confetti() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const bufferRef = useRef("")
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -77,7 +77,7 @@ export function Confetti() {
         y: window.innerHeight * 0.55,
         vx: (Math.random() - 0.5) * 16,
         vy: Math.random() * -14 - 4,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
         size: Math.random() * 8 + 4,
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.2,
@@ -92,7 +92,7 @@ export function Confetti() {
 
     function animate(now: number) {
       const globalElapsed = now - globalStart
-      const totalDuration = DURATION + BURST_DELAYS[BURST_DELAYS.length - 1]
+      const totalDuration = DURATION + BURST_DELAYS[BURST_DELAYS.length - 1]!
       if (globalElapsed > totalDuration) {
         ctx!.clearRect(0, 0, canvas!.width, canvas!.height)
         canvas!.style.display = "none"
