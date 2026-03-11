@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/devy1540/devy1540.github.io/compare/v1.3.2...v1.4.0) (2026-03-11)
+
+
+### Features
+
+* 개발 프로세스 개선 프로젝트에 api-response-error-standardization 연관 문서 추가 ([332dc21](https://github.com/devy1540/devy1540.github.io/commit/332dc21df828eb66219784b4a0ef95988e655b6b))
+* 개발 프로세스 개선 프로젝트에 연관 문서 추가 ([9dd66f9](https://github.com/devy1540/devy1540.github.io/commit/9dd66f9b8618b95fa98afb5d5570b379b75d49a2))
+
 ## [1.3.2](https://github.com/devy1540/devy1540.github.io/compare/v1.3.1...v1.3.2) (2026-03-11)
 
 
