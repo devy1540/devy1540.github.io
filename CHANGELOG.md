@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/devy1540/devy1540.github.io/compare/v1.3.0...v1.3.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* resolve strict TypeScript errors in Confetti component ([4a83205](https://github.com/devy1540/devy1540.github.io/commit/4a83205147ba1b885199f11915ca952c72db8b1a))
+* resolve strict TypeScript errors in Confetti component ([a96b952](https://github.com/devy1540/devy1540.github.io/commit/a96b952032b3551ca190deef37443a4660cc1972))
+
 ## [1.3.0](https://github.com/devy1540/devy1540.github.io/compare/v1.2.0...v1.3.0) (2026-03-11)
 
 
