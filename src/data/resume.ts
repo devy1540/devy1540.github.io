@@ -268,7 +268,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "개발 프로세스 개선",
     period: "2024.09 — 2026.02",
     tech: ["Java", "Spring Boot"],
-    relatedPosts: ["spring-facade-pattern-layered-architecture"],
+    relatedPosts: ["spring-facade-pattern-layered-architecture", "api-response-error-standardization"],
     tasks: [
       {
         content: "전통적인 Spring MVC 패턴에 **Facade 패턴을 도입**하여 개발 규칙을 정립",
