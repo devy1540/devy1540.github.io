@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/devy1540/devy1540.github.io/compare/v1.1.0...v1.1.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* improve TOC scroll tracking and UX ([6bfd7d9](https://github.com/devy1540/devy1540.github.io/commit/6bfd7d9fae784ac712bc8026ee4b86e8e060eb31))
+* improve TOC scroll tracking and UX ([2d39380](https://github.com/devy1540/devy1540.github.io/commit/2d393801e2c5f5ff15c59df7d1bbffe60ceedbd1))
+
 ## [1.1.0](https://github.com/devy1540/devy1540.github.io/compare/v1.0.0...v1.1.0) (2026-03-11)
 
 
