@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/devy1540/devy1540.github.io/compare/v1.4.1...v1.4.2) (2026-03-11)
+
+
+### Bug Fixes
+
+* iOS에서 navigator.share()로 PDF 파일 저장 지원 ([3515c55](https://github.com/devy1540/devy1540.github.io/commit/3515c553c59f666b4e84ac9d2774f0389e3a478f))
+* iOS에서 navigator.share()로 PDF 파일 저장 지원 ([29bdb69](https://github.com/devy1540/devy1540.github.io/commit/29bdb69f8d3f530ba2d166cf9066eba42725b79c))
+
 ## [1.4.1](https://github.com/devy1540/devy1540.github.io/compare/v1.4.0...v1.4.1) (2026-03-11)
 
 
