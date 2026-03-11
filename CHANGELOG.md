@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/devy1540/devy1540.github.io/compare/v1.0.0...v1.1.0) (2026-03-11)
+
+
+### Features
+
+* API 응답/에러 처리 구조 공통화 블로그 포스트 추가 ([0e15beb](https://github.com/devy1540/devy1540.github.io/commit/0e15bebcbe9498250fde8d237d4b781dea1433c5))
+* update api-response-error-standardization post with git history research and Grafana screenshots ([75f40b6](https://github.com/devy1540/devy1540.github.io/commit/75f40b62a54efd206504cd957b3a4a876fe3afab))
+
+
+### Bug Fixes
+
+* remove Slack references and code review row from blog post ([95a1e19](https://github.com/devy1540/devy1540.github.io/commit/95a1e1922cad8a4a2bb9824dbb758cb6c0331a21))
+
 ## 1.0.0 (2026-03-11)
 
 
