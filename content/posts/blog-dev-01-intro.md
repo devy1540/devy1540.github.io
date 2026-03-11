@@ -1,5 +1,5 @@
 ---
-title: "블로그 만들기 #1 — 프로젝트 소개 & 기술 스택"
+title: "블로그 만들기 #1 - 프로젝트 소개 & 기술 스택"
 date: "2026-02-26"
 description: "React 19, Vite 7, shadcn/ui로 개인 블로그를 새로 만든 이유와 기술 스택을 소개합니다."
 tags: ["react", "vite", "shadcn-ui", "blog"]

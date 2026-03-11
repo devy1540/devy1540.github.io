@@ -1,5 +1,5 @@
 ---
-title: "블로그 만들기 #2 — Command Palette 검색 & View Transitions"
+title: "블로그 만들기 #2 - Command Palette 검색 & View Transitions"
 date: "2026-02-26"
 description: "cmdk로 Cmd+K 검색을 구현하고, View Transitions API로 페이지 전환 애니메이션을 적용한 과정입니다."
 tags: ["react", "cmdk", "view-transitions", "blog"]
@@ -13,7 +13,7 @@ VS Code나 Raycast처럼 `Cmd+K`로 빠르게 검색할 수 있는 Command Palet
 
 ### 사용한 라이브러리
 
-- `cmdk` — Command Palette 핵심 라이브러리
+- `cmdk` - Command Palette 핵심 라이브러리
 - shadcn/ui의 `CommandDialog`, `CommandInput`, `CommandList` 컴포넌트
 
 ### 검색 로직

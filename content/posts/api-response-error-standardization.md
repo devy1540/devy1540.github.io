@@ -1,5 +1,5 @@
 ---
-title: "API 응답/에러 처리 구조 공통화 — HTTP 상태코드를 제대로 쓰기까지"
+title: "API 응답/에러 처리 구조 공통화 - HTTP 상태코드를 제대로 쓰기까지"
 date: "2026-03-10"
 description: "모든 API가 200을 반환하던 레거시 구조에서, HTTP 상태코드를 올바르게 활용하는 공통 응답/에러 체계로 전면 개선한 과정. 모니터링 정상화, 디버깅 효율화, 개발자 간 커뮤니케이션 비용 절감까지."
 tags: ["java", "spring-boot", "architecture", "error-handling", "refactoring"]
@@ -24,7 +24,7 @@ return ResponseEntity.ok(CommonClass.ResponseResult("200", result));
 
 ## 기존 구조의 문제점
 
-### CommonClass — 레거시 응답 래퍼
+### CommonClass - 레거시 응답 래퍼
 
 먼저 기존 응답 구조를 보면:
 
@@ -106,26 +106,26 @@ public ResponseEntity<?> getItemList(@RequestParam(required = false) Integer lim
 
 한 번에 설계해서 한 번에 적용한 것이 아니라, 문제를 인식하고 시도하고 개선하는 과정의 연속이었다.
 
-### Phase 1 — CommonClass 탄생
+### Phase 1 - CommonClass 탄생
 
 가장 처음 응답 포맷을 통일하려는 시도였다. 모든 컨트롤러에서 `Map<String, Object>`를 직접 생성하던 코드를 `CommonClass.ResponseResult()`라는 정적 메서드로 추출했다.
 
 ```java
-// Before — 모든 컨트롤러에서 직접 Map 생성
+// Before - 모든 컨트롤러에서 직접 Map 생성
 Map<String, Object> resultMap = new HashMap<>();
 resultMap.put("resultCd", "200");
 resultMap.put("result", someData);
 return ResponseEntity.ok(resultMap);
 
-// After — 공통 메서드로 추출
+// After - 공통 메서드로 추출
 return ResponseEntity.ok(CommonClass.ResponseResult("200", result));
 ```
 
-반복 코드를 줄인 것은 의미가 있었지만, 근본적인 문제 — HTTP 상태코드를 제대로 쓰지 않는 것 — 는 그대로였다. 여전히 모든 응답이 HTTP 200이었고, `resultCd`는 문자열이었다.
+반복 코드를 줄인 것은 의미가 있었지만, 근본적인 문제 - HTTP 상태코드를 제대로 쓰지 않는 것 - 는 그대로였다. 여전히 모든 응답이 HTTP 200이었고, `resultCd`는 문자열이었다.
 
-### Phase 2 — 인프라만 만들고 켜지 못했던 시간
+### Phase 2 - 인프라만 만들고 켜지 못했던 시간
 
-본격적인 에러 처리 체계를 만들기 시작했다. `ErrorResponse`, `BaseException`, `GlobalExceptionHandler`를 스캐폴딩했지만 — **활성화하지는 못했다.**
+본격적인 에러 처리 체계를 만들기 시작했다. `ErrorResponse`, `BaseException`, `GlobalExceptionHandler`를 스캐폴딩했지만 - **활성화하지는 못했다.**
 
 ```java
 @Slf4j
@@ -142,15 +142,15 @@ public class GlobalExceptionHandler {
 
 `@RestControllerAdvice`가 주석 처리되어 있었다. 전역 예외 핸들러를 켜면 기존에 컨트롤러마다 `try-catch`로 처리하던 에러 흐름이 깨질 수 있었고, 운영 중인 서비스에서 그 영향 범위를 확신할 수 없었다. 한동안 비활성 상태로 남았다.
 
-### Phase 3 — 공통 에러 정의와 활성화
+### Phase 3 - 공통 에러 정의와 활성화
 
 세 단계로 나눠 핵심 인프라가 활성화됐다:
 
-1. **`ApiErrorCode` enum 생성 + `GlobalExceptionHandler` 활성화** — 처음에는 `INVALID_PAYMENT`, `INTERNAL_SERVER_ERROR` 딱 2개의 에러 코드로 시작했다. 핸들러의 `@RestControllerAdvice` 주석이 해제됐다.
+1. **`ApiErrorCode` enum 생성 + `GlobalExceptionHandler` 활성화** - 처음에는 `INVALID_PAYMENT`, `INTERNAL_SERVER_ERROR` 딱 2개의 에러 코드로 시작했다. 핸들러의 `@RestControllerAdvice` 주석이 해제됐다.
 
-2. **Slack 연동** — `BaseException` 발생 시 AOP로 Slack 알림을 보내는 기능이 추가됐다. 장애 감지의 첫 자동화.
+2. **Slack 연동** - `BaseException` 발생 시 AOP로 Slack 알림을 보내는 기능이 추가됐다. 장애 감지의 첫 자동화.
 
-3. **`ApiResponse<T>` 통합** — 기존의 `ErrorResponse`(에러 전용 DTO)를 삭제하고, 성공과 에러 모두 동일한 `ApiResponse<T>` 구조로 통합했다. **이 시점에서 현재의 응답 포맷이 확정됐다.**
+3. **`ApiResponse<T>` 통합** - 기존의 `ErrorResponse`(에러 전용 DTO)를 삭제하고, 성공과 에러 모두 동일한 `ApiResponse<T>` 구조로 통합했다. **이 시점에서 현재의 응답 포맷이 확정됐다.**
 
 ```
 ErrorResponse (에러 전용)   →  삭제
@@ -168,9 +168,9 @@ CommonClass (성공 전용)     →  레거시, 점진적 교체 대상
 
 전환 과정을 거치며 세 가지 원칙이 정립됐다.
 
-1. **HTTP 상태코드가 실제 상태를 반영한다** — 200이면 진짜 성공, 404면 진짜 없음
-2. **응답 포맷은 하나만 존재한다** — 성공이든 에러든 동일한 구조
-3. **비즈니스 코드에서 에러 응답을 직접 만들지 않는다** — `throw`만 하면 인프라가 처리
+1. **HTTP 상태코드가 실제 상태를 반영한다** - 200이면 진짜 성공, 404면 진짜 없음
+2. **응답 포맷은 하나만 존재한다** - 성공이든 에러든 동일한 구조
+3. **비즈니스 코드에서 에러 응답을 직접 만들지 않는다** - `throw`만 하면 인프라가 처리
 
 ```mermaid
 flowchart TB
@@ -194,7 +194,7 @@ flowchart TB
 
 ## 구현
 
-### 공통 응답 래퍼 — ApiResponse
+### 공통 응답 래퍼 - ApiResponse
 
 ```java
 @Getter
@@ -206,7 +206,7 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    // 기본 — 데이터만 반환
+    // 기본 - 데이터만 반환
     public static <T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
                 .resultCd(200)
@@ -267,7 +267,7 @@ public class ApiResponse<T> {
 
 `resultCd`를 문자열에서 `int`로 바꾼 것도 의도적이다. 타입 자체가 달라지면서 레거시 코드와의 혼용이 구조적으로 방지된다.
 
-### 에러 코드 중앙 관리 — ApiErrorCode
+### 에러 코드 중앙 관리 - ApiErrorCode
 
 모든 비즈니스 에러를 하나의 enum에서 관리한다. 각 에러 코드가 어떤 HTTP 상태코드로 매핑되는지 선언적으로 정의되어 있다.
 
@@ -303,7 +303,7 @@ public enum ApiErrorCode {
 
 `INVALID_PAYMENT`, `INTERNAL_SERVER_ERROR` 딱 2개로 시작한 enum이 120개 이상으로 확장됐다. 새로운 에러가 필요하면 여기에 한 줄만 추가하면 된다. 도메인별로 정리되어 있어서, "결제에서 어떤 에러가 발생할 수 있는지"를 enum 하나만 보면 파악할 수 있다.
 
-### 커스텀 예외 — BaseException
+### 커스텀 예외 - BaseException
 
 비즈니스 로직에서는 에러 상황에서 `throw`만 하면 된다.
 
@@ -330,14 +330,14 @@ public class BaseException extends RuntimeException {
 실제 사용은 이런 식이다:
 
 ```java
-// 기본 — enum에 정의된 메시지 사용
+// 기본 - enum에 정의된 메시지 사용
 throw new BaseException(ApiErrorCode.USER_NOT_FOUND);
 
-// 커스텀 메시지 — 상황에 맞는 구체적인 메시지
+// 커스텀 메시지 - 상황에 맞는 구체적인 메시지
 throw new BaseException(ApiErrorCode.DUPLICATE_CARD, "이미 등록된 카드입니다.");
 ```
 
-### 전역 예외 핸들러 — GlobalExceptionHandler
+### 전역 예외 핸들러 - GlobalExceptionHandler
 
 모든 예외를 한 곳에서 잡아서 통일된 응답으로 변환하는 핵심 인프라다.
 
@@ -375,7 +375,7 @@ public class GlobalExceptionHandler {
 
 `BaseException`은 개발자가 의도적으로 던진 비즈니스 에러이므로, `ApiErrorCode`에 정의된 메시지가 **그대로 클라이언트에 전달**된다. "이미 등록된 카드입니다", "쿠폰을 찾을 수 없습니다" 같은 사용자 친화적 메시지다.
 
-반면 `RuntimeException`은 예상하지 못한 에러 — `NullPointerException`, `ArrayIndexOutOfBoundsException` 같은 것이다. 이런 에러의 내부 메시지를 클라이언트에 노출하면 보안 문제가 될 수 있다. 초기에는 `e.getMessage()`를 그대로 클라이언트에 반환했는데, 내부 스택 정보나 DB 쿼리 같은 민감한 정보가 노출될 수 있었다. 이를 인지한 뒤 `createSafeMessage()`로 안전한 일반 메시지로 치환하도록 개선했다:
+반면 `RuntimeException`은 예상하지 못한 에러 - `NullPointerException`, `ArrayIndexOutOfBoundsException` 같은 것이다. 이런 에러의 내부 메시지를 클라이언트에 노출하면 보안 문제가 될 수 있다. 초기에는 `e.getMessage()`를 그대로 클라이언트에 반환했는데, 내부 스택 정보나 DB 쿼리 같은 민감한 정보가 노출될 수 있었다. 이를 인지한 뒤 `createSafeMessage()`로 안전한 일반 메시지로 치환하도록 개선했다:
 
 ```java
 private String createSafeMessage(HttpStatus status) {
@@ -434,7 +434,7 @@ private void log(HttpStatus status, HttpServletRequest request, Exception e) {
 }
 ```
 
-`ApiErrorCode` 중 일부는 HTTP 2xx를 사용한다 — 예를 들어 `ALREADY_PROCESSING(HttpStatus.ACCEPTED)`은 "이미 진행 중"이라는 비즈니스 상태를 202로 표현한다. 이런 경우는 에러가 아니므로 INFO로 기록한다.
+`ApiErrorCode` 중 일부는 HTTP 2xx를 사용한다 - 예를 들어 `ALREADY_PROCESSING(HttpStatus.ACCEPTED)`은 "이미 진행 중"이라는 비즈니스 상태를 202로 표현한다. 이런 경우는 에러가 아니므로 INFO로 기록한다.
 
 4xx는 클라이언트의 잘못이므로 WARN, 5xx는 서버의 잘못이므로 ERROR로 기록한다. Grafana Loki에서 `level=error`로 필터링하면 **서버 문제만 바로 볼 수 있다.** 4xx는 무시해도 되는 로그가 아니지만, 5xx와 섞여 있으면 진짜 중요한 에러를 놓치기 쉽다.
 
@@ -509,11 +509,11 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 
 실제 Tempo 트레이스를 보면 차이가 명확하다.
 
-![레거시 API의 트레이스 — 에러가 발생해도 모두 200을 반환한다](/images/grafana-before.png)
+![레거시 API의 트레이스 - 에러가 발생해도 모두 200을 반환한다](/images/grafana-before.png)
 
 레거시 API(`/api/v1/lecture/*`)의 트레이스다. 내부적으로 데이터를 못 찾거나 잘못된 요청이 들어와도 `http.response.status_code`는 전부 `200`이다. 이 상태에서는 트레이스만 보고 정상 요청과 에러 요청을 구분할 방법이 없다.
 
-![신규 API의 트레이스 — HTTP 상태코드가 실제 상태를 반영한다](/images/grafana-after.png)
+![신규 API의 트레이스 - HTTP 상태코드가 실제 상태를 반영한다](/images/grafana-after.png)
 
 `ApiResponse` 기반으로 전환된 API의 트레이스다. `200`, `400`, `404`, `500`이 섞여 있고, 에러 요청이 어떤 상태코드로 처리됐는지 한눈에 보인다. 모니터링 도구에서 `status_code >= 400`으로 필터링하면 문제가 있는 요청만 바로 추려낼 수 있다.
 

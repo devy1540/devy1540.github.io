@@ -1,5 +1,5 @@
 ---
-title: "블로그 만들기 #3 — 컬러 테마 프리셋 & 포스트 시리즈"
+title: "블로그 만들기 #3 - 컬러 테마 프리셋 & 포스트 시리즈"
 date: "2026-02-26"
 description: "shadcn/ui의 oklch 색상 시스템으로 6가지 컬러 프리셋을 만들고, 포스트 시리즈 기능을 구현한 과정입니다."
 tags: ["react", "shadcn-ui", "css", "blog"]
@@ -13,7 +13,7 @@ seriesOrder: 3
 
 ### 6가지 프리셋
 
-Neutral, Blue, Green, Rose, Orange, Violet — 각 프리셋은 `--primary`, `--ring`, `--sidebar-primary` 등의 CSS 커스텀 속성을 오버라이드합니다.
+Neutral, Blue, Green, Rose, Orange, Violet - 각 프리셋은 `--primary`, `--ring`, `--sidebar-primary` 등의 CSS 커스텀 속성을 오버라이드합니다.
 
 ```css
 [data-color="blue"] {
@@ -73,7 +73,7 @@ function applyColor(value: string) {
 
 ```yaml
 ---
-title: "블로그 만들기 #1 — 프로젝트 소개"
+title: "블로그 만들기 #1 - 프로젝트 소개"
 series: "React 블로그 만들기"
 seriesOrder: 1
 ---
