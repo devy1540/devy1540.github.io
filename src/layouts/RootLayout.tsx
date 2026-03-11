@@ -4,11 +4,13 @@ import { AppSidebar } from "@/components/Sidebar"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SearchCommand } from "@/components/SearchCommand"
 import { ScrollToTopButton } from "@/components/ScrollToTopButton"
+import { Confetti } from "@/components/Confetti"
 
 export function RootLayout() {
   return (
     <SidebarProvider>
       <ScrollToTop />
+      <Confetti />
       <AppSidebar />
       <SidebarInset>
         <header className="sticky top-0 z-40 flex h-14 items-center gap-2 bg-background px-4">

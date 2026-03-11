@@ -42,6 +42,7 @@ export function KeyboardShortcuts() {
     { keys: [isMac ? "\u2318" : "Ctrl", "K"], description: t.components.shortcutSearch },
     { keys: [isMac ? "\u2318" : "Ctrl", "B"], description: t.components.shortcutSidebar },
     { keys: ["Shift", "/"], description: t.components.shortcutHelp },
+    { keys: ["?", "?", "?", "?", "?"], description: "???" },
   ]
 
   return (
