@@ -5,7 +5,7 @@ description: "AWS ECS에서 EKS로 마이그레이션하면서 kustomize base/ov
 tags: ["kubernetes", "eks", "kustomize", "gateway-api", "karpenter", "devops", "aws"]
 series: "서비스 인프라 현대화"
 seriesOrder: 1
-draft: true
+draft: false
 ---
 
 ## 배경
