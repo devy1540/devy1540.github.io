@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.5](https://github.com/devy1540/devy1540.github.io/compare/v1.4.4...v1.4.5) (2026-03-17)
+
+
+### Bug Fixes
+
+* 홈 인기글에 draft/hidden 포스트 노출 버그 수정 ([5f1d409](https://github.com/devy1540/devy1540.github.io/commit/5f1d4092fda7d6bde6ed1503c0d97e675e77a323))
+* 홈 인기글에 draft/hidden 포스트가 노출되는 버그 수정 ([c132e4d](https://github.com/devy1540/devy1540.github.io/commit/c132e4dafbf63ab8be7bceede35e7a4aa977ffeb))
+
 ## [1.4.4](https://github.com/devy1540/devy1540.github.io/compare/v1.4.3...v1.4.4) (2026-03-17)
 
 
