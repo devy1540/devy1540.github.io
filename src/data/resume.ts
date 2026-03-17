@@ -303,6 +303,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "서비스 인프라 현대화 및 보안 체계 구축",
     period: "2025.10 — 2026.01",
     tech: ["Kubernetes", "ArgoCD", "Terraform", "Grafana", "Loki", "Tempo", "AWS WAF"],
+    relatedPosts: ["ecs-to-eks-migration"],
     tasks: [
       {
         content: "ECS → EKS 마이그레이션 수행. kustomize + K8s Gateway API 기반 운영 환경 구성, **ArgoCD 기반 GitOps** 배포 파이프라인 구축 (PR 머지 → 빌드 → 배포 → Slack 알림 자동화)",
