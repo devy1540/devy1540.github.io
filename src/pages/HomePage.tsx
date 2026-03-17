@@ -24,9 +24,10 @@ export function HomePage() {
       .map(([path, views]) => {
         const slug = path.replace("/posts/", "").replace(/\/$/, "")
         const post = posts.find((p) => p.slug === slug)
-        return { slug, title: post?.title ?? slug, views, draft: post?.draft }
+        if (!post) return null
+        return { slug, title: post.title, views }
       })
-      .filter((p) => !p.draft)
+      .filter((p): p is NonNullable<typeof p> => p !== null)
       .sort((a, b) => b.views - a.views)
       .slice(0, 5)
   }, [allPageViews, posts])
