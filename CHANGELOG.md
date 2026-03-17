@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.4](https://github.com/devy1540/devy1540.github.io/compare/v1.4.3...v1.4.4) (2026-03-17)
+
+
+### Bug Fixes
+
+* Windows/Android PDF 다운로드 수정 ([59054ac](https://github.com/devy1540/devy1540.github.io/commit/59054ac9a1e4b973adf4da0aa6308652f215c8a2))
+* Windows/Android에서 PDF 다운로드 안되는 문제 수정 ([0016469](https://github.com/devy1540/devy1540.github.io/commit/00164696a64bd213f8c8bd9729728613867fb572))
+
 ## [1.4.3](https://github.com/devy1540/devy1540.github.io/compare/v1.4.2...v1.4.3) (2026-03-11)
 
 
