@@ -150,18 +150,32 @@ export function AboutPage() {
       ])
       const blob = await pdf(ResumePdfDocument()).toBlob()
       const fileName = `${PROFILE.name}_이력서.pdf`
-      const file = new File([blob], fileName, { type: "application/pdf" })
+      const url = URL.createObjectURL(blob)
+
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-      if (isMobile && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file] })
+      if (isMobile) {
+        const file = new File([blob], fileName, { type: "application/pdf" })
+        if (navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file] })
+            return
+          } catch {
+            // User cancelled or share failed — fall through
+          }
+        }
+        // Android 등 share 미지원 모바일: 새 탭에서 PDF 열기
+        window.open(url, "_blank")
       } else {
-        const url = URL.createObjectURL(blob)
+        // Desktop (Windows/Mac/Linux): DOM에 추가 후 클릭해야 모든 브라우저에서 동작
         const a = document.createElement("a")
         a.href = url
         a.download = fileName
+        document.body.appendChild(a)
         a.click()
-        setTimeout(() => URL.revokeObjectURL(url), 60_000)
+        document.body.removeChild(a)
       }
+
+      setTimeout(() => URL.revokeObjectURL(url), 60_000)
     } finally {
       setPdfLoading(false)
     }
