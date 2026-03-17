@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/devy1540/devy1540.github.io/compare/v1.4.5...v1.5.0) (2026-03-17)
+
+
+### Features
+
+* Spring AI 적용 가이드 시리즈 초안 추가 ([dba175c](https://github.com/devy1540/devy1540.github.io/commit/dba175c5247921936f20cb0a0c6ca7b4745083ce))
+* Spring AI 적용 가이드 시리즈 초안 추가 (3편) ([893792f](https://github.com/devy1540/devy1540.github.io/commit/893792f0129ecc0e2be8f50770470654004a615d))
+
 ## [1.4.5](https://github.com/devy1540/devy1540.github.io/compare/v1.4.4...v1.4.5) (2026-03-17)
 
 
