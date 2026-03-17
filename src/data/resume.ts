@@ -55,7 +55,7 @@ export const SKILLS: Record<string, string[]> = {
   Infrastructure: ["AWS", "Kubernetes", "Docker", "ArgoCD", "Terraform", "Nginx"],
   Database: ["PostgreSQL", "Redis", "DynamoDB", "Apache Druid"],
   "AI / LLM": ["OpenAI", "Gemini", "AWS Bedrock"],
-  Monitoring: ["Grafana", "Loki", "Tempo", "Prometheus"],
+  Monitoring: ["Grafana", "Loki", "Tempo", "Mimir", "OpenTelemetry", "Prometheus"],
   Tools: ["Git", "GitHub Actions", "JMeter", "Notion"],
 }
 
@@ -302,7 +302,8 @@ export const PROJECTS: ProjectDetail[] = [
     company: "주식회사 데이원컴퍼니",
     name: "서비스 인프라 현대화 및 보안 체계 구축",
     period: "2025.10 — 2026.01",
-    tech: ["Kubernetes", "ArgoCD", "Terraform", "Grafana", "Loki", "Tempo", "AWS WAF"],
+    tech: ["Kubernetes", "ArgoCD", "Terraform", "Grafana", "Loki", "Tempo", "Mimir", "OpenTelemetry", "AWS WAF"],
+    relatedPosts: ["ecs-to-eks-migration", "lgtm-stack-observability"],
     tasks: [
       {
         content: "ECS → EKS 마이그레이션 수행. kustomize + K8s Gateway API 기반 운영 환경 구성, **ArgoCD 기반 GitOps** 배포 파이프라인 구축 (PR 머지 → 빌드 → 배포 → Slack 알림 자동화)",
