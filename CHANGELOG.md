@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/devy1540/devy1540.github.io/compare/v1.5.1...v1.6.0) (2026-03-18)
+
+
+### Features
+
+* JDK 마이그레이션 전략 시리즈 포스트 추가 ([6d45f13](https://github.com/devy1540/devy1540.github.io/commit/6d45f1356c4ea4cf3db379f4a5a2bd5aaa882b8a))
+* JDK 마이그레이션 전략 시리즈 포스트 추가 및 draft 해제 ([ab63733](https://github.com/devy1540/devy1540.github.io/commit/ab637339040d063a839f05081a84907cec8da061))
+
 ## [1.5.1](https://github.com/devy1540/devy1540.github.io/compare/v1.5.0...v1.5.1) (2026-03-18)
 
 
