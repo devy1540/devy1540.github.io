@@ -3,7 +3,7 @@ title: "GitOps 자동화 배포 - ArgoCD + n8n + GitHub Actions로 Slack 승인 
 date: "2026-02-26"
 description: "ECS에서 EKS로 마이그레이션하면서 구축한 GitOps 기반 배포 자동화 시스템을 소개합니다. ArgoCD, n8n, GitHub Actions를 조합하여 환경별로 차등화된 배포 전략을 설계한 경험을 공유합니다."
 tags: ["kubernetes", "argocd", "gitops", "n8n", "devops", "github-actions"]
-draft: true
+draft: false
 ---
 
 ## 배경
