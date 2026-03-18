@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/devy1540/devy1540.github.io/compare/v1.5.0...v1.5.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* SPA SEO 문제 해결 - 빌드 시 페이지별 HTML 사전 생성 ([b1b0e32](https://github.com/devy1540/devy1540.github.io/commit/b1b0e32e39955dbf88aea29647e0fa411afbd877))
+* SPA SEO 문제 해결 - 빌드 시 페이지별 HTML 사전 생성 ([3fe6416](https://github.com/devy1540/devy1540.github.io/commit/3fe64166036226c13eadcc4be6553893eaba87a1))
+
 ## [1.5.0](https://github.com/devy1540/devy1540.github.io/compare/v1.4.5...v1.5.0) (2026-03-17)
 
 
