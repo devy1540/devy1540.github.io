@@ -31,6 +31,17 @@ function setNameMeta(name: string, content: string) {
   el.setAttribute("content", content)
 }
 
+function setLink(rel: string, href: string) {
+  let el = document.querySelector(`link[rel="${rel}"][data-meta]`)
+  if (!el) {
+    el = document.createElement("link")
+    el.setAttribute("rel", rel)
+    el.setAttribute("data-meta", "true")
+    document.head.appendChild(el)
+  }
+  el.setAttribute("href", href)
+}
+
 export function useMetaTags({
   title,
   description,
@@ -60,6 +71,12 @@ export function useMetaTags({
     setMeta("og:image", `${BASE_URL}/og-image.png`)
     setMeta("og:image:width", "1200")
     setMeta("og:image:height", "630")
+
+    setLink("canonical", fullUrl)
+    setNameMeta("twitter:card", "summary_large_image")
+    setNameMeta("twitter:title", fullTitle)
+    setNameMeta("twitter:description", desc)
+    setNameMeta("twitter:image", `${BASE_URL}/og-image.png`)
 
     return () => {
       document.title = siteName
