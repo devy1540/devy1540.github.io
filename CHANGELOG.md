@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/devy1540/devy1540.github.io/compare/v1.6.0...v1.7.0) (2026-03-19)
+
+
+### Features
+
+* 네이버 서치어드바이저 사이트 소유확인 메타태그 추가 ([128c0bb](https://github.com/devy1540/devy1540.github.io/commit/128c0bbb16a8d9bde666a16cd6c95cc6ca440f76))
+* 네이버 서치어드바이저 사이트 소유확인 메타태그 추가 ([7641539](https://github.com/devy1540/devy1540.github.io/commit/7641539c65856699419fa9f3a7b76093ed68ce0b))
+
 ## [1.6.0](https://github.com/devy1540/devy1540.github.io/compare/v1.5.1...v1.6.0) (2026-03-18)
 
 
