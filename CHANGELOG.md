@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/devy1540/devy1540.github.io/compare/v1.8.0...v1.9.0) (2026-03-19)
+
+
+### Features
+
+* Google Analytics 직접 연동을 Google Tag Manager로 전환 ([c1f69cf](https://github.com/devy1540/devy1540.github.io/commit/c1f69cfc5c8b1697738880bc937395abc4269fe0))
+* Google Tag Manager 도입 ([dd96444](https://github.com/devy1540/devy1540.github.io/commit/dd96444e56422f5e5dbbe8cccc7af1cb1417f8cb))
+
 ## [1.8.0](https://github.com/devy1540/devy1540.github.io/compare/v1.7.0...v1.8.0) (2026-03-19)
 
 
