@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/devy1540/devy1540.github.io/compare/v1.7.0...v1.8.0) (2026-03-19)
+
+
+### Features
+
+* Google Search Console 사이트 소유확인 메타태그 추가 ([58bf7e4](https://github.com/devy1540/devy1540.github.io/commit/58bf7e4a804f838cbccad11f536bb0534e6c6ab4))
+* Google Search Console 사이트 소유확인 메타태그 추가 ([6afa7c8](https://github.com/devy1540/devy1540.github.io/commit/6afa7c83c316064b00775e960f788fa854defb1d))
+
 ## [1.7.0](https://github.com/devy1540/devy1540.github.io/compare/v1.6.0...v1.7.0) (2026-03-19)
 
 
