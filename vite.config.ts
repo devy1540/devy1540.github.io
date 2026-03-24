@@ -89,18 +89,23 @@ function sitemapPlugin(): Plugin {
         })
         .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
 
-      const staticPages = ["/", "/posts", "/tags", "/series", "/search", "/about"]
+      const staticPages = ["/", "/posts", "/tags", "/series", "/about"]
       const today = new Date().toISOString().split("T")[0]
 
+      function urlEntry(loc: string, lastmod: string) {
+        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`
+      }
+
       const urls = [
-        ...staticPages.map((p) => `  <url><loc>${BASE_URL}${p}</loc><lastmod>${today}</lastmod></url>`),
-        ...posts.map((p) => `  <url><loc>${BASE_URL}/posts/${p.slug}</loc><lastmod>${p.date || today}</lastmod></url>`),
+        ...staticPages.map((p) => urlEntry(`${BASE_URL}${p}`, today)),
+        ...posts.map((p) => urlEntry(`${BASE_URL}/posts/${p.slug}`, p.date || today)),
       ]
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join("\n")}
-</urlset>`
+</urlset>
+`
 
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
     },
