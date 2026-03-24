@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.1](https://github.com/devy1540/devy1540.github.io/compare/v1.9.0...v1.9.1) (2026-03-24)
+
+
+### Bug Fixes
+
+* sitemap.xml Google 권장 포맷으로 개선 ([271bc6b](https://github.com/devy1540/devy1540.github.io/commit/271bc6bb60f782d93d9183f053a74278e68597f8))
+* sitemap.xml Google 권장 포맷으로 개선 ([9c6d51a](https://github.com/devy1540/devy1540.github.io/commit/9c6d51a7c12153c25f92c95783a8058d8507e532))
+
 ## [1.9.0](https://github.com/devy1540/devy1540.github.io/compare/v1.8.0...v1.9.0) (2026-03-19)
 
 
