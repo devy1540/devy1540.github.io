@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.2](https://github.com/devy1540/devy1540.github.io/compare/v1.9.1...v1.9.2) (2026-03-26)
+
+
+### Bug Fixes
+
+* Google Search Console sitemap 색인 문제 수정 ([daa0852](https://github.com/devy1540/devy1540.github.io/commit/daa08527cdd48d020c5dcc75c0544881abfeb6ce))
+* HTML head에 sitemap 링크 태그 추가 ([d194203](https://github.com/devy1540/devy1540.github.io/commit/d194203194c1935e1aadb52e4d85441e2e00aeef))
+* sitemap/RSS/canonical URL에 trailing slash 추가 ([e43b7e8](https://github.com/devy1540/devy1540.github.io/commit/e43b7e894d6e977204e74450ae04c033b85947a6))
+
 ## [1.9.1](https://github.com/devy1540/devy1540.github.io/compare/v1.9.0...v1.9.1) (2026-03-24)
 
 
