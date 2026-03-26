@@ -47,8 +47,8 @@ function rssPlugin(): Plugin {
 
       const items = posts.map((p) => `    <item>
       <title>${escapeXml(p.title)}</title>
-      <link>${BASE_URL}/posts/${p.slug}</link>
-      <guid>${BASE_URL}/posts/${p.slug}</guid>
+      <link>${BASE_URL}/posts/${p.slug}/</link>
+      <guid>${BASE_URL}/posts/${p.slug}/</guid>
       <description>${escapeXml(p.description)}</description>
       <pubDate>${p.date ? new Date(p.date).toUTCString() : ""}</pubDate>
     </item>`)
@@ -89,7 +89,7 @@ function sitemapPlugin(): Plugin {
         })
         .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
 
-      const staticPages = ["/", "/posts", "/tags", "/series", "/about"]
+      const staticPages = ["/", "/posts/", "/tags/", "/series/", "/about/"]
       const today = new Date().toISOString().split("T")[0]
 
       function urlEntry(loc: string, lastmod: string) {
@@ -98,7 +98,7 @@ function sitemapPlugin(): Plugin {
 
       const urls = [
         ...staticPages.map((p) => urlEntry(`${BASE_URL}${p}`, today)),
-        ...posts.map((p) => urlEntry(`${BASE_URL}/posts/${p.slug}`, p.date || today)),
+        ...posts.map((p) => urlEntry(`${BASE_URL}/posts/${p.slug}/`, p.date || today)),
       ]
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -189,7 +189,7 @@ function prerenderPlugin(): Plugin {
         renderPage({
           title: post.title,
           description: post.description,
-          url: `/posts/${post.slug}`,
+          url: `/posts/${post.slug}/`,
           type: "article",
           date: post.date,
           outputPath: `posts/${post.slug}/index.html`,
@@ -208,7 +208,7 @@ function prerenderPlugin(): Plugin {
         renderPage({
           title: page.title,
           description: page.description,
-          url: `/${page.path}`,
+          url: `/${page.path}/`,
           outputPath: `${page.path}/index.html`,
         })
       }
