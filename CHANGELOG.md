@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.1](https://github.com/devy1540/devy1540.github.io/compare/v1.11.0...v1.11.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* FOUC 방지, shadcn Select 적용, 마크다운 링크 viewTransition ([5ac1217](https://github.com/devy1540/devy1540.github.io/commit/5ac121786ad74dd173f622cffcf358297750e638))
+* 프리렌더 FOUC 방지 및 마크다운 내부 링크 viewTransition 적용 ([65cc3d6](https://github.com/devy1540/devy1540.github.io/commit/65cc3d69f8b38d1f0163c021b8434e6df4d7516f))
+
 ## [1.11.0](https://github.com/devy1540/devy1540.github.io/compare/v1.10.0...v1.11.0) (2026-03-30)
 
 
