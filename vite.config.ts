@@ -116,6 +116,33 @@ function escapeAttr(s: string) {
   return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
 
+function escapeHtml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+}
+
+function markdownToText(md: string) {
+  return md
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/^\s*[-*+]\s+/gm, "")
+    .replace(/^\s*\d+\.\s+/gm, "")
+    .replace(/^\s*>/gm, "")
+    .replace(/---/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+}
+
+function parseTags(raw: string): string[] {
+  const match = raw.match(/tags:\s*\[([^\]]*)\]/)
+  if (!match) return []
+  return match[1]!.split(",").map((t) => t.trim().replace(/^["']|["']$/g, "")).filter(Boolean)
+}
+
 function prerenderPlugin(): Plugin {
   return {
     name: "prerender-pages",
@@ -124,6 +151,26 @@ function prerenderPlugin(): Plugin {
       const template = fs.readFileSync(path.resolve(distDir, "index.html"), "utf-8")
       const postsDir = path.resolve(__dirname, "content/posts")
 
+      // Read all posts once
+      const allPosts = fs.readdirSync(postsDir)
+        .filter((f) => f.endsWith(".md"))
+        .map((f) => {
+          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
+          const { data, content } = parseFrontmatter(raw)
+          return {
+            slug: f.replace(".md", ""),
+            title: data.title || f.replace(".md", ""),
+            description: data.description || "",
+            date: data.date || "",
+            draft: data.draft === "true",
+            publishDate: data.publishDate || "",
+            tags: parseTags(raw),
+            content,
+          }
+        })
+        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
+        .sort((a, b) => (a.date > b.date ? -1 : 1))
+
       function renderPage(opts: {
         title: string
         description: string
@@ -131,6 +178,8 @@ function prerenderPlugin(): Plugin {
         type?: string
         date?: string
         outputPath: string
+        bodyContent?: string
+        jsonLdOverride?: Record<string, unknown>
       }) {
         const fullTitle = `${opts.title} | Devy's Blog`
         const desc = opts.description || "개발하며 배운 것들을 정리하고 공유합니다."
@@ -148,19 +197,28 @@ function prerenderPlugin(): Plugin {
           .replace(/(<meta name="twitter:title" content=")[^"]*(")/,  `$1${escapeAttr(fullTitle)}$2`)
           .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${escapeAttr(desc)}$2`)
 
-        if (opts.type === "article" && opts.date) {
-          const jsonLd = JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: opts.title,
-            description: desc,
-            datePublished: opts.date,
-            url: fullUrl,
-            image: `${BASE_URL}/og-image.png`,
-            author: { "@type": "Person", name: "Devy" },
-            publisher: { "@type": "Organization", name: "Devy's Blog" },
-          })
-          html = html.replace("</head>", `    <script type="application/ld+json">${jsonLd}</script>\n  </head>`)
+        const jsonLd = opts.jsonLdOverride || (opts.type === "article" && opts.date ? {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: opts.title,
+          description: desc,
+          datePublished: opts.date,
+          url: fullUrl,
+          image: `${BASE_URL}/og-image.png`,
+          author: { "@type": "Person", name: "Devy" },
+          publisher: { "@type": "Organization", name: "Devy's Blog" },
+        } : null)
+
+        if (jsonLd) {
+          html = html.replace("</head>", `    <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n  </head>`)
+        }
+
+        // Inject pre-rendered body content for SEO (Google reads this before JS renders)
+        if (opts.bodyContent) {
+          html = html.replace(
+            '<div id="root"></div>',
+            `<div id="root">${opts.bodyContent}</div>`
+          )
         }
 
         const outPath = path.resolve(distDir, opts.outputPath)
@@ -168,24 +226,18 @@ function prerenderPlugin(): Plugin {
         fs.writeFileSync(outPath, html)
       }
 
-      // Pre-render blog posts
-      const posts = fs.readdirSync(postsDir)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => {
-          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
-          const { data } = parseFrontmatter(raw)
-          return {
-            slug: f.replace(".md", ""),
-            title: data.title || f.replace(".md", ""),
-            description: data.description || "",
-            date: data.date || "",
-            draft: data.draft === "true",
-            publishDate: data.publishDate || "",
-          }
-        })
-        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
+      // Pre-render blog posts with full content
+      for (const post of allPosts) {
+        const articleText = markdownToText(post.content)
+        const articleBody = articleText.slice(0, 5000)
+        const paragraphs = articleText.split("\n\n").filter(Boolean).slice(0, 30)
 
-      for (const post of posts) {
+        const bodyHtml = `<article><h1>${escapeHtml(post.title)}</h1>` +
+          `<time datetime="${post.date}">${post.date}</time>` +
+          `<p>${escapeHtml(post.description)}</p>` +
+          paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("") +
+          `<nav><a href="/posts/">글 목록</a></nav></article>`
+
         renderPage({
           title: post.title,
           description: post.description,
@@ -193,27 +245,76 @@ function prerenderPlugin(): Plugin {
           type: "article",
           date: post.date,
           outputPath: `posts/${post.slug}/index.html`,
+          bodyContent: bodyHtml,
+          jsonLdOverride: {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            description: post.description,
+            datePublished: post.date,
+            url: `${BASE_URL}/posts/${post.slug}/`,
+            image: `${BASE_URL}/og-image.png`,
+            author: { "@type": "Person", name: "Devy" },
+            publisher: { "@type": "Organization", name: "Devy's Blog" },
+            mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${post.slug}/` },
+            articleBody,
+            ...(post.tags.length > 0 ? { keywords: post.tags.join(", ") } : {}),
+          },
         })
       }
 
-      // Pre-render static pages
+      // Pre-render posts list page with links to all posts (helps Google discover all pages)
+      const postsListHtml = `<main><h1>글 목록</h1><ul>` +
+        allPosts.map((p) =>
+          `<li><a href="/posts/${p.slug}/">${escapeHtml(p.title)}</a> <time datetime="${p.date}">${p.date}</time><p>${escapeHtml(p.description)}</p></li>`
+        ).join("") +
+        `</ul><nav><a href="/">홈</a> <a href="/tags/">태그</a> <a href="/series/">시리즈</a></nav></main>`
+
+      renderPage({
+        title: "글 목록",
+        description: "개발하며 배운 것들을 정리한 글 목록입니다.",
+        url: "/posts/",
+        outputPath: "posts/index.html",
+        bodyContent: postsListHtml,
+        jsonLdOverride: {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "글 목록",
+          description: "개발하며 배운 것들을 정리한 글 목록입니다.",
+          url: `${BASE_URL}/posts/`,
+          mainEntity: {
+            "@type": "ItemList",
+            itemListElement: allPosts.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `${BASE_URL}/posts/${p.slug}/`,
+              name: p.title,
+            })),
+          },
+        },
+      })
+
+      // Pre-render remaining static pages
       const staticPages = [
-        { path: "posts", title: "글 목록", description: "개발하며 배운 것들을 정리한 글 목록입니다." },
         { path: "tags", title: "태그", description: "태그별로 분류된 블로그 글 목록입니다." },
         { path: "series", title: "시리즈", description: "시리즈별로 분류된 블로그 글 목록입니다." },
         { path: "about", title: "소개", description: "개발자 Devy의 소개 페이지입니다." },
       ]
 
       for (const page of staticPages) {
+        const navHtml = `<main><h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.description)}</p>` +
+          `<nav><a href="/">홈</a> <a href="/posts/">글 목록</a> <a href="/tags/">태그</a> <a href="/series/">시리즈</a> <a href="/about/">소개</a></nav></main>`
+
         renderPage({
           title: page.title,
           description: page.description,
           url: `/${page.path}/`,
           outputPath: `${page.path}/index.html`,
+          bodyContent: navHtml,
         })
       }
 
-      console.log(`  [prerender] Generated ${posts.length} post pages + ${staticPages.length} static pages`)
+      console.log(`  [prerender] Generated ${allPosts.length} post pages + ${staticPages.length + 1} static pages`)
     },
   }
 }
