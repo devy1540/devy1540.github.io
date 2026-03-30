@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.2](https://github.com/devy1540/devy1540.github.io/compare/v1.11.1...v1.11.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* README 심플하게 리디자인 ([be5568a](https://github.com/devy1540/devy1540.github.io/commit/be5568ad9220e3778ff4a7be2dc545131884d8e7))
+* README 심플하게 리디자인 ([2b8eec0](https://github.com/devy1540/devy1540.github.io/commit/2b8eec0b0446d21e40c50675827f233712f772b4))
+
 ## [1.11.1](https://github.com/devy1540/devy1540.github.io/compare/v1.11.0...v1.11.1) (2026-03-30)
 
 
