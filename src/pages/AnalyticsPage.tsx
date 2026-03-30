@@ -1,6 +1,8 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { AlertCircle, Eye, FileText, Library, PenLine, RefreshCw, Tags } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -125,20 +127,16 @@ export function AnalyticsPage() {
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
         <div className="flex items-center gap-2">
           <p className="text-muted-foreground flex-1">{t.analytics.description}</p>
-          <button
-            onClick={refresh}
-            disabled={isLoading}
-            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-50"
-          >
+          <Button variant="outline" size="sm" onClick={refresh} disabled={isLoading}>
             <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
             {t.analytics.refresh}
-          </button>
+          </Button>
         </div>
         {isError && (
-          <div className="mt-3 flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            <AlertCircle className="size-4 shrink-0" />
-            {t.analytics.loadError}
-          </div>
+          <Alert variant="destructive" className="mt-3">
+            <AlertCircle />
+            <AlertDescription>{t.analytics.loadError}</AlertDescription>
+          </Alert>
         )}
         {lastUpdated && (
           <p className="mt-2 text-xs text-muted-foreground">
