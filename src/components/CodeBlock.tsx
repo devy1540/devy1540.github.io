@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 import { useTheme } from "@/hooks/useTheme"
 import mermaid from "mermaid"
+import { BenchmarkChart } from "@/components/BenchmarkChart"
 
 function getCssHex(varName: string): string {
   const temp = document.createElement("div")
@@ -312,6 +313,10 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
 
   if (language === "mermaid") {
     return <MermaidBlock code={code} />
+  }
+
+  if (language === "benchmark") {
+    return <BenchmarkChart data={code} />
   }
 
   return <ShikiBlock code={code} language={language} preProps={props}>{children}</ShikiBlock>
