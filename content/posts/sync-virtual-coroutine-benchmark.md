@@ -3,7 +3,7 @@ title: "Platform Thread vs Virtual Thread vs Coroutine - 10,000 태스크 벤치
 date: "2026-03-24"
 description: "JDK 25 Platform Thread, Virtual Thread, Kotlin Coroutine의 I/O Bound, CPU Bound, High Concurrency 시나리오별 성능을 100회 반복 벤치마크로 비교한다."
 tags: ["java", "kotlin", "virtual-threads", "coroutine", "benchmark", "concurrency"]
-draft: true
+draft: false
 ---
 
 ## 왜 비교하는가
