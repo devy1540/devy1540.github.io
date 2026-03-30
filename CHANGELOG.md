@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.11.0](https://github.com/devy1540/devy1540.github.io/compare/v1.10.0...v1.11.0) (2026-03-30)
+
+
+### Features
+
+* 테마 전환 트랜지션 및 의존성 업그레이드 ([26b3f35](https://github.com/devy1540/devy1540.github.io/commit/26b3f356d47c1cf46f8b56c89310d824aa168764))
+
+
+### Bug Fixes
+
+* 테마 전환 200ms로 조정 및 Mermaid 차트 crossfade 적용 ([6cfeb7e](https://github.com/devy1540/devy1540.github.io/commit/6cfeb7efe24a2e92225a0af5653e487b2ddf03ca))
+
 ## [1.10.0](https://github.com/devy1540/devy1540.github.io/compare/v1.9.3...v1.10.0) (2026-03-30)
 
 
