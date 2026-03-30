@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.3](https://github.com/devy1540/devy1540.github.io/compare/v1.9.2...v1.9.3) (2026-03-30)
+
+
+### Bug Fixes
+
+* 프리렌더 HTML에 실제 콘텐츠 삽입하여 Google SEO 개선 ([8db37f1](https://github.com/devy1540/devy1540.github.io/commit/8db37f142d29f19c844f91832a713006fec571b8))
+* 프리렌더 HTML에 실제 콘텐츠 삽입하여 Google SEO 개선 ([6ca9d75](https://github.com/devy1540/devy1540.github.io/commit/6ca9d759cd4fcaff0ab1b8f92256a431ed20ac96))
+
 ## [1.9.2](https://github.com/devy1540/devy1540.github.io/compare/v1.9.1...v1.9.2) (2026-03-26)
 
 
