@@ -104,7 +104,10 @@
     @apply border-border;
   }
   html {
-    transition: color-scheme 0.3s;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground;
@@ -134,6 +137,10 @@
 .dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
+}
+.theme-transition .shiki,
+.theme-transition .shiki span {
+  transition: color 200ms ease, background-color 200ms ease !important;
 }
 
 /* Color theme presets */
@@ -220,6 +227,14 @@
   --sidebar-primary: oklch(0.647 0.249 292.756);
   --sidebar-accent: oklch(0.25 0.04 293);
   --sidebar-accent-foreground: oklch(0.85 0.06 293);
+}
+
+/* Theme transition */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, fill 200ms ease, stroke 200ms ease, box-shadow 200ms ease !important;
 }
 
 /* Collapsible animations */

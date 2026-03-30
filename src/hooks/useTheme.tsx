@@ -18,11 +18,19 @@ function getSystemTheme(): ResolvedTheme {
 }
 
 function applyTheme(resolved: ResolvedTheme) {
+  const root = document.documentElement
+  root.classList.add("theme-transition")
+
   if (resolved === "dark") {
-    document.documentElement.classList.add("dark")
+    root.classList.add("dark")
   } else {
-    document.documentElement.classList.remove("dark")
+    root.classList.remove("dark")
   }
+
+  // Remove transition class after animation completes
+  window.setTimeout(() => {
+    root.classList.remove("theme-transition")
+  }, 200)
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

@@ -97,12 +97,14 @@ function buildMermaidTheme(isDark: boolean) {
 }
 
 function MermaidBlock({ code }: { code: string }) {
-  const containerRef = useRef<HTMLDivElement>(null)
   const id = useId().replace(/:/g, "_")
   const { resolvedTheme } = useTheme()
   const [colorKey, setColorKey] = useState(0)
   const [expanded, setExpanded] = useState(false)
   const rawSvgRef = useRef<string>("")
+  const [svgHtml, setSvgHtml] = useState("")
+  const [opacity, setOpacity] = useState(0)
+  const renderCounter = useRef(0)
 
   useEffect(() => {
     const observer = new MutationObserver(() => setColorKey(k => k + 1))
@@ -111,18 +113,13 @@ function MermaidBlock({ code }: { code: string }) {
   }, [])
 
   const decorateSvg = useCallback((svgEl: SVGSVGElement) => {
-    // Rounded corners on all rect nodes
     svgEl.querySelectorAll("rect.basic, rect.label-container, .node rect, .cluster rect").forEach((rect) => {
       rect.setAttribute("rx", "8")
       rect.setAttribute("ry", "8")
     })
-
-    // Thicker edges
     svgEl.querySelectorAll(".edge-pattern-solid, .flowchart-link, path.path").forEach((path) => {
       path.setAttribute("stroke-width", "2")
     })
-
-    // Drop shadow filter
     const defs = svgEl.querySelector("defs") ?? svgEl.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "defs"), svgEl.firstChild)
     const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter")
     filter.setAttribute("id", `shadow_${id}`)
@@ -134,38 +131,55 @@ function MermaidBlock({ code }: { code: string }) {
   }, [id])
 
   useEffect(() => {
-    if (!containerRef.current || !code) return
+    if (!code) return
     let cancelled = false
+    renderCounter.current++
+    const thisRender = renderCounter.current
 
     const config = buildMermaidTheme(resolvedTheme === "dark")
     mermaid.initialize({ startOnLoad: false, securityLevel: "loose", ...config })
 
-    const el = containerRef.current
-    el.innerHTML = ""
+    // Fade out current SVG while rendering new one
+    const isFirstRender = !svgHtml
+    if (!isFirstRender) setOpacity(0)
 
-    const renderId = `mermaid${id}_${resolvedTheme}_${colorKey}`
+    const renderId = `mermaid${id}_${resolvedTheme}_${colorKey}_${thisRender}`
     mermaid.render(renderId, code).then(({ svg }) => {
-      if (cancelled) return
-      el.innerHTML = svg
-      const svgEl = el.querySelector("svg")
+      if (cancelled || thisRender !== renderCounter.current) return
+
+      const temp = document.createElement("div")
+      temp.innerHTML = svg
+      const svgEl = temp.querySelector("svg")
       if (svgEl) {
         svgEl.removeAttribute("height")
         decorateSvg(svgEl)
-
-        // Store raw SVG before applying inline size constraints
-        rawSvgRef.current = el.innerHTML
-
         svgEl.style.height = "auto"
         svgEl.style.maxWidth = "100%"
         svgEl.style.display = "block"
         svgEl.style.margin = "0 auto"
       }
+      rawSvgRef.current = temp.innerHTML
+
+      const swap = () => {
+        if (cancelled) return
+        setSvgHtml(temp.innerHTML)
+        requestAnimationFrame(() => setOpacity(1))
+      }
+
+      if (isFirstRender) {
+        swap()
+      } else {
+        // Wait for fade-out to finish, then swap and fade in
+        setTimeout(swap, 150)
+      }
     }).catch(() => {
       if (cancelled) return
-      el.textContent = code
+      setSvgHtml(`<pre style="margin:0">${code}</pre>`)
+      setOpacity(1)
     })
 
     return () => { cancelled = true }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, id, resolvedTheme, colorKey, decorateSvg])
 
   useEffect(() => {
@@ -183,7 +197,11 @@ function MermaidBlock({ code }: { code: string }) {
         className="not-prose my-6 rounded-xl border border-border bg-white px-4 py-8 overflow-x-auto shadow-sm dark:bg-zinc-950 cursor-zoom-in"
         onClick={() => setExpanded(true)}
       >
-        <div ref={containerRef} className="w-full" />
+        <div
+          className="w-full"
+          style={{ opacity, transition: "opacity 150ms ease" }}
+          dangerouslySetInnerHTML={{ __html: svgHtml }}
+        />
       </div>
 
       {expanded && (
