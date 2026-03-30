@@ -5,7 +5,8 @@ import { LanguageProvider } from "./i18n"
 import { App } from "./App"
 import "./index.css"
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root")!
+createRoot(root).render(
   <StrictMode>
     <ThemeProvider>
       <LanguageProvider>
@@ -14,3 +15,5 @@ createRoot(document.getElementById("root")!).render(
     </ThemeProvider>
   </StrictMode>
 )
+// Reveal after React mounts — prevents FOUC from prerendered HTML
+root.style.opacity = "1"
