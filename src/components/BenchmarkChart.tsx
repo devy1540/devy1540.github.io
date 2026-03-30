@@ -3,6 +3,13 @@ import { BarChart, Bar, XAxis, YAxis, Cell } from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -129,24 +136,22 @@ export function BenchmarkChart({ data }: { data: string }) {
           <div className="p-4">
             {rows.length > 1 && (
               <div className="mb-4 flex items-center gap-2">
-                <label
-                  className="text-sm text-muted-foreground"
-                  htmlFor="benchmark-metric"
+                <span className="text-sm text-muted-foreground">지표:</span>
+                <Select
+                  value={String(selectedRow)}
+                  onValueChange={(v) => setSelectedRow(Number(v))}
                 >
-                  지표:
-                </label>
-                <select
-                  id="benchmark-metric"
-                  value={selectedRow}
-                  onChange={(e) => setSelectedRow(Number(e.target.value))}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground"
-                >
-                  {rows.map((row, i) => (
-                    <option key={i} value={i}>
-                      {row.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-auto h-8 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {rows.map((row, i) => (
+                      <SelectItem key={i} value={String(i)}>
+                        {row.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
 
