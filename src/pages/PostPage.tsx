@@ -141,7 +141,15 @@ export function PostPage() {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSlug]}
-            components={{ pre: CodeBlock }}
+            components={{
+              pre: CodeBlock,
+              a: ({ href, children, ...props }) => {
+                if (href?.startsWith("/")) {
+                  return <Link to={href} viewTransition {...props}>{children}</Link>
+                }
+                return <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
+              },
+            }}
           >
             {post.content}
           </ReactMarkdown>
