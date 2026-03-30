@@ -140,7 +140,7 @@
 }
 .theme-transition .shiki,
 .theme-transition .shiki span {
-  transition: color 0.3s ease, background-color 0.3s ease !important;
+  transition: color 200ms ease, background-color 200ms ease !important;
 }
 
 /* Color theme presets */
@@ -234,7 +234,7 @@ html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease, box-shadow 0.3s ease !important;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, fill 200ms ease, stroke 200ms ease, box-shadow 200ms ease !important;
 }
 
 /* Collapsible animations */

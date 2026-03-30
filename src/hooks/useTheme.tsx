@@ -30,7 +30,7 @@ function applyTheme(resolved: ResolvedTheme) {
   // Remove transition class after animation completes
   window.setTimeout(() => {
     root.classList.remove("theme-transition")
-  }, 300)
+  }, 200)
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
