@@ -108,6 +108,13 @@ ${urls.join("\n")}
 `
 
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
+
+      // Plain text sitemap (Google-supported fallback format)
+      const txtUrls = [
+        ...staticPages.map((p) => `${BASE_URL}${p}`),
+        ...posts.map((p) => `${BASE_URL}/posts/${p.slug}/`),
+      ]
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.txt"), txtUrls.join("\n") + "\n")
     },
   }
 }
