@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.3](https://github.com/devy1540/devy1540.github.io/compare/v1.11.2...v1.11.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* **seo:** 사이트맵 인식 우회 경로 추가 ([84c9d0a](https://github.com/devy1540/devy1540.github.io/commit/84c9d0a468fb73dec94dcc246d15b0f5c6b32359))
+
 ## [1.11.2](https://github.com/devy1540/devy1540.github.io/compare/v1.11.1...v1.11.2) (2026-03-30)
 
 
