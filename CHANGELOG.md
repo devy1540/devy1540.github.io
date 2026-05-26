@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.4](https://github.com/devy1540/devy1540.github.io/compare/v1.11.3...v1.11.4) (2026-05-26)
+
+
+### Bug Fixes
+
+* **seo:** 사이트맵 메타데이터 보강 ([e1f51ac](https://github.com/devy1540/devy1540.github.io/commit/e1f51acf9727c132c7d2155bce1f7e26aacd1ecf))
+
 ## [1.11.3](https://github.com/devy1540/devy1540.github.io/compare/v1.11.2...v1.11.3) (2026-05-26)
 
 
