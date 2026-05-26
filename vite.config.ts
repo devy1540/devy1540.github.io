@@ -92,17 +92,19 @@ function sitemapPlugin(): Plugin {
       const staticPages = ["/", "/posts/", "/tags/", "/series/", "/about/"]
       const today = new Date().toISOString().split("T")[0]
 
-      function urlEntry(loc: string, lastmod: string) {
-        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`
+      function urlEntry(loc: string, lastmod: string, changefreq = "weekly", priority = "0.5") {
+        return `  <url>\n    <loc>${escapeXml(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
       }
 
       const urls = [
-        ...staticPages.map((p) => urlEntry(`${BASE_URL}${p}`, today)),
+        ...staticPages.map((p) => urlEntry(`${BASE_URL}${p}`, today, "weekly", p === "/" ? "1.0" : "0.8")),
         ...posts.map((p) => urlEntry(`${BASE_URL}/posts/${p.slug}/`, p.date || today)),
       ]
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join("\n")}
 </urlset>
 `
@@ -111,9 +113,11 @@ ${urls.join("\n")}
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-pages.xml"), sitemap)
 
       const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemapindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
+              xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${BASE_URL}/sitemap-pages.xml</loc>
+    <loc>${escapeXml(`${BASE_URL}/sitemap-pages.xml`)}</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
 </sitemapindex>
