@@ -108,6 +108,18 @@ ${urls.join("\n")}
 `
 
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-pages.xml"), sitemap)
+
+      const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${BASE_URL}/sitemap-pages.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+</sitemapindex>
+`
+
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-index.xml"), sitemapIndex)
     },
   }
 }
@@ -216,8 +228,8 @@ function prerenderPlugin(): Plugin {
         // Inject pre-rendered body content for SEO (Google reads this before JS renders)
         if (opts.bodyContent) {
           html = html.replace(
-            '<div id="root"></div>',
-            `<div id="root">${opts.bodyContent}</div>`
+            /<div id="root"([^>]*)><\/div>/,
+            `<div id="root"$1>${opts.bodyContent}</div>`
           )
         }
 
