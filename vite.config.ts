@@ -108,6 +108,7 @@ ${urls.join("\n")}
 `
 
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-gsc.xml"), sitemap)
       fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-pages.xml"), sitemap)
 
       const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
