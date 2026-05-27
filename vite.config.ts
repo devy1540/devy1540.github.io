@@ -187,6 +187,37 @@ function prerenderPlugin(): Plugin {
         .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
         .sort((a, b) => (a.date > b.date ? -1 : 1))
 
+      const homeDescription = "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리하는 Devy의 기술 블로그입니다."
+      const homeHtml = `<main><h1>Devy's Blog</h1><p>${escapeHtml(homeDescription)}</p><section><h2>최근 글</h2><ul>` +
+        allPosts.slice(0, 10).map((p) =>
+          `<li><a href="/posts/${p.slug}/">${escapeHtml(p.title)}</a> <time datetime="${p.date}">${p.date}</time><p>${escapeHtml(p.description)}</p></li>`
+        ).join("") +
+        `</ul></section><nav><a href="/posts/">글 목록</a> <a href="/tags/">태그</a> <a href="/series/">시리즈</a> <a href="/about/">소개</a></nav></main>`
+
+      renderPage({
+        title: "백엔드·인프라 개발 기록",
+        description: homeDescription,
+        url: "/",
+        outputPath: "index.html",
+        bodyContent: homeHtml,
+        jsonLdOverride: {
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          name: "Devy's Blog",
+          description: homeDescription,
+          url: BASE_URL,
+          inLanguage: "ko-KR",
+          author: { "@type": "Person", name: "Devy" },
+          blogPost: allPosts.slice(0, 10).map((p) => ({
+            "@type": "BlogPosting",
+            headline: p.title,
+            description: p.description,
+            datePublished: p.date,
+            url: `${BASE_URL}/posts/${p.slug}/`,
+          })),
+        },
+      })
+
       function renderPage(opts: {
         title: string
         description: string

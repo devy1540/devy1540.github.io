@@ -109,9 +109,6 @@
   html.dark {
     color-scheme: dark;
   }
-  #root {
-    transition: opacity 150ms ease;
-  }
   body {
     @apply bg-background text-foreground;
     font-family:

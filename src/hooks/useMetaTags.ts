@@ -32,13 +32,13 @@ function setNameMeta(name: string, content: string) {
 }
 
 function setLink(rel: string, href: string) {
-  let el = document.querySelector(`link[rel="${rel}"][data-meta]`)
+  let el = document.querySelector(`link[rel="${rel}"]`)
   if (!el) {
     el = document.createElement("link")
     el.setAttribute("rel", rel)
-    el.setAttribute("data-meta", "true")
     document.head.appendChild(el)
   }
+  el.setAttribute("data-meta", "true")
   el.setAttribute("href", href)
 }
 

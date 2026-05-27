@@ -9,10 +9,10 @@ import { ArrowRight, Eye } from "lucide-react"
 import { useT } from "@/i18n"
 
 export function HomePage() {
-  useMetaTags({ url: "/" })
+  const t = useT()
+  useMetaTags({ title: t.meta.homeTitle, url: "/" })
   const posts = getAllPosts()
   const recentPosts = posts.slice(0, 5)
-  const t = useT()
   const series = getAllSeries()
   const tags = getAllTags()
   const { totalViews, allPageViews } = usePageViews()

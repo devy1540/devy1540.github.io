@@ -15,5 +15,3 @@ createRoot(root).render(
     </ThemeProvider>
   </StrictMode>
 )
-// Reveal after React mounts — prevents FOUC from prerendered HTML
-root.style.opacity = "1"

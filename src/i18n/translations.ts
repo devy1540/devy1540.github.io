@@ -126,6 +126,7 @@ export interface Translations {
   }
   meta: {
     siteName: string
+    homeTitle: string
     defaultDescription: string
   }
 }
@@ -144,7 +145,7 @@ export const ko: Translations = {
     viewAll: "전체 보기",
   },
   home: {
-    subtitle: "개발하며 배운 것들을 정리하고 공유합니다.",
+    subtitle: "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "Popular Posts",
@@ -256,7 +257,8 @@ export const ko: Translations = {
   },
   meta: {
     siteName: "Devy's Blog",
-    defaultDescription: "개발하며 배운 것들을 정리하고 공유합니다.",
+    homeTitle: "백엔드·인프라 개발 기록",
+    defaultDescription: "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리하는 Devy의 기술 블로그입니다.",
   },
 }
 
@@ -386,6 +388,7 @@ export const en: Translations = {
   },
   meta: {
     siteName: "Devy's Blog",
-    defaultDescription: "Documenting and sharing what I learn through development.",
+    homeTitle: "Backend and Infrastructure Engineering Notes",
+    defaultDescription: "Technical notes on Java, Spring, Kubernetes, observability, React, and production engineering.",
   },
 }
