@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.7](https://github.com/devy1540/devy1540.github.io/compare/v1.11.6...v1.11.7) (2026-05-27)
+
+
+### Bug Fixes
+
+* **seo:** GSC 사이트맵 우회 경로 추가 ([e3c268d](https://github.com/devy1540/devy1540.github.io/commit/e3c268db0235aee2b456df5862186a96f1f93c73))
+
 ## [1.11.6](https://github.com/devy1540/devy1540.github.io/compare/v1.11.5...v1.11.6) (2026-05-27)
 
 
