@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.6](https://github.com/devy1540/devy1540.github.io/compare/v1.11.5...v1.11.6) (2026-05-27)
+
+
+### Bug Fixes
+
+* **seo:** 사이트맵 형식 단순화 ([571ad49](https://github.com/devy1540/devy1540.github.io/commit/571ad492ea5a6db149e42b7dd0b0aad563a2b2e9))
+
 ## [1.11.5](https://github.com/devy1540/devy1540.github.io/compare/v1.11.4...v1.11.5) (2026-05-27)
 
 
