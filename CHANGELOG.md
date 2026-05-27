@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.5](https://github.com/devy1540/devy1540.github.io/compare/v1.11.4...v1.11.5) (2026-05-27)
+
+
+### Bug Fixes
+
+* **seo:** soft 404 색인 신호 개선 ([3dfe342](https://github.com/devy1540/devy1540.github.io/commit/3dfe3428f4ffce3033d3d8c7cea7fc94b8b7de01))
+
 ## [1.11.4](https://github.com/devy1540/devy1540.github.io/compare/v1.11.3...v1.11.4) (2026-05-26)
 
 
