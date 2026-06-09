@@ -218,7 +218,7 @@ export function ResumePdfDocument() {
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>Blog</Text>
-          <Link src="https://devy1540.github.io" style={s.contactLink}>https://devy1540.github.io</Link>
+          <Link src="https://devy1540.dev" style={s.contactLink}>https://devy1540.dev</Link>
         </View>
         {PROJECTS.flatMap((p) => p.relatedLinks ?? []).map((link) => (
           <View key={link.url} style={s.urlRow}>

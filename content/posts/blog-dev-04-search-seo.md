@@ -89,7 +89,7 @@ export function useMetaTags({ title, description, url, type = "website" }) {
 
     setMeta("description", description || "개발하며 배운 것들을 정리하고 공유합니다.")
     setMeta("og:title", title || "Devy's Blog")
-    setMeta("og:url", `https://devy1540.github.io${url || "/"}`)
+    setMeta("og:url", `https://devy1540.dev${url || "/"}`)
     // ...
   }, [title, description, url, type])
 }
@@ -129,7 +129,7 @@ function sitemapPlugin() {
 ```html
 <link rel="alternate" type="application/rss+xml"
   title="Devy's Blog RSS"
-  href="https://devy1540.github.io/rss.xml" />
+  href="https://devy1540.dev/rss.xml" />
 ```
 
 ---

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { lazy, Suspense, type ComponentPropsWithoutRef, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -35,7 +35,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { TableOfContents } from "@/components/TableOfContents"
-import { CodeBlock } from "@/components/CodeBlock"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
 import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
@@ -43,6 +42,29 @@ import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { analytics, trackPageVisit } from "@/lib/analytics"
 import { useT } from "@/i18n"
+
+const LazyCodeBlock = lazy(() =>
+  import("@/components/CodeBlock").then((module) => ({ default: module.CodeBlock }))
+)
+
+function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
+  return (
+    <pre
+      {...props}
+      className="not-prose my-5 overflow-x-auto rounded-lg border border-border bg-secondary p-4 text-sm text-secondary-foreground"
+    >
+      {children}
+    </pre>
+  )
+}
+
+function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
+  return (
+    <Suspense fallback={<CodeBlockFallback {...props} />}>
+      <LazyCodeBlock {...props} />
+    </Suspense>
+  )
+}
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -142,7 +164,7 @@ export function PostPage() {
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSlug]}
             components={{
-              pre: CodeBlock,
+              pre: MarkdownCodeBlock,
               a: ({ href, children, ...props }) => {
                 if (href?.startsWith("/")) {
                   return <Link to={href} viewTransition {...props}>{children}</Link>

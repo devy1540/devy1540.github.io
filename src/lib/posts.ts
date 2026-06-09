@@ -72,12 +72,23 @@ function isHidden(post: Pick<PostMeta, "draft" | "publishDate">): boolean {
   return false
 }
 
+function toPostMeta(post: Post): PostMeta {
+  return {
+    slug: post.slug,
+    title: post.title,
+    date: post.date,
+    description: post.description,
+    tags: post.tags,
+    series: post.series,
+    seriesOrder: post.seriesOrder,
+    draft: post.draft,
+    publishDate: post.publishDate,
+  }
+}
+
 export function getAllPosts(): PostMeta[] {
   return Object.entries(postFiles)
-    .map(([path, raw]) => {
-      const { content: _, ...meta } = parsePost(path, raw)
-      return meta
-    })
+    .map(([path, raw]) => toPostMeta(parsePost(path, raw)))
     .filter((post) => !import.meta.env.PROD || !isHidden(post))
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
@@ -120,7 +131,7 @@ export function searchPosts(query: string): PostMeta[] {
         post.content.toLowerCase().includes(q)
       )
     })
-    .map(({ content: _, ...meta }) => meta)
+    .map(toPostMeta)
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
 
@@ -148,7 +159,7 @@ export function advancedSearch(options: {
       if (tag && !post.tags.includes(tag)) return false
       return true
     })
-    .map(({ content: _, ...meta }) => meta)
+    .map(toPostMeta)
     .sort((a, b) => (a.date > b.date ? -1 : 1))
 }
 

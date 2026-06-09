@@ -8,12 +8,12 @@
 
 <br>
 
-[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=deploy&logo=github&style=flat-square)](https://devy1540.github.io)
+[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=deploy&logo=github&style=flat-square)](https://devy1540.dev)
 [![React](https://img.shields.io/badge/react-19-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/typescript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
+[![Vite](https://img.shields.io/badge/vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
 
-[Live](https://devy1540.github.io) &nbsp;&middot;&nbsp; [RSS](https://devy1540.github.io/rss.xml)
+[Live](https://devy1540.dev) &nbsp;&middot;&nbsp; [RSS](https://devy1540.dev/rss.xml)
 
 <br>
 
@@ -79,7 +79,7 @@ src/
 
 ## Stack
 
-`React 19` · `TypeScript` · `Vite 7` · `Tailwind CSS 4` · `shadcn/ui` · `React Router v7` · `Shiki` · `Mermaid.js` · `Recharts` · `Giscus` · `GitHub Pages`
+`React 19` · `TypeScript` · `Vite 8` · `Tailwind CSS 4` · `shadcn/ui` · `React Router v7` · `Shiki` · `Mermaid.js` · `Recharts` · `Giscus` · `GitHub Pages`
 
 ## License
 

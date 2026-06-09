@@ -9,7 +9,13 @@ interface MetaTagsOptions {
   noindex?: boolean
 }
 
-const BASE_URL = "https://devy1540.github.io"
+const BASE_URL = "https://devy1540.dev"
+
+function toCanonicalUrl(path?: string) {
+  if (!path) return BASE_URL
+  const normalizedPath = path === "/" || path.endsWith("/") ? path : `${path}/`
+  return `${BASE_URL}${normalizedPath}`
+}
 
 function setMeta(property: string, content: string) {
   let el = document.querySelector(`meta[property="${property}"]`)
@@ -55,7 +61,7 @@ export function useMetaTags({
     const siteName = t.meta.siteName
     const fullTitle = title ? `${title} | ${siteName}` : siteName
     const desc = description || t.meta.defaultDescription
-    const fullUrl = url ? `${BASE_URL}${url}` : BASE_URL
+    const fullUrl = toCanonicalUrl(url)
     const ogLocale = language === "ko" ? "ko_KR" : "en_US"
 
     document.title = fullTitle

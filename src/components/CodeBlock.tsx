@@ -1,5 +1,4 @@
 import { type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
-import { codeToHtml } from "shiki"
 import { Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
@@ -238,17 +237,21 @@ function ShikiBlock({ code, language, children, preProps }: { code: string; lang
 
   useEffect(() => {
     if (!code) return
+    let cancelled = false
+    setHighlightedHtml("")
 
-    codeToHtml(code, {
-      lang: language || "text",
-      themes: {
-        light: "github-light",
-        dark: "github-dark",
-      },
-      defaultColor: false,
-    }).then((html) => {
-      setHighlightedHtml(html)
-    })
+    import("@/lib/shiki-highlighter")
+      .then(({ highlightCode }) => highlightCode(code, language))
+      .then((html) => {
+        if (!cancelled) setHighlightedHtml(html)
+      })
+      .catch(() => {
+        if (!cancelled) setHighlightedHtml("")
+      })
+
+    return () => {
+      cancelled = true
+    }
   }, [code, language])
 
   return (

@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://devy1540.github.io/sitemap.xml
-Sitemap: https://devy1540.github.io/sitemap-gsc.xml
+Sitemap: https://devy1540.dev/sitemap-gsc.xml

@@ -1,16 +1,26 @@
+import { lazy, Suspense, type ReactNode } from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { RootLayout } from "./layouts/RootLayout"
 import { HomePage } from "./pages/HomePage"
-import { PostPage } from "./pages/PostPage"
-import { PostsPage } from "./pages/PostsPage"
-import { TagsPage } from "./pages/TagsPage"
-import { SeriesPage } from "./pages/SeriesPage"
-import { SearchPage } from "./pages/SearchPage"
-import { AnalyticsPage } from "./pages/AnalyticsPage"
-import { AboutPage } from "./pages/AboutPage"
-import { ProjectDetailPage } from "./pages/ProjectDetailPage"
 import { ErrorPage } from "./pages/ErrorPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
+
+const PostsPage = lazy(() => import("./pages/PostsPage").then((module) => ({ default: module.PostsPage })))
+const PostPage = lazy(() => import("./pages/PostPage").then((module) => ({ default: module.PostPage })))
+const TagsPage = lazy(() => import("./pages/TagsPage").then((module) => ({ default: module.TagsPage })))
+const SeriesPage = lazy(() => import("./pages/SeriesPage").then((module) => ({ default: module.SeriesPage })))
+const SearchPage = lazy(() => import("./pages/SearchPage").then((module) => ({ default: module.SearchPage })))
+const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage").then((module) => ({ default: module.AnalyticsPage })))
+const AboutPage = lazy(() => import("./pages/AboutPage").then((module) => ({ default: module.AboutPage })))
+const ProjectDetailPage = lazy(() => import("./pages/ProjectDetailPage").then((module) => ({ default: module.ProjectDetailPage })))
+
+function lazyRoute(element: ReactNode) {
+  return (
+    <Suspense fallback={<div className="py-10 text-sm text-muted-foreground">Loading...</div>}>
+      {element}
+    </Suspense>
+  )
+}
 
 const router = createBrowserRouter([
   {
@@ -18,14 +28,14 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "posts", element: <PostsPage /> },
-      { path: "posts/:slug", element: <PostPage /> },
-      { path: "tags", element: <TagsPage /> },
-      { path: "series", element: <SeriesPage /> },
-      { path: "search", element: <SearchPage /> },
-      { path: "analytics", element: <AnalyticsPage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "about/projects/:slug", element: <ProjectDetailPage /> },
+      { path: "posts", element: lazyRoute(<PostsPage />) },
+      { path: "posts/:slug", element: lazyRoute(<PostPage />) },
+      { path: "tags", element: lazyRoute(<TagsPage />) },
+      { path: "series", element: lazyRoute(<SeriesPage />) },
+      { path: "search", element: lazyRoute(<SearchPage />) },
+      { path: "analytics", element: lazyRoute(<AnalyticsPage />) },
+      { path: "about", element: lazyRoute(<AboutPage />) },
+      { path: "about/projects/:slug", element: lazyRoute(<ProjectDetailPage />) },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

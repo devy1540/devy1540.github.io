@@ -3,7 +3,7 @@ import fs from "fs"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 
-const BASE_URL = "https://devy1540.github.io"
+const BASE_URL = "https://devy1540.dev"
 
 function parseFrontmatter(raw: string) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
@@ -114,7 +114,7 @@ ${urls.join("\n")}
       const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${escapeXml(`${BASE_URL}/sitemap.xml`)}</loc>
+    <loc>${escapeXml(`${BASE_URL}/sitemap-gsc.xml`)}</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
 </sitemapindex>
@@ -386,11 +386,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (/[/\\]node_modules[/\\](react|react-dom|scheduler)[/\\]/.test(id)) {
+            return "react"
+          }
           if (id.includes("shiki")) {
             return "shiki"
-          }
-          if (id.includes("react-markdown") || id.includes("remark") || id.includes("rehype") || id.includes("unified") || id.includes("mdast") || id.includes("hast") || id.includes("micromark")) {
-            return "markdown"
           }
           if (id.includes("react-router")) {
             return "router"
