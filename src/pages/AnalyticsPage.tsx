@@ -30,16 +30,9 @@ const TAG_COLORS = [
   "oklch(0.7 0.15 60)",    // amber
 ]
 
-const monthlyChartConfig = {
-  count: {
-    label: "Posts",
-    color: "var(--primary)",
-  },
-} satisfies ChartConfig
-
 export function AnalyticsPage() {
   const t = useT()
-  useMetaTags({ title: "Analytics", description: t.analytics.description, url: "/analytics" })
+  useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: "/analytics" })
 
   const { totalViews, allPageViews, isError, isLoading, lastUpdated, refresh } = usePageViews()
   const posts = getAllPosts()
@@ -89,12 +82,19 @@ export function AnalyticsPage() {
   }, [posts, t])
 
   const tagChartConfig = useMemo(() => {
-    const config: ChartConfig = { count: { label: "Posts" } }
+    const config: ChartConfig = { count: { label: t.analytics.postsCount } }
     for (const item of tagDistribution) {
       config[item.tag] = { label: item.tag, color: item.fill }
     }
     return config
-  }, [tagDistribution])
+  }, [tagDistribution, t])
+
+  const monthlyChartConfig = useMemo<ChartConfig>(() => ({
+    count: {
+      label: t.analytics.postsCount,
+      color: "var(--primary)",
+    },
+  }), [t])
 
   const monthlyPosts = useMemo(() => {
     const map = new Map<string, number>()
@@ -234,7 +234,7 @@ export function AnalyticsPage() {
                                 {total}
                               </tspan>
                               <tspan x={viewBox.cx} y={(viewBox.cy ?? 0) + 24} className="fill-muted-foreground text-sm">
-                                Posts
+                                {t.analytics.postsCount}
                               </tspan>
                             </text>
                           )

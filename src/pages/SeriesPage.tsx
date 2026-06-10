@@ -9,7 +9,7 @@ import { useT } from "@/i18n"
 
 export function SeriesPage() {
   const t = useT()
-  useMetaTags({ title: "Series", description: t.series.description, url: "/series" })
+  useMetaTags({ title: t.common.series, description: t.series.description, url: "/series" })
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedSeries = searchParams.get("name")
 
@@ -22,7 +22,7 @@ export function SeriesPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold tracking-tight mb-8">Series</h1>
+      <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.series}</h1>
 
       {!selectedSeries ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -11,7 +11,7 @@ import { useT } from "@/i18n"
 
 export function SearchPage() {
   const t = useT()
-  useMetaTags({ title: "Search", description: t.search.description, url: "/search" })
+  useMetaTags({ title: t.common.search, description: t.search.description, url: "/search" })
 
   const [query, setQuery] = useState("")
   const [dateFrom, setDateFrom] = useState("")
@@ -34,7 +34,7 @@ export function SearchPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold tracking-tight mb-8">Search</h1>
+      <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.search}</h1>
 
       <div className="space-y-4 mb-8">
         <div className="relative">

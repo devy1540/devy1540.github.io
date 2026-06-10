@@ -8,7 +8,7 @@ import { useT } from "@/i18n"
 
 export function TagsPage() {
   const t = useT()
-  useMetaTags({ title: "Tags", description: t.tags.description, url: "/tags" })
+  useMetaTags({ title: t.common.tags, description: t.tags.description, url: "/tags" })
   const posts = getAllPosts()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedTag = searchParams.get("tag")
@@ -25,7 +25,7 @@ export function TagsPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold tracking-tight mb-8">Tags</h1>
+      <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.tags}</h1>
 
       {!selectedTag ? (
         <div className="flex flex-wrap gap-3">
