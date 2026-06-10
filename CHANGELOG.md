@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.9](https://github.com/devy1540/devy1540.github.io/compare/v1.11.8...v1.11.9) (2026-06-10)
+
+
+### Performance Improvements
+
+* **ssg:** 초기 렌더링을 hydrated SSG로 개선 ([206b247](https://github.com/devy1540/devy1540.github.io/commit/206b2478ca5cbe1ea8f3cf6dba282e645a319f40))
+
 ## [1.11.8](https://github.com/devy1540/devy1540.github.io/compare/v1.11.7...v1.11.8) (2026-06-10)
 
 
