@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PaletteIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +20,7 @@ const colorPresets = [
 ] as const
 
 function applyColor(value: string) {
+  if (typeof document === "undefined") return
   if (value) {
     document.documentElement.setAttribute("data-color", value)
   } else {
@@ -28,11 +29,13 @@ function applyColor(value: string) {
 }
 
 export function ColorThemeSelector() {
-  const [selected, setSelected] = useState(() => {
+  const [selected, setSelected] = useState("")
+  useEffect(() => {
     const stored = localStorage.getItem("color-theme") || ""
     applyColor(stored)
-    return stored
-  })
+    setSelected(stored)
+  }, [])
+
   const t = useT()
 
   function handleSelect(value: string) {

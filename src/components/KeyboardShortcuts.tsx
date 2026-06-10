@@ -11,8 +11,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { useT } from "@/i18n"
 
-const isMac = navigator.platform.toUpperCase().includes("MAC")
-
 function Kbd({ children }: { children: string }) {
   return (
     <kbd className="inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded border bg-muted text-[11px] font-mono font-medium text-muted-foreground">
@@ -24,6 +22,7 @@ function Kbd({ children }: { children: string }) {
 export function KeyboardShortcuts() {
   const [open, setOpen] = useState(false)
   const t = useT()
+  const isMac = typeof navigator !== "undefined" && navigator.platform.toUpperCase().includes("MAC")
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {

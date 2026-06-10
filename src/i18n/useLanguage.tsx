@@ -12,6 +12,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 const translations: Record<Language, Translations> = { ko, en }
 
 function detectLanguage(): Language {
+  if (typeof window === "undefined") return "ko"
   const stored = localStorage.getItem("language") as Language | null
   if (stored === "ko" || stored === "en") return stored
   const browserLang = navigator.language.toLowerCase()
@@ -20,7 +21,12 @@ function detectLanguage(): Language {
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(detectLanguage)
+  const [language, setLanguageState] = useState<Language>("ko")
+
+  useEffect(() => {
+    const detected = detectLanguage()
+    if (detected !== language) setLanguageState(detected)
+  }, [language])
 
   useEffect(() => {
     document.documentElement.lang = language

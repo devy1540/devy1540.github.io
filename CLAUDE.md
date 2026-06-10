@@ -23,7 +23,11 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 ├── public/                 # 정적 파일 (favicon, og-image, robots.txt)
 ├── src/
 │   ├── main.tsx            # 엔트리포인트 (ThemeProvider > LanguageProvider > App)
-│   ├── App.tsx             # 라우터 정의
+│   ├── app-shell.tsx       # SSR/CSR 공통 Provider shell
+│   ├── App.tsx             # RouterProvider 생성
+│   ├── routes.tsx          # 클라이언트 라우트 + 현재 경로 preload
+│   ├── routes.server.tsx   # SSG용 정적 라우트
+│   ├── entry-server.tsx    # React SSR 렌더링 + prerender route metadata
 │   ├── layouts/
 │   │   └── RootLayout.tsx  # 공통 레이아웃 (Sidebar + Header + Outlet)
 │   ├── pages/
@@ -71,7 +75,9 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 │       ├── reading-time.ts   # 읽기 시간 계산
 │       ├── shiki-highlighter.ts # Shiki lazy highlighter
 │       └── utils.ts          # cn() 유틸
-├── vite.config.ts            # Vite 설정 + RSS/Sitemap/404 빌드 플러그인
+├── scripts/
+│   └── prerender.mjs         # dist HTML에 React SSR 결과와 SEO metadata 주입
+├── vite.config.ts            # Vite 설정 + RSS/Sitemap 빌드 플러그인
 ├── components.json           # shadcn/ui 설정
 └── package.json
 ```
@@ -123,7 +129,15 @@ publishDate: "2025-12-01" # optional - 예약 발행
 ### SEO
 - `useMetaTags()` 훅으로 페이지별 title, description, OG 태그 설정
 - `vite.config.ts`에서 빌드 시 sitemap.xml, rss.xml 자동 생성
-- SPA 404 fallback: index.html → 404.html 복사
+- `src/entry-server.tsx` + `scripts/prerender.mjs`로 주요 라우트를 hydrated SSG HTML로 생성
+- 빌드 후 `dist/404.html`은 NotFound SSR HTML로 생성해 GitHub Pages SPA fallback의 hydration mismatch 방지
+
+### Hydrated SSG
+- 서버 렌더는 `src/routes.server.tsx`의 정적 라우트로 실제 React UI HTML을 생성
+- 글 상세와 프로젝트 상세 경로는 빌드 시 개별 HTML로 프리렌더
+- 클라이언트는 `src/routes.tsx`에서 현재 경로 컴포넌트만 hydration 전에 preload하고, 나머지 라우트는 lazy 유지
+- `PostPage` 코드블록은 서버에서 안정적인 `<pre>` fallback을 렌더하고 hydration 후 `CodeBlock`/Shiki를 로드
+- hydration 관련 변경 후에는 `npm run build`, `npm run preview`로 `Loading...`, Suspense hidden segment, React hydration warning이 없는지 확인
 
 ### Page Views
 - Google Apps Script API로 GA 데이터 조회
@@ -132,13 +146,13 @@ publishDate: "2025-12-01" # optional - 예약 발행
 
 ### About Page Data
 - 경력/프로젝트 데이터는 `AboutPage.tsx`의 `COMPANIES` 상수에 정의
-- 프로젝트 상세 데이터는 `ProjectDetailPage.tsx`의 `PROJECTS` 상수에 정의
+- 프로젝트 상세 데이터는 `src/data/resume.ts`의 `PROJECTS` 상수에 정의
 - 프로젝트 추가 시 두 파일 모두 수정 필요
 
 ## Commands
 ```bash
 npm run dev        # 개발 서버 (Vite)
-npm run build      # 프로덕션 빌드 (tsc + vite build + sitemap/rss/404 생성)
+npm run build      # 프로덕션 빌드 (tsc + client build + SSR build + hydrated SSG 생성)
 npm run preview    # 빌드 결과 미리보기
 npm run lint       # ESLint 실행
 npm run type-check # TypeScript 타입 체크

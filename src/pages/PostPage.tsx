@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentPropsWithoutRef, useEffect } from "react"
+import { lazy, Suspense, type ComponentPropsWithoutRef, useEffect, useSyncExternalStore } from "react"
 import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -47,6 +47,19 @@ const LazyCodeBlock = lazy(() =>
   import("@/components/CodeBlock").then((module) => ({ default: module.CodeBlock }))
 )
 
+function subscribeHydration(callback: () => void) {
+  const timer = window.setTimeout(callback, 0)
+  return () => window.clearTimeout(timer)
+}
+
+function getClientSnapshot() {
+  return true
+}
+
+function getServerSnapshot() {
+  return false
+}
+
 function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
   return (
     <pre
@@ -59,6 +72,12 @@ function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre
 }
 
 function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
+  const isClient = useSyncExternalStore(subscribeHydration, getClientSnapshot, getServerSnapshot)
+
+  if (!isClient) {
+    return <CodeBlockFallback {...props} />
+  }
+
   return (
     <Suspense fallback={<CodeBlockFallback {...props} />}>
       <LazyCodeBlock {...props} />
