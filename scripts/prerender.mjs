@@ -32,20 +32,22 @@ function outputPathFor(routePath) {
 
 function withHead(templateHtml, route) {
   const fullTitle = toFullTitle(route.title)
-  const description = route.description || "개발하며 배운 것들을 정리하고 공유합니다."
+  const description = route.description || "Devy가 배우고 경험한 것들을 정리하는 블로그입니다."
+  const previewTitle = route.ogTitle || fullTitle
+  const previewDescription = route.ogDescription || description
   const fullUrl = `${baseUrl}${route.path}`
   const ogType = route.type || "website"
 
   let html = templateHtml
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(fullTitle)}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeAttr(description)}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeAttr(fullTitle)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeAttr(description)}$2`)
+    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
+    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
     .replace(/(<meta property="og:type" content=")[^"]*(")/, `$1${escapeAttr(ogType)}$2`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
-    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeAttr(fullTitle)}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${escapeAttr(description)}$2`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
 
   if (route.jsonLd) {
     html = html.replace("</head>", `    <script type="application/ld+json">${safeJsonLd(route.jsonLd)}</script>\n  </head>`)

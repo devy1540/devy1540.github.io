@@ -258,7 +258,7 @@ export const ko: Translations = {
   meta: {
     siteName: "Devy's Blog",
     homeTitle: "백엔드·인프라 개발 기록",
-    defaultDescription: "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리하는 Devy의 기술 블로그입니다.",
+    defaultDescription: "Devy가 배우고 경험한 것들을 정리하는 블로그입니다.",
   },
 }
 
@@ -389,6 +389,6 @@ export const en: Translations = {
   meta: {
     siteName: "Devy's Blog",
     homeTitle: "Backend and Infrastructure Engineering Notes",
-    defaultDescription: "Technical notes on Java, Spring, Kubernetes, observability, React, and production engineering.",
+    defaultDescription: "Notes from what Devy learns and experiences.",
   },
 }

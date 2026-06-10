@@ -10,6 +10,8 @@ export interface PrerenderRoute {
   path: string
   title: string
   description: string
+  ogTitle?: string
+  ogDescription?: string
   type?: "website" | "article"
   date?: string
   tags?: string[]
@@ -18,6 +20,7 @@ export interface PrerenderRoute {
 }
 
 const BASE_URL = "https://devy1540.dev"
+const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260610`
 
 function markdownToText(md: string) {
   return md
@@ -43,13 +46,14 @@ function toCanonicalPath(path: string) {
 
 export function getPrerenderRoutes(): PrerenderRoute[] {
   const posts = getAllPosts()
-  const homeDescription = "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리하는 Devy의 기술 블로그입니다."
+  const homeDescription = "Devy가 배우고 경험한 것들을 정리하는 블로그입니다."
 
   return [
     {
       path: "/",
       title: "백엔드·인프라 개발 기록",
       description: homeDescription,
+      ogTitle: "Devy Archive",
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "Blog",
@@ -131,7 +135,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
           description: post.description,
           datePublished: post.date,
           url: `${BASE_URL}/posts/${post.slug}/`,
-          image: `${BASE_URL}/og-image.png`,
+          image: OG_IMAGE_URL,
           author: { "@type": "Person", name: "Devy" },
           publisher: { "@type": "Organization", name: "Devy's Blog" },
           mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${post.slug}/` },
