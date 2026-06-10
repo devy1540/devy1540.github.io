@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.0](https://github.com/devy1540/devy1540.github.io/compare/v1.11.11...v1.12.0) (2026-06-10)
+
+
+### Features
+
+* **seo:** 링크 프리뷰 이미지를 개선 ([1e5c7df](https://github.com/devy1540/devy1540.github.io/commit/1e5c7df6e820d6d375fd5d277a62251ce6f382b8))
+* **seo:** 링크 프리뷰 이미지를 개선 ([76c6141](https://github.com/devy1540/devy1540.github.io/commit/76c61410706cc4c6c91f72624b3cc2def6e58ae2))
+
 ## [1.11.11](https://github.com/devy1540/devy1540.github.io/compare/v1.11.10...v1.11.11) (2026-06-10)
 
 
