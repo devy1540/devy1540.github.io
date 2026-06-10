@@ -10,7 +10,12 @@ import { useT } from "@/i18n"
 
 export function HomePage() {
   const t = useT()
-  useMetaTags({ title: t.meta.homeTitle, url: "/" })
+  useMetaTags({
+    title: t.meta.homeTitle,
+    description: t.meta.defaultDescription,
+    ogTitle: "Devy Archive",
+    url: "/",
+  })
   const posts = getAllPosts()
   const recentPosts = posts.slice(0, 5)
   const series = getAllSeries()

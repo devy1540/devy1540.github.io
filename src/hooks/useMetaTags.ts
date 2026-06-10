@@ -4,12 +4,16 @@ import { useLanguage } from "@/i18n"
 interface MetaTagsOptions {
   title?: string
   description?: string
+  ogTitle?: string
+  ogDescription?: string
   url?: string
   type?: string
   noindex?: boolean
 }
 
 const BASE_URL = "https://devy1540.dev"
+const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260610`
+const OG_IMAGE_ALT = "Devy Archive preview image"
 
 function toCanonicalUrl(path?: string) {
   if (!path) return BASE_URL
@@ -51,6 +55,8 @@ function setLink(rel: string, href: string) {
 export function useMetaTags({
   title,
   description,
+  ogTitle,
+  ogDescription,
   url,
   type = "website",
   noindex = false,
@@ -61,6 +67,8 @@ export function useMetaTags({
     const siteName = t.meta.siteName
     const fullTitle = title ? `${title} | ${siteName}` : siteName
     const desc = description || t.meta.defaultDescription
+    const previewTitle = ogTitle || fullTitle
+    const previewDescription = ogDescription || desc
     const fullUrl = toCanonicalUrl(url)
     const ogLocale = language === "ko" ? "ko_KR" : "en_US"
 
@@ -68,24 +76,26 @@ export function useMetaTags({
 
     setNameMeta("description", desc)
     setNameMeta("robots", noindex ? "noindex, nofollow" : "index, follow")
-    setMeta("og:title", fullTitle)
-    setMeta("og:description", desc)
+    setMeta("og:title", previewTitle)
+    setMeta("og:description", previewDescription)
     setMeta("og:url", fullUrl)
     setMeta("og:type", type)
     setMeta("og:site_name", siteName)
     setMeta("og:locale", ogLocale)
-    setMeta("og:image", `${BASE_URL}/og-image.png`)
+    setMeta("og:image", OG_IMAGE_URL)
     setMeta("og:image:width", "1200")
     setMeta("og:image:height", "630")
+    setMeta("og:image:alt", OG_IMAGE_ALT)
 
     setLink("canonical", fullUrl)
     setNameMeta("twitter:card", "summary_large_image")
-    setNameMeta("twitter:title", fullTitle)
-    setNameMeta("twitter:description", desc)
-    setNameMeta("twitter:image", `${BASE_URL}/og-image.png`)
+    setNameMeta("twitter:title", previewTitle)
+    setNameMeta("twitter:description", previewDescription)
+    setNameMeta("twitter:image", OG_IMAGE_URL)
+    setNameMeta("twitter:image:alt", OG_IMAGE_ALT)
 
     return () => {
       document.title = siteName
     }
-  }, [title, description, url, type, noindex, language, t])
+  }, [title, description, ogTitle, ogDescription, url, type, noindex, language, t])
 }
