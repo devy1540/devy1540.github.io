@@ -40,7 +40,7 @@ import { SeriesNavigator } from "@/components/SeriesNavigator"
 import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
-import { analytics, trackPageVisit } from "@/lib/analytics"
+import { analytics } from "@/lib/analytics"
 import { useT } from "@/i18n"
 
 const LazyCodeBlock = lazy(() =>
@@ -107,7 +107,6 @@ export function PostPage() {
   useEffect(() => {
     if (post && slug) {
       analytics.viewPost(post.title, slug)
-      trackPageVisit(`/posts/${slug}`)
     }
   }, [slug]) // eslint-disable-line react-hooks/exhaustive-deps
 
