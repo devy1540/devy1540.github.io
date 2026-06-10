@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.10](https://github.com/devy1540/devy1540.github.io/compare/v1.11.9...v1.11.10) (2026-06-10)
+
+
+### Bug Fixes
+
+* **analytics:** 조회수를 GA4 기준으로 단일화 ([7bc9174](https://github.com/devy1540/devy1540.github.io/commit/7bc91748f7342b4abe512ef7af6336c1b88725b7))
+* **analytics:** 조회수를 GA4 기준으로 단일화 ([8be011e](https://github.com/devy1540/devy1540.github.io/commit/8be011ef1c4d541ae177185f331c8ca28e789c9a))
+
 ## [1.11.9](https://github.com/devy1540/devy1540.github.io/compare/v1.11.8...v1.11.9) (2026-06-10)
 
 
