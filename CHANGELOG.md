@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.8](https://github.com/devy1540/devy1540.github.io/compare/v1.11.7...v1.11.8) (2026-06-10)
+
+
+### Performance Improvements
+
+* **seo:** 도메인 정리와 Shiki 지연 로딩 적용 ([4c92110](https://github.com/devy1540/devy1540.github.io/commit/4c92110beaf386440f289f16cc7908a70d6d4cf6))
+
 ## [1.11.7](https://github.com/devy1540/devy1540.github.io/compare/v1.11.6...v1.11.7) (2026-05-27)
 
 
