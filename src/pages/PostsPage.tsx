@@ -9,7 +9,7 @@ import type { PostMeta } from "@/types/post"
 
 export function PostsPage() {
   const t = useT()
-  useMetaTags({ title: "Posts", description: t.posts.description, url: "/posts" })
+  useMetaTags({ title: t.common.posts, description: t.posts.description, url: "/posts" })
   const posts = getAllPosts()
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
 
@@ -30,7 +30,7 @@ export function PostsPage() {
   return (
     <div className={"max-w-4xl mx-auto"}>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Posts</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t.common.posts}</h1>
         <ToggleGroup
           type="single"
           value={viewMode}
