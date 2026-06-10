@@ -1,15 +1,36 @@
-import { Outlet } from "react-router-dom"
+import { useEffect, useRef } from "react"
+import { Outlet, useLocation } from "react-router-dom"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/Sidebar"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SearchCommand } from "@/components/SearchCommand"
 import { ScrollToTopButton } from "@/components/ScrollToTopButton"
 import { Confetti } from "@/components/Confetti"
+import { trackPageView } from "@/lib/analytics"
+
+function RouteAnalytics() {
+  const location = useLocation()
+  const isInitialPageLoad = useRef(true)
+
+  useEffect(() => {
+    if (isInitialPageLoad.current) {
+      isInitialPageLoad.current = false
+      return
+    }
+
+    const path = `${location.pathname}${location.search}`
+    const timeoutId = window.setTimeout(() => trackPageView(path), 0)
+    return () => window.clearTimeout(timeoutId)
+  }, [location.pathname, location.search])
+
+  return null
+}
 
 export function RootLayout() {
   return (
     <SidebarProvider>
       <ScrollToTop />
+      <RouteAnalytics />
       <Confetti />
       <AppSidebar />
       <SidebarInset>
