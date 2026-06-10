@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.11](https://github.com/devy1540/devy1540.github.io/compare/v1.11.10...v1.11.11) (2026-06-10)
+
+
+### Bug Fixes
+
+* **blog:** 조회수 기준과 한국어 UI 라벨 정리 ([a973a40](https://github.com/devy1540/devy1540.github.io/commit/a973a40638c9cd78f7c708256d3cb283344d8d33))
+* **i18n:** 한국어 UI 라벨 혼재 정리 ([1e37565](https://github.com/devy1540/devy1540.github.io/commit/1e37565dc5a0bc613f41355eebedae453dd5b409))
+
 ## [1.11.10](https://github.com/devy1540/devy1540.github.io/compare/v1.11.9...v1.11.10) (2026-06-10)
 
 
