@@ -219,7 +219,7 @@ export const ko: Translations = {
     refresh: "새로고침",
   },
   about: {
-    description: "복잡한 비즈니스 요구사항을 빠르게 제품으로 만들어내는 백엔드 엔지니어입니다.",
+    description: "비즈니스 흐름을 제품 기능으로 만들고, 안정적으로 확장되는 서비스 구조까지 설계하는 백엔드 엔지니어입니다.",
     introduction: "자기소개",
     skills: "기술 스택",
     experience: "경력",
@@ -350,7 +350,7 @@ export const en: Translations = {
     refresh: "Refresh",
   },
   about: {
-    description: "Backend engineer who rapidly turns complex business requirements into products.",
+    description: "Backend engineer who turns business flows into product features and designs service structures that scale reliably.",
     introduction: "About Me",
     skills: "Skills",
     experience: "Experience",
