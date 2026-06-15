@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/devy1540/devy1540.github.io/compare/v1.14.0...v1.14.1) (2026-06-15)
+
+
+### 문서
+
+* **content:** 로그인 책임 분리 글과 소개 문구 정리 ([#96](https://github.com/devy1540/devy1540.github.io/issues/96)) ([785c294](https://github.com/devy1540/devy1540.github.io/commit/785c29495afe8da805a1d96f215daaf4c69e9cfa))
+
 ## [1.14.0](https://github.com/devy1540/devy1540.github.io/compare/v1.13.0...v1.14.0) (2026-06-10)
 
 
