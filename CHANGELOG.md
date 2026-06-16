@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/devy1540/devy1540.github.io/compare/v1.15.1...v1.16.0) (2026-06-16)
+
+
+### 새로운 기능
+
+* **posts:** 마크다운 글 다국어 지원 추가 ([#116](https://github.com/devy1540/devy1540.github.io/issues/116)) ([bfa8490](https://github.com/devy1540/devy1540.github.io/commit/bfa8490c7db14909cf6e0ec1a8f6a2eabdc64171))
+
 ## [1.15.1](https://github.com/devy1540/devy1540.github.io/compare/v1.15.0...v1.15.1) (2026-06-16)
 
 
