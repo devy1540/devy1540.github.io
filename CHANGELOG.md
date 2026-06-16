@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.6](https://github.com/devy1540/devy1540.github.io/compare/v1.14.5...v1.14.6) (2026-06-16)
+
+
+### 문서
+
+* **readme:** 프로젝트 소개 문서 개선 ([#108](https://github.com/devy1540/devy1540.github.io/issues/108)) ([47b4b7e](https://github.com/devy1540/devy1540.github.io/commit/47b4b7ee6fb1bb3e2456beaffc1003cc2e1ce7b3))
+
 ## [1.14.5](https://github.com/devy1540/devy1540.github.io/compare/v1.14.4...v1.14.5) (2026-06-16)
 
 
