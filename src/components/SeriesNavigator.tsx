@@ -2,20 +2,23 @@ import { Link } from "react-router-dom"
 import { ChevronDown, ListOrderedIcon } from "lucide-react"
 import { getSeriesPosts } from "@/lib/posts"
 import { analytics } from "@/lib/analytics"
+import { postPath } from "@/lib/i18n-routing"
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible"
 import type { PostMeta } from "@/types/post"
+import type { Language } from "@/i18n"
 
 interface SeriesNavigatorProps {
   series: string
   currentSlug: string
+  language: Language
 }
 
-export function SeriesNavigator({ series, currentSlug }: SeriesNavigatorProps) {
-  const posts = getSeriesPosts(series)
+export function SeriesNavigator({ series, currentSlug, language }: SeriesNavigatorProps) {
+  const posts = getSeriesPosts(series, language)
   const currentIndex = posts.findIndex((p) => p.slug === currentSlug)
 
   if (posts.length < 2) return null
@@ -43,7 +46,7 @@ export function SeriesNavigator({ series, currentSlug }: SeriesNavigatorProps) {
                 </span>
               ) : (
                 <Link
-                  to={`/posts/${post.slug}`}
+                  to={postPath(post.slug, language)}
                   viewTransition
                   onClick={() => analytics.clickSeriesNav(series, post.slug)}
                   className="flex items-center gap-2 text-sm py-1 px-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"

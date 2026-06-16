@@ -4,20 +4,21 @@ import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
 import { PROJECTS } from "@/data/resume"
 import { getPostBySlug } from "@/lib/posts"
+import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const project = PROJECTS.find((p) => p.slug === slug)
-  const t = useT()
+  const { language, t } = useLanguage()
 
   useMetaTags({
     title: project?.name,
     description: project ? `${project.company} — ${project.name}` : undefined,
-    url: slug ? `/about/projects/${slug}` : undefined,
+    url: slug ? localizePath(`/about/projects/${slug}`, language) : undefined,
   })
 
   if (!project) {
@@ -25,7 +26,7 @@ export function ProjectDetailPage() {
       <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
-          <Link to="/about" viewTransition>
+          <Link to={localizePath("/about", language)} viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.about.backToAbout}
           </Link>
@@ -37,7 +38,7 @@ export function ProjectDetailPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-        <Link to="/about" viewTransition>
+        <Link to={localizePath("/about", language)} viewTransition>
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t.about.backToAbout}
         </Link>
@@ -103,7 +104,7 @@ export function ProjectDetailPage() {
       )}
 
       {project.relatedPosts && project.relatedPosts.length > 0 && (() => {
-        const posts = project.relatedPosts.map(getPostBySlug).filter(Boolean)
+        const posts = project.relatedPosts.map((slug) => getPostBySlug(slug, language)).filter(Boolean)
         if (posts.length === 0) return null
         return (
           <>
@@ -114,7 +115,7 @@ export function ProjectDetailPage() {
                 {posts.map((post) => (
                   <Link
                     key={post!.slug}
-                    to={`/posts/${post!.slug}`}
+                    to={postPath(post!.slug, language)}
                     viewTransition
                     className="block rounded-lg border p-4 hover:bg-muted/50 transition-colors"
                   >

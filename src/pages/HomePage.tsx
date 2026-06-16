@@ -6,28 +6,30 @@ import { usePageViews } from "@/hooks/usePageViews"
 import { PostList } from "@/components/PostList"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Eye } from "lucide-react"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath, postPath } from "@/lib/i18n-routing"
 
 export function HomePage() {
-  const t = useT()
+  const { language, t } = useLanguage()
   useMetaTags({
     title: t.meta.homeTitle,
     description: t.meta.defaultDescription,
     ogTitle: t.meta.siteName,
-    url: "/",
+    url: localizePath("/", language),
   })
-  const posts = getAllPosts()
+  const posts = getAllPosts(language)
   const recentPosts = posts.slice(0, 5)
-  const series = getAllSeries()
-  const tags = getAllTags()
+  const series = getAllSeries(language)
+  const tags = getAllTags(language)
   const { totalViews, allPageViews } = usePageViews()
 
   const popularPosts = useMemo(() => {
     if (!allPageViews) return []
+    const postsPrefix = language === "en" ? "/en/posts/" : "/posts/"
     return Object.entries(allPageViews)
-      .filter(([path]) => path.startsWith("/posts/"))
+      .filter(([path]) => path.startsWith(postsPrefix))
       .map(([path, views]) => {
-        const slug = path.replace("/posts/", "").replace(/\/$/, "")
+        const slug = path.replace(postsPrefix, "").replace(/\/$/, "")
         const post = posts.find((p) => p.slug === slug)
         if (!post) return null
         return { slug, title: post.title, views }
@@ -35,7 +37,7 @@ export function HomePage() {
       .filter((p): p is NonNullable<typeof p> => p !== null)
       .sort((a, b) => b.views - a.views)
       .slice(0, 5)
-  }, [allPageViews, posts])
+  }, [allPageViews, language, posts])
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -49,13 +51,13 @@ export function HomePage() {
         </p>
         <div className="flex gap-3 mt-4">
           <Button asChild>
-            <Link to="/posts" viewTransition>
+            <Link to={localizePath("/posts", language)} viewTransition>
               {t.home.viewPosts}
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to="/about" viewTransition>{t.home.introduction}</Link>
+            <Link to={localizePath("/about", language)} viewTransition>{t.home.introduction}</Link>
           </Button>
         </div>
       </section>
@@ -85,7 +87,7 @@ export function HomePage() {
           </h2>
           {posts.length > 5 && (
             <Link
-              to="/posts"
+              to={localizePath("/posts", language)}
               viewTransition
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
@@ -117,7 +119,7 @@ export function HomePage() {
             {popularPosts.map((post, i) => (
               <Link
                 key={post.slug}
-                to={`/posts/${post.slug}`}
+                to={postPath(post.slug, language)}
                 viewTransition
                 className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-accent/50 transition-colors"
               >

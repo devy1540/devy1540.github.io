@@ -4,6 +4,7 @@ import { RootLayout } from "./layouts/RootLayout"
 import { HomePage } from "./pages/HomePage"
 import { ErrorPage } from "./pages/ErrorPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
+import { stripLanguagePrefix } from "./lib/i18n-routing"
 
 type RouteComponentKey =
   | "posts"
@@ -34,7 +35,7 @@ function routeComponent(key: RouteComponentKey, resolvedComponents: ResolvedRout
 }
 
 function getRouteComponentKey(pathname: string): RouteComponentKey | null {
-  const path = pathname.replace(/\/+$/, "") || "/"
+  const path = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
   if (path === "/posts") return "posts"
   if (path.startsWith("/posts/")) return "post"
   if (path === "/tags") return "tags"
@@ -55,20 +56,25 @@ export async function preloadRouteComponents(pathname: string): Promise<Resolved
 }
 
 export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}): RouteObject[] {
+  const childRoutes: RouteObject[] = [
+    { index: true, element: <HomePage /> },
+    { path: "posts", ...routeComponent("posts", resolvedComponents) },
+    { path: "posts/:slug", ...routeComponent("post", resolvedComponents) },
+    { path: "tags", ...routeComponent("tags", resolvedComponents) },
+    { path: "series", ...routeComponent("series", resolvedComponents) },
+    { path: "search", ...routeComponent("search", resolvedComponents) },
+    { path: "analytics", ...routeComponent("analytics", resolvedComponents) },
+    { path: "about", ...routeComponent("about", resolvedComponents) },
+    { path: "about/projects/:slug", ...routeComponent("project", resolvedComponents) },
+  ]
+
   return [
     {
       element: <RootLayout />,
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <HomePage /> },
-        { path: "posts", ...routeComponent("posts", resolvedComponents) },
-        { path: "posts/:slug", ...routeComponent("post", resolvedComponents) },
-        { path: "tags", ...routeComponent("tags", resolvedComponents) },
-        { path: "series", ...routeComponent("series", resolvedComponents) },
-        { path: "search", ...routeComponent("search", resolvedComponents) },
-        { path: "analytics", ...routeComponent("analytics", resolvedComponents) },
-        { path: "about", ...routeComponent("about", resolvedComponents) },
-        { path: "about/projects/:slug", ...routeComponent("project", resolvedComponents) },
+        ...childRoutes,
+        { path: "en", children: childRoutes },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

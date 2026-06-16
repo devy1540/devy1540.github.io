@@ -41,10 +41,10 @@ content/
 
 ## 포스트 시스템
 
-포스트는 `content/posts/` 디렉토리에 마크다운 파일로 관리합니다. Vite의 `import.meta.glob`을 사용해 빌드 타임에 모든 포스트를 로드합니다.
+포스트는 `content/posts/{언어}/` 디렉토리에 마크다운 파일로 관리합니다. Vite의 `import.meta.glob`을 사용해 빌드 타임에 모든 포스트를 로드합니다.
 
 ```tsx
-const modules = import.meta.glob("/content/posts/*.md", {
+const modules = import.meta.glob("/content/posts/*/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
