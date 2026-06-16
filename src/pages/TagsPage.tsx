@@ -4,6 +4,7 @@ import { getAllPosts } from "@/lib/posts"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PostList } from "@/components/PostList"
+import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
 
@@ -25,7 +26,7 @@ export function TagsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.tags}</h1>
 
       {!selectedTag ? (
@@ -63,6 +64,6 @@ export function TagsPage() {
           />
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }

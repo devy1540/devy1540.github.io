@@ -98,7 +98,7 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
   if (headings.length === 0) return null
 
   return (
-    <nav className="ml-auto hidden h-full w-60 xl:block" aria-label="Table of contents">
+    <nav className="ml-auto hidden h-full w-60 2xl:block" aria-label="Table of contents">
       <div className="sticky top-20 w-full pr-2">
         <div className="flex items-center gap-2 mb-3">
           <Button
