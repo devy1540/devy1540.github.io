@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.3](https://github.com/devy1540/devy1540.github.io/compare/v1.14.2...v1.14.3) (2026-06-16)
+
+
+### 문서
+
+* **content:** 로그인 글 백엔드 예시 보강 ([#100](https://github.com/devy1540/devy1540.github.io/issues/100)) ([9a31744](https://github.com/devy1540/devy1540.github.io/commit/9a31744422c3186c4a2de40cc6c57887628912ed))
+
 ## [1.14.2](https://github.com/devy1540/devy1540.github.io/compare/v1.14.1...v1.14.2) (2026-06-16)
 
 
