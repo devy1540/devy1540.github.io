@@ -18,7 +18,7 @@ function escapeAttr(value) {
 }
 
 function toFullTitle(title) {
-  return title ? `${title} | Devy's Blog` : "Devy's Blog"
+  return title ? `${title} | Devy Archive` : "Devy Archive"
 }
 
 function safeJsonLd(jsonLd) {
@@ -32,7 +32,7 @@ function outputPathFor(routePath) {
 
 function withHead(templateHtml, route) {
   const fullTitle = toFullTitle(route.title)
-  const description = route.description || "Devy가 배우고 경험한 것들을 정리하는 블로그입니다."
+  const description = route.description || "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."
   const previewTitle = route.ogTitle || fullTitle
   const previewDescription = route.ogDescription || description
   const fullUrl = `${baseUrl}${route.path}`

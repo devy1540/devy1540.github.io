@@ -46,7 +46,7 @@ function toCanonicalPath(path: string) {
 
 export function getPrerenderRoutes(): PrerenderRoute[] {
   const posts = getAllPosts()
-  const homeDescription = "Devy가 배우고 경험한 것들을 정리하는 블로그입니다."
+  const homeDescription = "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."
 
   return [
     {
@@ -57,7 +57,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "Blog",
-        name: "Devy's Blog",
+        name: "Devy Archive",
         description: homeDescription,
         url: BASE_URL,
         inLanguage: "ko-KR",
@@ -137,7 +137,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
           url: `${BASE_URL}/posts/${post.slug}/`,
           image: OG_IMAGE_URL,
           author: { "@type": "Person", name: "Devy" },
-          publisher: { "@type": "Organization", name: "Devy's Blog" },
+          publisher: { "@type": "Organization", name: "Devy Archive" },
           mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${post.slug}/` },
           articleBody,
           ...(post.tags.length > 0 ? { keywords: post.tags.join(", ") } : {}),
