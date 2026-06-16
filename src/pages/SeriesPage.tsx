@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { PostList } from "@/components/PostList"
+import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
 
@@ -22,7 +23,7 @@ export function SeriesPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.series}</h1>
 
       {!selectedSeries ? (
@@ -69,6 +70,6 @@ export function SeriesPage() {
           />
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }

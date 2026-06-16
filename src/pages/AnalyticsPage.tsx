@@ -12,6 +12,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { DailyVisitsChart } from "@/components/DailyVisitsChart"
+import { PageContainer } from "@/components/PageContainer"
 import { usePageViews } from "@/hooks/usePageViews"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
@@ -124,7 +125,7 @@ export function AnalyticsPage() {
   ]
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <section className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
         <div className="flex items-center gap-2">
@@ -300,6 +301,6 @@ export function AnalyticsPage() {
           </CardContent>
         </Card>
       </section>
-    </div>
+    </PageContainer>
   )
 }

@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom"
 import { ArrowLeft, FileText } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
+import { PageContainer } from "@/components/PageContainer"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useLanguage } from "@/i18n"
@@ -23,7 +24,7 @@ export function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="max-w-4xl mx-auto text-center py-20">
+      <PageContainer className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
           <Link to={localizePath("/about", language)} viewTransition>
@@ -31,12 +32,12 @@ export function ProjectDetailPage() {
             {t.about.backToAbout}
           </Link>
         </Button>
-      </div>
+      </PageContainer>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
         <Link to={localizePath("/about", language)} viewTransition>
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -134,6 +135,6 @@ export function ProjectDetailPage() {
           </>
         )
       })()}
-    </div>
+    </PageContainer>
   )
 }

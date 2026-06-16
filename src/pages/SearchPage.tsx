@@ -2,6 +2,7 @@ import { useState } from "react"
 import { SearchIcon, XIcon } from "lucide-react"
 import { advancedSearch, getAllTags } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
+import { PageContainer } from "@/components/PageContainer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -34,7 +35,7 @@ export function SearchPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <h1 className="text-4xl font-bold tracking-tight mb-8">{t.common.search}</h1>
 
       <div className="space-y-4 mb-8">
@@ -93,6 +94,6 @@ export function SearchPage() {
       ) : (
         <p className="text-muted-foreground text-sm">{t.search.searchGuide}</p>
       )}
-    </div>
+    </PageContainer>
   )
 }
