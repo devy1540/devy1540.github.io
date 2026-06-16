@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/devy1540/devy1540.github.io/compare/v1.16.1...v1.16.2) (2026-06-16)
+
+
+### 버그 수정
+
+* **i18n:** 읽기 시간 문구 다국어 처리 ([#120](https://github.com/devy1540/devy1540.github.io/issues/120)) ([c7ab290](https://github.com/devy1540/devy1540.github.io/commit/c7ab2906e364707f1095f82826db317b89077805))
+
 ## [1.16.1](https://github.com/devy1540/devy1540.github.io/compare/v1.16.0...v1.16.1) (2026-06-16)
 
 
