@@ -12,15 +12,16 @@ import {
   CommandGroup,
   CommandItem,
 } from "@/components/ui/command"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { postPath } from "@/lib/i18n-routing"
 
 export function SearchCommand() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const navigate = useNavigate()
-  const t = useT()
+  const { language, t } = useLanguage()
 
-  const results = searchPosts(query)
+  const results = searchPosts(query, language)
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -37,7 +38,7 @@ export function SearchCommand() {
     if (query) analytics.search(query, results.length)
     setOpen(false)
     setQuery("")
-    navigate(`/posts/${slug}`)
+    navigate(postPath(slug, language))
   }
 
   return (

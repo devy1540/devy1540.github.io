@@ -7,6 +7,8 @@ import { SearchCommand } from "@/components/SearchCommand"
 import { ScrollToTopButton } from "@/components/ScrollToTopButton"
 import { Confetti } from "@/components/Confetti"
 import { trackPageView } from "@/lib/analytics"
+import { getRouteLanguage } from "@/lib/i18n-routing"
+import { useLanguage } from "@/i18n"
 
 function RouteAnalytics() {
   const location = useLocation()
@@ -26,11 +28,24 @@ function RouteAnalytics() {
   return null
 }
 
+function RouteLanguageSync() {
+  const location = useLocation()
+  const { language, setLanguage } = useLanguage()
+  const routeLanguage = getRouteLanguage(location.pathname)
+
+  useEffect(() => {
+    if (language !== routeLanguage) setLanguage(routeLanguage)
+  }, [language, routeLanguage, setLanguage])
+
+  return null
+}
+
 export function RootLayout() {
   return (
     <SidebarProvider>
       <ScrollToTop />
       <RouteAnalytics />
+      <RouteLanguageSync />
       <Confetti />
       <AppSidebar />
       <SidebarInset>

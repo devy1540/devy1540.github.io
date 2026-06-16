@@ -30,6 +30,12 @@ export interface Translations {
     prevPost: string
     nextPost: string
     views: string
+    translation: string
+    languageKo: string
+    languageEn: string
+    translationUnavailableTitle: string
+    translationUnavailableDescription: string
+    readKoreanPost: string
     draftBanner: string
     scheduledBanner: (date: string) => string
   }
@@ -161,6 +167,12 @@ export const ko: Translations = {
     prevPost: "이전 글",
     nextPost: "다음 글",
     views: "조회",
+    translation: "번역",
+    languageKo: "한국어",
+    languageEn: "English",
+    translationUnavailableTitle: "영어 번역이 아직 없습니다",
+    translationUnavailableDescription: "이 글은 아직 영어로 번역되지 않았습니다. 한국어 원문은 바로 읽을 수 있습니다.",
+    readKoreanPost: "한국어 원문 보기",
     draftBanner: "이 글은 아직 작성 중이며, 프로덕션에서는 표시되지 않습니다.",
     scheduledBanner: (date) => `이 글은 ${date}에 발행 예정이며, 그 전까지 프로덕션에서 표시되지 않습니다.`,
   },
@@ -292,6 +304,12 @@ export const en: Translations = {
     prevPost: "Previous",
     nextPost: "Next",
     views: "views",
+    translation: "Translation",
+    languageKo: "Korean",
+    languageEn: "English",
+    translationUnavailableTitle: "English version is not available yet",
+    translationUnavailableDescription: "This post has not been translated into English yet. The original Korean post is available.",
+    readKoreanPost: "Read the Korean post",
     draftBanner: "This post is a draft and will not be visible in production.",
     scheduledBanner: (date) => `This post is scheduled for ${date} and will not be visible in production until then.`,
   },

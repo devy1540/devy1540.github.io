@@ -11,22 +11,20 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 const translations: Record<Language, Translations> = { ko, en }
 
-function detectLanguage(): Language {
+function detectRouteLanguage(): Language {
   if (typeof window === "undefined") return "ko"
-  const stored = localStorage.getItem("language") as Language | null
-  if (stored === "ko" || stored === "en") return stored
-  const browserLang = navigator.language.toLowerCase()
-  if (browserLang.startsWith("ko")) return "ko"
-  return "en"
+  const pathname = window.location.pathname.replace(/\/+$/, "") || "/"
+  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "ko"
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("ko")
-
-  useEffect(() => {
-    const detected = detectLanguage()
-    if (detected !== language) setLanguageState(detected)
-  }, [language])
+export function LanguageProvider({
+  children,
+  initialLanguage,
+}: {
+  children: React.ReactNode
+  initialLanguage?: Language
+}) {
+  const [language, setLanguageState] = useState<Language>(() => initialLanguage ?? detectRouteLanguage())
 
   useEffect(() => {
     document.documentElement.lang = language

@@ -1,10 +1,11 @@
 import { Link, useRouteError } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 
 export function ErrorPage() {
   const error = useRouteError()
-  const t = useT()
+  const { language, t } = useLanguage()
 
   if (import.meta.env.DEV) {
     console.error(error)
@@ -22,7 +23,7 @@ export function ErrorPage() {
         {t.notFound.errorMessage}
       </p>
       <Button asChild>
-        <Link to="/" viewTransition>{t.common.goHome}</Link>
+        <Link to={localizePath("/", language)} viewTransition>{t.common.goHome}</Link>
       </Button>
     </div>
   )

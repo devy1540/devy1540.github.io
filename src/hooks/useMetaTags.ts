@@ -1,5 +1,7 @@
 import { useEffect } from "react"
 import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
+import type { Language } from "@/i18n"
 
 interface MetaTagsOptions {
   title?: string
@@ -9,6 +11,8 @@ interface MetaTagsOptions {
   url?: string
   type?: string
   noindex?: boolean
+  canonicalPath?: string
+  alternateUrls?: Partial<Record<Language, string>>
 }
 
 const BASE_URL = "https://devy1540.dev"
@@ -52,6 +56,18 @@ function setLink(rel: string, href: string) {
   el.setAttribute("href", href)
 }
 
+function setAlternateLink(hreflang: string, href: string) {
+  let el = document.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`)
+  if (!el) {
+    el = document.createElement("link")
+    el.setAttribute("rel", "alternate")
+    el.setAttribute("hreflang", hreflang)
+    document.head.appendChild(el)
+  }
+  el.setAttribute("data-meta", "true")
+  el.setAttribute("href", href)
+}
+
 export function useMetaTags({
   title,
   description,
@@ -60,6 +76,8 @@ export function useMetaTags({
   url,
   type = "website",
   noindex = false,
+  canonicalPath,
+  alternateUrls,
 }: MetaTagsOptions = {}) {
   const { language, t } = useLanguage()
 
@@ -69,8 +87,12 @@ export function useMetaTags({
     const desc = description || t.meta.defaultDescription
     const previewTitle = ogTitle || fullTitle
     const previewDescription = ogDescription || desc
-    const fullUrl = toCanonicalUrl(url)
+    const fullUrl = toCanonicalUrl(canonicalPath ?? url)
     const ogLocale = language === "ko" ? "ko_KR" : "en_US"
+    const alternates = alternateUrls ?? (url ? {
+      ko: localizePath(url, "ko"),
+      en: localizePath(url, "en"),
+    } satisfies Partial<Record<Language, string>> : undefined)
 
     document.title = fullTitle
 
@@ -88,6 +110,11 @@ export function useMetaTags({
     setMeta("og:image:alt", OG_IMAGE_ALT)
 
     setLink("canonical", fullUrl)
+    document.querySelectorAll('link[rel="alternate"][data-meta="true"]').forEach((el) => el.remove())
+    if (alternates?.ko) setAlternateLink("ko-KR", toCanonicalUrl(alternates.ko))
+    if (alternates?.en) setAlternateLink("en", toCanonicalUrl(alternates.en))
+    if (alternates?.ko) setAlternateLink("x-default", toCanonicalUrl(alternates.ko))
+
     setNameMeta("twitter:card", "summary_large_image")
     setNameMeta("twitter:title", previewTitle)
     setNameMeta("twitter:description", previewDescription)
@@ -97,5 +124,5 @@ export function useMetaTags({
     return () => {
       document.title = siteName
     }
-  }, [title, description, ogTitle, ogDescription, url, type, noindex, language, t])
+  }, [title, description, ogTitle, ogDescription, url, type, noindex, canonicalPath, alternateUrls, language, t])
 }
