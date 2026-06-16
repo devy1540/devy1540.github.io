@@ -305,3 +305,42 @@ html.theme-transition *::after {
 .prose :not(pre) > code::after {
   content: none;
 }
+
+.post-article-centered {
+  width: 100%;
+  max-width: 56rem;
+}
+
+@media (min-width: 1280px) {
+  .post-page-layout {
+    --post-article-shift: 0rem;
+    --post-article-width: min(56rem, calc(100% - 24rem));
+    --post-article-half-width: min(28rem, calc((100% - 24rem) / 2));
+    --post-toc-gap: clamp(2rem, 4vw, 5rem);
+  }
+
+  .post-article-centered {
+    max-width: var(--post-article-width);
+    transform: translateX(var(--post-article-shift));
+    transition: max-width 120ms ease-out, transform 120ms ease-out;
+  }
+
+  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="expanded"]) .post-page-layout {
+    --post-article-shift: -8rem;
+  }
+
+  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="collapsed"]) .post-page-layout {
+    --post-article-shift: -1.5rem;
+  }
+
+  .post-toc-layer {
+    position: absolute;
+    top: 0;
+    left: calc(
+      50% + var(--post-article-shift) + var(--post-article-half-width) + var(--post-toc-gap)
+    );
+    width: 15rem;
+    height: 100%;
+    transition: left 120ms ease-out;
+  }
+}

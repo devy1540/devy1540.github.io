@@ -125,8 +125,8 @@ export function PostPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto flex gap-16 xl:gap-32">
-      <article className="min-w-0 flex-1 max-w-4xl">
+    <div className="post-page-layout relative">
+      <article className="post-article-centered mx-auto min-w-0">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to="/" viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -238,7 +238,9 @@ export function PostPage() {
         <Comments />
       </article>
 
-      <TableOfContents key={slug} />
+      <div className="post-toc-layer">
+        <TableOfContents key={slug} />
+      </div>
     </div>
   )
 }

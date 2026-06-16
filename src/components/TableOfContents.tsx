@@ -98,8 +98,8 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
   if (headings.length === 0) return null
 
   return (
-    <nav className="hidden xl:block" aria-label="Table of contents">
-      <div className="sticky top-20">
+    <nav className="ml-auto hidden h-full w-60 xl:block" aria-label="Table of contents">
+      <div className="sticky top-20 w-full pr-2">
         <div className="flex items-center gap-2 mb-3">
           <Button
             variant="ghost"
@@ -149,7 +149,7 @@ export function TableOfContents({ containerSelector = ".prose" }: { containerSel
                       e.preventDefault()
                       document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth" })
                     }}
-                    className={`block py-0.5 transition-colors hover:text-foreground ${
+                    className={`block truncate py-0.5 transition-colors hover:text-foreground ${
                       heading.level === 3 ? "pl-6" : "pl-3"
                     } ${
                       activeId === heading.id
