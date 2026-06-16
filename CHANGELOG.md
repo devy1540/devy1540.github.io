@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/devy1540/devy1540.github.io/compare/v1.14.6...v1.15.0) (2026-06-16)
+
+
+### 새로운 기능
+
+* **adsense:** 애드센스 검증 코드 추가 ([3cb7ef8](https://github.com/devy1540/devy1540.github.io/commit/3cb7ef8401169f10fa9f77816e3d4d0d6204ccd1))
+
 ## [1.14.6](https://github.com/devy1540/devy1540.github.io/compare/v1.14.5...v1.14.6) (2026-06-16)
 
 
