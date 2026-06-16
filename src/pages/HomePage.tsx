@@ -13,7 +13,7 @@ export function HomePage() {
   useMetaTags({
     title: t.meta.homeTitle,
     description: t.meta.defaultDescription,
-    ogTitle: "Devy Archive",
+    ogTitle: t.meta.siteName,
     url: "/",
   })
   const posts = getAllPosts()
@@ -42,7 +42,7 @@ export function HomePage() {
       {/* Hero */}
       <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards">
         <h1 className="text-4xl font-bold tracking-tight mb-2">
-          Devy's Blog
+          {t.meta.siteName}
         </h1>
         <p className="text-muted-foreground">
           {t.home.subtitle}

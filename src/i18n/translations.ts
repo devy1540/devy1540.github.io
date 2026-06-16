@@ -145,7 +145,7 @@ export const ko: Translations = {
     viewAll: "전체 보기",
   },
   home: {
-    subtitle: "Java, Spring, Kubernetes, observability, React와 운영 경험을 정리합니다.",
+    subtitle: "백엔드 개발과 플랫폼 운영에서 마주한 문제, 선택, 해결 과정을 기록합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "인기 글",
@@ -256,9 +256,9 @@ export const ko: Translations = {
     general: "일반",
   },
   meta: {
-    siteName: "Devy's Blog",
+    siteName: "Devy Archive",
     homeTitle: "백엔드·인프라 개발 기록",
-    defaultDescription: "Devy가 배우고 경험한 것들을 정리하는 블로그입니다.",
+    defaultDescription: "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다.",
   },
 }
 
@@ -276,7 +276,7 @@ export const en: Translations = {
     viewAll: "View All",
   },
   home: {
-    subtitle: "Documenting and sharing what I learn through development.",
+    subtitle: "Notes on backend engineering, platform operations, and the decisions behind them.",
     viewPosts: "View Posts",
     introduction: "About",
     popularPosts: "Popular Posts",
@@ -387,8 +387,8 @@ export const en: Translations = {
     general: "General",
   },
   meta: {
-    siteName: "Devy's Blog",
+    siteName: "Devy Archive",
     homeTitle: "Backend and Infrastructure Engineering Notes",
-    defaultDescription: "Notes from what Devy learns and experiences.",
+    defaultDescription: "An archive of Devy's development and operations notes, organized around problem solving.",
   },
 }
