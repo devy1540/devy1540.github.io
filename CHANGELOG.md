@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.4](https://github.com/devy1540/devy1540.github.io/compare/v1.14.3...v1.14.4) (2026-06-16)
+
+
+### 문서
+
+* **blog:** JWT 서명 전환 글 공개 ([#102](https://github.com/devy1540/devy1540.github.io/issues/102)) ([fa11ff2](https://github.com/devy1540/devy1540.github.io/commit/fa11ff295cb26e6f6555129aa9fb3710daca0b60))
+
 ## [1.14.3](https://github.com/devy1540/devy1540.github.io/compare/v1.14.2...v1.14.3) (2026-06-16)
 
 
