@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.5](https://github.com/devy1540/devy1540.github.io/compare/v1.14.4...v1.14.5) (2026-06-16)
+
+
+### 문서
+
+* **resume:** JWT 서명 전환 이력 추가 ([#105](https://github.com/devy1540/devy1540.github.io/issues/105)) ([058e4ca](https://github.com/devy1540/devy1540.github.io/commit/058e4caf7fcb8b24a4042b5a869f1a6020b7a429))
+
 ## [1.14.4](https://github.com/devy1540/devy1540.github.io/compare/v1.14.3...v1.14.4) (2026-06-16)
 
 
