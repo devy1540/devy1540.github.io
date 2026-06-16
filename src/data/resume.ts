@@ -79,7 +79,7 @@ export const COMPANIES: Company[] = [
       { slug: "notification-server", name: "멀티채널 알림서버 신규 구축", period: "2025.06 — 2025.10", summary: "4채널 통합 독립 알림서버 0→1 구축, 중복 발송률 0%" },
       { slug: "personalization-system", name: "사용자 데이터 기반 개인화 시스템 구축", period: "2025.01 — 2026.01", summary: "세그멘테이션 기반 차등 쿠폰·해지방어 시스템" },
       { slug: "onboarding-trial-flow", name: "온보딩 및 체험레슨 예약 플로우 고도화", period: "2026.04 — 2026.05", summary: "첫 수업 예약·예습·입장 상태 정합성 개선" },
-      { slug: "auth-refactoring", name: "인증 시스템 리팩토링 및 레거시 전환", period: "2024.09 — 2026.04", summary: "JWT 인증 전환, RS256/JWKS/KMS 서명 구조 개선" },
+      { slug: "auth-refactoring", name: "인증 시스템 리팩토링 및 레거시 전환", period: "2024.09 — 2026.04", summary: "레거시 인증 전환, 서명·검증 권한 분리" },
       { slug: "dev-process", name: "개발 프로세스 개선", period: "2024.09 — 2026.02", summary: "Facade 패턴 도입, 응답/에러 공통화, 메타 기반 도메인 재설계" },
       { slug: "infra-modernization", name: "서비스 인프라 현대화 및 보안 체계 구축", period: "2025.10 — 2026.01", summary: "ECS→EKS 마이그레이션, WAF·GitOps 구축" },
     ],
@@ -269,7 +269,10 @@ export const PROJECTS: ProjectDetail[] = [
     relatedPosts: ["auth-authorize-callback-flow", "auth-token-verification-migration", "jwt-hs256-to-rs256-jwks-kms"],
     tasks: [
       {
-        content: "PHP 세션과 프론트엔드 토큰 발급 구조를 **JWT 기반 서버사이드 인증**으로 재설계하고 Refresh Token Rotation 적용",
+        content: "PHP 세션과 프론트엔드 토큰 발급에 흩어진 인증 책임을 Java/Spring 기반 인증 서버로 재정리",
+      },
+      {
+        content: "JWT 기반 서버사이드 인증 구조로 전환하고 Refresh Token Rotation 적용",
       },
       {
         content: "JWT 서명 방식을 HS256에서 RS256/JWKS 기반 구조로 전환하고, GCP KMS 서명과 `kid` 기반 key rotation 흐름 설계",
@@ -288,15 +291,15 @@ export const PROJECTS: ProjectDetail[] = [
       {
         content: "Spring OAuth2 기반 인증 흐름 정립",
         details: [
-          "카카오 로그인 후 서비스 자체 토큰으로 전환해 인증 처리",
-          "Google Login 추가를 고려한 확장 구조 마련",
+          "외부 로그인 후 서비스 자체 토큰으로 전환하는 인증 흐름 구성",
+          "인증 제공자 추가를 고려한 확장 구조 마련",
           "서비스 자체 OAuth 인증으로 통합해 유지보수성과 운영 효율 개선",
         ],
       },
     ],
     achievements: [
-      "프론트엔드·PHP에 흩어진 인증 책임을 Java/Spring 기반 인증 서버로 정리",
-      "JWT 서명·검증 책임을 분리해 여러 서비스가 공개키 기반으로 토큰을 검증할 수 있는 구조 마련",
+      "프론트엔드·PHP에 흩어진 인증 책임을 Java/Spring 기반 인증 서버로 통합",
+      "서명 권한과 검증 권한을 분리해 여러 서비스가 공개키 기반으로 토큰을 검증할 수 있는 구조 마련",
     ],
   },
   {
