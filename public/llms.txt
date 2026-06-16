@@ -1,0 +1,66 @@
+# Devy Archive
+
+> Devy Archive is a Korean technical blog by backend engineer Hyeokjun Yoon. It focuses on backend architecture, authentication, payment systems, observability, Kubernetes operations, Java/Spring modernization, and applied LLM engineering.
+
+The site is available at https://devy1540.dev and publishes long-form engineering notes in Markdown. Posts are written mostly in Korean and emphasize real migration stories, production trade-offs, failure handling, and operational design.
+
+## Core Pages
+
+- [Home](https://devy1540.dev/): Latest posts, popular posts, and blog statistics.
+- [Posts](https://devy1540.dev/posts): Full article archive.
+- [Tags](https://devy1540.dev/tags): Topic-based navigation.
+- [Series](https://devy1540.dev/series): Multi-part article series.
+- [Search](https://devy1540.dev/search): Search by keyword, tag, and date.
+- [About](https://devy1540.dev/about): Author profile, career history, skills, and projects.
+
+## Main Topics
+
+- Backend architecture with Java, Spring Boot, layered architecture, facade patterns, and API response/error standardization.
+- Authentication and authorization migrations, including OAuth, JWT, backend-owned login flows, RS256, JWKS, and KMS.
+- Payment and notification system redesign, including legacy PHP to Java/Spring migrations, PortOne integration, idempotency, SQS, and Redis locks.
+- Infrastructure modernization with Kubernetes, EKS, ArgoCD, GitOps, Gateway API, Karpenter, Terraform, and AWS.
+- Observability with Grafana, Loki, Tempo, Mimir, OpenTelemetry, and production tracing/logging design.
+- AI and LLM engineering with Spring AI, OpenAI, Gemini, AWS Bedrock, structured output, prompt management, and multi-provider strategies.
+- Blog platform engineering with React, TypeScript, Vite, hydrated SSG, SEO, RSS, sitemap, analytics, and UX improvements.
+
+## Recommended Articles
+
+- [JWT 서명 전환 - HS256에서 RS256/JWKS/KMS로](https://devy1540.dev/posts/jwt-hs256-to-rs256-jwks-kms): Migrating symmetric JWT signing to RS256/JWKS/KMS with key rotation and legacy token handling.
+- [로그인 책임 분리 (1) - 프론트엔드에서 백엔드로 옮긴 이유](https://devy1540.dev/posts/backend-owned-login-flow): Why login responsibility moved from frontend-owned state to backend-owned authorization.
+- [로그인 책임 분리 (2) - authorize/callback 흐름 연결하기](https://devy1540.dev/posts/auth-authorize-callback-flow): Connecting protected pages, backend authorize, callback handling, and token issuance.
+- [로그인 책임 분리 (3) - 기존 토큰과 새 백엔드 토큰을 함께 검증하기](https://devy1540.dev/posts/auth-token-verification-migration): Token verification order and migration handling when old and new tokens coexist.
+- [결제 시스템 재설계 (1) - PHP 레거시에서 Java/Spring으로](https://devy1540.dev/posts/payment-system-migration-php-to-spring): Migrating a legacy PHP payment system to Java/Spring.
+- [결제 시스템 재설계 (2) - SQS를 걷어내고 동기 API로](https://devy1540.dev/posts/payment-system-redesign-sync-api): Simplifying payment flow from SQS-based async processing to synchronous APIs and webhooks.
+- [멀티채널 알림 서버 구축기 - php 레거시에서 Java/Spring으로](https://devy1540.dev/posts/multi-channel-notification-server): Building a unified notification server for KakaoTalk, SMS, email, push, and Slack.
+- [API 응답/에러 처리 구조 공통화 - HTTP 상태코드를 제대로 쓰기까지](https://devy1540.dev/posts/api-response-error-standardization): Replacing always-200 API responses with consistent HTTP status and error handling.
+- [Spring MVC에 Facade 패턴 도입기 - @Gateway 어노테이션으로 레이어드 아키텍처 개선](https://devy1540.dev/posts/spring-facade-pattern-layered-architecture): Introducing a facade layer and custom gateway annotation in a Spring MVC architecture.
+- [ECS에서 EKS로 - kustomize + Gateway API 기반 운영 환경 구축기](https://devy1540.dev/posts/ecs-to-eks-migration): Migrating from ECS to EKS with kustomize, Gateway API, Karpenter, and blue/green deployment.
+- [Datadog 걷어내고 LGTM 스택 구축하기 - OTel Sidecar + Grafana/Loki/Tempo/Mimir](https://devy1540.dev/posts/lgtm-stack-observability): Replacing Datadog with an open-source LGTM observability stack.
+- [Spring AI 실전 적용기 - 7단계 AI 진단 파이프라인 구축](https://devy1540.dev/posts/spring-ai-pipeline-real-world): Applying Spring AI to a production multi-step AI diagnostic pipeline.
+
+## Article Series
+
+- [로그인 책임 분리](https://devy1540.dev/series): Backend-owned login flow, authorize/callback handling, and token verification migration.
+- [결제 시스템 재설계](https://devy1540.dev/series): Payment system migration and redesign from legacy PHP to Java/Spring.
+- [서비스 인프라 현대화](https://devy1540.dev/series): EKS, GitOps, Gateway API, and LGTM observability modernization.
+- [JDK Migration](https://devy1540.dev/series): Java runtime migration from JDK 11 to 21 and 21 to 25.
+- [Spring AI 적용 가이드](https://devy1540.dev/series): Spring AI setup, multi-provider strategy, prompt management, and structured output.
+- [React 블로그 만들기](https://devy1540.dev/series): Building this blog with React, Vite, search, SEO, analytics, and hydrated SSG.
+
+## Project Pages
+
+- [AI 진단/피드백 파이프라인 구축](https://devy1540.dev/about/projects/ai-diagnostic-pipeline): Multi-step AI pipeline with Spring AI, Gemini, AWS Bedrock, and OpenAI.
+- [결제 시스템 전면 재설계](https://devy1540.dev/about/projects/payment-system): Payment system migration, idempotency, webhooks, and PortOne integration.
+- [멀티채널 알림서버 신규 구축](https://devy1540.dev/about/projects/notification-server): Event-driven notification server with SQS, Redis, DynamoDB, and multiple delivery channels.
+- [인증 시스템 리팩토링 및 레거시 전환](https://devy1540.dev/about/projects/auth-refactoring): OAuth/JWT authentication refactoring and legacy migration.
+- [서비스 인프라 현대화 및 보안 체계 구축](https://devy1540.dev/about/projects/infra-modernization): EKS, GitOps, observability, WAF, and secrets modernization.
+
+## Feeds And Discovery
+
+- [RSS Feed](https://devy1540.dev/rss.xml): Latest posts in RSS format.
+- [Sitemap](https://devy1540.dev/sitemap.xml): Complete index of public pages and posts.
+- [Robots.txt](https://devy1540.dev/robots.txt): Crawler access policy.
+
+## Source
+
+- [GitHub Repository](https://github.com/devy1540/devy1540.github.io): Source code for the blog.
