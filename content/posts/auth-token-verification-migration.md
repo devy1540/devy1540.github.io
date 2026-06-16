@@ -2,7 +2,7 @@
 title: "로그인 책임 분리 (3) - 기존 토큰과 새 백엔드 토큰을 함께 검증하기"
 date: "2026-04-17"
 description: "브라우저에는 토큰이 쿠키로 전달되지만, 기존 토큰과 새 백엔드 토큰의 검증 기준이 다를 때 순서와 실패 처리를 어떻게 나눴는지 정리합니다."
-tags: ["authentication", "oauth", "jwt", "testing", "migration"]
+tags: ["authentication", "oauth", "jwt", "testing", "migration", "java", "spring"]
 series: "로그인 책임 분리"
 seriesOrder: 3
 draft: false
@@ -84,6 +84,102 @@ async function verifyBackendToken(token: string, refreshToken?: string) {
 ```
 
 이렇게 하면 프론트엔드는 백엔드 토큰의 서명 방식이나 저장 방식을 몰라도 된다. access token이 만료됐을 때 refresh token으로 갱신할 수 있는지도 백엔드 응답에 따른다.
+
+---
+
+## 백엔드 introspect는 토큰의 의미를 숨긴다
+
+프론트엔드가 백엔드 토큰을 직접 decode하지 않게 하려면, 백엔드에는 토큰 확인용 API가 필요하다.
+
+여기서 중요한 것은 응답을 작게 유지하는 것이다. 프론트엔드는 토큰이 active인지, 어떤 사용자로 볼 수 있는지만 알면 된다. 서명 방식, key rotation, 저장 방식은 백엔드 내부 사정이다.
+
+```java
+@PostMapping("/introspect")
+public Map<String, Object> introspect(@RequestBody TokenRequest request) {
+    if (!StringUtils.hasText(request.token())) {
+        return Map.of("active", false);
+    }
+
+    try {
+        Jwt jwt = jwtDecoder.decode(request.token());
+        boolean active = jwt.getExpiresAt() == null
+            || jwt.getExpiresAt().isAfter(Instant.now());
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("active", active);
+
+        if (jwt.getSubject() != null) {
+            response.put("sub", jwt.getSubject());
+        }
+        if (jwt.getIssuedAt() != null) {
+            response.put("iat", jwt.getIssuedAt().getEpochSecond());
+        }
+        if (jwt.getExpiresAt() != null) {
+            response.put("exp", jwt.getExpiresAt().getEpochSecond());
+        }
+
+        return response;
+    } catch (JwtException e) {
+        return Map.of("active", false);
+    }
+}
+```
+
+이 API 덕분에 프론트엔드는 백엔드 토큰의 내부 구조를 몰라도 된다. 실패도 예외를 그대로 노출하지 않고 `active: false`로 정리할 수 있다.
+
+---
+
+## refresh token의 기준은 Redis에 둔다
+
+access token은 짧게 만료되고, refresh token은 다시 access token을 발급받기 위해 사용된다. 이때 refresh token을 단순히 JWT처럼 해석하지 않고 Redis에 저장된 상태를 확인했다.
+
+```java
+@PostMapping("/refresh")
+public TokenResponse refresh(@RequestBody RefreshRequest request) {
+    String refreshToken = request.refreshToken();
+    String userId = refreshTokenStore.resolve(refreshToken);
+
+    if (!StringUtils.hasText(userId)) {
+        throw new UnauthorizedException();
+    }
+
+    refreshTokenStore.touch(refreshToken);
+    return tokenService.issueAccessToken(userId, refreshToken);
+}
+```
+
+저장소 역할은 단순하다. 발급할 때 저장하고, 갱신할 때 조회하고, 로그아웃이나 만료 처리에서는 삭제한다.
+
+```java
+@Service
+class RefreshTokenStore {
+    private static final String KEY_PREFIX = "auth:refresh:";
+
+    public String issue(String userId) {
+        String token = generateToken();
+        redis.opsForValue().set(key(token), userId, refreshTtl);
+        return token;
+    }
+
+    public String resolve(String token) {
+        return redis.opsForValue().get(key(token));
+    }
+
+    public void touch(String token) {
+        redis.expire(key(token), refreshTtl);
+    }
+
+    public void revoke(String token) {
+        redis.delete(key(token));
+    }
+
+    private String key(String token) {
+        return KEY_PREFIX + token;
+    }
+}
+```
+
+브라우저에는 refresh token이 쿠키로 실려오지만, 유효성의 기준은 쿠키가 아니다. Redis에 남아 있어야 하고, 저장된 사용자와 연결되어 있어야 한다. 그래서 토큰을 지우는 것은 단순히 브라우저 쿠키를 지우는 일과 다르다. 서버 저장소에서도 더 이상 갱신할 수 없게 만들어야 한다.
 
 ---
 
