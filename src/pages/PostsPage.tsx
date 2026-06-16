@@ -3,6 +3,7 @@ import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon } from "lucide-react"
 import { getAllPosts } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
+import { PageContainer } from "@/components/PageContainer"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
@@ -29,7 +30,7 @@ export function PostsPage() {
   }, [posts])
 
   return (
-    <div className={"max-w-4xl mx-auto"}>
+    <PageContainer>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold tracking-tight">{t.common.posts}</h1>
         <ToggleGroup
@@ -55,6 +56,6 @@ export function PostsPage() {
           <PostList posts={yearPosts} viewMode={viewMode} />
         </div>
       ))}
-    </div>
+    </PageContainer>
   )
 }

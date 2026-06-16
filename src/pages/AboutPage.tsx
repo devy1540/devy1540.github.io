@@ -18,6 +18,7 @@ function Linkedin({ className }: { className?: string }) {
 }
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
+import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -200,7 +201,7 @@ export function AboutPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-10">
+    <PageContainer variant="wide" className="space-y-10">
       {/* Profile Header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <Avatar className="h-24 w-24">
@@ -307,6 +308,6 @@ export function AboutPage() {
         </div>
       </section>
 
-    </div>
+    </PageContainer>
   )
 }

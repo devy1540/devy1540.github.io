@@ -4,6 +4,7 @@ import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { PostList } from "@/components/PostList"
+import { PageContainer } from "@/components/PageContainer"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Eye } from "lucide-react"
 import { useLanguage } from "@/i18n"
@@ -40,7 +41,7 @@ export function HomePage() {
   }, [allPageViews, language, posts])
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <PageContainer>
       {/* Hero */}
       <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards">
         <h1 className="text-4xl font-bold tracking-tight mb-2">
@@ -136,6 +137,6 @@ export function HomePage() {
           </div>
         </section>
       )}
-    </div>
+    </PageContainer>
   )
 }

@@ -34,6 +34,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { PageContainer } from "@/components/PageContainer"
 import { TableOfContents } from "@/components/TableOfContents"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
@@ -128,7 +129,7 @@ export function PostPage() {
 
   if (!post && fallbackPost && slug) {
     return (
-      <div className="max-w-3xl mx-auto py-16">
+      <PageContainer className="py-16">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to={localizePath("/posts", language)} viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -154,13 +155,13 @@ export function PostPage() {
             </Button>
           </AlertDescription>
         </Alert>
-      </div>
+      </PageContainer>
     )
   }
 
   if (!post) {
     return (
-      <div className="max-w-4xl mx-auto text-center py-20">
+      <PageContainer className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
           <Link to={localizePath("/", language)} viewTransition>
@@ -168,13 +169,13 @@ export function PostPage() {
             {t.post.backToHome}
           </Link>
         </Button>
-      </div>
+      </PageContainer>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto flex gap-16 xl:gap-32">
-      <article className="min-w-0 flex-1 max-w-4xl">
+    <div className="post-page-layout relative">
+      <PageContainer as="article" variant="article" className="post-article-centered min-w-0">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to={localizePath("/posts", language)} viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -308,9 +309,11 @@ export function PostPage() {
         )}
 
         <Comments />
-      </article>
+      </PageContainer>
 
-      <TableOfContents key={`${language}:${slug}`} />
+      <div className="post-toc-layer">
+        <TableOfContents key={`${language}:${slug}`} />
+      </div>
     </div>
   )
 }
