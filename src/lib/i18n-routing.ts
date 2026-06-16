@@ -1,5 +1,39 @@
 import type { Language } from "@/i18n"
 
+export const LANGUAGE_STORAGE_KEY = "language"
+
+export function isLanguage(value: unknown): value is Language {
+  return value === "ko" || value === "en"
+}
+
+export function getStoredLanguage(): Language | null {
+  if (typeof window === "undefined") return null
+
+  try {
+    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY)
+    return isLanguage(stored) ? stored : null
+  } catch {
+    return null
+  }
+}
+
+export function setStoredLanguage(language: Language) {
+  try {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+  } catch {
+    // Ignore storage errors so language switching still works in restricted browsers.
+  }
+}
+
+export function detectBrowserLanguage(): Language {
+  if (typeof navigator === "undefined") return "ko"
+
+  const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
+  const primaryLanguage = languages.find((language) => language.trim().length > 0)?.toLowerCase()
+
+  return primaryLanguage?.startsWith("ko") ? "ko" : "en"
+}
+
 export function getRouteLanguage(pathname: string): Language {
   const normalized = pathname.replace(/\/+$/, "") || "/"
   return normalized === "/en" || normalized.startsWith("/en/") ? "en" : "ko"

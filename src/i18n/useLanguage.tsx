@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useContext, createContext } from "react"
 import { ko, en, type Language, type Translations } from "./translations"
+import { setStoredLanguage } from "@/lib/i18n-routing"
 
 interface LanguageContextValue {
   language: Language
-  setLanguage: (next: Language) => void
+  setLanguage: (next: Language, options?: { persist?: boolean }) => void
   t: Translations
 }
 
@@ -30,8 +31,8 @@ export function LanguageProvider({
     document.documentElement.lang = language
   }, [language])
 
-  const setLanguage = useCallback((next: Language) => {
-    localStorage.setItem("language", next)
+  const setLanguage = useCallback((next: Language, options?: { persist?: boolean }) => {
+    if (options?.persist ?? true) setStoredLanguage(next)
     setLanguageState(next)
   }, [])
 
