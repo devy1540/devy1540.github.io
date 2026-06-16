@@ -96,7 +96,7 @@ function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
-  const { language, t } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const post = slug ? getPostBySlug(slug, language) : undefined
   const fallbackPost = !post && slug && language === "en" ? getPostBySlug(slug, "ko") : undefined
   const { prev, next } = slug && post ? getAdjacentPosts(slug, language) : { prev: null, next: null }
@@ -230,7 +230,11 @@ export function PostPage() {
                   variant={availableLanguage === language ? "default" : "outline"}
                   className="h-8"
                 >
-                  <Link to={postPath(post.slug, availableLanguage)} viewTransition>
+                  <Link
+                    to={postPath(post.slug, availableLanguage)}
+                    viewTransition
+                    onClick={() => setLanguage(availableLanguage)}
+                  >
                     {availableLanguage === "ko" ? t.post.languageKo : t.post.languageEn}
                   </Link>
                 </Button>
@@ -306,7 +310,7 @@ export function PostPage() {
         <Comments />
       </article>
 
-      <TableOfContents key={slug} />
+      <TableOfContents key={`${language}:${slug}`} />
     </div>
   )
 }
