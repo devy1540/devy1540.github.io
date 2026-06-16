@@ -29,7 +29,7 @@ function rehypeCodeBrFix() {
   }
 }
 import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
-import { getReadingTime } from "@/lib/reading-time"
+import { getReadingMinutes } from "@/lib/reading-time"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -202,7 +202,7 @@ export function PostPage() {
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <time dateTime={post.date}>{post.date}</time>
             <span aria-hidden>·</span>
-            <span>{getReadingTime(post.content)}</span>
+            <span>{t.post.readingTime(getReadingMinutes(post.content))}</span>
             <span aria-hidden>·</span>
             <span className="flex items-center gap-1">
               <Eye className="size-3" />

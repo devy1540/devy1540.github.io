@@ -29,6 +29,7 @@ export interface Translations {
     backToList: string
     prevPost: string
     nextPost: string
+    readingTime: (minutes: number) => string
     views: string
     translation: string
     languageKo: string
@@ -166,6 +167,7 @@ export const ko: Translations = {
     backToList: "목록으로",
     prevPost: "이전 글",
     nextPost: "다음 글",
+    readingTime: (minutes) => `${minutes}분 읽기`,
     views: "조회",
     translation: "번역",
     languageKo: "한국어",
@@ -303,6 +305,7 @@ export const en: Translations = {
     backToList: "Back to list",
     prevPost: "Previous",
     nextPost: "Next",
+    readingTime: (minutes) => `${minutes} min read`,
     views: "views",
     translation: "Translation",
     languageKo: "Korean",
