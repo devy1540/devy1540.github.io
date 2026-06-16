@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/devy1540/devy1540.github.io/compare/v1.16.0...v1.16.1) (2026-06-16)
+
+
+### 스타일
+
+* **layout:** 페이지 컨테이너 기준 통일 ([#118](https://github.com/devy1540/devy1540.github.io/issues/118)) ([4488d5c](https://github.com/devy1540/devy1540.github.io/commit/4488d5cd4ba12901d3be3b39e0b506e99228a4d4))
+
 ## [1.16.0](https://github.com/devy1540/devy1540.github.io/compare/v1.15.1...v1.16.0) (2026-06-16)
 
 
