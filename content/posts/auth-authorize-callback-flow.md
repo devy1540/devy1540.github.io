@@ -5,7 +5,7 @@ description: "보호 페이지 접근부터 백엔드 authorize, callback, 토�
 tags: ["authentication", "oauth", "frontend", "backend", "typescript"]
 series: "로그인 책임 분리"
 seriesOrder: 2
-draft: true
+draft: false
 ---
 
 ## 배경

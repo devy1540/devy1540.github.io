@@ -5,7 +5,7 @@ description: "브라우저에는 토큰이 쿠키로 전달되지만, 기존 토
 tags: ["authentication", "oauth", "jwt", "testing", "migration"]
 series: "로그인 책임 분리"
 seriesOrder: 3
-draft: true
+draft: false
 ---
 
 ## 배경
