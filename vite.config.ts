@@ -56,9 +56,9 @@ function rssPlugin(): Plugin {
       const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Devy's Blog</title>
+    <title>Devy Archive</title>
     <link>${BASE_URL}</link>
-    <description>개발하며 배운 것들을 정리하고 공유합니다.</description>
+    <description>Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다.</description>
     <language>ko</language>
     <atom:link href="${BASE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
 ${items.join("\n")}
