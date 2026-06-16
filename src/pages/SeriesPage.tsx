@@ -5,16 +5,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { PostList } from "@/components/PostList"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 
 export function SeriesPage() {
-  const t = useT()
-  useMetaTags({ title: t.common.series, description: t.series.description, url: "/series" })
+  const { language, t } = useLanguage()
+  useMetaTags({ title: t.common.series, description: t.series.description, url: localizePath("/series", language) })
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedSeries = searchParams.get("name")
 
-  const allSeries = getAllSeries()
-  const seriesPosts = selectedSeries ? getSeriesPosts(selectedSeries) : []
+  const allSeries = getAllSeries(language)
+  const seriesPosts = selectedSeries ? getSeriesPosts(selectedSeries, language) : []
 
   function clearSeries() {
     setSearchParams({})
@@ -29,7 +30,7 @@ export function SeriesPage() {
           {allSeries.map((series) => (
             <Link
               key={series.name}
-              to={`/series?name=${encodeURIComponent(series.name)}`}
+              to={localizePath(`/series?name=${encodeURIComponent(series.name)}`, language)}
               viewTransition
               className="group"
             >

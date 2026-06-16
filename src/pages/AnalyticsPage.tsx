@@ -15,7 +15,8 @@ import { DailyVisitsChart } from "@/components/DailyVisitsChart"
 import { usePageViews } from "@/hooks/usePageViews"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath, postPath } from "@/lib/i18n-routing"
 
 const TAG_COLORS = [
   "oklch(0.65 0.2 250)",   // blue
@@ -31,20 +32,21 @@ const TAG_COLORS = [
 ]
 
 export function AnalyticsPage() {
-  const t = useT()
-  useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: "/analytics" })
+  const { language, t } = useLanguage()
+  useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: localizePath("/analytics", language) })
 
   const { totalViews, allPageViews, isError, isLoading, lastUpdated, refresh } = usePageViews()
-  const posts = getAllPosts()
-  const series = getAllSeries()
-  const tags = getAllTags()
+  const posts = getAllPosts(language)
+  const series = getAllSeries(language)
+  const tags = getAllTags(language)
 
   const popularPosts = useMemo(() => {
     if (!allPageViews) return []
+    const postsPrefix = language === "en" ? "/en/posts/" : "/posts/"
     return Object.entries(allPageViews)
-      .filter(([path]) => path.startsWith("/posts/"))
+      .filter(([path]) => path.startsWith(postsPrefix))
       .map(([path, views]) => {
-        const slug = path.replace("/posts/", "").replace(/\/$/, "")
+        const slug = path.replace(postsPrefix, "").replace(/\/$/, "")
         const post = posts.find((p) => p.slug === slug)
         if (!post) return null
         return { slug, title: post.title, views }
@@ -52,7 +54,7 @@ export function AnalyticsPage() {
       .filter((p): p is NonNullable<typeof p> => p !== null)
       .sort((a, b) => b.views - a.views)
       .slice(0, 10)
-  }, [allPageViews, posts])
+  }, [allPageViews, language, posts])
 
   const tagDistribution = useMemo(() => {
     const map = new Map<string, number>()
@@ -181,7 +183,7 @@ export function AnalyticsPage() {
                 {popularPosts.map((post, i) => (
                   <Link
                     key={post.slug}
-                    to={`/posts/${post.slug}`}
+                    to={postPath(post.slug, language)}
                     viewTransition
                     className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted transition-colors"
                   >

@@ -18,7 +18,7 @@ function Linkedin({ className }: { className?: string }) {
 }
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -29,9 +29,11 @@ import {
 } from "@/components/ui/collapsible"
 import { PROFILE, SKILLS, COMPANIES, CERTIFICATIONS, PROJECTS } from "@/data/resume"
 import { getPostBySlug } from "@/lib/posts"
+import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
+import type { Language } from "@/i18n"
 
-function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
+function CompanySection({ company, language }: { company: typeof COMPANIES[number]; language: Language }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8">
       {/* Left: Company Info */}
@@ -114,7 +116,7 @@ function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
                 </div>
               </CollapsibleContent>
               {(() => {
-                const relatedPostData = project.relatedPosts?.map(getPostBySlug).filter(Boolean) ?? []
+                const relatedPostData = project.relatedPosts?.map((slug) => getPostBySlug(slug, language)).filter(Boolean) ?? []
                 const relatedLinks = project.relatedLinks ?? []
                 if (relatedPostData.length === 0 && relatedLinks.length === 0) return null
                 return (
@@ -122,7 +124,7 @@ function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
                     {relatedPostData.map((rp) => (
                       <a
                         key={rp!.slug}
-                        href={`/posts/${rp!.slug}`}
+                        href={postPath(rp!.slug, language)}
                         className="flex items-center gap-2 text-sm text-primary hover:underline"
                       >
                         <FileText className="h-3.5 w-3.5 shrink-0" />
@@ -153,9 +155,9 @@ function CompanySection({ company }: { company: typeof COMPANIES[number] }) {
 }
 
 export function AboutPage() {
-  const t = useT()
+  const { language, t } = useLanguage()
   const [pdfLoading, setPdfLoading] = useState(false)
-  useMetaTags({ title: "About", description: t.about.description, url: "/about" })
+  useMetaTags({ title: "About", description: t.about.description, url: localizePath("/about", language) })
 
   async function handleDownloadPdf() {
     setPdfLoading(true)
@@ -265,7 +267,7 @@ export function AboutPage() {
         <h2 className="text-2xl font-semibold mb-4">{t.about.experience}</h2>
         <div className="space-y-8">
           {COMPANIES.map((company) => (
-            <CompanySection key={company.name} company={company} />
+            <CompanySection key={company.name} company={company} language={language} />
           ))}
         </div>
       </section>

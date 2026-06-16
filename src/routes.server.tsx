@@ -13,20 +13,25 @@ import { AboutPage } from "./pages/AboutPage"
 import { ProjectDetailPage } from "./pages/ProjectDetailPage"
 
 export function createServerRoutes(): RouteObject[] {
+  const childRoutes: RouteObject[] = [
+    { index: true, element: <HomePage /> },
+    { path: "posts", element: <PostsPage /> },
+    { path: "posts/:slug", element: <PostPage /> },
+    { path: "tags", element: <TagsPage /> },
+    { path: "series", element: <SeriesPage /> },
+    { path: "search", element: <SearchPage /> },
+    { path: "analytics", element: <AnalyticsPage /> },
+    { path: "about", element: <AboutPage /> },
+    { path: "about/projects/:slug", element: <ProjectDetailPage /> },
+  ]
+
   return [
     {
       element: <RootLayout />,
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <HomePage /> },
-        { path: "posts", element: <PostsPage /> },
-        { path: "posts/:slug", element: <PostPage /> },
-        { path: "tags", element: <TagsPage /> },
-        { path: "series", element: <SeriesPage /> },
-        { path: "search", element: <SearchPage /> },
-        { path: "analytics", element: <AnalyticsPage /> },
-        { path: "about", element: <AboutPage /> },
-        { path: "about/projects/:slug", element: <ProjectDetailPage /> },
+        ...childRoutes,
+        { path: "en", children: childRoutes },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

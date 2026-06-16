@@ -7,22 +7,23 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DatePicker } from "@/components/DatePicker"
 import { useMetaTags } from "@/hooks/useMetaTags"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 
 export function SearchPage() {
-  const t = useT()
-  useMetaTags({ title: t.common.search, description: t.search.description, url: "/search" })
+  const { language, t } = useLanguage()
+  useMetaTags({ title: t.common.search, description: t.search.description, url: localizePath("/search", language) })
 
   const [query, setQuery] = useState("")
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
 
-  const allTags = getAllTags()
+  const allTags = getAllTags(language)
   const hasFilters = query || dateFrom || dateTo || selectedTag
 
   const results = hasFilters
-    ? advancedSearch({ query, dateFrom, dateTo, tag: selectedTag })
+    ? advancedSearch({ query, dateFrom, dateTo, tag: selectedTag, language })
     : []
 
   function clearFilters() {

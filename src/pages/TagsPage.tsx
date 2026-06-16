@@ -4,12 +4,13 @@ import { getAllPosts } from "@/lib/posts"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PostList } from "@/components/PostList"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 
 export function TagsPage() {
-  const t = useT()
-  useMetaTags({ title: t.common.tags, description: t.tags.description, url: "/tags" })
-  const posts = getAllPosts()
+  const { language, t } = useLanguage()
+  useMetaTags({ title: t.common.tags, description: t.tags.description, url: localizePath("/tags", language) })
+  const posts = getAllPosts(language)
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedTag = searchParams.get("tag")
 
@@ -30,7 +31,7 @@ export function TagsPage() {
       {!selectedTag ? (
         <div className="flex flex-wrap gap-3">
           {allTags.map((tag) => (
-            <Link key={tag} to={`/tags?tag=${encodeURIComponent(tag)}`} viewTransition>
+            <Link key={tag} to={localizePath(`/tags?tag=${encodeURIComponent(tag)}`, language)} viewTransition>
               <Badge
                 variant="secondary"
                 className="text-sm px-3 py-1 cursor-pointer hover:bg-accent"

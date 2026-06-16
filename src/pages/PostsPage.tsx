@@ -4,13 +4,14 @@ import { LayoutListIcon, LayoutGridIcon } from "lucide-react"
 import { getAllPosts } from "@/lib/posts"
 import { PostList } from "@/components/PostList"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 import type { PostMeta } from "@/types/post"
 
 export function PostsPage() {
-  const t = useT()
-  useMetaTags({ title: t.common.posts, description: t.posts.description, url: "/posts" })
-  const posts = getAllPosts()
+  const { language, t } = useLanguage()
+  useMetaTags({ title: t.common.posts, description: t.posts.description, url: localizePath("/posts", language) })
+  const posts = getAllPosts(language)
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
 
   const groupedByYear = useMemo(() => {

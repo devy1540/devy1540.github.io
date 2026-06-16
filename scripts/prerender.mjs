@@ -21,6 +21,15 @@ function toFullTitle(title) {
   return title ? `${title} | Devy Archive` : "Devy Archive"
 }
 
+function toCanonicalPath(routePath) {
+  if (routePath === "/") return "/"
+  return routePath.endsWith("/") ? routePath : `${routePath}/`
+}
+
+function toAbsoluteUrl(routePath) {
+  return `${baseUrl}${toCanonicalPath(routePath)}`
+}
+
 function safeJsonLd(jsonLd) {
   return JSON.stringify(jsonLd).replace(/</g, "\\u003c")
 }
@@ -35,19 +44,42 @@ function withHead(templateHtml, route) {
   const description = route.description || "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."
   const previewTitle = route.ogTitle || fullTitle
   const previewDescription = route.ogDescription || description
-  const fullUrl = `${baseUrl}${route.path}`
+  const canonicalPath = route.canonicalPath || route.path
+  const fullUrl = toAbsoluteUrl(canonicalPath)
   const ogType = route.type || "website"
+  const htmlLang = route.language === "en" ? "en" : "ko"
 
   let html = templateHtml
+    .replace(/<html lang="[^"]*"/, `<html lang="${htmlLang}"`)
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(fullTitle)}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeAttr(description)}$2`)
+    .replace(/(<meta name="robots" content=")[^"]*(")/, `$1${route.noindex ? "noindex, nofollow" : "index, follow"}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
     .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
     .replace(/(<meta property="og:type" content=")[^"]*(")/, `$1${escapeAttr(ogType)}$2`)
+    .replace(/(<meta property="og:locale" content=")[^"]*(")/, `$1${route.language === "en" ? "en_US" : "ko_KR"}$2`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
+
+  if (!html.includes('meta name="robots"')) {
+    html = html.replace(
+      /(<meta name="description" content="[^"]*" \/>)/,
+      `$1\n    <meta name="robots" content="${route.noindex ? "noindex, nofollow" : "index, follow"}" />`
+    )
+  }
+
+  if (route.alternates) {
+    const alternates = [
+      route.alternates.ko ? `    <link rel="alternate" hreflang="ko-KR" href="${escapeAttr(toAbsoluteUrl(route.alternates.ko))}">` : "",
+      route.alternates.en ? `    <link rel="alternate" hreflang="en" href="${escapeAttr(toAbsoluteUrl(route.alternates.en))}">` : "",
+      route.alternates.ko ? `    <link rel="alternate" hreflang="x-default" href="${escapeAttr(toAbsoluteUrl(route.alternates.ko))}">` : "",
+    ].filter(Boolean).join("\n")
+    if (alternates) {
+      html = html.replace("</head>", `${alternates}\n  </head>`)
+    }
+  }
 
   if (route.jsonLd) {
     html = html.replace("</head>", `    <script type="application/ld+json">${safeJsonLd(route.jsonLd)}</script>\n  </head>`)

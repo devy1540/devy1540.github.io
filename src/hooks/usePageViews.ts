@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import type { Language } from "@/i18n"
 
 const GA_API_URL = import.meta.env.VITE_GA_API_URL as string | undefined
 
@@ -109,10 +110,10 @@ export function usePageViews() {
     isError,
     lastUpdated: data?.lastUpdated ?? null,
     refresh,
-    getPostViews(slug: string): number | null {
+    getPostViews(slug: string, language: Language = "ko"): number | null {
       if (!data) return null
-      const normalized = `/posts/${slug}`
-      return data.pages[normalized] ?? null
+      const normalized = language === "en" ? `/en/posts/${slug}` : `/posts/${slug}`
+      return data.pages[normalized] ?? data.pages[`/posts/${slug}`] ?? null
     },
   }
 }
