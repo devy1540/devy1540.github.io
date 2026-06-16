@@ -5,7 +5,7 @@ description: "프론트엔드가 로그인 상태를 직접 만들던 구조를 
 tags: ["authentication", "oauth", "backend", "frontend", "architecture"]
 series: "로그인 책임 분리"
 seriesOrder: 1
-draft: true
+draft: false
 ---
 
 ## 배경
