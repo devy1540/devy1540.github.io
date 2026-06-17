@@ -98,7 +98,7 @@ Add one file: `public/robots.txt`. Vite copies files under `public/` directly in
 ```text
 User-agent: *
 Allow: /
-Sitemap: https://devy1540.dev/sitemap-gsc.xml
+Sitemap: https://devy1540.dev/sitemap.xml
 ```
 
 - `User-agent: *` - applies to all crawlers
@@ -111,7 +111,7 @@ After preparing robots.txt and sitemap, register the site in [Google Search Cons
 
 1. Register `https://devy1540.dev` with either URL prefix or domain property.
 2. Complete ownership verification.
-3. Submit `https://devy1540.dev/sitemap-gsc.xml` from the Sitemaps menu.
+3. Submit `https://devy1540.dev/sitemap.xml` from the Sitemaps menu.
 
 It can take days or weeks for Google to index the site, so it is normal if it does not appear in search results immediately.
 
