@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/devy1540/devy1540.github.io/compare/v1.16.3...v1.17.0) (2026-06-17)
+
+
+### 새로운 기능
+
+* **about:** 소개 페이지 다국어 지원 ([#124](https://github.com/devy1540/devy1540.github.io/issues/124)) ([9f09d09](https://github.com/devy1540/devy1540.github.io/commit/9f09d093e04f609cad906164295e51b3988df722))
+
 ## [1.16.3](https://github.com/devy1540/devy1540.github.io/compare/v1.16.2...v1.16.3) (2026-06-17)
 
 
