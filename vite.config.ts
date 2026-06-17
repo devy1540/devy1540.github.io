@@ -36,6 +36,10 @@ function escapeXml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
 
+function attachXmlStylesheet(xml: string, href: string) {
+  return xml.replace("?>\n", `?>\n<?xml-stylesheet type="text/xsl" href="${escapeXml(href)}"?>\n`)
+}
+
 function postUrl(post: Pick<BuildPost, "slug" | "language">) {
   return post.language === "en"
     ? `${BASE_URL}/en/posts/${post.slug}/`
@@ -168,20 +172,7 @@ ${urls.join("\n")}
 </urlset>
 `
 
-      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
-      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-gsc.xml"), sitemap)
-      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-pages.xml"), sitemap)
-
-      const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${escapeXml(`${BASE_URL}/sitemap-gsc.xml`)}</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-</sitemapindex>
-`
-
-      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap-index.xml"), sitemapIndex)
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), attachXmlStylesheet(sitemap, "/sitemap.xsl"))
     },
   }
 }
