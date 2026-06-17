@@ -6,15 +6,16 @@ import { PageContainer } from "@/components/PageContainer"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useLanguage } from "@/i18n"
-import { PROJECTS } from "@/data/resume"
+import { getResumeData } from "@/data/resume-i18n"
 import { getPostBySlug } from "@/lib/posts"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
-  const project = PROJECTS.find((p) => p.slug === slug)
   const { language, t } = useLanguage()
+  const { projects } = getResumeData(language)
+  const project = projects.find((p) => p.slug === slug)
 
   useMetaTags({
     title: project?.name,
