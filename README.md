@@ -175,4 +175,4 @@ publishDate: "2025-12-01"   # optional, 예약 발행
 
 ## 배포
 
-GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `devy1540.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, `sitemap-index.xml`, route별 prerendered HTML이 함께 생성됩니다.
+GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `devy1540.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, route별 prerendered HTML이 함께 생성됩니다.

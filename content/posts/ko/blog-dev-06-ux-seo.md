@@ -96,7 +96,7 @@ const { isMobile, setOpenMobile } = useSidebar()
 ```
 User-agent: *
 Allow: /
-Sitemap: https://devy1540.dev/sitemap-gsc.xml
+Sitemap: https://devy1540.dev/sitemap.xml
 ```
 
 - `User-agent: *` - 모든 크롤러에 적용
@@ -109,7 +109,7 @@ robots.txt와 sitemap을 준비한 후, [Google Search Console](https://search.g
 
 1. **URL 접두어** 또는 **도메인 속성** 방식으로 `https://devy1540.dev` 등록
 2. 소유권 인증 완료
-3. Sitemaps 메뉴에서 `https://devy1540.dev/sitemap-gsc.xml` 제출
+3. Sitemaps 메뉴에서 `https://devy1540.dev/sitemap.xml` 제출
 
 Google이 색인하는 데 며칠~몇 주 걸릴 수 있으므로 바로 검색 결과에 나타나지 않아도 정상입니다.
 
