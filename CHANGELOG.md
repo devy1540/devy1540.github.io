@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.3](https://github.com/devy1540/devy1540.github.io/compare/v1.16.2...v1.16.3) (2026-06-17)
+
+
+### 버그 수정
+
+* **sitemap:** 사이트맵 단일 경로와 표시를 정리 ([#122](https://github.com/devy1540/devy1540.github.io/issues/122)) ([c79266b](https://github.com/devy1540/devy1540.github.io/commit/c79266b1d73e0826f65a37028ca0d7087bf50c72))
+
 ## [1.16.2](https://github.com/devy1540/devy1540.github.io/compare/v1.16.1...v1.16.2) (2026-06-16)
 
 
