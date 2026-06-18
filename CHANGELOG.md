@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/devy1540/devy1540.github.io/compare/v1.17.1...v1.18.0) (2026-06-18)
+
+
+### 새로운 기능
+
+* **post:** AWS GCP 이관 회고 글 추가 ([#126](https://github.com/devy1540/devy1540.github.io/issues/126)) ([d61c150](https://github.com/devy1540/devy1540.github.io/commit/d61c150020fffee2092253ebedb3efa29e3e1337))
+
 ## [1.17.1](https://github.com/devy1540/devy1540.github.io/compare/v1.17.0...v1.17.1) (2026-06-18)
 
 
