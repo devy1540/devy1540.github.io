@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/devy1540/devy1540.github.io/compare/v1.17.0...v1.17.1) (2026-06-18)
+
+
+### 문서
+
+* llms.txt 최신 정보 반영 ([6f0e738](https://github.com/devy1540/devy1540.github.io/commit/6f0e738544dda82dfe5ed9cb18919e222fb1410d))
+
 ## [1.17.0](https://github.com/devy1540/devy1540.github.io/compare/v1.16.3...v1.17.0) (2026-06-17)
 
 
