@@ -16,6 +16,19 @@ function Linkedin({ className }: { className?: string }) {
     </svg>
   )
 }
+
+function formatPhone(phone: string, language: Language) {
+  if (language !== "en") return phone
+  return phone.replace(/^0(\d{2})-(\d{4})-(\d{4})$/, "+82 $1-$2-$3")
+}
+
+function phoneHref(phone: string, language: Language) {
+  const digits = phone.replace(/\D/g, "")
+  if (language === "en" && digits.startsWith("0")) {
+    return `tel:+82${digits.slice(1)}`
+  }
+  return `tel:${digits}`
+}
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/PageContainer"
@@ -28,13 +41,24 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible"
-import { PROFILE, SKILLS, COMPANIES, CERTIFICATIONS, PROJECTS } from "@/data/resume"
+import type { Company, ProjectDetail } from "@/data/resume"
+import { getResumeData } from "@/data/resume-i18n"
 import { getPostBySlug } from "@/lib/posts"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
 import type { Language } from "@/i18n"
 
-function CompanySection({ company, language }: { company: typeof COMPANIES[number]; language: Language }) {
+function CompanySection({
+  company,
+  projects,
+  language,
+  highlightsLabel,
+}: {
+  company: Company
+  projects: ProjectDetail[]
+  language: Language
+  highlightsLabel: string
+}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8">
       {/* Left: Company Info */}
@@ -48,7 +72,7 @@ function CompanySection({ company, language }: { company: typeof COMPANIES[numbe
       <div className="space-y-3">
         {company.highlights && company.highlights.length > 0 && (
           <div className="rounded-lg border bg-muted/30 p-3">
-            <p className="text-xs font-semibold text-muted-foreground mb-2">주요 성과</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">{highlightsLabel}</p>
             <ul className="space-y-1">
               {company.highlights.map((h, i) => (
                 <li key={i} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
@@ -60,7 +84,7 @@ function CompanySection({ company, language }: { company: typeof COMPANIES[numbe
           </div>
         )}
         {company.projects.map((ps, index) => {
-          const project = PROJECTS.find((p) => p.slug === ps.slug)
+          const project = projects.find((p) => p.slug === ps.slug)
           if (!project) return null
 
           return (
@@ -157,8 +181,11 @@ function CompanySection({ company, language }: { company: typeof COMPANIES[numbe
 
 export function AboutPage() {
   const { language, t } = useLanguage()
+  const resume = getResumeData(language)
+  const displayPhone = formatPhone(resume.profile.phone, language)
+  const contactPhoneHref = phoneHref(resume.profile.phone, language)
   const [pdfLoading, setPdfLoading] = useState(false)
-  useMetaTags({ title: "About", description: t.about.description, url: localizePath("/about", language) })
+  useMetaTags({ title: t.common.about, description: t.about.description, url: localizePath("/about", language) })
 
   async function handleDownloadPdf() {
     setPdfLoading(true)
@@ -168,7 +195,7 @@ export function AboutPage() {
         import("@/components/ResumePdf"),
       ])
       const blob = await pdf(ResumePdfDocument()).toBlob()
-      const fileName = `${PROFILE.name}_이력서.pdf`
+      const fileName = language === "ko" ? `${resume.profile.name}_이력서.pdf` : `${resume.profile.name}_resume.pdf`
       const url = URL.createObjectURL(blob)
 
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
@@ -205,31 +232,31 @@ export function AboutPage() {
       {/* Profile Header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <Avatar className="h-24 w-24">
-          <AvatarImage src="https://github.com/devy1540.png" alt={PROFILE.name} />
+          <AvatarImage src="https://github.com/devy1540.png" alt={resume.profile.name} />
           <AvatarFallback className="text-2xl">HJ</AvatarFallback>
         </Avatar>
         <div className="text-center sm:text-left space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">{PROFILE.name}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{resume.profile.name}</h1>
           <p className="text-lg text-muted-foreground">{t.about.description}</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground justify-center sm:justify-start">
-            <a href={`mailto:${PROFILE.email}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <a href={`mailto:${resume.profile.email}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
               <Mail className="h-3.5 w-3.5" />
-              {PROFILE.email}
+              {resume.profile.email}
             </a>
-            <a href={`tel:${PROFILE.phone}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <a href={contactPhoneHref} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
               <Phone className="h-3.5 w-3.5" />
-              {PROFILE.phone}
+              {displayPhone}
             </a>
           </div>
           <div className="flex gap-2 justify-center sm:justify-start">
             <Button asChild variant="outline" size="sm">
-              <a href={PROFILE.github} target="_blank" rel="noopener noreferrer">
+              <a href={resume.profile.github} target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </a>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer">
+              <a href={resume.profile.linkedin} target="_blank" rel="noopener noreferrer">
                 <Linkedin className="mr-2 h-4 w-4" />
                 LinkedIn
               </a>
@@ -257,7 +284,7 @@ export function AboutPage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.introduction}</h2>
         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-          {PROFILE.introduction}
+          {resume.profile.introduction}
         </p>
       </section>
 
@@ -267,8 +294,14 @@ export function AboutPage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.experience}</h2>
         <div className="space-y-8">
-          {COMPANIES.map((company) => (
-            <CompanySection key={company.name} company={company} language={language} />
+          {resume.companies.map((company) => (
+            <CompanySection
+              key={company.name}
+              company={company}
+              projects={resume.projects}
+              language={language}
+              highlightsLabel={t.about.highlights}
+            />
           ))}
         </div>
       </section>
@@ -279,7 +312,7 @@ export function AboutPage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.skills}</h2>
         <div className="space-y-4">
-          {Object.entries(SKILLS).map(([category, skills]) => (
+          {Object.entries(resume.skills).map(([category, skills]) => (
             <div key={category}>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 {category}
@@ -295,10 +328,10 @@ export function AboutPage() {
           ))}
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-2">
-              Certifications
+              {t.about.certifications}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {CERTIFICATIONS.map((cert) => (
+              {resume.certifications.map((cert) => (
                 <Badge key={cert.name} variant="outline">
                   {cert.name} ({cert.year})
                 </Badge>
