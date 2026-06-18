@@ -1,8 +1,19 @@
 # Devy Archive
 
-> Devy Archive is a Korean technical blog by backend engineer Hyeokjun Yoon. It focuses on backend architecture, authentication, payment systems, observability, Kubernetes operations, Java/Spring modernization, and applied LLM engineering.
+> Devy Archive is a bilingual Korean/English technical blog by backend engineer Hyeokjun Yoon. It focuses on backend architecture, authentication, payment systems, observability, Kubernetes operations, Java/Spring modernization, React blog platform engineering, and applied LLM engineering.
 
-The site is available at https://devy1540.dev and publishes long-form engineering notes in Markdown. Posts are written mostly in Korean and emphasize real migration stories, production trade-offs, failure handling, and operational design.
+The canonical site is https://devy1540.dev. Korean is the default language, and English pages are served under the `/en` prefix. Posts are written as Markdown files with frontmatter, rendered through a React + TypeScript + Vite app, and published as hydrated static HTML on GitHub Pages.
+
+## Site Structure
+
+- Default Korean home: https://devy1540.dev/
+- English home: https://devy1540.dev/en/
+- Korean posts: https://devy1540.dev/posts
+- English posts: https://devy1540.dev/en/posts
+- Korean post URL pattern: `https://devy1540.dev/posts/{slug}/`
+- English post URL pattern: `https://devy1540.dev/en/posts/{slug}/`
+- Project URL pattern: `https://devy1540.dev/about/projects/{slug}/`
+- English project URL pattern: `https://devy1540.dev/en/about/projects/{slug}/`
 
 ## Core Pages
 
@@ -11,17 +22,21 @@ The site is available at https://devy1540.dev and publishes long-form engineerin
 - [Tags](https://devy1540.dev/tags): Topic-based navigation.
 - [Series](https://devy1540.dev/series): Multi-part article series.
 - [Search](https://devy1540.dev/search): Search by keyword, tag, and date.
+- [Analytics](https://devy1540.dev/analytics): Blog visit and page-view statistics.
 - [About](https://devy1540.dev/about): Author profile, career history, skills, and projects.
+
+English equivalents use the same paths with `/en` prepended, for example https://devy1540.dev/en/posts and https://devy1540.dev/en/about.
 
 ## Main Topics
 
-- Backend architecture with Java, Spring Boot, layered architecture, facade patterns, and API response/error standardization.
-- Authentication and authorization migrations, including OAuth, JWT, backend-owned login flows, RS256, JWKS, and KMS.
-- Payment and notification system redesign, including legacy PHP to Java/Spring migrations, PortOne integration, idempotency, SQS, and Redis locks.
-- Infrastructure modernization with Kubernetes, EKS, ArgoCD, GitOps, Gateway API, Karpenter, Terraform, and AWS.
-- Observability with Grafana, Loki, Tempo, Mimir, OpenTelemetry, and production tracing/logging design.
-- AI and LLM engineering with Spring AI, OpenAI, Gemini, AWS Bedrock, structured output, prompt management, and multi-provider strategies.
-- Blog platform engineering with React, TypeScript, Vite, hydrated SSG, SEO, RSS, sitemap, analytics, and UX improvements.
+- Backend architecture with Java, Spring Boot, layered architecture, facade patterns, API response/error standardization, QueryDSL, MyBatis, and JPA.
+- Authentication and authorization migrations, including OAuth, backend-owned login flows, JWT, RS256, JWKS, KMS, token verification, and legacy token coexistence.
+- Payment and notification system redesign, including legacy PHP to Java/Spring migrations, PortOne integration, idempotency, synchronous API redesign, SQS, Redis locks, and webhook handling.
+- Infrastructure modernization with Kubernetes, EKS, ArgoCD, GitOps, Gateway API, Karpenter, Terraform, AWS, WAF, and secret management.
+- Observability with Grafana, Loki, Tempo, Mimir, OpenTelemetry, Prometheus, tracing, logging, and production monitoring design.
+- Java modernization with JDK 11 to 21 migration, JDK 21 to 25 migration, virtual threads, and concurrency benchmarks.
+- AI and LLM engineering with Spring AI, OpenAI, Gemini, AWS Bedrock, multi-provider strategies, structured output, prompt management, and production AI pipelines.
+- Blog platform engineering with React 19, TypeScript 5.8, Vite 8, React Router v7, Tailwind CSS v4, hydrated SSG, SEO, RSS, sitemap, analytics, search, and UX improvements.
 
 ## Recommended Articles
 
@@ -36,31 +51,58 @@ The site is available at https://devy1540.dev and publishes long-form engineerin
 - [Spring MVC에 Facade 패턴 도입기 - @Gateway 어노테이션으로 레이어드 아키텍처 개선](https://devy1540.dev/posts/spring-facade-pattern-layered-architecture): Introducing a facade layer and custom gateway annotation in a Spring MVC architecture.
 - [ECS에서 EKS로 - kustomize + Gateway API 기반 운영 환경 구축기](https://devy1540.dev/posts/ecs-to-eks-migration): Migrating from ECS to EKS with kustomize, Gateway API, Karpenter, and blue/green deployment.
 - [Datadog 걷어내고 LGTM 스택 구축하기 - OTel Sidecar + Grafana/Loki/Tempo/Mimir](https://devy1540.dev/posts/lgtm-stack-observability): Replacing Datadog with an open-source LGTM observability stack.
+- [EKS에 LGTM 스택 구축하기 - Loki, Grafana, Tempo, Mimir 실전 셋업 가이드](https://devy1540.dev/posts/lgtm-stack-setup-guide): Setting up the LGTM observability stack on EKS.
 - [Spring AI 실전 적용기 - 7단계 AI 진단 파이프라인 구축](https://devy1540.dev/posts/spring-ai-pipeline-real-world): Applying Spring AI to a production multi-step AI diagnostic pipeline.
+- [Spring AI 적용 가이드 (1) - 프로젝트 설정부터 첫 번째 AI 호출까지](https://devy1540.dev/posts/spring-ai-guide-01-setup): Starting a Spring AI project and making the first AI call.
+- [Spring AI 적용 가이드 (2) - 멀티 프로바이더 전략](https://devy1540.dev/posts/spring-ai-guide-02-multi-provider): Designing a multi-provider AI strategy.
+- [Spring AI 적용 가이드 (3) - 프롬프트 관리 & Structured Output](https://devy1540.dev/posts/spring-ai-guide-03-prompt-structured-output): Managing prompts and structured output in Spring AI.
+- [JDK 마이그레이션 (1) - JDK 11에서 21로, Spring Boot 3.x 전환기](https://devy1540.dev/posts/jdk-migration-strategy-11-to-25): Moving from JDK 11 to 21 and Spring Boot 3.x.
+- [JDK 마이그레이션 (2) - JDK 21에서 25로, Virtual Threads와 모던 Java](https://devy1540.dev/posts/jdk-migration-strategy-21-to-25): Moving from JDK 21 to 25 and adopting modern Java features.
+- [Platform Thread vs Virtual Thread vs Coroutine - 10,000 태스크 벤치마크](https://devy1540.dev/posts/sync-virtual-coroutine-benchmark): Comparing platform threads, virtual threads, and coroutines in a 10,000-task benchmark.
 
 ## Article Series
 
-- [로그인 책임 분리](https://devy1540.dev/series): Backend-owned login flow, authorize/callback handling, and token verification migration.
-- [결제 시스템 재설계](https://devy1540.dev/series): Payment system migration and redesign from legacy PHP to Java/Spring.
-- [서비스 인프라 현대화](https://devy1540.dev/series): EKS, GitOps, Gateway API, and LGTM observability modernization.
-- [JDK Migration](https://devy1540.dev/series): Java runtime migration from JDK 11 to 21 and 21 to 25.
-- [Spring AI 적용 가이드](https://devy1540.dev/series): Spring AI setup, multi-provider strategy, prompt management, and structured output.
-- [React 블로그 만들기](https://devy1540.dev/series): Building this blog with React, Vite, search, SEO, analytics, and hydrated SSG.
+- [로그인 책임 분리](https://devy1540.dev/series): 3 posts on backend-owned login flow, authorize/callback handling, and token verification migration.
+- [결제 시스템 재설계](https://devy1540.dev/series): 2 posts on payment system migration and redesign from legacy PHP to Java/Spring.
+- [서비스 인프라 현대화](https://devy1540.dev/series): 2 posts on EKS, GitOps, Gateway API, and LGTM observability modernization.
+- [JDK Migration](https://devy1540.dev/series): 2 posts on Java runtime migration from JDK 11 to 21 and JDK 21 to 25.
+- [Spring AI 적용 가이드](https://devy1540.dev/series): 3 posts on Spring AI setup, multi-provider strategy, prompt management, and structured output.
+- [React 블로그 만들기](https://devy1540.dev/series): 6 posts on building this blog with React, Vite, search, SEO, analytics, UX, and hydrated SSG.
+- [React 마스터하기](https://devy1540.dev/series): 2 posts on React hooks and React + TypeScript practices.
 
 ## Project Pages
 
 - [AI 진단/피드백 파이프라인 구축](https://devy1540.dev/about/projects/ai-diagnostic-pipeline): Multi-step AI pipeline with Spring AI, Gemini, AWS Bedrock, and OpenAI.
 - [결제 시스템 전면 재설계](https://devy1540.dev/about/projects/payment-system): Payment system migration, idempotency, webhooks, and PortOne integration.
 - [멀티채널 알림서버 신규 구축](https://devy1540.dev/about/projects/notification-server): Event-driven notification server with SQS, Redis, DynamoDB, and multiple delivery channels.
+- [사용자 데이터 기반 개인화 시스템 구축](https://devy1540.dev/about/projects/personalization-system): Segmentation-based coupons, retention flows, and personalized user benefits.
+- [온보딩 및 체험레슨 예약 플로우 고도화](https://devy1540.dev/about/projects/onboarding-trial-flow): Trial lesson onboarding, reservation state consistency, and feature-flagged rollout.
 - [인증 시스템 리팩토링 및 레거시 전환](https://devy1540.dev/about/projects/auth-refactoring): OAuth/JWT authentication refactoring and legacy migration.
+- [개발 프로세스 개선](https://devy1540.dev/about/projects/dev-process): Facade patterns, common API responses, error handling, and metadata-driven domain design.
 - [서비스 인프라 현대화 및 보안 체계 구축](https://devy1540.dev/about/projects/infra-modernization): EKS, GitOps, observability, WAF, and secrets modernization.
+- [온프레미스형 DPM 모니터링 시스템 리팩토링](https://devy1540.dev/about/projects/dpm-monitoring): Query optimization for high-volume monitoring data.
+- [SaaS형 모니터링 서비스 비즈니스 로직 구현](https://devy1540.dev/about/projects/saas-monitoring): Multi-tenant SaaS monitoring service and DataSaker product work.
+- [SaaS형 모니터링 서비스 데이터 수집 파이프라인 구축](https://devy1540.dev/about/projects/data-pipeline): Kafka Stream and Apache Druid data collection pipeline.
+- [쿠버네티스 모니터링 시스템 개발](https://devy1540.dev/about/projects/k8s-monitoring): Kubernetes monitoring API and CloudMOA product work.
 
 ## Feeds And Discovery
 
-- [RSS Feed](https://devy1540.dev/rss.xml): Latest posts in RSS format.
-- [Sitemap](https://devy1540.dev/sitemap.xml): Complete index of public pages and posts.
+- [Korean RSS Feed](https://devy1540.dev/rss.xml): Latest Korean posts.
+- [English RSS Feed](https://devy1540.dev/en/rss.xml): Latest English posts.
+- [Sitemap](https://devy1540.dev/sitemap.xml): Complete index of public pages and posts with language alternates.
 - [Robots.txt](https://devy1540.dev/robots.txt): Crawler access policy.
 
-## Source
+## Source And Build
 
 - [GitHub Repository](https://github.com/devy1540/devy1540.github.io): Source code for the blog.
+- Stack: React 19, TypeScript 5.8, Vite 8, React Router v7, Tailwind CSS v4, shadcn/ui, Shiki, Mermaid, Recharts, Giscus, and Google Analytics.
+- Content source: Markdown files in `content/posts/{ko,en}`.
+- Build output: Vite client bundle, SSR bundle, hydrated prerendered HTML, RSS, sitemap, and GitHub Pages assets.
+
+## LLM Usage Notes
+
+- Prefer canonical Korean URLs for default references. Use `/en/...` URLs when the user or context explicitly requests English content.
+- Treat post dates as publication dates from frontmatter, not necessarily the date of the underlying engineering work.
+- Draft and future-scheduled posts are excluded from production builds.
+- The Analytics page is a statistics dashboard, not an article source.
+- Project pages summarize portfolio work and may reference related articles for deeper technical detail.
