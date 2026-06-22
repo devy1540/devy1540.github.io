@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Home, FileText, Tags, User, Search, Library, BarChart3 } from "lucide-react"
+import { Home, FileText, Tags, User, Library, BarChart3 } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -25,7 +25,6 @@ const navIcons = {
   home: Home,
   posts: FileText,
   series: Library,
-  search: Search,
   tags: Tags,
   analytics: BarChart3,
   about: User,
@@ -50,7 +49,6 @@ export function AppSidebar() {
     { label: t.common.home, to: localizePath("/", language), basePath: "/", icon: navIcons.home },
     { label: t.common.posts, to: localizePath("/posts", language), basePath: "/posts", icon: navIcons.posts },
     { label: t.common.series, to: localizePath("/series", language), basePath: "/series", icon: navIcons.series },
-    { label: t.common.search, to: localizePath("/search", language), basePath: "/search", icon: navIcons.search },
     { label: t.common.tags, to: localizePath("/tags", language), basePath: "/tags", icon: navIcons.tags },
     { label: t.common.analytics, to: localizePath("/analytics", language), basePath: "/analytics", icon: navIcons.analytics },
     { label: t.common.about, to: localizePath("/about", language), basePath: "/about", icon: navIcons.about },
