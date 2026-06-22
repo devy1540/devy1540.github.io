@@ -84,6 +84,23 @@ export interface Translations {
   }
   tags: {
     description: string
+    summary: (postCount: number, tagCount: number) => string
+    searchPlaceholder: string
+    sortPopular: string
+    sortRecent: string
+    sortName: string
+    reset: string
+    selectedLabel: (tag: string) => string
+    topTags: string
+    topTagsNote: string
+    topicGroups: string
+    ungrouped: string
+    postCount: (count: number) => string
+    relatedTags: string
+    recentPosts: string
+    selectedDescription: (tag: string) => string
+    viewInPosts: (tag: string) => string
+    noMatchingTags: string
     noTags: string
     allTags: string
     noPostsWithTag: string
@@ -243,6 +260,23 @@ export const ko: Translations = {
   },
   tags: {
     description: "태그별 블로그 글 목록",
+    summary: (postCount, tagCount) => `${postCount}개의 글이 ${tagCount}개의 태그로 정리되어 있습니다.`,
+    searchPlaceholder: "태그 이름 검색",
+    sortPopular: "많은 글순",
+    sortRecent: "최근 글순",
+    sortName: "가나다순",
+    reset: "초기화",
+    selectedLabel: (tag) => `선택됨 · ${tag}`,
+    topTags: "주요 태그",
+    topTagsNote: "글 수와 최근 발행 기준",
+    topicGroups: "주제 그룹",
+    ungrouped: "기타",
+    postCount: (count) => `${count}개 글`,
+    relatedTags: "관련 태그",
+    recentPosts: "최근 글",
+    selectedDescription: (tag) => `${tag} 태그가 붙은 글의 흐름과 함께 자주 등장하는 주제를 모아봅니다.`,
+    viewInPosts: (tag) => `${tag} 글 목록으로 보기`,
+    noMatchingTags: "조건에 맞는 태그가 없습니다.",
     noTags: "태그가 없습니다.",
     allTags: "전체 태그",
     noPostsWithTag: "해당 태그의 글이 없습니다.",
@@ -402,6 +436,23 @@ export const en: Translations = {
   },
   tags: {
     description: "Blog posts by tag",
+    summary: (postCount, tagCount) => `${postCount} post${postCount !== 1 ? "s" : ""} are organized with ${tagCount} tag${tagCount !== 1 ? "s" : ""}.`,
+    searchPlaceholder: "Search tags",
+    sortPopular: "Most used",
+    sortRecent: "Recent",
+    sortName: "A-Z",
+    reset: "Reset",
+    selectedLabel: (tag) => `Selected · ${tag}`,
+    topTags: "Top Tags",
+    topTagsNote: "By post count and latest publish date",
+    topicGroups: "Topic Groups",
+    ungrouped: "Other",
+    postCount: (count) => `${count} post${count !== 1 ? "s" : ""}`,
+    relatedTags: "Related Tags",
+    recentPosts: "Recent Posts",
+    selectedDescription: (tag) => `Explore posts tagged with ${tag} and the topics that often appear with it.`,
+    viewInPosts: (tag) => `View ${tag} posts`,
+    noMatchingTags: "No tags match these filters.",
     noTags: "No tags yet.",
     allTags: "All tags",
     noPostsWithTag: "No posts with this tag.",

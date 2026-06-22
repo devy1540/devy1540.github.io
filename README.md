@@ -92,7 +92,7 @@ flowchart LR
 | `/` | Home | 최신글, 인기글, 블로그 통계 |
 | `/posts` | Posts | 전체 글 목록, 검색, 정렬, 태그/연도 필터 |
 | `/posts/:slug` | Post | Markdown 글 상세, TOC, 댓글 |
-| `/tags` | Tags | 태그별 글 탐색 |
+| `/tags` | Tags | 태그별 주제 탐색, 관련 태그, 최근 글 |
 | `/series` | Series | 시리즈별 글 탐색 |
 | `/analytics` | Analytics | 방문자 및 조회수 대시보드 |
 | `/about` | About | 소개, 경력, 프로젝트 요약 |
