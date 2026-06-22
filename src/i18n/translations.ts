@@ -44,6 +44,22 @@ export interface Translations {
     description: string
     listView: string
     gridView: string
+    searchPlaceholder: string
+    sortLabel: string
+    yearLabel: string
+    scopeLabel: string
+    sortLatest: string
+    sortPopular: string
+    sortOldest: string
+    allYears: string
+    allTags: string
+    scopeAll: string
+    scopeSummary: string
+    scopeTags: string
+    reset: string
+    totalCount: (count: number) => string
+    filteredCount: (count: number) => string
+    noResults: string
   }
   search: {
     description: string
@@ -55,6 +71,9 @@ export interface Translations {
     reset: string
     noResults: string
     searchGuide: string
+    redirectTitle: string
+    redirectDescription: string
+    goToPosts: string
   }
   series: {
     description: string
@@ -184,6 +203,22 @@ export const ko: Translations = {
     description: "전체 블로그 글 목록",
     listView: "리스트 보기",
     gridView: "그리드 보기",
+    searchPlaceholder: "제목, 설명, 태그, 본문 검색",
+    sortLabel: "정렬",
+    yearLabel: "연도",
+    scopeLabel: "검색 범위",
+    sortLatest: "최신순",
+    sortPopular: "인기순",
+    sortOldest: "오래된순",
+    allYears: "전체 연도",
+    allTags: "전체",
+    scopeAll: "제목, 설명, 태그, 본문",
+    scopeSummary: "제목, 설명, 태그",
+    scopeTags: "태그만",
+    reset: "초기화",
+    totalCount: (count) => `${count}개의 글을 최신순으로 보고 있습니다.`,
+    filteredCount: (count) => `${count}개의 글을 찾았습니다.`,
+    noResults: "조건에 맞는 글이 없습니다.",
   },
   search: {
     description: "블로그 글 검색",
@@ -195,6 +230,9 @@ export const ko: Translations = {
     reset: "초기화",
     noResults: "검색 결과가 없습니다.",
     searchGuide: "키워드, 날짜, 태그를 선택하여 검색하세요.",
+    redirectTitle: "검색이 글 목록으로 통합되었습니다",
+    redirectDescription: "글 검색과 필터는 이제 글 목록에서 함께 사용할 수 있습니다.",
+    goToPosts: "글 목록으로 이동",
   },
   series: {
     description: "시리즈별 블로그 글 목록",
@@ -324,6 +362,22 @@ export const en: Translations = {
     description: "All blog posts",
     listView: "List view",
     gridView: "Grid view",
+    searchPlaceholder: "Search title, description, tags, or content",
+    sortLabel: "Sort",
+    yearLabel: "Year",
+    scopeLabel: "Search scope",
+    sortLatest: "Latest",
+    sortPopular: "Popular",
+    sortOldest: "Oldest",
+    allYears: "All years",
+    allTags: "All",
+    scopeAll: "Title, description, tags, content",
+    scopeSummary: "Title, description, tags",
+    scopeTags: "Tags only",
+    reset: "Reset",
+    totalCount: (count) => `Showing ${count} post${count !== 1 ? "s" : ""} by latest date.`,
+    filteredCount: (count) => `Found ${count} post${count !== 1 ? "s" : ""}.`,
+    noResults: "No posts match these filters.",
   },
   search: {
     description: "Search blog posts",
@@ -335,6 +389,9 @@ export const en: Translations = {
     reset: "Reset",
     noResults: "No results found.",
     searchGuide: "Search by keyword, date, or tag.",
+    redirectTitle: "Search moved to Posts",
+    redirectDescription: "Post search and filters are now available directly in the posts list.",
+    goToPosts: "Go to posts",
   },
   series: {
     description: "Blog posts by series",
