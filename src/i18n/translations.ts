@@ -77,8 +77,25 @@ export interface Translations {
   }
   series: {
     description: string
+    summary: (postCount: number, seriesCount: number) => string
+    searchPlaceholder: string
+    sortRecent: string
+    sortCount: string
+    sortName: string
+    reset: string
+    selectedLabel: (series: string) => string
+    topSeries: string
+    topSeriesNote: string
+    topicGroups: string
+    ungrouped: string
     postCount: (count: number, date: string) => string
+    postCountShort: (count: number) => string
+    fallbackDescription: (series: string) => string
+    readingPath: string
+    relatedTags: string
+    startReading: string
     noSeries: string
+    noMatchingSeries: string
     allSeries: string
     noPostsInSeries: string
   }
@@ -270,8 +287,25 @@ export const ko: Translations = {
   },
   series: {
     description: "시리즈별 블로그 글 목록",
+    summary: (postCount, seriesCount) => `${postCount}개의 글이 ${seriesCount}개의 시리즈로 정리되어 있습니다.`,
+    searchPlaceholder: "시리즈, 태그, 설명으로 검색",
+    sortRecent: "최근순",
+    sortCount: "글 많은순",
+    sortName: "이름순",
+    reset: "초기화",
+    selectedLabel: (series) => `선택됨 · ${series}`,
+    topSeries: "주요 시리즈",
+    topSeriesNote: "최근 업데이트와 글 수 기준",
+    topicGroups: "주제 그룹",
+    ungrouped: "기타",
     postCount: (count, date) => `${count}개의 글 · ${date}`,
+    postCountShort: (count) => `${count}편`,
+    fallbackDescription: (series) => `${series} 시리즈의 글을 순서대로 모아 봅니다.`,
+    readingPath: "읽기 순서",
+    relatedTags: "관련 태그",
+    startReading: "첫 글부터 읽기",
     noSeries: "시리즈가 없습니다.",
+    noMatchingSeries: "조건에 맞는 시리즈가 없습니다.",
     allSeries: "전체 시리즈",
     noPostsInSeries: "해당 시리즈의 글이 없습니다.",
   },
@@ -463,8 +497,25 @@ export const en: Translations = {
   },
   series: {
     description: "Blog posts by series",
+    summary: (postCount, seriesCount) => `${postCount} post${postCount !== 1 ? "s" : ""} are organized into ${seriesCount} series.`,
+    searchPlaceholder: "Search series, tags, or descriptions",
+    sortRecent: "Recent",
+    sortCount: "Most posts",
+    sortName: "A-Z",
+    reset: "Reset",
+    selectedLabel: (series) => `Selected · ${series}`,
+    topSeries: "Top Series",
+    topSeriesNote: "Sorted by recent updates and post count",
+    topicGroups: "Topic Groups",
+    ungrouped: "Other",
     postCount: (count, date) => `${count} post${count !== 1 ? "s" : ""} · ${date}`,
+    postCountShort: (count) => `${count} post${count !== 1 ? "s" : ""}`,
+    fallbackDescription: (series) => `Read the ${series} series in order.`,
+    readingPath: "Reading Path",
+    relatedTags: "Related Tags",
+    startReading: "Start reading",
     noSeries: "No series yet.",
+    noMatchingSeries: "No series match these filters.",
     allSeries: "All series",
     noPostsInSeries: "No posts in this series.",
   },

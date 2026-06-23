@@ -198,32 +198,68 @@ export interface SeriesInfo {
   name: string
   postCount: number
   firstDate: string
+  latestDate: string
+  description: string
+  tags: string[]
+  posts: PostMeta[]
 }
 
 export function getAllSeries(language: Language = "ko"): SeriesInfo[] {
   const posts = getAllPosts(language)
-  const seriesMap = new Map<string, { count: number; firstDate: string }>()
+  const seriesMap = new Map<string, { posts: PostMeta[]; firstDate: string; latestDate: string }>()
 
   for (const post of posts) {
     if (!post.series) continue
     const existing = seriesMap.get(post.series)
     if (existing) {
-      existing.count++
+      existing.posts.push(post)
       if (post.date < existing.firstDate) existing.firstDate = post.date
+      if (post.date > existing.latestDate) existing.latestDate = post.date
     } else {
-      seriesMap.set(post.series, { count: 1, firstDate: post.date })
+      seriesMap.set(post.series, { posts: [post], firstDate: post.date, latestDate: post.date })
     }
   }
 
   return [...seriesMap.entries()]
-    .map(([name, { count, firstDate }]) => ({ name, postCount: count, firstDate }))
-    .sort((a, b) => (a.firstDate > b.firstDate ? -1 : 1))
+    .map(([name, { posts, firstDate, latestDate }]) => {
+      const orderedPosts = sortSeriesPosts(posts)
+      const tagCounts = new Map<string, number>()
+      for (const post of orderedPosts) {
+        for (const tag of post.tags) {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+        }
+      }
+
+      return {
+        name,
+        postCount: orderedPosts.length,
+        firstDate,
+        latestDate,
+        description: orderedPosts[0]?.description ?? "",
+        tags: [...tagCounts.entries()]
+          .sort(([a, aCount], [b, bCount]) => bCount - aCount || a.localeCompare(b))
+          .map(([tag]) => tag),
+        posts: orderedPosts,
+      }
+    })
+    .sort((a, b) => {
+      if (a.latestDate !== b.latestDate) return b.latestDate.localeCompare(a.latestDate)
+      return a.name.localeCompare(b.name)
+    })
 }
 
 export function getSeriesPosts(seriesName: string, language: Language = "ko"): PostMeta[] {
-  return getAllPosts(language)
-    .filter((p) => p.series === seriesName)
-    .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0))
+  return sortSeriesPosts(getAllPosts(language).filter((p) => p.series === seriesName))
+}
+
+function sortSeriesPosts(posts: PostMeta[]): PostMeta[] {
+  return [...posts].sort((a, b) => {
+    const aOrder = a.seriesOrder ?? Number.MAX_SAFE_INTEGER
+    const bOrder = b.seriesOrder ?? Number.MAX_SAFE_INTEGER
+    if (aOrder !== bOrder) return aOrder - bOrder
+    if (a.date !== b.date) return a.date > b.date ? -1 : 1
+    return a.title.localeCompare(b.title)
+  })
 }
 
 export function getAdjacentPosts(slug: string, language: Language = "ko"): { prev: PostMeta | null; next: PostMeta | null } {
