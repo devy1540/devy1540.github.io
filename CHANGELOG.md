@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/devy1540/devy1540.github.io/compare/v1.19.0...v1.20.0) (2026-06-23)
+
+
+### 새로운 기능
+
+* **analytics:** 분석탭 인사이트 대시보드 추가 ([#159](https://github.com/devy1540/devy1540.github.io/issues/159)) ([80cd090](https://github.com/devy1540/devy1540.github.io/commit/80cd090ba2ad8773e5d37d42089a4a6c7015ecb3))
+
 ## [1.19.0](https://github.com/devy1540/devy1540.github.io/compare/v1.18.0...v1.19.0) (2026-06-22)
 
 
