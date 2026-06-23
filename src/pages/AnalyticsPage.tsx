@@ -1,7 +1,8 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { AlertCircle, Eye, FileText, Library, PenLine, RefreshCw, Tags } from "lucide-react"
+import { Activity, AlertCircle, CalendarDays, Eye, FileText, Gauge, Library, PenLine, RefreshCw, Tags, TrendingUp } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,8 +14,10 @@ import {
 } from "@/components/ui/chart"
 import { DailyVisitsChart } from "@/components/DailyVisitsChart"
 import { PageContainer } from "@/components/PageContainer"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { usePageViews } from "@/hooks/usePageViews"
 import { useMetaTags } from "@/hooks/useMetaTags"
+import { averageViews, buildDailySeries, getPeakDay, getPercentChange, getPreviousComparableRange, sumViews } from "@/lib/analytics-data"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
 import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
@@ -32,30 +35,111 @@ const TAG_COLORS = [
   "oklch(0.7 0.15 60)",    // amber
 ]
 
+type RangeDays = 7 | 14 | 30
+
+const RANGE_OPTIONS: RangeDays[] = [7, 14, 30]
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function getPostViews(allPageViews: Record<string, number> | null, slug: string, language: "ko" | "en") {
+  if (!allPageViews) return 0
+  const localizedPath = language === "en" ? `/en/posts/${slug}` : `/posts/${slug}`
+  return allPageViews[localizedPath] ?? allPageViews[`/posts/${slug}`] ?? 0
+}
+
+function getDaysSince(date: string) {
+  const publishedAt = new Date(`${date}T00:00:00`).getTime()
+  if (Number.isNaN(publishedAt)) return 1
+  return Math.max(1, Math.ceil((Date.now() - publishedAt) / DAY_MS))
+}
+
+function formatMetric(value: number, fractionDigits = 0) {
+  return value.toLocaleString(undefined, {
+    maximumFractionDigits: fractionDigits,
+  })
+}
+
+function formatPercent(value: number | null) {
+  if (value === null) return null
+  const prefix = value > 0 ? "+" : ""
+  return `${prefix}${value.toFixed(1)}%`
+}
+
 export function AnalyticsPage() {
   const { language, t } = useLanguage()
+  const [rangeDays, setRangeDays] = useState<RangeDays>(14)
   useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: localizePath("/analytics", language) })
 
-  const { totalViews, allPageViews, isError, isLoading, lastUpdated, refresh } = usePageViews()
+  const { totalViews, allPageViews, daily, isError, isLoading, lastUpdated, refresh } = usePageViews()
   const posts = getAllPosts(language)
   const series = getAllSeries(language)
   const tags = getAllTags(language)
 
+  const postPerformance = useMemo(() => {
+    return posts.map((post) => {
+      const views = getPostViews(allPageViews, post.slug, language)
+      const daysLive = getDaysSince(post.publishDate ?? post.date)
+      return {
+        ...post,
+        views,
+        daysLive,
+        viewsPerDay: views / daysLive,
+      }
+    })
+  }, [allPageViews, language, posts])
+
   const popularPosts = useMemo(() => {
-    if (!allPageViews) return []
-    const postsPrefix = language === "en" ? "/en/posts/" : "/posts/"
-    return Object.entries(allPageViews)
-      .filter(([path]) => path.startsWith(postsPrefix))
-      .map(([path, views]) => {
-        const slug = path.replace(postsPrefix, "").replace(/\/$/, "")
-        const post = posts.find((p) => p.slug === slug)
-        if (!post) return null
-        return { slug, title: post.title, views }
-      })
-      .filter((p): p is NonNullable<typeof p> => p !== null)
+    return [...postPerformance]
+      .filter((post) => post.views > 0)
       .sort((a, b) => b.views - a.views)
       .slice(0, 10)
-  }, [allPageViews, language, posts])
+  }, [postPerformance])
+
+  const fastestPosts = useMemo(() => {
+    return [...postPerformance]
+      .filter((post) => post.views > 0)
+      .sort((a, b) => b.viewsPerDay - a.viewsPerDay || b.views - a.views)
+      .slice(0, 5)
+  }, [postPerformance])
+
+  const tagPerformance = useMemo(() => {
+    const map = new Map<string, { tag: string; count: number; views: number }>()
+    for (const post of postPerformance) {
+      for (const tag of post.tags) {
+        const current = map.get(tag) ?? { tag, count: 0, views: 0 }
+        current.count += 1
+        current.views += post.views
+        map.set(tag, current)
+      }
+    }
+    return [...map.values()]
+      .map((item) => ({ ...item, averageViews: item.views / item.count }))
+      .sort((a, b) => b.views - a.views || b.averageViews - a.averageViews)
+      .slice(0, 8)
+  }, [postPerformance])
+
+  const seriesPerformance = useMemo(() => {
+    const map = new Map<string, { series: string; count: number; views: number }>()
+    for (const post of postPerformance) {
+      if (!post.series) continue
+      const current = map.get(post.series) ?? { series: post.series, count: 0, views: 0 }
+      current.count += 1
+      current.views += post.views
+      map.set(post.series, current)
+    }
+    return [...map.values()]
+      .map((item) => ({ ...item, averageViews: item.views / item.count }))
+      .sort((a, b) => b.views - a.views || b.averageViews - a.averageViews)
+      .slice(0, 5)
+  }, [postPerformance])
+
+  const selectedDaily = useMemo(() => buildDailySeries(rangeDays, daily), [daily, rangeDays])
+  const previousDaily = useMemo(() => getPreviousComparableRange(rangeDays, daily), [daily, rangeDays])
+  const rangeViews = useMemo(() => sumViews(selectedDaily), [selectedDaily])
+  const previousRangeViews = useMemo(() => sumViews(previousDaily), [previousDaily])
+  const percentChange = formatPercent(getPercentChange(rangeViews, previousRangeViews))
+  const peakDay = useMemo(() => getPeakDay(selectedDaily), [selectedDaily])
+  const dailyAverage = averageViews(selectedDaily)
+  const maxTagViews = Math.max(...tagPerformance.map((item) => item.views), 1)
 
   const tagDistribution = useMemo(() => {
     const map = new Map<string, number>()
@@ -124,16 +208,60 @@ export function AnalyticsPage() {
       : []),
   ]
 
+  const momentumCards = [
+    {
+      label: t.analytics.viewsInRange,
+      value: formatMetric(rangeViews),
+      detail: `${rangeDays}${language === "ko" ? "일" : "d"}`,
+      icon: TrendingUp,
+    },
+    {
+      label: t.analytics.avgDailyViews,
+      value: formatMetric(dailyAverage, 1),
+      detail: t.analytics.views,
+      icon: Activity,
+    },
+    {
+      label: t.analytics.peakDay,
+      value: peakDay ? formatMetric(peakDay.views) : "-",
+      detail: peakDay?.label ?? t.analytics.noData,
+      icon: CalendarDays,
+    },
+    {
+      label: t.analytics.periodChange,
+      value: percentChange ?? "-",
+      detail: percentChange ? t.analytics.periodChange : t.analytics.compareUnavailable,
+      icon: Gauge,
+    },
+  ]
+
   return (
     <PageContainer>
       <section className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <p className="text-muted-foreground flex-1">{t.analytics.description}</p>
-          <Button variant="outline" size="sm" onClick={refresh} disabled={isLoading}>
-            <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
-            {t.analytics.refresh}
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              size="sm"
+              value={String(rangeDays)}
+              onValueChange={(value) => {
+                if (value) setRangeDays(Number(value) as RangeDays)
+              }}
+            >
+              {RANGE_OPTIONS.map((days) => (
+                <ToggleGroupItem key={days} value={String(days)} aria-label={`${days} days`}>
+                  {days === 7 ? t.analytics.range7d : days === 14 ? t.analytics.range14d : t.analytics.range30d}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            <Button variant="outline" size="sm" onClick={refresh} disabled={isLoading}>
+              <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              {t.analytics.refresh}
+            </Button>
+          </div>
         </div>
         {isError && (
           <Alert variant="destructive" className="mt-3">
@@ -149,7 +277,7 @@ export function AnalyticsPage() {
       </section>
 
       {/* Summary Cards */}
-      <section className="grid grid-cols-2 gap-3 mb-8">
+      <section className="grid grid-cols-2 gap-3 mb-8 md:grid-cols-4">
         {summaryCards.map((card) => (
           <Card key={card.label} className="py-4">
             <CardContent className="flex items-center gap-3 px-4">
@@ -165,7 +293,142 @@ export function AnalyticsPage() {
 
       {/* Daily Visits Chart */}
       <section className="mb-8">
-        <DailyVisitsChart />
+        <DailyVisitsChart
+          totalViews={totalViews}
+          daily={daily}
+          isLoading={isLoading}
+          rangeDays={rangeDays}
+        />
+      </section>
+
+      {/* Traffic Momentum */}
+      <section className="mb-8">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            {t.analytics.trafficMomentum}
+          </h2>
+          <Badge variant="outline">{rangeDays === 7 ? t.analytics.range7d : rangeDays === 14 ? t.analytics.range14d : t.analytics.range30d}</Badge>
+        </div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {momentumCards.map((card) => (
+            <Card key={card.label} className="py-4">
+              <CardContent className="px-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                  <card.icon className="size-4 text-muted-foreground shrink-0" />
+                </div>
+                <p className="text-2xl font-bold tabular-nums">{card.value}</p>
+                <p className="mt-1 text-xs text-muted-foreground truncate">{card.detail}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Content Insights */}
+      <section className="mb-8">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            {t.analytics.contentInsights}
+          </h2>
+          <Badge variant="secondary">{t.analytics.allTimeBasis}</Badge>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                {t.analytics.fastestPosts}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {fastestPosts.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t.analytics.noData}</p>
+              ) : (
+                <div className="space-y-2">
+                  {fastestPosts.map((post, i) => (
+                    <Link
+                      key={post.slug}
+                      to={postPath(post.slug, language)}
+                      viewTransition
+                      className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted transition-colors"
+                    >
+                      <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">
+                        {i + 1}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm">{post.title}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatMetric(post.viewsPerDay, 1)} {t.analytics.viewsPerDay}
+                        </span>
+                      </span>
+                      <span className="text-xs text-muted-foreground tabular-nums flex items-center gap-1">
+                        <Eye className="size-3" />
+                        {post.views.toLocaleString()}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                {t.analytics.tagPerformance}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {tagPerformance.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t.analytics.noData}</p>
+              ) : (
+                <div className="space-y-3">
+                  {tagPerformance.map((item) => (
+                    <div key={item.tag}>
+                      <div className="mb-1 flex items-center gap-2">
+                        <span className="text-sm font-medium truncate">{item.tag}</span>
+                        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                          {formatMetric(item.views)} · {formatMetric(item.averageViews, 1)} {t.analytics.averageViews}
+                        </span>
+                      </div>
+                      <div className="h-2 rounded-full bg-muted">
+                        <div
+                          className="h-2 rounded-full bg-primary"
+                          style={{ width: `${Math.max(8, (item.views / maxTagViews) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                {t.analytics.seriesPerformance}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {seriesPerformance.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t.analytics.noSeriesData}</p>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                  {seriesPerformance.map((item) => (
+                    <div key={item.series} className="rounded-md border p-3">
+                      <p className="mb-2 line-clamp-2 min-h-10 text-sm font-medium">{item.series}</p>
+                      <p className="text-xl font-bold tabular-nums">{formatMetric(item.views)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.count} {t.analytics.postsCount} · {formatMetric(item.averageViews, 1)} {t.analytics.averageViews}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </section>
 
       {/* Popular Posts Top 10 */}

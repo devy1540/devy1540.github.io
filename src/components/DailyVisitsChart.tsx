@@ -7,8 +7,9 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
-import { usePageViews, type DailyData } from "@/hooks/usePageViews"
+import type { DailyData } from "@/hooks/usePageViews"
 import { useT } from "@/i18n"
+import { buildDailySeries, sumViews } from "@/lib/analytics-data"
 
 const chartConfig = {
   views: {
@@ -17,31 +18,23 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function generateLast30Days(): DailyData[] {
-  const days: DailyData[] = []
-  const today = new Date()
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    const yyyy = d.getFullYear()
-    const mm = String(d.getMonth() + 1).padStart(2, "0")
-    const dd = String(d.getDate()).padStart(2, "0")
-    days.push({ date: `${yyyy}-${mm}-${dd}`, views: 0 })
-  }
-  return days
+interface DailyVisitsChartProps {
+  totalViews: number | null
+  daily: DailyData[]
+  isLoading: boolean
+  rangeDays?: number
 }
 
-function mergeData(base: DailyData[], fetched: DailyData[]): DailyData[] {
-  const map = new Map(fetched.map((d) => [d.date, d.views]))
-  return base.map((d) => ({ ...d, views: map.get(d.date) ?? 0 }))
-}
-
-export function DailyVisitsChart() {
-  const { totalViews, daily, isLoading } = usePageViews()
+export function DailyVisitsChart({ totalViews, daily, isLoading, rangeDays = 30 }: DailyVisitsChartProps) {
   const t = useT()
 
-  const data = mergeData(generateLast30Days(), daily)
-  const monthlyTotal = data.reduce((sum, d) => sum + d.views, 0)
+  const data = buildDailySeries(rangeDays, daily)
+  const rangeTotal = sumViews(data)
+  const rangeLabel = rangeDays === 7
+    ? t.analytics.range7d
+    : rangeDays === 14
+      ? t.analytics.range14d
+      : t.analytics.range30d
 
   if (isLoading) {
     return (
@@ -77,10 +70,10 @@ export function DailyVisitsChart() {
           <div>
             <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
               <TrendingUp className="size-3" />
-              {t.components.last30Days}
+              {rangeLabel}
             </p>
             <p className="text-2xl font-bold tabular-nums">
-              {monthlyTotal.toLocaleString()}
+              {rangeTotal.toLocaleString()}
             </p>
           </div>
         </div>
