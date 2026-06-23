@@ -129,6 +129,23 @@ export interface Translations {
     loadError: string
     showingCachedData: string
     refresh: string
+    range7d: string
+    range14d: string
+    range30d: string
+    trafficMomentum: string
+    viewsInRange: string
+    avgDailyViews: string
+    peakDay: string
+    periodChange: string
+    compareUnavailable: string
+    contentInsights: string
+    fastestPosts: string
+    tagPerformance: string
+    seriesPerformance: string
+    viewsPerDay: string
+    averageViews: string
+    allTimeBasis: string
+    noSeriesData: string
   }
   about: {
     description: string
@@ -305,6 +322,23 @@ export const ko: Translations = {
     loadError: "조회수 데이터를 불러올 수 없습니다",
     showingCachedData: "캐시된 데이터를 표시합니다",
     refresh: "새로고침",
+    range7d: "7일",
+    range14d: "14일",
+    range30d: "30일",
+    trafficMomentum: "트래픽 모멘텀",
+    viewsInRange: "선택 기간 조회수",
+    avgDailyViews: "일평균 조회수",
+    peakDay: "최고 유입일",
+    periodChange: "이전 기간 대비",
+    compareUnavailable: "비교 데이터 부족",
+    contentInsights: "콘텐츠 인사이트",
+    fastestPosts: "빠르게 읽히는 글",
+    tagPerformance: "태그별 성과",
+    seriesPerformance: "시리즈별 성과",
+    viewsPerDay: "일평균",
+    averageViews: "평균 조회수",
+    allTimeBasis: "전체 기간 기준",
+    noSeriesData: "시리즈 데이터 없음",
   },
   about: {
     description: "비즈니스 흐름을 제품 기능으로 만들고, 안정적으로 확장되는 서비스 구조까지 설계하는 백엔드 엔지니어입니다.",
@@ -481,6 +515,23 @@ export const en: Translations = {
     loadError: "Could not load view data",
     showingCachedData: "Showing cached data",
     refresh: "Refresh",
+    range7d: "7 days",
+    range14d: "14 days",
+    range30d: "30 days",
+    trafficMomentum: "Traffic Momentum",
+    viewsInRange: "Views in range",
+    avgDailyViews: "Daily average",
+    peakDay: "Peak day",
+    periodChange: "vs previous period",
+    compareUnavailable: "Not enough comparison data",
+    contentInsights: "Content Insights",
+    fastestPosts: "Fastest Posts",
+    tagPerformance: "Tag Performance",
+    seriesPerformance: "Series Performance",
+    viewsPerDay: "views/day",
+    averageViews: "Avg views",
+    allTimeBasis: "All-time basis",
+    noSeriesData: "No series data",
   },
   about: {
     description: "Backend engineer who turns business flows into product features and designs service structures that scale reliably.",
