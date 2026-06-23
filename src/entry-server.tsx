@@ -136,11 +136,13 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
     {
       path: path("/search/"),
       language,
-      title: isEnglish ? "Search" : "검색",
-      description: isEnglish ? "Search blog posts by keyword, tag, or date." : "블로그 글을 키워드, 태그, 날짜로 검색합니다.",
+      title: isEnglish ? "Posts" : "글 목록",
+      description: postsDescription,
+      noindex: true,
+      canonicalPath: path("/posts/"),
       alternates: {
-        ko: "/search/",
-        en: "/en/search/",
+        ko: "/posts/",
+        en: "/en/posts/",
       },
     },
     {

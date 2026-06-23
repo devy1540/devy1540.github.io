@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/devy1540/devy1540.github.io/compare/v1.18.0...v1.19.0) (2026-06-22)
+
+
+### 새로운 기능
+
+* **blog:** 글 목록과 태그 탐색 개선 ([#157](https://github.com/devy1540/devy1540.github.io/issues/157)) ([4e0e4ae](https://github.com/devy1540/devy1540.github.io/commit/4e0e4ae90efb12765945a10035d7fd4115114012))
+
 ## [1.18.0](https://github.com/devy1540/devy1540.github.io/compare/v1.17.1...v1.18.0) (2026-06-18)
 
 
