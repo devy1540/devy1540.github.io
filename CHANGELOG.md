@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/devy1540/devy1540.github.io/compare/v1.20.0...v1.21.0) (2026-06-23)
+
+
+### 새로운 기능
+
+* **series:** 시리즈 메뉴 탐색 경험 개선 ([96af037](https://github.com/devy1540/devy1540.github.io/commit/96af0373ca45f5f5bbbae0d79c982cbd7294f535))
+
 ## [1.20.0](https://github.com/devy1540/devy1540.github.io/compare/v1.19.0...v1.20.0) (2026-06-23)
 
 
