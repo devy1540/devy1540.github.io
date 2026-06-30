@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/devy1540/devy1540.github.io/compare/v1.22.0...v1.23.0) (2026-06-30)
+
+
+### 새로운 기능
+
+* **admin:** GitHub OAuth 기반 인페이지 어드민 draft 전환 기능 추가 ([#166](https://github.com/devy1540/devy1540.github.io/issues/166)) ([b0d5cf5](https://github.com/devy1540/devy1540.github.io/commit/b0d5cf5c7fcf612120e74702e5f6983b04ebbee1))
+
 ## [1.22.0](https://github.com/devy1540/devy1540.github.io/compare/v1.21.0...v1.22.0) (2026-06-30)
 
 
