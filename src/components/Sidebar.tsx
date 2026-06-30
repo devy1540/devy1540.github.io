@@ -117,6 +117,15 @@ export function AppSidebar() {
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy
+          {" | "}
+          <NavLink
+            to={localizePath("/privacy", language)}
+            viewTransition
+            onClick={(e) => handleMobileNav(e, localizePath("/privacy", language))}
+            className="hover:text-sidebar-foreground/80 transition-colors"
+          >
+            {t.common.privacy}
+          </NavLink>
         </p>
       </SidebarFooter>
 

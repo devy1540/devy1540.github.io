@@ -15,6 +15,7 @@ type RouteComponentKey =
   | "analytics"
   | "about"
   | "project"
+  | "privacy"
 
 type ResolvedRouteComponents = Partial<Record<RouteComponentKey, ComponentType>>
 
@@ -27,6 +28,7 @@ const routeComponentLoaders: Record<RouteComponentKey, () => Promise<{ Component
   analytics: () => import("./pages/AnalyticsPage").then((module) => ({ Component: module.AnalyticsPage })),
   about: () => import("./pages/AboutPage").then((module) => ({ Component: module.AboutPage })),
   project: () => import("./pages/ProjectDetailPage").then((module) => ({ Component: module.ProjectDetailPage })),
+  privacy: () => import("./pages/PrivacyPage").then((module) => ({ Component: module.PrivacyPage })),
 }
 
 function routeComponent(key: RouteComponentKey, resolvedComponents: ResolvedRouteComponents) {
@@ -44,6 +46,7 @@ function getRouteComponentKey(pathname: string): RouteComponentKey | null {
   if (path === "/analytics") return "analytics"
   if (path === "/about") return "about"
   if (path.startsWith("/about/projects/")) return "project"
+  if (path === "/privacy") return "privacy"
   return null
 }
 
@@ -66,6 +69,7 @@ export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}): 
     { path: "analytics", ...routeComponent("analytics", resolvedComponents) },
     { path: "about", ...routeComponent("about", resolvedComponents) },
     { path: "about/projects/:slug", ...routeComponent("project", resolvedComponents) },
+    { path: "privacy", ...routeComponent("privacy", resolvedComponents) },
   ]
 
   return [

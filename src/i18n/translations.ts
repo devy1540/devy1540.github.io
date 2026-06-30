@@ -9,6 +9,7 @@ export interface Translations {
     tags: string
     analytics: string
     about: string
+    privacy: string
     recentPosts: string
     goHome: string
     viewAll: string
@@ -219,6 +220,7 @@ export const ko: Translations = {
     tags: "태그",
     analytics: "분석",
     about: "소개",
+    privacy: "개인정보처리방침",
     recentPosts: "최근 글",
     goHome: "홈으로 돌아가기",
     viewAll: "전체 보기",
@@ -429,6 +431,7 @@ export const en: Translations = {
     tags: "Tags",
     analytics: "Analytics",
     about: "About",
+    privacy: "Privacy Policy",
     recentPosts: "Recent Posts",
     goHome: "Go Home",
     viewAll: "View All",
