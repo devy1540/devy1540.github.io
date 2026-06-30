@@ -5,7 +5,7 @@ description: "Practical TypeScript patterns that make React projects safer and e
 tags: ["react", "typescript"]
 series: "Mastering React"
 seriesOrder: 1
-draft: false
+draft: true
 ---
 
 Using React with TypeScript improves both code safety and readability. This post covers TypeScript patterns that are useful in real-world React projects.
