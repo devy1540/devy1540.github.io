@@ -16,6 +16,8 @@ type RouteComponentKey =
   | "about"
   | "project"
   | "privacy"
+  | "admin"
+  | "adminCallback"
 
 type ResolvedRouteComponents = Partial<Record<RouteComponentKey, ComponentType>>
 
@@ -29,6 +31,8 @@ const routeComponentLoaders: Record<RouteComponentKey, () => Promise<{ Component
   about: () => import("./pages/AboutPage").then((module) => ({ Component: module.AboutPage })),
   project: () => import("./pages/ProjectDetailPage").then((module) => ({ Component: module.ProjectDetailPage })),
   privacy: () => import("./pages/PrivacyPage").then((module) => ({ Component: module.PrivacyPage })),
+  admin: () => import("./pages/admin/AdminPage").then((module) => ({ Component: module.AdminPage })),
+  adminCallback: () => import("./pages/admin/AdminCallbackPage").then((module) => ({ Component: module.AdminCallbackPage })),
 }
 
 function routeComponent(key: RouteComponentKey, resolvedComponents: ResolvedRouteComponents) {
@@ -47,6 +51,8 @@ function getRouteComponentKey(pathname: string): RouteComponentKey | null {
   if (path === "/about") return "about"
   if (path.startsWith("/about/projects/")) return "project"
   if (path === "/privacy") return "privacy"
+  if (path === "/admin") return "admin"
+  if (path === "/admin/callback") return "adminCallback"
   return null
 }
 
@@ -79,6 +85,8 @@ export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}): 
       children: [
         ...childRoutes,
         { path: "en", children: childRoutes },
+        { path: "admin", ...routeComponent("admin", resolvedComponents) },
+        { path: "admin/callback", ...routeComponent("adminCallback", resolvedComponents) },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Home, FileText, Tags, User, Library, BarChart3 } from "lucide-react"
+import { Home, FileText, Tags, User, Library, BarChart3, ShieldCheck } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -19,6 +19,7 @@ import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
 import { useLanguage } from "@/i18n"
+import { useAdminAuth } from "@/lib/admin/useAdminAuth"
 import { localizePath, stripLanguagePrefix } from "@/lib/i18n-routing"
 
 const navIcons = {
@@ -33,6 +34,7 @@ const navIcons = {
 export function AppSidebar() {
   const { pathname } = useLocation()
   const { language, t } = useLanguage()
+  const { isAdmin } = useAdminAuth()
   const navigate = useNavigate()
   const { isMobile, setOpenMobile } = useSidebar()
 
@@ -91,6 +93,16 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="관리자">
+                    <NavLink to="/admin" viewTransition onClick={(e) => handleMobileNav(e, "/admin")}>
+                      <ShieldCheck />
+                      <span>관리자</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
