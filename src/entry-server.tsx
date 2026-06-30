@@ -165,6 +165,16 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
         en: "/en/about/",
       },
     },
+    {
+      path: path("/privacy/"),
+      language,
+      title: isEnglish ? "Privacy Policy" : "개인정보처리방침",
+      description: isEnglish ? "Privacy policy for devy1540.dev." : "devy1540.dev의 개인정보처리방침입니다.",
+      alternates: {
+        ko: "/privacy/",
+        en: "/en/privacy/",
+      },
+    },
   ]
 }
 
