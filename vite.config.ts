@@ -120,7 +120,7 @@ function sitemapPlugin(): Plugin {
       const koPosts = readPosts("ko")
       const enPosts = readPosts("en")
       const enPostSlugs = new Set(enPosts.map((p) => p.slug))
-      const staticPages = ["/", "/posts/", "/tags/", "/series/", "/analytics/", "/about/"]
+      const staticPages = ["/", "/posts/", "/tags/", "/series/", "/analytics/", "/about/", "/privacy/"]
       const today = new Date().toISOString().split("T")[0]
 
       function alternateEntry(hreflang: string, href: string) {
