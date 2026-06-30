@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/devy1540/devy1540.github.io/compare/v1.21.0...v1.22.0) (2026-06-30)
+
+
+### 새로운 기능
+
+* **privacy:** 개인정보처리방침 페이지 추가 ([#163](https://github.com/devy1540/devy1540.github.io/issues/163)) ([7ac0c18](https://github.com/devy1540/devy1540.github.io/commit/7ac0c184bd8c1edeb98bca7b4751eccfb24b9aab))
+
 ## [1.21.0](https://github.com/devy1540/devy1540.github.io/compare/v1.20.0...v1.21.0) (2026-06-23)
 
 
