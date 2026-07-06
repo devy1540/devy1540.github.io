@@ -307,22 +307,22 @@ html.theme-transition *::after {
 }
 
 .page-container {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
   width: 100%;
   max-width: var(--page-container-max-width);
   margin-inline: auto;
 }
 
 .page-container-default {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
 }
 
 .page-container-article {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
 }
 
 .page-container-wide {
-  --page-container-max-width: 64rem;
+  --page-container-max-width: 72rem;
 }
 
 @media (min-width: 1280px) {
@@ -362,9 +362,9 @@ html.theme-transition *::after {
   }
 }
 
-@media (min-width: 1536px) {
+@media (min-width: 1856px) {
   .post-page-layout {
-    --post-article-width: min(56rem, var(--content-available-width));
+    --post-article-width: min(72rem, var(--content-available-width));
     --post-article-half-width: calc(var(--post-article-width) / 2);
     --post-article-shift: max(
       var(--content-rail-shift),
