@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/devy1540/devy1540.github.io/compare/v1.24.0...v1.24.1) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작·CS 자동화 글 발행 (draft 해제) ([#173](https://github.com/devy1540/devy1540.github.io/issues/173)) ([96d15ba](https://github.com/devy1540/devy1540.github.io/commit/96d15ba2d557f2f72f40750ee98186e7df968969))
+
 ## [1.24.0](https://github.com/devy1540/devy1540.github.io/compare/v1.23.1...v1.24.0) (2026-07-06)
 
 
