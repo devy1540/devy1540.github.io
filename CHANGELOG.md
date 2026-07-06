@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/devy1540/devy1540.github.io/compare/v1.25.0...v1.26.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* **favicon:** 다크모드에서 로고 색 자동 전환 ([#180](https://github.com/devy1540/devy1540.github.io/issues/180)) ([41f53f1](https://github.com/devy1540/devy1540.github.io/commit/41f53f1d69ad8855303d621b19b33ab73d445fef))
+
 ## [1.25.0](https://github.com/devy1540/devy1540.github.io/compare/v1.24.3...v1.25.0) (2026-07-06)
 
 
