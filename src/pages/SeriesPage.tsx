@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
-import { localizePath, postPath } from "@/lib/i18n-routing"
+import { filteredViewMeta, localizePath, postPath } from "@/lib/i18n-routing"
 
 type SeriesSort = "recent" | "count" | "name"
 
@@ -78,12 +78,18 @@ function getGroupScore(series: SeriesInfo, group: SeriesGroup) {
 
 export function SeriesPage() {
   const { language, t } = useLanguage()
-  useMetaTags({ title: t.common.series, description: t.series.description, url: localizePath("/series", language) })
 
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedSeriesName = searchParams.get("name") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toSeriesSort(searchParams.get("sort"))
+
+  useMetaTags({
+    title: t.common.series,
+    description: t.series.description,
+    url: localizePath("/series", language),
+    ...filteredViewMeta("/series", searchParams.toString(), language),
+  })
 
   const posts = useMemo(() => getAllPosts(language), [language])
   const allSeries = useMemo(() => getAllSeries(language), [language])
