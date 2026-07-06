@@ -3,7 +3,7 @@ title: "Building a CS Automation System with Spring AI - Function Calling and FA
 date: "2026-07-06"
 description: "How we automated repetitive customer inquiries with Spring AI - using function calling to fetch user context and registering FAQs as instructions to combine auto-replies with draft recommendations."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "cs"]
-draft: true
+draft: false
 ---
 
 ## Background
