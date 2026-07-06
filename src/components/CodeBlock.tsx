@@ -150,8 +150,15 @@ function MermaidBlock({ code }: { code: string }) {
       temp.innerHTML = svg
       const svgEl = temp.querySelector("svg")
       if (svgEl) {
+        // Mermaid는 useMaxWidth 기본값으로 width="100%" + style.maxWidth="<자연 폭>px"를 붙인다.
+        // 자연 폭을 명시 width로 고정하고 maxWidth를 100%로 두면, 좁은 다이어그램은 원래 크기로,
+        // 넓은 다이어그램만 컨테이너에 맞게 축소된다(자연 폭 이상으로 확대되지 않음).
+        const viewBox = svgEl.getAttribute("viewBox")
+        const naturalWidth = viewBox ? parseFloat(viewBox.split(/[\s,]+/)[2] ?? "") : NaN
         svgEl.removeAttribute("height")
+        svgEl.removeAttribute("width")
         decorateSvg(svgEl)
+        if (Number.isFinite(naturalWidth)) svgEl.style.width = `${naturalWidth}px`
         svgEl.style.height = "auto"
         svgEl.style.maxWidth = "100%"
         svgEl.style.display = "block"
@@ -214,7 +221,7 @@ function MermaidBlock({ code }: { code: string }) {
           >
             <div
               dangerouslySetInnerHTML={{ __html: rawSvgRef.current }}
-              className="[&_svg]:w-full [&_svg]:h-auto"
+              className="[&_svg]:!w-full [&_svg]:!max-w-none [&_svg]:h-auto"
             />
           </div>
         </div>
