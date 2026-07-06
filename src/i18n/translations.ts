@@ -172,7 +172,6 @@ export interface Translations {
     experience: string
     projects: string
     contact: string
-    highlights: string
     tasks: string
     achievements: string
     certifications: string
@@ -383,7 +382,6 @@ export const ko: Translations = {
     experience: "경력",
     projects: "프로젝트",
     contact: "연락처",
-    highlights: "주요 성과",
     tasks: "수행 내용",
     achievements: "성과",
     certifications: "자격증",
@@ -594,7 +592,6 @@ export const en: Translations = {
     experience: "Experience",
     projects: "Projects",
     contact: "Contact",
-    highlights: "Highlights",
     tasks: "Tasks",
     achievements: "Achievements",
     certifications: "Certifications",
