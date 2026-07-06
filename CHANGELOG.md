@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.3](https://github.com/devy1540/devy1540.github.io/compare/v1.24.2...v1.24.3) (2026-07-06)
+
+
+### 버그 수정
+
+* **favicon:** 로고 D를 캔버스 정중앙으로 정렬 ([#177](https://github.com/devy1540/devy1540.github.io/issues/177)) ([e778ccd](https://github.com/devy1540/devy1540.github.io/commit/e778ccdd60ffc9706a42f965ebc781d4189fdd25))
+
 ## [1.24.2](https://github.com/devy1540/devy1540.github.io/compare/v1.24.1...v1.24.2) (2026-07-06)
 
 
