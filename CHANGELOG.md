@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/devy1540/devy1540.github.io/compare/v1.23.0...v1.23.1) (2026-07-06)
+
+
+### 버그 수정
+
+* **seo:** GSC 색인 이슈 수정 (trailing-slash·필터 noindex·깨진 링크) ([#169](https://github.com/devy1540/devy1540.github.io/issues/169)) ([f00120f](https://github.com/devy1540/devy1540.github.io/commit/f00120f2024abfff30bedd77ae19271e579d0259))
+
 ## [1.23.0](https://github.com/devy1540/devy1540.github.io/compare/v1.22.0...v1.23.0) (2026-06-30)
 
 
