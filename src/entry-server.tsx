@@ -83,7 +83,7 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
           headline: post.title,
           description: post.description,
           datePublished: post.date,
-          url: `${BASE_URL}${postPath(post.slug, language)}/`,
+          url: `${BASE_URL}${postPath(post.slug, language)}`,
         })),
       },
     },
@@ -107,7 +107,7 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
           itemListElement: posts.map((post, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            url: `${BASE_URL}${postPath(post.slug, language)}/`,
+            url: `${BASE_URL}${postPath(post.slug, language)}`,
             name: post.title,
           })),
         },

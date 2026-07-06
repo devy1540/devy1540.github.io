@@ -50,11 +50,28 @@ export function localizePath(path: string, language: Language): string {
   const [, pathname = "/", suffix = ""] = path.match(/^([^?#]*)([?#].*)?$/) ?? []
   const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`
   const basePath = stripLanguagePrefix(normalizedPath)
-
-  if (language === "ko") return `${basePath}${suffix}`
-  return `${basePath === "/" ? "/en" : `/en${basePath}`}${suffix}`
+  const localized = language === "ko" ? basePath : basePath === "/" ? "/en" : `/en${basePath}`
+  // Always emit trailing-slash paths so internal links match the canonical URLs
+  // that GitHub Pages serves (it 301-redirects non-trailing-slash directory paths).
+  const withTrailingSlash = localized === "/" || localized.endsWith("/") ? localized : `${localized}/`
+  return `${withTrailingSlash}${suffix}`
 }
 
 export function postPath(slug: string, language: Language): string {
   return localizePath(`/posts/${slug}`, language)
+}
+
+/**
+ * Query-filtered list views (e.g. /tags/?tag=x, /posts/?tag=y, /series/?name=z) are
+ * consolidated into their base page and must not be indexed separately. When a query
+ * string is present, return noindex + a self-referential canonical (avoiding the
+ * conflicting "noindex + canonical-to-another-URL" signal Google may ignore); otherwise
+ * the base page stays indexable with its normal canonical.
+ */
+export function filteredViewMeta(basePath: string, queryString: string, language: Language) {
+  const filtered = queryString.length > 0
+  return {
+    noindex: filtered,
+    canonicalPath: filtered ? localizePath(`${basePath}?${queryString}`, language) : undefined,
+  }
 }
