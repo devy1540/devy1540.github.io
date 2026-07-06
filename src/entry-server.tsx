@@ -165,6 +165,16 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
         en: "/en/about/",
       },
     },
+    {
+      path: path("/privacy/"),
+      language,
+      title: isEnglish ? "Privacy Policy" : "개인정보처리방침",
+      description: isEnglish ? "Privacy policy for devy1540.dev." : "devy1540.dev의 개인정보처리방침입니다.",
+      alternates: {
+        ko: "/privacy/",
+        en: "/en/privacy/",
+      },
+    },
   ]
 }
 
@@ -175,6 +185,22 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
   return [
     ...localizedStaticRoutes("ko", koPosts),
     ...localizedStaticRoutes("en", enPosts),
+    // 어드민 진입 화면은 클라이언트 전용 동작이지만, 정적 셸을 프리렌더해서
+    // SPA fallback(404.html) hydration 불일치를 피한다. 색인은 막는다(noindex).
+    {
+      path: "/admin/",
+      language: "ko" as const,
+      title: "관리자",
+      description: "블로그 관리자 로그인 및 글 관리.",
+      noindex: true,
+    },
+    {
+      path: "/admin/callback/",
+      language: "ko" as const,
+      title: "로그인 처리",
+      description: "GitHub 로그인 처리 중입니다.",
+      noindex: true,
+    },
     ...PROJECTS.map((project) => ({
       path: `/about/projects/${project.slug}/`,
       language: "ko" as const,
