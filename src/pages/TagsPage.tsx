@@ -263,7 +263,7 @@ export function TagsPage() {
       {tagStats.length === 0 ? (
         <p className="text-muted-foreground">{t.tags.noTags}</p>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem]">
           <div className="space-y-9">
             <section>
               <div className="mb-3 flex items-center justify-between gap-4">

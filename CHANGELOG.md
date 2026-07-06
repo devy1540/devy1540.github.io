@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.26.0](https://github.com/devy1540/devy1540.github.io/compare/v1.25.0...v1.26.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* **favicon:** 다크모드에서 로고 색 자동 전환 ([#180](https://github.com/devy1540/devy1540.github.io/issues/180)) ([41f53f1](https://github.com/devy1540/devy1540.github.io/commit/41f53f1d69ad8855303d621b19b33ab73d445fef))
+
+## [1.25.0](https://github.com/devy1540/devy1540.github.io/compare/v1.24.3...v1.25.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* **layout:** 페이지 폭 72rem 통일 및 본문·다이어그램 정렬 개선 ([#179](https://github.com/devy1540/devy1540.github.io/issues/179)) ([67e4867](https://github.com/devy1540/devy1540.github.io/commit/67e4867a92ddbacf1505f6583bf6b6455c4da299))
+
+## [1.24.3](https://github.com/devy1540/devy1540.github.io/compare/v1.24.2...v1.24.3) (2026-07-06)
+
+
+### 버그 수정
+
+* **favicon:** 로고 D를 캔버스 정중앙으로 정렬 ([#177](https://github.com/devy1540/devy1540.github.io/issues/177)) ([e778ccd](https://github.com/devy1540/devy1540.github.io/commit/e778ccdd60ffc9706a42f965ebc781d4189fdd25))
+
+## [1.24.2](https://github.com/devy1540/devy1540.github.io/compare/v1.24.1...v1.24.2) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작 영문 번역 추가 ([#175](https://github.com/devy1540/devy1540.github.io/issues/175)) ([9ef646f](https://github.com/devy1540/devy1540.github.io/commit/9ef646f103ff4228f1b7b9f5a4c7cbf8c2d94aae))
+
+## [1.24.1](https://github.com/devy1540/devy1540.github.io/compare/v1.24.0...v1.24.1) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작·CS 자동화 글 발행 (draft 해제) ([#173](https://github.com/devy1540/devy1540.github.io/issues/173)) ([96d15ba](https://github.com/devy1540/devy1540.github.io/commit/96d15ba2d557f2f72f40750ee98186e7df968969))
+
 ## [1.24.0](https://github.com/devy1540/devy1540.github.io/compare/v1.23.1...v1.24.0) (2026-07-06)
 
 
