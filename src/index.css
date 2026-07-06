@@ -341,22 +341,6 @@ html.theme-transition *::after {
     --content-sidebar-width: var(--sidebar-width-icon);
   }
 
-  .page-container {
-    --page-container-rendered-width: min(
-      var(--page-container-max-width),
-      var(--content-available-width)
-    );
-    --page-container-shift: max(
-      var(--content-rail-shift),
-      calc(
-        (var(--page-container-rendered-width) - var(--content-available-width)) / 2 -
-        var(--content-inline-padding)
-      )
-    );
-    transform: translateX(var(--page-container-shift));
-    transition: max-width 120ms ease-out, transform 120ms ease-out;
-  }
-
   .post-toc-layer {
     display: none;
   }
@@ -374,6 +358,13 @@ html.theme-transition *::after {
       )
     );
     --post-toc-gap: clamp(2rem, 4vw, 5rem);
+  }
+
+  /* 일반 페이지는 인셋 중앙(대칭)이지만, TOC가 뜨는 글 상세만 본문을 왼쪽으로
+     당겨 우측 TOC 공간을 확보하고 본문+TOC가 균형을 이루게 한다. */
+  .post-article-centered {
+    transform: translateX(var(--post-article-shift));
+    transition: transform 120ms ease-out;
   }
 
   .post-toc-layer {
