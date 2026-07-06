@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/devy1540/devy1540.github.io/compare/v1.24.3...v1.25.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* **layout:** 페이지 폭 72rem 통일 및 본문·다이어그램 정렬 개선 ([#179](https://github.com/devy1540/devy1540.github.io/issues/179)) ([67e4867](https://github.com/devy1540/devy1540.github.io/commit/67e4867a92ddbacf1505f6583bf6b6455c4da299))
+
 ## [1.24.3](https://github.com/devy1540/devy1540.github.io/compare/v1.24.2...v1.24.3) (2026-07-06)
 
 
