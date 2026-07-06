@@ -30,15 +30,6 @@ const EN_COMPANIES: Company[] = [
     name: "Day1 Company",
     role: "Backend Engineer",
     period: "Aug 2024 - Present",
-    highlights: [
-      "Redesigned **core user flows** across payments, authentication, lessons, and onboarding",
-      "Migrated legacy PHP payment and authentication features to Java/Spring and **removed PHP operational dependency**",
-      "Moved JWT signing to an RS256/JWKS/KMS model to **separate signing authority from verification authority**",
-      "Reduced **CS tickets by 98%** with an AI diagnostic pipeline and achieved **0% duplicate sends** with a multi-channel notification server",
-      "Reworked coupon, subscription, and lesson-pass domains around metadata and segmentation to support **operational automation and product extensibility**",
-      "Established Facade layers and shared response/error rules to **reduce domain change scope and collaboration cost**",
-      "Modernized the platform with ECS to EKS migration, ArgoCD GitOps, LGTM observability, WAF, and Secrets Manager",
-    ],
     projects: [
       { slug: "global-expansion", name: "Global (Japan) Expansion", period: "Jun 2026 - Present", summary: "In-progress backend work for Japan: LINE auth diversification, i18n, and locale" },
       { slug: "cs-automation", name: "AI-based CS Automation System", period: "Feb 2026 - Jun 2026", summary: "Built a Spring AI CS automation system with auto-replies and draft recommendations" },
@@ -56,12 +47,6 @@ const EN_COMPANIES: Company[] = [
     name: "EXEM",
     role: "Backend Engineer",
     period: "Jul 2020 - May 2024",
-    highlights: [
-      "Improved Kubernetes monitoring API calls by **up to 90%** and helped launch CloudMOA",
-      "Built a Kafka Streams and Apache Druid pipeline that processed **45,000 events per second** without performance degradation",
-      "Launched the SaaS monitoring product **DataSaker** and built shared MSA libraries",
-      "Optimized DPM queries to serve large data reads within **100ms to 3s**",
-    ],
     projects: [
       { slug: "dpm-monitoring", name: "On-premise DPM Monitoring System Refactoring", period: "Jan 2024 - May 2024", summary: "Optimized queries to respond within 100ms to 3s" },
       { slug: "saas-monitoring", name: "SaaS Monitoring Service Business Logic", period: "Sep 2021 - Dec 2023", summary: "Implemented a multi-tenant monitoring service and launched DataSaker" },
@@ -118,6 +103,7 @@ const EN_PROJECTS: ProjectDetail[] = [
     name: "AI-based CS Automation System",
     period: "Feb 2026 - Jun 2026",
     tech: ["Spring AI", "Spring Boot", "OpenAI"],
+    relatedPosts: ["spring-ai-cs-automation"],
     tasks: [
       {
         content: "Built a **Spring AI**-based CS automation system from scratch in the Java/Spring environment to automate repetitive customer inquiries",
@@ -133,7 +119,7 @@ const EN_PROJECTS: ProjectDetail[] = [
       },
     ],
     achievements: [
-      "Improved CS operations efficiency by auto-handling repetitive inquiries and recommending drafts",
+      "Auto-handled repetitive and templated inquiries with draft recommendations for a **~43% reduction** in CS handling volume",
     ],
   },
   {

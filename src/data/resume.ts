@@ -9,7 +9,6 @@ export interface Company {
   name: string
   role: string
   period: string
-  highlights?: string[]
   projects: ProjectSummary[]
 }
 
@@ -64,15 +63,6 @@ export const COMPANIES: Company[] = [
     name: "주식회사 데이원컴퍼니",
     role: "Backend Engineer",
     period: "2024.08 — 현재",
-    highlights: [
-      "결제·인증·수업·온보딩을 잇는 **핵심 사용자 흐름 재설계**",
-      "레거시 PHP 결제·인증 기능을 Java/Spring으로 이관하고 **PHP 운영 의존성 제거**",
-      "JWT 서명 구조를 RS256/JWKS/KMS 기반으로 전환해 **서명 권한과 검증 권한 분리**",
-      "AI 진단 파이프라인으로 **CS 인입 98% 감소**, 멀티채널 알림서버로 **중복 발송률 0% 달성**",
-      "쿠폰·구독·레슨권 도메인을 메타/세그먼트 기반으로 정비해 **운영 자동화와 상품 확장성 확보**",
-      "Facade 계층·공통 응답/에러 규칙을 정립해 **도메인 변경 범위와 협업 비용 축소**",
-      "ECS→EKS, ArgoCD GitOps, LGTM 모니터링 스택, WAF/Secrets 전환으로 **운영 플랫폼 현대화**",
-    ],
     projects: [
       { slug: "global-expansion", name: "글로벌(일본) 진출 대응", period: "2026.06 — 현재", summary: "LINE 인증 다각화·i18n·locale 등 일본 진출 백엔드 대응 진행 중" },
       { slug: "cs-automation", name: "AI 기반 CS 자동화 시스템 구축", period: "2026.02 — 2026.06", summary: "Spring AI 기반 CS 자동화(자동응답·초안 추천) 신규 구축" },
@@ -90,12 +80,6 @@ export const COMPANIES: Company[] = [
     name: "주식회사 엑셈",
     role: "Backend Engineer",
     period: "2020.07 — 2024.05",
-    highlights: [
-      "K8s 모니터링 API 호출 **최대 90% 개선**, CloudMOA 제품 출시",
-      "Kafka Stream + Apache Druid 파이프라인 구축, 초당 **45,000건** 성능저하 없이 처리",
-      "SaaS형 모니터링 서비스 **DataSaker** 제품 출시, MSA 공통 라이브러리 구축",
-      "DPM 시스템 쿼리 최적화로 대량 데이터 조회 **100ms~3s 이내** 응답 달성",
-    ],
     projects: [
       { slug: "dpm-monitoring", name: "온프레미스형 DPM 모니터링 시스템 리팩토링", period: "2024.01 — 2024.05", summary: "쿼리 최적화로 100ms~3s 이내 응답 달성" },
       { slug: "saas-monitoring", name: "SaaS형 모니터링 서비스 비즈니스 로직 구현", period: "2021.09 — 2023.12", summary: "멀티테넌트 모니터링 서비스 구현, DataSaker 출시" },
@@ -152,6 +136,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "AI 기반 CS 자동화 시스템 구축",
     period: "2026.02 — 2026.06",
     tech: ["Spring AI", "Spring Boot", "OpenAI"],
+    relatedPosts: ["spring-ai-cs-automation"],
     tasks: [
       {
         content: "반복적인 고객 문의 대응을 자동화하기 위해 **Spring AI** 기반 CS 자동화 시스템을 Java/Spring 환경에 신규 구축",
@@ -167,7 +152,7 @@ export const PROJECTS: ProjectDetail[] = [
       },
     ],
     achievements: [
-      "반복 문의를 자동 응대·초안 추천으로 처리해 CS 운영 효율 개선",
+      "반복·정형 문의를 자동 응대·초안 추천으로 처리해 **CS 처리량 약 43% 감소 효과**",
     ],
   },
   {

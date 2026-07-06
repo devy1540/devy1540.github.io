@@ -112,17 +112,13 @@ function CompanySection({
                         )}
                       </li>
                     ))}
+                    {project.achievements?.map((ach, i) => (
+                      <li key={`ach-${i}`} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+                        <span className="shrink-0 mt-0.5">•</span>
+                        <span>{renderBold(ach)}</span>
+                      </li>
+                    ))}
                   </ul>
-                  {project.achievements && project.achievements.length > 0 && (
-                    <ul className="space-y-1.5 border-t border-dashed pt-2">
-                      {project.achievements.map((ach, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
-                          <span className="shrink-0 mt-0.5">•</span>
-                          <span>{ach}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
               </CollapsibleContent>
               {(() => {
