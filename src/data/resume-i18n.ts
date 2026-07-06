@@ -102,7 +102,13 @@ const EN_PROJECTS: ProjectDetail[] = [
         content: "Added user **language and timezone (locale) settings** APIs and screens, and propagated language codes to authenticated user data",
       },
       {
-        content: "Propagated locale to document issuance paths such as completion certificates and level-test reports, and implemented language-based home banner segmentation",
+        content: "Rebuilt issued documents (completion certificates, level-test reports) **from an image-based approach to an HTML rendering architecture** for multilingual support — adding a new language now means adding a string file, not redrawing per-language background images",
+        details: [
+          "The backend only publishes issuance events; rendering is delegated to a Cloud Run service that renders HTML templates and locale strings into PDF",
+        ],
+      },
+      {
+        content: "Implemented language-based home banner segmentation",
       },
     ],
   },
