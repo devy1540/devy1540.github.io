@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.2](https://github.com/devy1540/devy1540.github.io/compare/v1.24.1...v1.24.2) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작 영문 번역 추가 ([#175](https://github.com/devy1540/devy1540.github.io/issues/175)) ([9ef646f](https://github.com/devy1540/devy1540.github.io/commit/9ef646f103ff4228f1b7b9f5a4c7cbf8c2d94aae))
+
 ## [1.24.1](https://github.com/devy1540/devy1540.github.io/compare/v1.24.0...v1.24.1) (2026-07-06)
 
 
