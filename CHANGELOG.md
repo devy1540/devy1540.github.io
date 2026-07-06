@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/devy1540/devy1540.github.io/compare/v1.26.0...v1.27.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* **resume:** 이력서 PDF를 미니멀 타이포 디자인으로 개편 ([#183](https://github.com/devy1540/devy1540.github.io/issues/183)) ([85662a0](https://github.com/devy1540/devy1540.github.io/commit/85662a03c1f818c3f088f1b4c33ebfaf2a70809e))
+
 ## [1.26.0](https://github.com/devy1540/devy1540.github.io/compare/v1.25.0...v1.26.0) (2026-07-06)
 
 
