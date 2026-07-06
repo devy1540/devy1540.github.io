@@ -11,6 +11,9 @@ import { SearchPage } from "./pages/SearchPage"
 import { AnalyticsPage } from "./pages/AnalyticsPage"
 import { AboutPage } from "./pages/AboutPage"
 import { ProjectDetailPage } from "./pages/ProjectDetailPage"
+import { PrivacyPage } from "./pages/PrivacyPage"
+import { AdminPage } from "./pages/admin/AdminPage"
+import { AdminCallbackPage } from "./pages/admin/AdminCallbackPage"
 
 export function createServerRoutes(): RouteObject[] {
   const childRoutes: RouteObject[] = [
@@ -23,6 +26,7 @@ export function createServerRoutes(): RouteObject[] {
     { path: "analytics", element: <AnalyticsPage /> },
     { path: "about", element: <AboutPage /> },
     { path: "about/projects/:slug", element: <ProjectDetailPage /> },
+    { path: "privacy", element: <PrivacyPage /> },
   ]
 
   return [
@@ -32,6 +36,8 @@ export function createServerRoutes(): RouteObject[] {
       children: [
         ...childRoutes,
         { path: "en", children: childRoutes },
+        { path: "admin", element: <AdminPage /> },
+        { path: "admin/callback", element: <AdminCallbackPage /> },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

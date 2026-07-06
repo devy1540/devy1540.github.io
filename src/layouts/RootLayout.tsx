@@ -49,7 +49,7 @@ function RouteLanguageSync() {
 
 function isAutoLocaleRedirectCandidate(pathname: string): boolean {
   const normalizedPath = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
-  const staticPaths = new Set(["/", "/posts", "/tags", "/series", "/search", "/analytics", "/about"])
+  const staticPaths = new Set(["/", "/posts", "/tags", "/series", "/search", "/analytics", "/about", "/privacy"])
 
   if (staticPaths.has(normalizedPath) || /^\/about\/projects\/[^/]+$/.test(normalizedPath)) {
     return true

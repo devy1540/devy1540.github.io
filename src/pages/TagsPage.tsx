@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
-import { localizePath, postPath } from "@/lib/i18n-routing"
+import { filteredViewMeta, localizePath, postPath } from "@/lib/i18n-routing"
 import type { PostMeta } from "@/types/post"
 
 type TagSort = "popular" | "recent" | "name"
@@ -104,13 +104,19 @@ function matchesQuery(stats: TagStats, query: string) {
 
 export function TagsPage() {
   const { language, t } = useLanguage()
-  useMetaTags({ title: t.common.tags, description: t.tags.description, url: localizePath("/tags", language) })
 
   const posts = useMemo(() => getAllPosts(language), [language])
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedTag = searchParams.get("tag") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toTagSort(searchParams.get("sort"))
+
+  useMetaTags({
+    title: t.common.tags,
+    description: t.tags.description,
+    url: localizePath("/tags", language),
+    ...filteredViewMeta("/tags", searchParams.toString(), language),
+  })
 
   const tagStats = useMemo(() => buildTagStats(posts), [posts])
   const statsByTag = useMemo(() => new Map(tagStats.map((stats) => [stats.tag, stats])), [tagStats])

@@ -17,7 +17,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { usePageViews } from "@/hooks/usePageViews"
 import { useLanguage } from "@/i18n"
-import { localizePath } from "@/lib/i18n-routing"
+import { filteredViewMeta, localizePath } from "@/lib/i18n-routing"
 import type { PostMeta } from "@/types/post"
 
 type SortMode = "latest" | "popular" | "oldest"
@@ -50,8 +50,13 @@ function postMatchesTags(post: PostMeta, query: string) {
 
 export function PostsPage() {
   const { language, t } = useLanguage()
-  useMetaTags({ title: t.common.posts, description: t.posts.description, url: localizePath("/posts", language) })
   const [searchParams, setSearchParams] = useSearchParams()
+  useMetaTags({
+    title: t.common.posts,
+    description: t.posts.description,
+    url: localizePath("/posts", language),
+    ...filteredViewMeta("/posts", searchParams.toString(), language),
+  })
   const { getPostViews } = usePageViews()
   const allPosts = useMemo(() => getAllPosts(language), [language])
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
