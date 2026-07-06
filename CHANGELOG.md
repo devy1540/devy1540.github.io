@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.24.2](https://github.com/devy1540/devy1540.github.io/compare/v1.24.1...v1.24.2) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작 영문 번역 추가 ([#175](https://github.com/devy1540/devy1540.github.io/issues/175)) ([9ef646f](https://github.com/devy1540/devy1540.github.io/commit/9ef646f103ff4228f1b7b9f5a4c7cbf8c2d94aae))
+
+## [1.24.1](https://github.com/devy1540/devy1540.github.io/compare/v1.24.0...v1.24.1) (2026-07-06)
+
+
+### 문서
+
+* **post:** 국제화 5부작·CS 자동화 글 발행 (draft 해제) ([#173](https://github.com/devy1540/devy1540.github.io/issues/173)) ([96d15ba](https://github.com/devy1540/devy1540.github.io/commit/96d15ba2d557f2f72f40750ee98186e7df968969))
+
+## [1.24.0](https://github.com/devy1540/devy1540.github.io/compare/v1.23.1...v1.24.0) (2026-07-06)
+
+
+### 새로운 기능
+
+* 이력서 About·PDF 개편 및 국제화·CS 자동화 블로그 초안 추가 ([#171](https://github.com/devy1540/devy1540.github.io/issues/171)) ([451c5f8](https://github.com/devy1540/devy1540.github.io/commit/451c5f8b10a7206d3c23852660cf97c4cd15fe4e))
+
+## [1.23.1](https://github.com/devy1540/devy1540.github.io/compare/v1.23.0...v1.23.1) (2026-07-06)
+
+
+### 버그 수정
+
+* **seo:** GSC 색인 이슈 수정 (trailing-slash·필터 noindex·깨진 링크) ([#169](https://github.com/devy1540/devy1540.github.io/issues/169)) ([f00120f](https://github.com/devy1540/devy1540.github.io/commit/f00120f2024abfff30bedd77ae19271e579d0259))
+
+## [1.23.0](https://github.com/devy1540/devy1540.github.io/compare/v1.22.0...v1.23.0) (2026-06-30)
+
+
+### 새로운 기능
+
+* **admin:** GitHub OAuth 기반 인페이지 어드민 draft 전환 기능 추가 ([#166](https://github.com/devy1540/devy1540.github.io/issues/166)) ([b0d5cf5](https://github.com/devy1540/devy1540.github.io/commit/b0d5cf5c7fcf612120e74702e5f6983b04ebbee1))
+
+## [1.22.0](https://github.com/devy1540/devy1540.github.io/compare/v1.21.0...v1.22.0) (2026-06-30)
+
+
+### 새로운 기능
+
+* **privacy:** 개인정보처리방침 페이지 추가 ([#163](https://github.com/devy1540/devy1540.github.io/issues/163)) ([7ac0c18](https://github.com/devy1540/devy1540.github.io/commit/7ac0c184bd8c1edeb98bca7b4751eccfb24b9aab))
+
 ## [1.21.0](https://github.com/devy1540/devy1540.github.io/compare/v1.20.0...v1.21.0) (2026-06-23)
 
 

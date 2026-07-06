@@ -21,8 +21,11 @@ const OG_IMAGE_ALT = "Devy Archive preview image"
 
 function toCanonicalUrl(path?: string) {
   if (!path) return BASE_URL
-  const normalizedPath = path === "/" || path.endsWith("/") ? path : `${path}/`
-  return `${BASE_URL}${normalizedPath}`
+  // Normalize the trailing slash on the pathname only, keeping any ?query/#hash intact
+  // (e.g. "/tags/?tag=java" must not become "/tags/?tag=java/").
+  const [, pathname = "/", suffix = ""] = path.match(/^([^?#]*)([?#].*)?$/) ?? []
+  const normalizedPathname = pathname === "/" || pathname.endsWith("/") ? pathname : `${pathname}/`
+  return `${BASE_URL}${normalizedPathname}${suffix}`
 }
 
 function setMeta(property: string, content: string) {

@@ -52,12 +52,10 @@ function CompanySection({
   company,
   projects,
   language,
-  highlightsLabel,
 }: {
   company: Company
   projects: ProjectDetail[]
   language: Language
-  highlightsLabel: string
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8">
@@ -68,21 +66,8 @@ function CompanySection({
         <p className="text-sm text-muted-foreground">{company.period}</p>
       </div>
 
-      {/* Right: Highlights + Projects */}
+      {/* Right: Projects */}
       <div className="space-y-3">
-        {company.highlights && company.highlights.length > 0 && (
-          <div className="rounded-lg border bg-muted/30 p-3">
-            <p className="text-xs font-semibold text-muted-foreground mb-2">{highlightsLabel}</p>
-            <ul className="space-y-1">
-              {company.highlights.map((h, i) => (
-                <li key={i} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
-                  <span className="shrink-0 mt-0.5">•</span>
-                  <span>{renderBold(h)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
         {company.projects.map((ps, index) => {
           const project = projects.find((p) => p.slug === ps.slug)
           if (!project) return null
@@ -127,17 +112,13 @@ function CompanySection({
                         )}
                       </li>
                     ))}
+                    {project.achievements?.map((ach, i) => (
+                      <li key={`ach-${i}`} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+                        <span className="shrink-0 mt-0.5">•</span>
+                        <span>{renderBold(ach)}</span>
+                      </li>
+                    ))}
                   </ul>
-                  {project.achievements && project.achievements.length > 0 && (
-                    <ul className="space-y-1.5 border-t border-dashed pt-2">
-                      {project.achievements.map((ach, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
-                          <span className="shrink-0 mt-0.5">•</span>
-                          <span>{ach}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
               </CollapsibleContent>
               {(() => {
@@ -300,7 +281,6 @@ export function AboutPage() {
               company={company}
               projects={resume.projects}
               language={language}
-              highlightsLabel={t.about.highlights}
             />
           ))}
         </div>

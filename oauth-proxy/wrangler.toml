@@ -1,0 +1,11 @@
+name = "devy-blog-oauth-proxy"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+
+# ALLOWED_ORIGIN은 비밀이 아니므로 여기에 둔다. 프로덕션 도메인으로 제한해 CORS를 좁힌다.
+[vars]
+ALLOWED_ORIGIN = "https://devy1540.dev"
+
+# GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET은 시크릿으로 주입한다(이 파일에 넣지 말 것):
+#   wrangler secret put GITHUB_CLIENT_ID
+#   wrangler secret put GITHUB_CLIENT_SECRET

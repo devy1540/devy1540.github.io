@@ -80,18 +80,13 @@ const s = StyleSheet.create({
   projectPeriod: { fontSize: 8, color: colors.muted },
   techRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 6 },
   techBadge: { fontSize: 7.5, color: colors.accent, backgroundColor: "#eff6ff", paddingHorizontal: 5, paddingVertical: 1.5, borderRadius: 3 },
-  taskItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
-  detailItem: { fontSize: 8, color: colors.muted, marginBottom: 3, marginTop: -4, paddingLeft: 20, lineHeight: 1.6 },
-  achievementItem: { fontSize: 8.5, color: colors.primary, fontWeight: 500, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
-  subLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 3, marginTop: 6 },
+  taskGroup: { marginBottom: 5 },
+  taskItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 3, paddingLeft: 8, lineHeight: 1.5 },
+  detailItem: { fontSize: 8, color: colors.muted, marginBottom: 3, paddingLeft: 18, lineHeight: 1.5 },
   // Certifications
   certRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 3 },
   certName: { fontSize: 9, color: colors.secondary },
   certYear: { fontSize: 8.5, color: colors.muted },
-  // Highlights
-  highlightBox: { backgroundColor: colors.bgLight, borderRadius: 4, padding: 10, marginBottom: 12 },
-  highlightLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 5 },
-  highlightItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 3, paddingLeft: 8, lineHeight: 1.6 },
   boldText: { fontWeight: 700 },
   contactText: { fontSize: 8.5, color: colors.muted },
   // URLs
@@ -128,39 +123,29 @@ function CompanySection({ company }: { company: Company }) {
       </View>
       <Text style={s.companyRole}>{company.role}</Text>
 
-      {company.highlights && company.highlights.length > 0 && (
-        <View style={s.highlightBox}>
-          <Text style={s.highlightLabel}>주요 성과</Text>
-          {company.highlights.map((h, i) => (
-            <BoldText key={i} style={s.highlightItem}>{"• " + h}</BoldText>
-          ))}
-        </View>
-      )}
-
       {companyProjects.map((project) => (
         <View key={project!.slug} style={s.projectBox}>
-          <Text style={s.projectName}>{project!.name}</Text>
-          <View style={s.techRow}>
-            {project!.tech.map((t) => (
-              <Text key={t} style={s.techBadge}>{t}</Text>
-            ))}
+          <View wrap={false} minPresenceAhead={50}>
+            <Text style={s.projectName}>{project!.name}</Text>
+            <View style={s.techRow}>
+              {project!.tech.map((t) => (
+                <Text key={t} style={s.techBadge}>{t}</Text>
+              ))}
+            </View>
           </View>
           {project!.tasks.map((task, i) => (
-            <View key={i}>
+            <View key={i} style={s.taskGroup} wrap={false}>
               <BoldText style={s.taskItem}>{"- " + task.content}</BoldText>
               {task.details?.map((detail, j) => (
                 <BoldText key={j} style={s.detailItem}>{"→ " + detail}</BoldText>
               ))}
             </View>
           ))}
-          {project!.achievements && project!.achievements.length > 0 && (
-            <>
-              <Text style={s.subLabel}>Achievements</Text>
-              {project!.achievements.map((ach, i) => (
-                <BoldText key={i} style={s.achievementItem}>{"- " + ach}</BoldText>
-              ))}
-            </>
-          )}
+          {project!.achievements?.map((ach, i) => (
+            <View key={`ach-${i}`} style={s.taskGroup} wrap={false}>
+              <BoldText style={s.taskItem}>{"- " + ach}</BoldText>
+            </View>
+          ))}
         </View>
       ))}
     </View>
