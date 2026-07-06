@@ -328,9 +328,7 @@ html.theme-transition *::after {
 @media (min-width: 1280px) {
   [data-slot="sidebar-wrapper"] {
     --content-sidebar-width: 0rem;
-    --content-inline-padding: 5rem;
     --content-available-width: calc(100vw - var(--content-sidebar-width) - 10rem);
-    --content-rail-shift: calc(var(--content-sidebar-width) / -2);
   }
 
   [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="expanded"]) {
@@ -350,18 +348,13 @@ html.theme-transition *::after {
   .post-page-layout {
     --post-article-width: min(72rem, var(--content-available-width));
     --post-article-half-width: calc(var(--post-article-width) / 2);
-    --post-article-shift: max(
-      var(--content-rail-shift),
-      calc(
-        (var(--post-article-width) - var(--content-available-width)) / 2 -
-        var(--content-inline-padding)
-      )
-    );
-    --post-toc-gap: clamp(2rem, 4vw, 5rem);
+    --post-toc-gap: 2.5rem;
+    /* 본문 + TOC를 한 묶음으로 보고 콘텐츠 영역 중앙에 오도록, 본문을
+       오른쪽 TOC(gap + 15rem)의 절반만큼 왼쪽으로 당긴다. 이러면 그룹의
+       중심이 인셋 중앙과 일치해 본문 폭은 그대로 두고도 자연스럽게 중앙에 온다. */
+    --post-article-shift: calc((var(--post-toc-gap) + 15rem) / -2);
   }
 
-  /* 일반 페이지는 인셋 중앙(대칭)이지만, TOC가 뜨는 글 상세만 본문을 왼쪽으로
-     당겨 우측 TOC 공간을 확보하고 본문+TOC가 균형을 이루게 한다. */
   .post-article-centered {
     transform: translateX(var(--post-article-shift));
     transition: transform 120ms ease-out;
