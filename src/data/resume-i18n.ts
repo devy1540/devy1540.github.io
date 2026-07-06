@@ -40,6 +40,8 @@ const EN_COMPANIES: Company[] = [
       "Modernized the platform with ECS to EKS migration, ArgoCD GitOps, LGTM observability, WAF, and Secrets Manager",
     ],
     projects: [
+      { slug: "global-expansion", name: "Global (Japan) Expansion", period: "Jun 2026 - Present", summary: "In-progress backend work for Japan: LINE auth diversification, i18n, and locale" },
+      { slug: "cs-automation", name: "AI-based CS Automation System", period: "Feb 2026 - Jun 2026", summary: "Built a Spring AI CS automation system with auto-replies and draft recommendations" },
       { slug: "ai-diagnostic-pipeline", name: "AI Diagnostic and Feedback Pipeline", period: "Oct 2025 - Jan 2026", summary: "Redesigned a 7-step AI pipeline and reduced CS tickets by 98%" },
       { slug: "payment-system", name: "Payment System Redesign", period: "Mar 2025 - Sep 2025", summary: "Migrated PHP to Java and reduced duplicate payments to zero" },
       { slug: "notification-server", name: "Multi-channel Notification Server", period: "Jun 2025 - Oct 2025", summary: "Built an independent 4-channel notification server from scratch with 0% duplicate sends" },
@@ -77,6 +79,57 @@ const EN_CERTIFICATIONS: Certification[] = [
 ]
 
 const EN_PROJECTS: ProjectDetail[] = [
+  {
+    slug: "global-expansion",
+    company: "Day1 Company",
+    name: "Global (Japan) Expansion",
+    period: "Jun 2026 - Present",
+    tech: ["Spring Boot", "Spring OAuth2", "React", "TypeScript", "GrowthBook", "GCS"],
+    tasks: [
+      {
+        content: "**In progress**: backend and app localization for entering the Japanese market",
+      },
+      {
+        content: "Diversified authentication by adding **LINE, Google, and Apple social login**, and integrated a LINE friend-add prompt for Japanese users",
+      },
+      {
+        content: "Built the app **internationalization (i18n)** foundation with GCS runtime-loaded language packs and bundle fallback, using a GrowthBook kill switch for zero-downtime rollout",
+        details: [
+          "Cleaned up hardcoded Korean into message-based strings with locale fallback",
+        ],
+      },
+      {
+        content: "Added user **language and timezone (locale) settings** APIs and screens, and propagated language codes to authenticated user data",
+      },
+      {
+        content: "Propagated locale to document issuance paths such as completion certificates and level-test reports, and implemented language-based home banner segmentation",
+      },
+    ],
+  },
+  {
+    slug: "cs-automation",
+    company: "Day1 Company",
+    name: "AI-based CS Automation System",
+    period: "Feb 2026 - Jun 2026",
+    tech: ["Spring AI", "Spring Boot", "OpenAI"],
+    tasks: [
+      {
+        content: "Built a **Spring AI**-based CS automation system from scratch in the Java/Spring environment to automate repetitive customer inquiries",
+      },
+      {
+        content: "Used **function calling** to look up user, order, and enrollment data for context-aware responses, and registered FAQs as **instructions** to keep answers consistent",
+      },
+      {
+        content: "Auto-sent replies for simple inquiries and **recommended draft replies** for the rest so operators could review and send immediately",
+        details: [
+          "Reduced repetitive handling by triaging automatable inquiries and sped up operator responses with draft recommendations",
+        ],
+      },
+    ],
+    achievements: [
+      "Improved CS operations efficiency by auto-handling repetitive inquiries and recommending drafts",
+    ],
+  },
   {
     slug: "ai-diagnostic-pipeline",
     company: "Day1 Company",

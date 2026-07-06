@@ -74,6 +74,8 @@ export const COMPANIES: Company[] = [
       "ECS→EKS, ArgoCD GitOps, LGTM 모니터링 스택, WAF/Secrets 전환으로 **운영 플랫폼 현대화**",
     ],
     projects: [
+      { slug: "global-expansion", name: "글로벌(일본) 진출 대응", period: "2026.06 — 현재", summary: "LINE 인증 다각화·i18n·locale 등 일본 진출 백엔드 대응 진행 중" },
+      { slug: "cs-automation", name: "AI 기반 CS 자동화 시스템 구축", period: "2026.02 — 2026.06", summary: "Spring AI 기반 CS 자동화(자동응답·초안 추천) 신규 구축" },
       { slug: "ai-diagnostic-pipeline", name: "AI 진단/피드백 파이프라인 구축", period: "2025.10 — 2026.01", summary: "7단계 AI 파이프라인 재설계, CS 98% 감소" },
       { slug: "payment-system", name: "결제 시스템 전면 재설계", period: "2025.03 — 2025.09", summary: "PHP→Java 전면 이관, 중복 결제 0건 달성" },
       { slug: "notification-server", name: "멀티채널 알림서버 신규 구축", period: "2025.06 — 2025.10", summary: "4채널 통합 독립 알림서버 0→1 구축, 중복 발송률 0%" },
@@ -111,6 +113,57 @@ export const CERTIFICATIONS: Certification[] = [
 ]
 
 export const PROJECTS: ProjectDetail[] = [
+  {
+    slug: "global-expansion",
+    company: "주식회사 데이원컴퍼니",
+    name: "글로벌(일본) 진출 대응",
+    period: "2026.06 — 현재",
+    tech: ["Spring Boot", "Spring OAuth2", "React", "TypeScript", "GrowthBook", "GCS"],
+    tasks: [
+      {
+        content: "일본 시장 진출을 위한 백엔드·앱 현지화 작업 **진행 중**",
+      },
+      {
+        content: "**LINE·Google·Apple 소셜 로그인**을 추가해 인증 수단을 다각화하고, 일본 사용자 대상 LINE 친구 추가 연동 구성",
+      },
+      {
+        content: "앱 **국제화(i18n)** 기반을 구축하고 언어팩을 GCS 런타임 로드 + 번들 폴백 구조로 설계, GrowthBook 킬스위치로 무중단 배포 대응",
+        details: [
+          "하드코딩된 한국어를 메시지 기반으로 정리하고 로케일 폴백 처리",
+        ],
+      },
+      {
+        content: "사용자 **언어·시간대(locale) 설정** API와 화면을 추가하고 인증 사용자 정보에 언어 코드 전파",
+      },
+      {
+        content: "수강확인증·레벨테스트 리포트 등 문서 발급 경로에 locale을 전파하고, 홈 배너 언어별 세그먼트 평가 로직 구현",
+      },
+    ],
+  },
+  {
+    slug: "cs-automation",
+    company: "주식회사 데이원컴퍼니",
+    name: "AI 기반 CS 자동화 시스템 구축",
+    period: "2026.02 — 2026.06",
+    tech: ["Spring AI", "Spring Boot", "OpenAI"],
+    tasks: [
+      {
+        content: "반복적인 고객 문의 대응을 자동화하기 위해 **Spring AI** 기반 CS 자동화 시스템을 Java/Spring 환경에 신규 구축",
+      },
+      {
+        content: "**Function Calling**으로 사용자 상태·주문·수강 정보를 조회해 문의 맥락에 맞는 응답을 생성하고, FAQ를 **지침서(instruction)로 등록**해 답변 일관성 확보",
+      },
+      {
+        content: "간단한 문의는 **자동 답변 발송**, 그 외에는 **답변 초안을 추천**해 운영자가 검토 후 바로 발송할 수 있는 상담 보조 흐름 구성",
+        details: [
+          "자동화 가능한 문의를 선별 처리해 반복 응대 부담을 줄이고, 초안 추천으로 운영자 응대 속도 향상",
+        ],
+      },
+    ],
+    achievements: [
+      "반복 문의를 자동 응대·초안 추천으로 처리해 CS 운영 효율 개선",
+    ],
+  },
   {
     slug: "ai-diagnostic-pipeline",
     company: "주식회사 데이원컴퍼니",
