@@ -307,30 +307,28 @@ html.theme-transition *::after {
 }
 
 .page-container {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
   width: 100%;
   max-width: var(--page-container-max-width);
   margin-inline: auto;
 }
 
 .page-container-default {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
 }
 
 .page-container-article {
-  --page-container-max-width: 56rem;
+  --page-container-max-width: 72rem;
 }
 
 .page-container-wide {
-  --page-container-max-width: 64rem;
+  --page-container-max-width: 72rem;
 }
 
 @media (min-width: 1280px) {
   [data-slot="sidebar-wrapper"] {
     --content-sidebar-width: 0rem;
-    --content-inline-padding: 5rem;
     --content-available-width: calc(100vw - var(--content-sidebar-width) - 10rem);
-    --content-rail-shift: calc(var(--content-sidebar-width) / -2);
   }
 
   [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="expanded"]) {
@@ -341,39 +339,25 @@ html.theme-transition *::after {
     --content-sidebar-width: var(--sidebar-width-icon);
   }
 
-  .page-container {
-    --page-container-rendered-width: min(
-      var(--page-container-max-width),
-      var(--content-available-width)
-    );
-    --page-container-shift: max(
-      var(--content-rail-shift),
-      calc(
-        (var(--page-container-rendered-width) - var(--content-available-width)) / 2 -
-        var(--content-inline-padding)
-      )
-    );
-    transform: translateX(var(--page-container-shift));
-    transition: max-width 120ms ease-out, transform 120ms ease-out;
-  }
-
   .post-toc-layer {
     display: none;
   }
 }
 
-@media (min-width: 1536px) {
+@media (min-width: 1856px) {
   .post-page-layout {
-    --post-article-width: min(56rem, var(--content-available-width));
+    --post-article-width: min(72rem, var(--content-available-width));
     --post-article-half-width: calc(var(--post-article-width) / 2);
-    --post-article-shift: max(
-      var(--content-rail-shift),
-      calc(
-        (var(--post-article-width) - var(--content-available-width)) / 2 -
-        var(--content-inline-padding)
-      )
-    );
-    --post-toc-gap: clamp(2rem, 4vw, 5rem);
+    --post-toc-gap: 2.5rem;
+    /* 본문 + TOC를 한 묶음으로 보고 콘텐츠 영역 중앙에 오도록, 본문을
+       오른쪽 TOC(gap + 15rem)의 절반만큼 왼쪽으로 당긴다. 이러면 그룹의
+       중심이 인셋 중앙과 일치해 본문 폭은 그대로 두고도 자연스럽게 중앙에 온다. */
+    --post-article-shift: calc((var(--post-toc-gap) + 15rem) / -2);
+  }
+
+  .post-article-centered {
+    transform: translateX(var(--post-article-shift));
+    transition: transform 120ms ease-out;
   }
 
   .post-toc-layer {

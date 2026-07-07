@@ -5,7 +5,7 @@ description: "수강확인증·리포트는 오랫동안 언어가 이미지에 
 tags: ["i18n", "cloud-run", "pdf", "weasyprint"]
 series: "서비스 국제화 적용기"
 seriesOrder: 5
-draft: true
+draft: false
 ---
 
 ## 배경: 언어가 이미지에 구워져 있었다

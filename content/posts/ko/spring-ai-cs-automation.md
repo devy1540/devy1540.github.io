@@ -3,7 +3,7 @@ title: "Spring AI로 CS 자동화 시스템 구축하기 - Function Calling과 F
 date: "2026-07-06"
 description: "반복되는 고객 문의를 Spring AI 기반으로 자동화한 경험. Function Calling으로 사용자 맥락을 조회하고, FAQ를 지침서로 등록해 자동 답변과 상담 초안 추천을 함께 구성한 이야기."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "cs"]
-draft: true
+draft: false
 ---
 
 ## 배경
