@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.1](https://github.com/devy1540/devy1540.github.io/compare/v1.27.0...v1.27.1) (2026-07-07)
+
+
+### 리팩터링
+
+* **resume:** 회사 단위 페이지 나눔 및 고아 헤더 방지 ([#185](https://github.com/devy1540/devy1540.github.io/issues/185)) ([ace19ac](https://github.com/devy1540/devy1540.github.io/commit/ace19acb98fff5851e22309c1238fb70e6b7ab7c))
+
 ## [1.27.0](https://github.com/devy1540/devy1540.github.io/compare/v1.26.0...v1.27.0) (2026-07-06)
 
 
