@@ -74,9 +74,6 @@ const s = StyleSheet.create({
   skillList: { flex: 1, fontSize: 8.5, color: colors.secondary },
   // Company
   companyOuterFirst: { marginTop: 6 },
-  companyOuter: { marginTop: 18 },
-  companyIntro: {},
-  companyIntroDivided: { paddingTop: 16, borderTopWidth: 1, borderTopColor: colors.border },
   companyHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 },
   companyName: { fontSize: 13, fontWeight: 700, letterSpacing: -0.2 },
   companyPeriod: { fontSize: 8.5, color: colors.muted },
@@ -124,14 +121,31 @@ function BoldText({ style, children }: { style: Styles[string]; children: string
   )
 }
 
+function TaskGroup({ task }: { task: (typeof PROJECTS)[number]["tasks"][number] }) {
+  return (
+    <View style={s.taskGroup} wrap={false}>
+      <View style={s.taskRow}>
+        <Text style={s.taskBullet}>·</Text>
+        <BoldText style={s.taskItem}>{task.content}</BoldText>
+      </View>
+      {task.details?.map((detail, j) => (
+        <View key={j} style={s.detailRow}>
+          <Text style={s.detailArrow}>→</Text>
+          <BoldText style={s.detailItem}>{detail}</BoldText>
+        </View>
+      ))}
+    </View>
+  )
+}
+
 function CompanySection({ company, isFirst }: { company: Company; isFirst: boolean }) {
   const companyProjects = company.projects
     .map((ps) => PROJECTS.find((p) => p.slug === ps.slug))
     .filter(Boolean)
 
   return (
-    <View style={isFirst ? s.companyOuterFirst : s.companyOuter}>
-      <View wrap={false} minPresenceAhead={80} style={isFirst ? s.companyIntro : s.companyIntroDivided}>
+    <View break={!isFirst} style={isFirst ? s.companyOuterFirst : undefined}>
+      <View wrap={false} minPresenceAhead={80}>
         <View style={s.companyHeader}>
           <Text style={s.companyName}>{company.name}</Text>
           <Text style={s.companyPeriod}>{company.period}</Text>
@@ -141,23 +155,13 @@ function CompanySection({ company, isFirst }: { company: Company; isFirst: boole
 
       {companyProjects.map((project) => (
         <View key={project!.slug} style={s.projectBox}>
-          <View wrap={false} minPresenceAhead={50}>
+          <View wrap={false}>
             <Text style={s.projectName}>{project!.name}</Text>
             <Text style={s.techInline}>{project!.tech.join("   ·   ")}</Text>
+            {project!.tasks[0] && <TaskGroup task={project!.tasks[0]} />}
           </View>
-          {project!.tasks.map((task, i) => (
-            <View key={i} style={s.taskGroup} wrap={false}>
-              <View style={s.taskRow}>
-                <Text style={s.taskBullet}>·</Text>
-                <BoldText style={s.taskItem}>{task.content}</BoldText>
-              </View>
-              {task.details?.map((detail, j) => (
-                <View key={j} style={s.detailRow}>
-                  <Text style={s.detailArrow}>→</Text>
-                  <BoldText style={s.detailItem}>{detail}</BoldText>
-                </View>
-              ))}
-            </View>
+          {project!.tasks.slice(1).map((task, i) => (
+            <TaskGroup key={i} task={task} />
           ))}
           {project!.achievements && project!.achievements.length > 0 && (
             <View style={s.achGroup}>
