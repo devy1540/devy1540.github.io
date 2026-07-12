@@ -115,7 +115,7 @@ public BedrockProxyChatModel bedrockChatModel() {
 }
 ```
 
-`DefaultCredentialsProvider`는 AWS의 기본 인증 체인(환경변수, EC2 인스턴스 프로파일, ECS 태스크 역할 등)을 따른다. 로컬에서는 `~/.aws/credentials`, 배포 환경에서는 IAM 역할을 자동으로 사용한다. 타임아웃 설정은 4편에서 다룬다.
+`DefaultCredentialsProvider`는 AWS의 기본 인증 체인(환경변수, EC2 인스턴스 프로파일, ECS 태스크 역할 등)을 따른다. 로컬에서는 `~/.aws/credentials`, 배포 환경에서는 IAM 역할을 자동으로 사용한다. 연결 및 소켓 타임아웃 설정은 [Spring AI 실전 적용기](/posts/spring-ai-pipeline-real-world/)에서 다룬다.
 
 ## 프로바이더별 옵션 제어
 
