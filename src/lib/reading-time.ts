@@ -1,5 +1,4 @@
-export function getReadingTime(content: string): string {
+export function getReadingMinutes(content: string): number {
   const words = content.trim().split(/\s+/).length
-  const minutes = Math.ceil(words / 200)
-  return `${minutes} min read`
+  return Math.ceil(words / 200)
 }

@@ -1,0 +1,13 @@
+{
+  "name": "devy-blog-oauth-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub OAuth code↔token exchange proxy for the blog admin feature",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

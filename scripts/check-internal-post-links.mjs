@@ -28,7 +28,7 @@ export function findMissingPostLinks(posts) {
 function run() {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
   const postsDir = path.join(root, "content/posts")
-  const posts = fs.readdirSync(postsDir)
+  const posts = fs.readdirSync(postsDir, { recursive: true })
     .filter((file) => file.endsWith(".md"))
     .map((file) => {
       const filePath = path.join(postsDir, file)

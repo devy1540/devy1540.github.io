@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Home, FileText, Tags, User, Search, Library, BarChart3 } from "lucide-react"
+import { Home, FileText, Tags, User, Library, BarChart3, ShieldCheck } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -18,13 +18,14 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { useAdminAuth } from "@/lib/admin/useAdminAuth"
+import { localizePath, stripLanguagePrefix } from "@/lib/i18n-routing"
 
 const navIcons = {
   home: Home,
   posts: FileText,
   series: Library,
-  search: Search,
   tags: Tags,
   analytics: BarChart3,
   about: User,
@@ -32,7 +33,8 @@ const navIcons = {
 
 export function AppSidebar() {
   const { pathname } = useLocation()
-  const t = useT()
+  const { language, t } = useLanguage()
+  const { isAdmin } = useAdminAuth()
   const navigate = useNavigate()
   const { isMobile, setOpenMobile } = useSidebar()
 
@@ -46,25 +48,25 @@ export function AppSidebar() {
   }
 
   const navItems = [
-    { label: t.common.home, to: "/", icon: navIcons.home },
-    { label: t.common.posts, to: "/posts", icon: navIcons.posts },
-    { label: t.common.series, to: "/series", icon: navIcons.series },
-    { label: t.common.search, to: "/search", icon: navIcons.search },
-    { label: t.common.tags, to: "/tags", icon: navIcons.tags },
-    { label: t.common.analytics, to: "/analytics", icon: navIcons.analytics },
-    { label: t.common.about, to: "/about", icon: navIcons.about },
+    { label: t.common.home, to: localizePath("/", language), basePath: "/", icon: navIcons.home },
+    { label: t.common.posts, to: localizePath("/posts", language), basePath: "/posts", icon: navIcons.posts },
+    { label: t.common.series, to: localizePath("/series", language), basePath: "/series", icon: navIcons.series },
+    { label: t.common.tags, to: localizePath("/tags", language), basePath: "/tags", icon: navIcons.tags },
+    { label: t.common.analytics, to: localizePath("/analytics", language), basePath: "/analytics", icon: navIcons.analytics },
+    { label: t.common.about, to: localizePath("/about", language), basePath: "/about", icon: navIcons.about },
   ]
 
-  function isActive(to: string) {
-    if (to === "/") return pathname === "/"
-    return pathname.startsWith(to)
+  function isActive(basePath: string) {
+    const currentPath = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
+    if (basePath === "/") return currentPath === "/"
+    return currentPath === basePath || currentPath.startsWith(`${basePath}/`)
   }
 
   return (
     <SidebarRoot collapsible="icon">
       <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
         <NavLink
-          to="/"
+          to={localizePath("/", language)}
           viewTransition
           className="text-lg font-bold tracking-tight hover:opacity-80 transition-opacity group-data-[collapsible=icon]:text-center"
         >
@@ -81,7 +83,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
                     asChild
-                    isActive={isActive(item.to)}
+                    isActive={isActive(item.basePath)}
                     tooltip={item.label}
                   >
                     <NavLink to={item.to} viewTransition onClick={(e) => handleMobileNav(e, item.to)}>
@@ -91,6 +93,16 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="관리자">
+                    <NavLink to="/admin" viewTransition onClick={(e) => handleMobileNav(e, "/admin")}>
+                      <ShieldCheck />
+                      <span>관리자</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -117,6 +129,15 @@ export function AppSidebar() {
         </div>
         <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
           &copy; {new Date().getFullYear()} Devy
+          {" | "}
+          <NavLink
+            to={localizePath("/privacy", language)}
+            viewTransition
+            onClick={(e) => handleMobileNav(e, localizePath("/privacy", language))}
+            className="hover:text-sidebar-foreground/80 transition-colors"
+          >
+            {t.common.privacy}
+          </NavLink>
         </p>
       </SidebarFooter>
 

@@ -1,3 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <text y="0.9em" font-size="80">D</text>
+  <style>
+    text { fill: #111827; }
+    @media (prefers-color-scheme: dark) { text { fill: #ffffff; } }
+  </style>
+  <text x="50" y="50" font-size="76" text-anchor="middle" dominant-baseline="central" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="700">D</text>
 </svg>

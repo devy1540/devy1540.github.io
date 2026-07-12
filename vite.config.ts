@@ -3,7 +3,20 @@ import fs from "fs"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 
-const BASE_URL = "https://devy1540.github.io"
+const BASE_URL = "https://devy1540.dev"
+const LANGUAGES = ["ko", "en"] as const
+
+type ContentLanguage = typeof LANGUAGES[number]
+
+interface BuildPost {
+  slug: string
+  language: ContentLanguage
+  title: string
+  description: string
+  date: string
+  draft: boolean
+  publishDate: string
+}
 
 function parseFrontmatter(raw: string) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
@@ -23,49 +36,79 @@ function escapeXml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
 
+function attachXmlStylesheet(xml: string, href: string) {
+  return xml.replace("?>\n", `?>\n<?xml-stylesheet type="text/xsl" href="${escapeXml(href)}"?>\n`)
+}
+
+function postUrl(post: Pick<BuildPost, "slug" | "language">) {
+  return post.language === "en"
+    ? `${BASE_URL}/en/posts/${post.slug}/`
+    : `${BASE_URL}/posts/${post.slug}/`
+}
+
+function staticPageUrl(page: string, language: ContentLanguage) {
+  if (language === "ko") return `${BASE_URL}${page}`
+  return page === "/" ? `${BASE_URL}/en/` : `${BASE_URL}/en${page}`
+}
+
+function readPosts(language: ContentLanguage): BuildPost[] {
+  const postsDir = path.resolve(__dirname, "content/posts", language)
+  if (!fs.existsSync(postsDir)) return []
+
+  return fs.readdirSync(postsDir)
+    .filter((f) => f.endsWith(".md"))
+    .map((f) => {
+      const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
+      const { data } = parseFrontmatter(raw)
+      return {
+        slug: f.replace(".md", ""),
+        language,
+        title: data.title || f.replace(".md", ""),
+        description: data.description || "",
+        date: data.date || "",
+        draft: data.draft === "true",
+        publishDate: data.publishDate || "",
+      }
+    })
+    .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
+    .sort((a, b) => (a.date > b.date ? -1 : 1))
+}
+
 function rssPlugin(): Plugin {
   return {
     name: "generate-rss",
     closeBundle() {
-      const postsDir = path.resolve(__dirname, "content/posts")
-      const posts = fs.readdirSync(postsDir)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => {
-          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
-          const { data } = parseFrontmatter(raw)
-          return {
-            slug: f.replace(".md", ""),
-            title: data.title || f.replace(".md", ""),
-            description: data.description || "",
-            date: data.date || "",
-            draft: data.draft === "true",
-            publishDate: data.publishDate || "",
-          }
-        })
-        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
-        .sort((a, b) => (a.date > b.date ? -1 : 1))
+      function writeFeed(language: ContentLanguage) {
+        const posts = readPosts(language)
+        const isEnglish = language === "en"
 
-      const items = posts.map((p) => `    <item>
+        const items = posts.map((p) => `    <item>
       <title>${escapeXml(p.title)}</title>
-      <link>${BASE_URL}/posts/${p.slug}/</link>
-      <guid>${BASE_URL}/posts/${p.slug}/</guid>
+      <link>${postUrl(p)}</link>
+      <guid>${postUrl(p)}</guid>
       <description>${escapeXml(p.description)}</description>
       <pubDate>${p.date ? new Date(p.date).toUTCString() : ""}</pubDate>
     </item>`)
 
-      const rss = `<?xml version="1.0" encoding="UTF-8"?>
+        const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Devy's Blog</title>
-    <link>${BASE_URL}</link>
-    <description>개발하며 배운 것들을 정리하고 공유합니다.</description>
-    <language>ko</language>
-    <atom:link href="${BASE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
+    <title>Devy Archive</title>
+    <link>${isEnglish ? `${BASE_URL}/en/` : BASE_URL}</link>
+    <description>${isEnglish ? "An archive of Devy's development and operations notes, organized around problem solving." : "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."}</description>
+    <language>${isEnglish ? "en" : "ko"}</language>
+    <atom:link href="${isEnglish ? `${BASE_URL}/en/rss.xml` : `${BASE_URL}/rss.xml`}" rel="self" type="application/rss+xml"/>
 ${items.join("\n")}
   </channel>
 </rss>`
 
-      fs.writeFileSync(path.resolve(__dirname, "dist/rss.xml"), rss)
+        const outPath = isEnglish ? path.resolve(__dirname, "dist/en/rss.xml") : path.resolve(__dirname, "dist/rss.xml")
+        fs.mkdirSync(path.dirname(outPath), { recursive: true })
+        fs.writeFileSync(outPath, rss)
+      }
+
+      writeFeed("ko")
+      writeFeed("en")
     },
   }
 }
@@ -74,163 +117,71 @@ function sitemapPlugin(): Plugin {
   return {
     name: "generate-sitemap",
     closeBundle() {
-      const postsDir = path.resolve(__dirname, "content/posts")
-      const posts = fs.readdirSync(postsDir)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => {
-          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
-          const { data } = parseFrontmatter(raw)
-          return {
-            slug: f.replace(".md", ""),
-            date: data.date || "",
-            draft: data.draft === "true",
-            publishDate: data.publishDate || "",
-          }
-        })
-        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
-
-      const staticPages = ["/", "/posts/", "/tags/", "/series/", "/about/"]
+      const koPosts = readPosts("ko")
+      const enPosts = readPosts("en")
+      const enPostSlugs = new Set(enPosts.map((p) => p.slug))
+      const staticPages = ["/", "/posts/", "/tags/", "/series/", "/analytics/", "/about/", "/privacy/"]
       const today = new Date().toISOString().split("T")[0]
 
-      function urlEntry(loc: string, lastmod: string) {
-        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`
+      function alternateEntry(hreflang: string, href: string) {
+        return `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}"/>`
+      }
+
+      function urlEntry(loc: string, lastmod: string, alternates: { hreflang: string; href: string }[] = []) {
+        return [
+          "  <url>",
+          `    <loc>${escapeXml(loc)}</loc>`,
+          `    <lastmod>${lastmod}</lastmod>`,
+          ...alternates.map((alt) => alternateEntry(alt.hreflang, alt.href)),
+          "  </url>",
+        ].join("\n")
       }
 
       const urls = [
-        ...staticPages.map((p) => urlEntry(`${BASE_URL}${p}`, today)),
-        ...posts.map((p) => urlEntry(`${BASE_URL}/posts/${p.slug}/`, p.date || today)),
+        ...staticPages.flatMap((page) => {
+          const alternates = [
+            { hreflang: "ko-KR", href: staticPageUrl(page, "ko") },
+            { hreflang: "en", href: staticPageUrl(page, "en") },
+            { hreflang: "x-default", href: staticPageUrl(page, "ko") },
+          ]
+          return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), today, alternates))
+        }),
+        ...koPosts.map((p) => {
+          const alternates = [
+            { hreflang: "ko-KR", href: postUrl(p) },
+            ...(enPostSlugs.has(p.slug) ? [{ hreflang: "en", href: `${BASE_URL}/en/posts/${p.slug}/` }] : []),
+            { hreflang: "x-default", href: postUrl(p) },
+          ]
+          return urlEntry(postUrl(p), p.date || today, alternates)
+        }),
+        ...enPosts.map((p) => {
+          const koPost = koPosts.find((candidate) => candidate.slug === p.slug)
+          const alternates = [
+            ...(koPost ? [{ hreflang: "ko-KR", href: postUrl(koPost) }] : []),
+            { hreflang: "en", href: postUrl(p) },
+            ...(koPost ? [{ hreflang: "x-default", href: postUrl(koPost) }] : []),
+          ]
+          return urlEntry(postUrl(p), p.date || today, alternates)
+        }),
       ]
 
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join("\n")}
 </urlset>
 `
 
-      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), sitemap)
+      fs.writeFileSync(path.resolve(__dirname, "dist/sitemap.xml"), attachXmlStylesheet(sitemap, "/sitemap.xsl"))
     },
   }
 }
 
-function escapeAttr(s: string) {
-  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-}
-
-function prerenderPlugin(): Plugin {
-  return {
-    name: "prerender-pages",
-    closeBundle() {
-      const distDir = path.resolve(__dirname, "dist")
-      const template = fs.readFileSync(path.resolve(distDir, "index.html"), "utf-8")
-      const postsDir = path.resolve(__dirname, "content/posts")
-
-      function renderPage(opts: {
-        title: string
-        description: string
-        url: string
-        type?: string
-        date?: string
-        outputPath: string
-      }) {
-        const fullTitle = `${opts.title} | Devy's Blog`
-        const desc = opts.description || "개발하며 배운 것들을 정리하고 공유합니다."
-        const fullUrl = `${BASE_URL}${opts.url}`
-        const ogType = opts.type || "website"
-
-        let html = template
-          .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(fullTitle)}</title>`)
-          .replace(/(<meta name="description" content=")[^"]*(")/,  `$1${escapeAttr(desc)}$2`)
-          .replace(/(<meta property="og:title" content=")[^"]*(")/,  `$1${escapeAttr(fullTitle)}$2`)
-          .replace(/(<meta property="og:description" content=")[^"]*(")/,  `$1${escapeAttr(desc)}$2`)
-          .replace(/(<meta property="og:url" content=")[^"]*(")/,  `$1${fullUrl}$2`)
-          .replace(/(<meta property="og:type" content=")[^"]*(")/,  `$1${ogType}$2`)
-          .replace(/(<link rel="canonical" href=")[^"]*(")/,  `$1${fullUrl}$2`)
-          .replace(/(<meta name="twitter:title" content=")[^"]*(")/,  `$1${escapeAttr(fullTitle)}$2`)
-          .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${escapeAttr(desc)}$2`)
-
-        if (opts.type === "article" && opts.date) {
-          const jsonLd = JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: opts.title,
-            description: desc,
-            datePublished: opts.date,
-            url: fullUrl,
-            image: `${BASE_URL}/og-image.png`,
-            author: { "@type": "Person", name: "Devy" },
-            publisher: { "@type": "Organization", name: "Devy's Blog" },
-          })
-          html = html.replace("</head>", `    <script type="application/ld+json">${jsonLd}</script>\n  </head>`)
-        }
-
-        const outPath = path.resolve(distDir, opts.outputPath)
-        fs.mkdirSync(path.dirname(outPath), { recursive: true })
-        fs.writeFileSync(outPath, html)
-      }
-
-      // Pre-render blog posts
-      const posts = fs.readdirSync(postsDir)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => {
-          const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
-          const { data } = parseFrontmatter(raw)
-          return {
-            slug: f.replace(".md", ""),
-            title: data.title || f.replace(".md", ""),
-            description: data.description || "",
-            date: data.date || "",
-            draft: data.draft === "true",
-            publishDate: data.publishDate || "",
-          }
-        })
-        .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
-
-      for (const post of posts) {
-        renderPage({
-          title: post.title,
-          description: post.description,
-          url: `/posts/${post.slug}/`,
-          type: "article",
-          date: post.date,
-          outputPath: `posts/${post.slug}/index.html`,
-        })
-      }
-
-      // Pre-render static pages
-      const staticPages = [
-        { path: "posts", title: "글 목록", description: "개발하며 배운 것들을 정리한 글 목록입니다." },
-        { path: "tags", title: "태그", description: "태그별로 분류된 블로그 글 목록입니다." },
-        { path: "series", title: "시리즈", description: "시리즈별로 분류된 블로그 글 목록입니다." },
-        { path: "about", title: "소개", description: "개발자 Devy의 소개 페이지입니다." },
-      ]
-
-      for (const page of staticPages) {
-        renderPage({
-          title: page.title,
-          description: page.description,
-          url: `/${page.path}/`,
-          outputPath: `${page.path}/index.html`,
-        })
-      }
-
-      console.log(`  [prerender] Generated ${posts.length} post pages + ${staticPages.length} static pages`)
-    },
-  }
-}
-
-function spa404Plugin(): Plugin {
-  return {
-    name: "copy-index-to-404",
-    closeBundle() {
-      const indexPath = path.resolve(__dirname, "dist/index.html")
-      const notFoundPath = path.resolve(__dirname, "dist/404.html")
-      fs.copyFileSync(indexPath, notFoundPath)
-    },
-  }
-}
-
-export default defineConfig({
-  plugins: [react(), sitemapPlugin(), rssPlugin(), spa404Plugin(), prerenderPlugin()],
+export default defineConfig(({ isSsrBuild }) => ({
+  plugins: [
+    react(),
+    ...(!isSsrBuild ? [sitemapPlugin(), rssPlugin()] : []),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -241,11 +192,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (/[/\\]node_modules[/\\](react|react-dom|scheduler)[/\\]/.test(id)) {
+            return "react"
+          }
           if (id.includes("shiki")) {
             return "shiki"
-          }
-          if (id.includes("react-markdown") || id.includes("remark") || id.includes("rehype") || id.includes("unified") || id.includes("mdast") || id.includes("hast") || id.includes("micromark")) {
-            return "markdown"
           }
           if (id.includes("react-router")) {
             return "router"
@@ -257,4 +208,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

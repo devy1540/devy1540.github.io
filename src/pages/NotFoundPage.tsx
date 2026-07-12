@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom"
+import { PageContainer } from "@/components/PageContainer"
 import { Button } from "@/components/ui/button"
 import { useMetaTags } from "@/hooks/useMetaTags"
-import { useT } from "@/i18n"
+import { useLanguage } from "@/i18n"
+import { localizePath } from "@/lib/i18n-routing"
 
 export function NotFoundPage() {
   useMetaTags({ title: "404" })
-  const t = useT()
+  const { language, t } = useLanguage()
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+    <PageContainer className="flex flex-col items-center justify-center min-h-[60vh] text-center">
       <p className="text-8xl font-bold tracking-tight mb-4 text-muted-foreground">
         404
       </p>
@@ -15,8 +17,8 @@ export function NotFoundPage() {
         {t.notFound.title}
       </h1>
       <Button asChild>
-        <Link to="/" viewTransition>{t.common.goHome}</Link>
+        <Link to={localizePath("/", language)} viewTransition>{t.common.goHome}</Link>
       </Button>
-    </div>
+    </PageContainer>
   )
 }

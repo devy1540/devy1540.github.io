@@ -1,157 +1,177 @@
 <div align="center">
 
-# Devy's Blog
+<a href="https://devy1540.dev">
+  <img src="./public/og-image.png" alt="Devy Archive preview" width="720">
+</a>
 
-**React + TypeScript + Vite로 만든 개인 기술 블로그**
+<br>
 
-[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=Deploy&logo=github)](https://devy1540.github.io)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vite.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+# Devy Archive
 
-[**Live Demo**](https://devy1540.github.io) · [**RSS Feed**](https://devy1540.github.io/rss.xml)
+React, TypeScript, Vite로 만든 개인 기술 블로그입니다.<br>
+문제 해결 과정, 백엔드 아키텍처, 운영 경험, 프론트엔드 개선 기록을 Markdown 기반으로 발행합니다.
+
+<br>
+
+[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=github%20pages&logo=github&style=for-the-badge)](https://devy1540.dev)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=for-the-badge)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white&style=for-the-badge)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white&style=for-the-badge)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white&style=for-the-badge)](https://tailwindcss.com)
+
+[Live Site](https://devy1540.dev) &nbsp;&middot;&nbsp;
+[RSS](https://devy1540.dev/rss.xml) &nbsp;&middot;&nbsp;
+[Sitemap](https://devy1540.dev/sitemap.xml)
+
+<br>
 
 </div>
 
----
+## 소개
 
-## Features
+Devy Archive는 단순한 SPA가 아니라, GitHub Pages에서 안정적으로 동작하도록 hydrated SSG를 얹은 개인 기술 아카이브입니다. 글은 `content/posts/*.md`로 관리하고, 빌드 시 RSS, sitemap, route별 HTML, SEO metadata를 함께 생성합니다.
 
-| | Feature | Description |
-|---|---------|-------------|
-| :memo: | **Markdown 블로그** | GFM, 코드 하이라이팅(Shiki), Mermaid 다이어그램 지원 |
-| :mag: | **고급 검색** | 키워드, 날짜 범위, 태그 필터 기반 전체 검색 |
-| :bookmark: | **시리즈 & 태그** | 글 분류 및 시리즈 네비게이션 |
-| :crescent_moon: | **테마** | 다크/라이트/시스템 + 컬러 테마 커스터마이징 |
-| :globe_with_meridians: | **다국어** | 한국어/영어 전환 |
-| :bar_chart: | **Analytics** | Google Analytics 연동 통계 대시보드 |
-| :speech_balloon: | **댓글** | Giscus (GitHub Discussions 기반) |
-| :satellite: | **SEO** | Open Graph, RSS, Sitemap 자동 생성 |
-| :calendar: | **예약 발행** | Draft / Scheduled 포스트 관리 |
-
-## Tech Stack
+## 주요 기능
 
 <table>
-<tr>
-<td align="center" width="96"><b>Category</b></td>
-<td><b>Technologies</b></td>
-</tr>
-<tr>
-<td align="center">Frontend</td>
-<td>React 19 · TypeScript · Vite 7</td>
-</tr>
-<tr>
-<td align="center">Styling</td>
-<td>Tailwind CSS 4 · shadcn/ui (Radix UI) · Lucide Icons</td>
-</tr>
-<tr>
-<td align="center">Routing</td>
-<td>React Router v7</td>
-</tr>
-<tr>
-<td align="center">Markdown</td>
-<td>react-markdown · remark-gfm · rehype-raw · rehype-slug</td>
-</tr>
-<tr>
-<td align="center">Code</td>
-<td>Shiki (dual theme: github-light / github-dark)</td>
-</tr>
-<tr>
-<td align="center">Diagrams</td>
-<td>Mermaid.js (CSS 변수 기반 동적 테마)</td>
-</tr>
-<tr>
-<td align="center">Charts</td>
-<td>Recharts</td>
-</tr>
-<tr>
-<td align="center">Comments</td>
-<td>Giscus (GitHub Discussions)</td>
-</tr>
-<tr>
-<td align="center">Analytics</td>
-<td>Google Analytics · Google Apps Script API</td>
-</tr>
-<tr>
-<td align="center">Deploy</td>
-<td>GitHub Pages</td>
-</tr>
+  <tr>
+    <td width="50%">
+      <strong>Markdown publishing</strong><br>
+      frontmatter, GFM, raw HTML, 태그, 시리즈, 예약 발행, draft 지원
+    </td>
+    <td width="50%">
+      <strong>Hydrated SSG</strong><br>
+      SSR HTML을 빌드 산출물에 주입하고 클라이언트에서 안전하게 hydration
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <strong>Technical writing UX</strong><br>
+      Shiki dual-theme code highlighting, Mermaid diagram, TOC, 읽기 시간
+    </td>
+    <td width="50%">
+      <strong>Discovery</strong><br>
+      전체 검색, 고급 검색, 태그별 목록, 시리즈별 목록, Cmd+K command menu
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <strong>Personalization</strong><br>
+      light/dark/system theme, color theme, 한국어/English language toggle
+    </td>
+    <td width="50%">
+      <strong>Operations</strong><br>
+      Google Analytics page views, Giscus comments, RSS, sitemap, OG metadata
+    </td>
+  </tr>
 </table>
 
-## Getting Started
+## 아키텍처
+
+```mermaid
+flowchart LR
+  Posts["content/posts/*.md"] --> Glob["import.meta.glob"]
+  Glob --> Parser["src/lib/posts.ts"]
+  Parser --> Pages["React Router pages"]
+
+  Pages --> Client["CSR hydration"]
+  Pages --> Server["src/entry-server.tsx"]
+  Server --> Prerender["scripts/prerender.mjs"]
+  Prerender --> Dist["dist HTML"]
+
+  Parser --> Feed["RSS / Sitemap"]
+  Feed --> Dist
+```
+
+빌드 흐름은 `tsc -> Vite client build -> Vite SSR build -> hydrated prerender` 순서로 실행됩니다. 글 상세, 프로젝트 상세, 404 fallback까지 정적 HTML을 생성해 GitHub Pages의 SPA fallback에서도 hydration mismatch를 줄입니다.
+
+## 라우트
+
+| Path | Page | Description |
+| --- | --- | --- |
+| `/` | Home | 최신글, 인기글, 블로그 통계 |
+| `/posts` | Posts | 전체 글 목록, 검색, 정렬, 태그/연도 필터 |
+| `/posts/:slug` | Post | Markdown 글 상세, TOC, 댓글 |
+| `/tags` | Tags | 태그별 주제 탐색, 관련 태그, 최근 글 |
+| `/series` | Series | 시리즈별 글 탐색 |
+| `/analytics` | Analytics | 방문자 및 조회수 대시보드 |
+| `/about` | About | 소개, 경력, 프로젝트 요약 |
+| `/about/projects/:slug` | Project Detail | 프로젝트 상세 |
+
+## 빠른 시작
 
 ```bash
-# 의존성 설치
-npm install
-
-# 개발 서버
+npm ci
 npm run dev
-
-# 프로덕션 빌드
-npm run build
-
-# 빌드 미리보기
-npm run preview
 ```
 
-<details>
-<summary><b>기타 명령어</b></summary>
+개발 서버는 기본적으로 `http://localhost:5173`에서 실행됩니다.
 
-```bash
-# TypeScript 타입 체크
-npm run type-check
+## 명령어
 
-# ESLint
-npm run lint
-```
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Vite 개발 서버 실행 |
+| `npm run build` | 타입 체크, client/SSR 빌드, hydrated SSG 생성 |
+| `npm run preview` | `dist` 결과 미리보기 |
+| `npm run lint` | ESLint 검사 |
+| `npm run type-check` | TypeScript 타입 검사 |
 
-</details>
+## 글 작성
 
-## Writing Posts
-
-`content/posts/` 디렉토리에 Markdown 파일을 추가합니다.
+`content/posts/`에 Markdown 파일을 추가하면 빌드 시 자동으로 로드됩니다.
 
 ```yaml
 ---
-title: "포스트 제목"
-date: "2026-02-26"
-description: "포스트 설명"
+title: "제목"
+date: "2025-01-01"
+description: "설명"
 tags: ["react", "typescript"]
-series: "시리즈 이름"       # optional
+series: "시리즈명"          # optional
 seriesOrder: 1              # optional
-draft: true                 # optional
-publishDate: "2026-03-15"   # optional (예약 발행)
+draft: true                 # optional, production에서 숨김
+publishDate: "2025-12-01"   # optional, 예약 발행
 ---
 ```
 
-> **Note**
-> `draft: true` 또는 미래 `publishDate`가 설정된 글은 `npm run dev`에서만 배지와 함께 표시되며, 프로덕션 빌드에서는 자동 제외됩니다.
+`draft: true` 또는 미래의 `publishDate`가 있는 글은 production 빌드에서 자동으로 제외됩니다.
 
-## Project Structure
+## 프로젝트 구조
 
+```text
+.
+├── content/posts/          # Markdown posts
+├── public/                 # favicon, OG image, robots.txt, CNAME
+├── scripts/
+│   └── prerender.mjs       # SSR 결과를 dist HTML에 주입
+├── src/
+│   ├── components/         # UI, markdown, comments, charts
+│   ├── data/               # resume/project data
+│   ├── hooks/              # theme, meta, page views
+│   ├── i18n/               # ko/en translations
+│   ├── layouts/            # root layout
+│   ├── lib/                # posts, analytics, shiki, utils
+│   ├── pages/              # route pages
+│   ├── routes.tsx          # client routes and lazy loading
+│   ├── routes.server.tsx   # server prerender routes
+│   └── entry-server.tsx    # React SSR entry
+└── vite.config.ts          # Vite, manual chunks, RSS, sitemap
 ```
-content/posts/           # Markdown 블로그 포스트
-public/                  # 정적 파일 (favicon, og-image)
-src/
-├── components/          # UI 컴포넌트
-│   └── ui/              #   shadcn/ui
-├── hooks/               # Custom hooks (theme, pageViews, meta)
-├── i18n/                # 다국어 (ko/en)
-├── layouts/             # 공통 레이아웃 (Sidebar + Header)
-├── lib/                 # 유틸리티 (posts, analytics)
-├── pages/               # 페이지 컴포넌트
-└── types/               # TypeScript 타입 정의
-```
 
-## Keyboard Shortcuts
+## 기술 스택
 
-| Shortcut | Action |
-|:--------:|--------|
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | 검색 열기 |
-| <kbd>Cmd</kbd> + <kbd>B</kbd> | 사이드바 토글 |
-| <kbd>Shift</kbd> + <kbd>/</kbd> | 단축키 안내 |
+| Area | Stack |
+| --- | --- |
+| App | React 19, TypeScript 5.8, Vite 8 |
+| Routing | React Router v7 |
+| Styling | Tailwind CSS v4, shadcn/ui, Radix UI |
+| Content | react-markdown, remark-gfm, rehype-raw, rehype-slug |
+| Code & Diagram | Shiki, Mermaid.js |
+| Data Viz | Recharts |
+| Community | Giscus |
+| Analytics | Google Analytics, Google Apps Script API |
+| Deploy | GitHub Pages, custom domain `devy1540.dev` |
 
-## License
+## 배포
 
-MIT
+GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `devy1540.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, route별 prerendered HTML이 함께 생성됩니다.

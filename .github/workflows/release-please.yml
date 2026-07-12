@@ -15,12 +15,16 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: node
+          token: ${{ secrets.PAT_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
-      - name: Auto-merge Release PR
-        if: steps.release.outputs.pr
-        run: gh pr merge ${{ fromJSON(steps.release.outputs.pr).number }} --merge
+      - name: Enable auto-merge Release PR
+        if: ${{ steps.release.outputs.pr }}
+        run: |
+          pr_number="$(jq -r '.number' <<< "$RELEASE_PR")"
+          gh pr merge "$pr_number" --auto --squash --delete-branch
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
           GH_REPO: ${{ github.repository }}
-
+          RELEASE_PR: ${{ steps.release.outputs.pr }}

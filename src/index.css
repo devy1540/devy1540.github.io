@@ -104,7 +104,10 @@
     @apply border-border;
   }
   html {
-    transition: color-scheme 0.3s;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground;
@@ -134,6 +137,10 @@
 .dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
+}
+.theme-transition .shiki,
+.theme-transition .shiki span {
+  transition: color 200ms ease, background-color 200ms ease !important;
 }
 
 /* Color theme presets */
@@ -222,6 +229,14 @@
   --sidebar-accent-foreground: oklch(0.85 0.06 293);
 }
 
+/* Theme transition */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, fill 200ms ease, stroke 200ms ease, box-shadow 200ms ease !important;
+}
+
 /* Collapsible animations */
 @keyframes collapsible-down {
   from { height: 0; opacity: 0; }
@@ -289,4 +304,71 @@
 .prose :not(pre) > code::before,
 .prose :not(pre) > code::after {
   content: none;
+}
+
+.page-container {
+  --page-container-max-width: 72rem;
+  width: 100%;
+  max-width: var(--page-container-max-width);
+  margin-inline: auto;
+}
+
+.page-container-default {
+  --page-container-max-width: 72rem;
+}
+
+.page-container-article {
+  --page-container-max-width: 72rem;
+}
+
+.page-container-wide {
+  --page-container-max-width: 72rem;
+}
+
+@media (min-width: 1280px) {
+  [data-slot="sidebar-wrapper"] {
+    --content-sidebar-width: 0rem;
+    --content-available-width: calc(100vw - var(--content-sidebar-width) - 10rem);
+  }
+
+  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="expanded"]) {
+    --content-sidebar-width: var(--sidebar-width);
+  }
+
+  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="collapsed"]) {
+    --content-sidebar-width: var(--sidebar-width-icon);
+  }
+
+  .post-toc-layer {
+    display: none;
+  }
+}
+
+@media (min-width: 1856px) {
+  .post-page-layout {
+    --post-article-width: min(72rem, var(--content-available-width));
+    --post-article-half-width: calc(var(--post-article-width) / 2);
+    --post-toc-gap: 2.5rem;
+    /* 본문 + TOC를 한 묶음으로 보고 콘텐츠 영역 중앙에 오도록, 본문을
+       오른쪽 TOC(gap + 15rem)의 절반만큼 왼쪽으로 당긴다. 이러면 그룹의
+       중심이 인셋 중앙과 일치해 본문 폭은 그대로 두고도 자연스럽게 중앙에 온다. */
+    --post-article-shift: calc((var(--post-toc-gap) + 15rem) / -2);
+  }
+
+  .post-article-centered {
+    transform: translateX(var(--post-article-shift));
+    transition: transform 120ms ease-out;
+  }
+
+  .post-toc-layer {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: calc(
+      50% + var(--post-article-shift) + var(--post-article-half-width) + var(--post-toc-gap)
+    );
+    width: 15rem;
+    height: 100%;
+    transition: left 120ms ease-out;
+  }
 }

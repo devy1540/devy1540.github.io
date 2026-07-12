@@ -2,42 +2,45 @@ import { useParams, Link } from "react-router-dom"
 import { ArrowLeft, FileText } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
+import { PageContainer } from "@/components/PageContainer"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useT } from "@/i18n"
-import { PROJECTS } from "@/data/resume"
+import { useLanguage } from "@/i18n"
+import { getResumeData } from "@/data/resume-i18n"
 import { getPostBySlug } from "@/lib/posts"
+import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
-  const project = PROJECTS.find((p) => p.slug === slug)
-  const t = useT()
+  const { language, t } = useLanguage()
+  const { projects } = getResumeData(language)
+  const project = projects.find((p) => p.slug === slug)
 
   useMetaTags({
     title: project?.name,
     description: project ? `${project.company} — ${project.name}` : undefined,
-    url: slug ? `/about/projects/${slug}` : undefined,
+    url: slug ? localizePath(`/about/projects/${slug}`, language) : undefined,
   })
 
   if (!project) {
     return (
-      <div className="max-w-4xl mx-auto text-center py-20">
+      <PageContainer className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
-          <Link to="/about" viewTransition>
+          <Link to={localizePath("/about", language)} viewTransition>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.about.backToAbout}
           </Link>
         </Button>
-      </div>
+      </PageContainer>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer>
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-        <Link to="/about" viewTransition>
+        <Link to={localizePath("/about", language)} viewTransition>
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t.about.backToAbout}
         </Link>
@@ -103,7 +106,7 @@ export function ProjectDetailPage() {
       )}
 
       {project.relatedPosts && project.relatedPosts.length > 0 && (() => {
-        const posts = project.relatedPosts.map(getPostBySlug).filter(Boolean)
+        const posts = project.relatedPosts.map((slug) => getPostBySlug(slug, language)).filter(Boolean)
         if (posts.length === 0) return null
         return (
           <>
@@ -114,7 +117,7 @@ export function ProjectDetailPage() {
                 {posts.map((post) => (
                   <Link
                     key={post!.slug}
-                    to={`/posts/${post!.slug}`}
+                    to={postPath(post!.slug, language)}
                     viewTransition
                     className="block rounded-lg border p-4 hover:bg-muted/50 transition-colors"
                   >
@@ -133,6 +136,6 @@ export function ProjectDetailPage() {
           </>
         )
       })()}
-    </div>
+    </PageContainer>
   )
 }

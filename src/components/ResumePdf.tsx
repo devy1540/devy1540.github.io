@@ -31,9 +31,9 @@ const colors = {
   primary: "#18181b",
   secondary: "#3f3f46",
   muted: "#71717a",
+  faint: "#a1a1aa",
   accent: "#2563eb",
   border: "#e4e4e7",
-  bgLight: "#f4f4f5",
 }
 
 const s = StyleSheet.create({
@@ -41,62 +41,68 @@ const s = StyleSheet.create({
     fontFamily: "Pretendard",
     fontSize: 9,
     color: colors.primary,
-    paddingTop: 36,
-    paddingBottom: 36,
-    paddingHorizontal: 40,
+    paddingTop: 42,
+    paddingBottom: 42,
+    paddingHorizontal: 42,
     lineHeight: 1.5,
   },
   // Header
-  header: { marginBottom: 20 },
-  name: { fontSize: 22, fontWeight: 700, lineHeight: 1.2, marginBottom: 6 },
-  role: { fontSize: 11, color: colors.muted, marginBottom: 8 },
-  contactRow: { flexDirection: "row", gap: 12 },
-  contactLink: { fontSize: 8.5, color: colors.accent, textDecoration: "none" },
-  intro: { fontSize: 9, color: colors.secondary, lineHeight: 1.6, marginTop: 12 },
+  header: { marginBottom: 24 },
+  name: { fontSize: 23, fontWeight: 600, letterSpacing: -0.3, lineHeight: 1.25, marginBottom: 9 },
+  role: { fontSize: 8.5, fontWeight: 500, letterSpacing: 1.8, textTransform: "uppercase", color: colors.muted, marginBottom: 13 },
+  contactRow: { flexDirection: "row", gap: 8 },
+  contactLink: { fontSize: 8.5, color: colors.secondary, textDecoration: "none" },
+  contactText: { fontSize: 8.5, color: colors.secondary },
+  contactSep: { fontSize: 8.5, color: colors.faint },
+  intro: { fontSize: 9, color: colors.secondary, lineHeight: 1.7, marginTop: 15 },
   // Section
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: 700,
-    color: colors.primary,
-    marginBottom: 8,
-    marginTop: 16,
-    paddingBottom: 4,
-    borderBottomWidth: 1.5,
-    borderBottomColor: colors.primary,
+    fontSize: 10.5,
+    fontWeight: 600,
+    letterSpacing: 1.8,
+    textTransform: "uppercase",
+    color: colors.muted,
+    marginTop: 26,
+    marginBottom: 14,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   // Skills
-  skillRow: { flexDirection: "row", marginBottom: 4 },
-  skillCategory: { width: 80, fontSize: 8.5, fontWeight: 600, color: colors.secondary },
-  skillList: { flex: 1, fontSize: 8.5, color: colors.muted },
+  skillRow: { flexDirection: "row", marginBottom: 6 },
+  skillCategory: { width: 92, fontSize: 8.5, fontWeight: 600, color: colors.primary },
+  skillList: { flex: 1, fontSize: 8.5, color: colors.secondary },
   // Company
-  companyHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 2, marginTop: 10 },
-  companyName: { fontSize: 11, fontWeight: 700 },
+  companyOuterFirst: { marginTop: 6 },
+  companyHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 },
+  companyName: { fontSize: 13, fontWeight: 700, letterSpacing: -0.2 },
   companyPeriod: { fontSize: 8.5, color: colors.muted },
-  companyRole: { fontSize: 9, color: colors.muted, marginBottom: 6 },
+  companyRole: { fontSize: 9, color: colors.muted, marginBottom: 12 },
   // Project
-  projectBox: { marginBottom: 14, paddingLeft: 8, borderLeftWidth: 2, borderLeftColor: colors.border },
-  projectHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 },
-  projectName: { fontSize: 9.5, fontWeight: 600, marginBottom: 2 },
-  projectPeriod: { fontSize: 8, color: colors.muted },
-  techRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 6 },
-  techBadge: { fontSize: 7.5, color: colors.accent, backgroundColor: "#eff6ff", paddingHorizontal: 5, paddingVertical: 1.5, borderRadius: 3 },
-  taskItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
-  detailItem: { fontSize: 8, color: colors.muted, marginBottom: 3, marginTop: -4, paddingLeft: 20, lineHeight: 1.6 },
-  achievementItem: { fontSize: 8.5, color: colors.primary, fontWeight: 500, marginBottom: 8, paddingLeft: 8, lineHeight: 1.6 },
-  subLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 3, marginTop: 6 },
+  projectBox: { marginBottom: 14 },
+  projectName: { fontSize: 10, fontWeight: 600, color: colors.primary, marginBottom: 3 },
+  techInline: { fontSize: 8, color: colors.muted, letterSpacing: 0.2, marginBottom: 8 },
+  // Task
+  taskGroup: { marginBottom: 5 },
+  taskRow: { flexDirection: "row", paddingLeft: 2 },
+  taskBullet: { width: 9, fontSize: 8.5, color: colors.faint, lineHeight: 1.6 },
+  taskItem: { flex: 1, fontSize: 8.5, color: colors.secondary, lineHeight: 1.6 },
+  detailRow: { flexDirection: "row", paddingLeft: 16, marginTop: 2 },
+  detailArrow: { width: 12, fontSize: 8, color: colors.faint, lineHeight: 1.6 },
+  detailItem: { flex: 1, fontSize: 8, color: colors.muted, lineHeight: 1.6 },
+  // Achievement (small blue dot marker + emphasized metric)
+  achGroup: { marginTop: 7 },
+  achRow: { flexDirection: "row", marginBottom: 4, paddingLeft: 2 },
+  achDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.accent, marginTop: 4, marginRight: 8 },
+  achText: { flex: 1, fontSize: 8.5, color: colors.primary, lineHeight: 1.55 },
   // Certifications
-  certRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 3 },
+  certRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 5 },
   certName: { fontSize: 9, color: colors.secondary },
   certYear: { fontSize: 8.5, color: colors.muted },
-  // Highlights
-  highlightBox: { backgroundColor: colors.bgLight, borderRadius: 4, padding: 10, marginBottom: 12 },
-  highlightLabel: { fontSize: 8, fontWeight: 600, color: colors.muted, marginBottom: 5 },
-  highlightItem: { fontSize: 8.5, color: colors.secondary, marginBottom: 3, paddingLeft: 8, lineHeight: 1.6 },
   boldText: { fontWeight: 700 },
-  contactText: { fontSize: 8.5, color: colors.muted },
   // URLs
-  urlRow: { flexDirection: "row", marginBottom: 4 },
-  urlLabel: { width: 110, fontSize: 8.5, fontWeight: 600, color: colors.secondary },
+  urlRow: { flexDirection: "row", marginBottom: 5 },
+  urlLabel: { width: 110, fontSize: 8.5, fontWeight: 600, color: colors.primary },
 })
 
 /** Parse **bold** markdown into Text elements */
@@ -115,51 +121,57 @@ function BoldText({ style, children }: { style: Styles[string]; children: string
   )
 }
 
-function CompanySection({ company }: { company: Company }) {
+function TaskGroup({ task }: { task: (typeof PROJECTS)[number]["tasks"][number] }) {
+  return (
+    <View style={s.taskGroup} wrap={false}>
+      <View style={s.taskRow}>
+        <Text style={s.taskBullet}>·</Text>
+        <BoldText style={s.taskItem}>{task.content}</BoldText>
+      </View>
+      {task.details?.map((detail, j) => (
+        <View key={j} style={s.detailRow}>
+          <Text style={s.detailArrow}>→</Text>
+          <BoldText style={s.detailItem}>{detail}</BoldText>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+function CompanySection({ company, isFirst }: { company: Company; isFirst: boolean }) {
   const companyProjects = company.projects
     .map((ps) => PROJECTS.find((p) => p.slug === ps.slug))
     .filter(Boolean)
 
   return (
-    <View>
-      <View style={s.companyHeader}>
-        <Text style={s.companyName}>{company.name}</Text>
-        <Text style={s.companyPeriod}>{company.period}</Text>
-      </View>
-      <Text style={s.companyRole}>{company.role}</Text>
-
-      {company.highlights && company.highlights.length > 0 && (
-        <View style={s.highlightBox}>
-          <Text style={s.highlightLabel}>주요 성과</Text>
-          {company.highlights.map((h, i) => (
-            <BoldText key={i} style={s.highlightItem}>{"• " + h}</BoldText>
-          ))}
+    <View break={!isFirst} style={isFirst ? s.companyOuterFirst : undefined}>
+      <View wrap={false} minPresenceAhead={80}>
+        <View style={s.companyHeader}>
+          <Text style={s.companyName}>{company.name}</Text>
+          <Text style={s.companyPeriod}>{company.period}</Text>
         </View>
-      )}
+        <Text style={s.companyRole}>{company.role}</Text>
+      </View>
 
       {companyProjects.map((project) => (
         <View key={project!.slug} style={s.projectBox}>
-          <Text style={s.projectName}>{project!.name}</Text>
-          <View style={s.techRow}>
-            {project!.tech.map((t) => (
-              <Text key={t} style={s.techBadge}>{t}</Text>
-            ))}
+          <View wrap={false}>
+            <Text style={s.projectName}>{project!.name}</Text>
+            <Text style={s.techInline}>{project!.tech.join("   ·   ")}</Text>
+            {project!.tasks[0] && <TaskGroup task={project!.tasks[0]} />}
           </View>
-          {project!.tasks.map((task, i) => (
-            <View key={i}>
-              <BoldText style={s.taskItem}>{"- " + task.content}</BoldText>
-              {task.details?.map((detail, j) => (
-                <BoldText key={j} style={s.detailItem}>{"→ " + detail}</BoldText>
-              ))}
-            </View>
+          {project!.tasks.slice(1).map((task, i) => (
+            <TaskGroup key={i} task={task} />
           ))}
           {project!.achievements && project!.achievements.length > 0 && (
-            <>
-              <Text style={s.subLabel}>Achievements</Text>
+            <View style={s.achGroup}>
               {project!.achievements.map((ach, i) => (
-                <BoldText key={i} style={s.achievementItem}>{"- " + ach}</BoldText>
+                <View key={`ach-${i}`} style={s.achRow} wrap={false}>
+                  <View style={s.achDot} />
+                  <BoldText style={s.achText}>{ach}</BoldText>
+                </View>
               ))}
-            </>
+            </View>
           )}
         </View>
       ))}
@@ -177,6 +189,7 @@ export function ResumePdfDocument() {
           <Text style={s.role}>Backend Engineer</Text>
           <View style={s.contactRow}>
             <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
+            <Text style={s.contactSep}>·</Text>
             <Text style={s.contactText}>{PROFILE.phone}</Text>
           </View>
           <Text style={s.intro}>{PROFILE.introduction}</Text>
@@ -184,8 +197,8 @@ export function ResumePdfDocument() {
 
         {/* Experience */}
         <Text style={s.sectionTitle}>Experience</Text>
-        {COMPANIES.map((company) => (
-          <CompanySection key={company.name} company={company} />
+        {COMPANIES.map((company, idx) => (
+          <CompanySection key={company.name} company={company} isFirst={idx === 0} />
         ))}
 
         {/* Skills */}
@@ -218,7 +231,7 @@ export function ResumePdfDocument() {
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>Blog</Text>
-          <Link src="https://devy1540.github.io" style={s.contactLink}>https://devy1540.github.io</Link>
+          <Link src="https://devy1540.dev" style={s.contactLink}>https://devy1540.dev</Link>
         </View>
         {PROJECTS.flatMap((p) => p.relatedLinks ?? []).map((link) => (
           <View key={link.url} style={s.urlRow}>

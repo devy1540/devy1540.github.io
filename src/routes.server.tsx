@@ -1,0 +1,45 @@
+import type { RouteObject } from "react-router-dom"
+import { RootLayout } from "./layouts/RootLayout"
+import { HomePage } from "./pages/HomePage"
+import { ErrorPage } from "./pages/ErrorPage"
+import { NotFoundPage } from "./pages/NotFoundPage"
+import { PostsPage } from "./pages/PostsPage"
+import { PostPage } from "./pages/PostPage"
+import { TagsPage } from "./pages/TagsPage"
+import { SeriesPage } from "./pages/SeriesPage"
+import { SearchPage } from "./pages/SearchPage"
+import { AnalyticsPage } from "./pages/AnalyticsPage"
+import { AboutPage } from "./pages/AboutPage"
+import { ProjectDetailPage } from "./pages/ProjectDetailPage"
+import { PrivacyPage } from "./pages/PrivacyPage"
+import { AdminPage } from "./pages/admin/AdminPage"
+import { AdminCallbackPage } from "./pages/admin/AdminCallbackPage"
+
+export function createServerRoutes(): RouteObject[] {
+  const childRoutes: RouteObject[] = [
+    { index: true, element: <HomePage /> },
+    { path: "posts", element: <PostsPage /> },
+    { path: "posts/:slug", element: <PostPage /> },
+    { path: "tags", element: <TagsPage /> },
+    { path: "series", element: <SeriesPage /> },
+    { path: "search", element: <SearchPage /> },
+    { path: "analytics", element: <AnalyticsPage /> },
+    { path: "about", element: <AboutPage /> },
+    { path: "about/projects/:slug", element: <ProjectDetailPage /> },
+    { path: "privacy", element: <PrivacyPage /> },
+  ]
+
+  return [
+    {
+      element: <RootLayout />,
+      errorElement: <ErrorPage />,
+      children: [
+        ...childRoutes,
+        { path: "en", children: childRoutes },
+        { path: "admin", element: <AdminPage /> },
+        { path: "admin/callback", element: <AdminCallbackPage /> },
+        { path: "*", element: <NotFoundPage /> },
+      ],
+    },
+  ]
+}

@@ -11,34 +11,45 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
+function isTheme(value: string | null): value is Theme {
+  return value === "light" || value === "dark" || value === "system"
+}
+
 function getSystemTheme(): ResolvedTheme {
+  if (typeof window === "undefined") return "light"
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light"
 }
 
 function applyTheme(resolved: ResolvedTheme) {
+  if (typeof document === "undefined" || typeof window === "undefined") return
+  const root = document.documentElement
+  root.classList.add("theme-transition")
+
   if (resolved === "dark") {
-    document.documentElement.classList.add("dark")
+    root.classList.add("dark")
   } else {
-    document.documentElement.classList.remove("dark")
+    root.classList.remove("dark")
   }
+
+  // Remove transition class after animation completes
+  window.setTimeout(() => {
+    root.classList.remove("theme-transition")
+  }, 200)
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    const stored = localStorage.getItem("theme") as Theme | null
-    return stored ?? "system"
-  })
-
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
-    const stored = localStorage.getItem("theme") as Theme | null
-    if (stored === "light") return "light"
-    if (stored === "dark") return "dark"
-    return getSystemTheme()
-  })
+  const [theme, setThemeState] = useState<Theme>("system")
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light")
 
   useEffect(() => {
+    const stored = localStorage.getItem("theme")
+    if (isTheme(stored) && stored !== theme) {
+      setThemeState(stored)
+      return
+    }
+
     const resolved: ResolvedTheme =
       theme === "system" ? getSystemTheme() : theme
     setResolvedTheme(resolved)

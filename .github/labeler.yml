@@ -1,0 +1,106 @@
+"target: main":
+  - base-branch: "^main$"
+
+"area: content":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "content/posts/**"
+
+"area: blog":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/pages/HomePage.tsx"
+          - "src/pages/PostPage.tsx"
+          - "src/pages/PostsPage.tsx"
+          - "src/pages/SearchPage.tsx"
+          - "src/pages/SeriesPage.tsx"
+          - "src/pages/TagsPage.tsx"
+          - "src/components/PostList.tsx"
+          - "src/components/SeriesNavigator.tsx"
+          - "src/components/TableOfContents.tsx"
+          - "src/components/CodeBlock.tsx"
+          - "src/components/Comments.tsx"
+          - "src/lib/posts.ts"
+          - "src/lib/reading-time.ts"
+          - "src/types/post.ts"
+
+"area: analytics":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/pages/AnalyticsPage.tsx"
+          - "src/components/DailyVisitsChart.tsx"
+          - "src/lib/analytics.ts"
+          - "src/hooks/usePageViews.ts"
+
+"area: about":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/pages/AboutPage.tsx"
+          - "src/pages/ProjectDetailPage.tsx"
+          - "src/components/ResumePdf.tsx"
+          - "src/components/BenchmarkChart.tsx"
+          - "src/data/resume.ts"
+
+"area: ui":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/**"
+          - "src/layouts/**"
+          - "src/index.css"
+          - "src/components/ui/**"
+
+"area: i18n":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/i18n/**"
+
+"area: routing":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/App.tsx"
+          - "src/main.tsx"
+          - "src/app-shell.tsx"
+          - "src/routes.tsx"
+          - "src/routes.server.tsx"
+          - "src/layouts/RootLayout.tsx"
+
+"area: seo":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/hooks/useMetaTags.ts"
+          - "src/entry-server.tsx"
+          - "scripts/prerender.mjs"
+          - "vite.config.ts"
+          - "public/CNAME"
+          - "public/robots.txt"
+          - "public/og-image*"
+          - "public/favicon*"
+
+"area: build":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "package-lock.json"
+          - "tsconfig*.json"
+          - "vite.config.ts"
+          - "eslint.config.*"
+          - "postcss.config.*"
+          - "components.json"
+
+"area: ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+
+"dependencies":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "package-lock.json"
+
+"documentation":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "README.md"
+          - "AGENTS.md"
+          - "docs/**"
