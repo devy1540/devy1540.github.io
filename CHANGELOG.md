@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.27.2](https://github.com/devy1540/devy1540.github.io/compare/v1.27.1...v1.27.2) (2026-07-12)
+
+
+### 버그 수정
+
+* prevent broken internal post links ([30ede08](https://github.com/devy1540/devy1540.github.io/commit/30ede0899def2437c916911674579cf7bb299c09))
+* remove post metadata lint errors ([237e815](https://github.com/devy1540/devy1540.github.io/commit/237e81580f3d68113de7b51e82f0ff1ed5ea79f9))
+* replace missing Spring AI post link ([45a4e73](https://github.com/devy1540/devy1540.github.io/commit/45a4e7314845fdcd7675f78c438bbdd4d5761b90))
+
+
+### 문서
+
+* record Search Console triage ([c145633](https://github.com/devy1540/devy1540.github.io/commit/c1456331db844d442eae7ba049ecffface24619b))
+* specify internal link integrity checks ([afad37d](https://github.com/devy1540/devy1540.github.io/commit/afad37dfa730f6fbe5626c48ddbcb20014d79593))
+
+
+### 테스트
+
+* detect missing internal post links ([64f3d56](https://github.com/devy1540/devy1540.github.io/commit/64f3d56c67b4e49c688334e2f08b22ce7e90813b))
+
 ## [1.27.1](https://github.com/devy1540/devy1540.github.io/compare/v1.27.0...v1.27.1) (2026-07-07)
 
 
