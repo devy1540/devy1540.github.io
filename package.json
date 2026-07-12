@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "check:internal-links": "node scripts/check-internal-post-links.mjs"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
