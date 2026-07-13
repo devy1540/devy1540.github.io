@@ -8,11 +8,11 @@ draft: false
 
 ## 왜 비교하는가
 
-서버 애플리케이션에서 동시성 모델 선택은 처리량과 응답 시간을 결정짓는 핵심 설계 요소다. 전통적인 Platform Thread 기반 스레드 풀은 오랫동안 표준이었지만, JDK 21에서 Virtual Thread가 정식 도입되고, Kotlin Coroutine이 JVM 생태계에서 존재감을 키우면서 선택지가 넓어졌다.
+서버 애플리케이션에서 동시성 모델 선택은 처리량과 응답 시간을 결정짓는 핵심 설계 요소다. 전통적인 Platform Thread 기반 스레드 풀은 오랫동안 표준이었지만 JDK 21에서 Virtual Thread가 정식 도입되고 Kotlin Coroutine이 JVM 생태계에서 존재감을 키우면서 선택지가 넓어졌다.
 
-이전에 [JDK 11에서 21로 마이그레이션](/posts/jdk-migration-strategy-11-to-25)하고, 이어서 [JDK 21에서 25로 올리면서 Virtual Thread를 도입](/posts/jdk-migration-strategy-21-to-25)했다. [결제 시스템을 SQS 비동기에서 동기 API로 전환](/posts/payment-system-redesign-sync-api)하는 과정에서 동기 코드의 동시성 확보가 관심사가 되었고, [멀티채널 알림 서버](/posts/multi-channel-notification-server)처럼 대량 동시 발송이 필요한 서비스에서는 동시성 모델 선택이 곧 처리량을 결정짓는다.
+이전에 [JDK 11에서 21로 마이그레이션](/posts/jdk-migration-strategy-11-to-25)하고 이어서 [JDK 21에서 25로 올리면서 Virtual Thread를 도입](/posts/jdk-migration-strategy-21-to-25)했다. [결제 시스템을 SQS 비동기에서 동기 API로 전환](/posts/payment-system-redesign-sync-api)하는 과정에서 동기 코드의 동시성 확보가 관심사가 되었고 [멀티채널 알림 서버](/posts/multi-channel-notification-server)처럼 대량 동시 발송이 필요한 서비스에서는 동시성 모델 선택이 곧 처리량을 결정짓는다.
 
-문제는 "**어떤 모델이 더 좋은가?**"에 대한 답이 워크로드에 따라 완전히 달라진다는 것이다. I/O 대기가 많은 서비스, 연산 집약적인 배치 처리, 수만 개의 동시 요청을 처리해야 하는 경우 각각 최적의 모델이 다르다.
+문제는 "**어떤 모델이 더 좋은가?**"라는 질문의 답이 워크로드에 따라 완전히 달라진다는 점이다. I/O 대기가 많은 서비스, 연산 집약적인 배치 처리, 수만 개의 동시 요청을 처리하는 경우 각각 최적의 모델이 다르다.
 
 직접 벤치마크를 만들어서 **10,000개 태스크 × 100회 반복** 조건으로 세 모델을 비교했다. 모니터링은 [이전에 구축한 LGTM 스택](/posts/lgtm-stack-observability)의 Prometheus + Grafana 조합을 활용했다.
 
@@ -20,7 +20,7 @@ draft: false
 
 ### Platform Thread - 전통적 스레드 풀
 
-OS 커널 스레드와 1:1로 매핑되는 전통적 방식이다. `Executors.newFixedThreadPool(N)`으로 스레드 풀을 만들고, 풀 크기만큼만 동시에 실행된다.
+OS 커널 스레드와 1:1로 매핑되는 전통적 방식이다. `Executors.newFixedThreadPool(N)`으로 스레드 풀을 만들고 풀 크기만큼만 동시에 실행된다.
 
 ```mermaid
 graph TB
@@ -59,7 +59,7 @@ try (var executor = Executors.newFixedThreadPool(poolSize)) {
 
 ### Virtual Thread - JDK 21+의 경량 스레드
 
-JVM이 관리하는 경량 스레드다. OS 스레드 위에 N:M 매핑으로 동작하며, I/O 블로킹 시 자동으로 carrier thread에서 unmount된다. 코드는 동기식으로 작성하되 런타임이 비동기 최적화를 처리한다.
+JVM이 관리하는 경량 스레드다. OS 스레드 위에 N:M 매핑으로 동작하며 I/O 블로킹 시 자동으로 carrier thread에서 unmount된다. 코드는 동기식으로 작성하되 런타임이 비동기 최적화를 처리한다.
 
 ```mermaid
 graph TB
@@ -97,7 +97,7 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ### Kotlin Coroutine - 언어 레벨 비동기
 
-컴파일러가 `suspend` 함수를 상태 머신(Continuation)으로 변환하는 방식이다. 스레드보다 가벼운 코루틴 객체를 힙에 생성하고, Dispatcher가 적절한 스레드 풀에 스케줄링한다.
+컴파일러가 `suspend` 함수를 상태 머신(Continuation)으로 변환하는 방식이다. 스레드보다 가벼운 코루틴 객체를 힙에 생성하고 Dispatcher가 적절한 스레드 풀에 스케줄링한다.
 
 ```mermaid
 graph TB
@@ -199,7 +199,7 @@ fun simulateCpu(iterations: Int): Long {
 
 #### 측정 방식
 
-각 태스크는 `System.nanoTime()`으로 개별 지연 시간을 측정하고, `Collections.synchronizedList()`에 수집한다. 메모리는 `Runtime.freeMemory()` 차이로, 처리량은 `taskCount * 1000 / totalMs`로 계산한다.
+각 태스크는 `System.nanoTime()`으로 개별 지연 시간을 측정하고 `Collections.synchronizedList()`에 수집한다. 메모리는 `Runtime.freeMemory()` 차이로, 처리량은 `taskCount * 1000 / totalMs`로 계산한다.
 
 ### 공통 인터페이스
 
@@ -214,11 +214,11 @@ interface ConcurrencyScenario {
 }
 ```
 
-각 태스크는 `System.nanoTime()`으로 개별 지연 시간을 측정하고, `Collections.synchronizedList()`에 수집한다. 메모리는 실행 전후 `Runtime.freeMemory()` 차이로 계산한다.
+각 태스크는 `System.nanoTime()`으로 개별 지연 시간을 측정하고 `Collections.synchronizedList()`에 수집한다. 메모리는 실행 전후 `Runtime.freeMemory()` 차이로 계산한다.
 
 ### 메트릭 수집
 
-Spring Boot Actuator + Micrometer로 Prometheus에 메트릭을 전송하고, Grafana 대시보드로 시각화한다.
+Spring Boot Actuator + Micrometer로 Prometheus에 메트릭을 전송하고 Grafana 대시보드로 시각화한다.
 
 ```yaml
 # application.yml
@@ -301,9 +301,9 @@ management:
 - Virtual Thread: 내부적으로 carrier thread에 스케줄링 → 결국 코어 수만큼 동시 실행
 - Coroutine: `Dispatchers.Default` → 코어 수로 바운드된 풀이지만 코루틴 스케줄링 오버헤드 발생
 
-**Coroutine이 약 1.8배 느린 이유**: `Dispatchers.Default`는 코어 수만큼의 스레드 풀을 사용하지만, 10,000개 코루틴 간의 컨텍스트 스위칭과 `runBlocking` + `async` 조합의 스케줄링 비용이 순수 연산 시간에 비해 무시할 수 없는 수준으로 누적된다.
+**Coroutine이 약 1.8배 느린 이유**: `Dispatchers.Default`는 코어 수만큼의 스레드 풀을 사용하지만 10,000개 코루틴 간의 컨텍스트 스위칭과 `runBlocking` + `async` 조합의 스케줄링 비용이 순수 연산 시간에 비해 무시할 수 없는 수준으로 누적된다.
 
-**결론: CPU 바운드에서는 Platform Thread와 Virtual Thread가 동일하며, Coroutine은 스케줄링 오버헤드로 다소 불리하다.**
+**결론: CPU 바운드에서는 Platform Thread와 Virtual Thread가 동일하며 Coroutine은 스케줄링 오버헤드로 다소 불리하다.**
 
 ---
 
@@ -329,7 +329,7 @@ management:
 
 **Platform Thread의 한계**: 12개 스레드로 10,000개의 1ms 태스크를 처리하면 `10,000 × 1ms / 12 ≈ 833ms`. 컨텍스트 스위칭 오버헤드까지 더해 1,013ms가 걸린다.
 
-**Virtual Thread vs Coroutine**: Virtual Thread는 태스크당 하나의 경량 스레드를 생성한다. 가볍긴 하지만 여전히 JVM 스레드 객체다. 반면 Coroutine은 `delay(1)`이 비블로킹이고, 컨텍스트 스위칭이 스레드 수준이 아닌 **힙의 Continuation 객체 교체**로 이루어진다. 스레드를 전혀 생성하지 않고도 10,000개의 동시 태스크를 처리할 수 있다.
+**Virtual Thread vs Coroutine**: Virtual Thread는 태스크당 하나의 경량 스레드를 생성한다. 가볍긴 하지만 여전히 JVM 스레드 객체다. 반면 Coroutine은 `delay(1)`이 비블로킹이고 컨텍스트 스위칭이 스레드 수준이 아닌 **힙의 Continuation 객체 교체**로 이루어진다. 스레드를 전혀 생성하지 않고도 10,000개의 동시 태스크를 처리할 수 있다.
 
 처리량, 지연 시간, 메모리 사용량 모두에서 Coroutine이 가장 우수한 결과를 보였다.
 
@@ -341,7 +341,7 @@ management:
 
 ![시계열 대시보드](/images/trend.png)
 
-시계열 그래프에서 Virtual Thread가 초반에 요동치는 구간이 보인다. 이는 JVM 웜업 과정으로, JIT 컴파일러가 핫 코드를 네이티브로 컴파일하고, `ForkJoinPool` 기반 carrier thread 풀이 work-stealing 균형을 잡는 과정에서 발생한다. Platform Thread는 고정 풀이라 초반부터 안정적이고, Coroutine은 힙 객체(Continuation)가 가벼워서 영향이 적다.
+시계열 그래프에서 Virtual Thread가 초반에 요동치는 구간이 보인다. 이는 JVM 웜업 과정으로, JIT 컴파일러가 핫 코드를 네이티브로 컴파일하고 `ForkJoinPool` 기반 carrier thread 풀이 work-stealing 균형을 잡는 과정에서 발생한다. Platform Thread는 고정 풀이라 초반부터 안정적이고 Coroutine은 힙 객체(Continuation)가 가벼워서 영향이 적다.
 
 #### I/O Bound 처리량 추이
 
@@ -395,14 +395,14 @@ graph LR
 
 ## 어떤 모델을 선택할 것인가
 
-### Virtual Thread를 선택해야 할 때
+### Virtual Thread가 맞는 경우
 
 - **기존 Java 코드베이스**에 최소한의 변경으로 성능을 개선하고 싶을 때
 - **I/O 바운드 워크로드**가 지배적일 때 (DB 쿼리, HTTP 호출, 메시지 큐)
 - Spring Boot에서 `spring.threads.virtual.enabled=true` 한 줄로 적용하고 싶을 때
 - 동기 코드 스타일을 유지하면서 스레드 풀 튜닝에서 벗어나고 싶을 때
 
-### Coroutine을 선택해야 할 때
+### Coroutine이 맞는 경우
 
 - **Kotlin 프로젝트**이거나 Kotlin 도입이 가능한 환경일 때
 - **높은 동시성** 시나리오 (수만~수십만 동시 태스크)에서 최대 성능이 필요할 때
@@ -417,7 +417,7 @@ graph LR
 
 ## WebFlux는 어떤가
 
-이 벤치마크에 WebFlux(Reactor)는 포함하지 않았지만, 비교 대상으로 자주 언급되므로 짚고 넘어간다.
+이 벤치마크에 WebFlux(Reactor)는 포함하지 않았지만 비교 대상으로 자주 언급되므로 짚고 넘어간다.
 
 Virtual Thread와 WebFlux는 "I/O 대기 중 스레드를 점유하지 않는다"는 같은 문제를 풀지만 접근 방식이 다르다.
 
@@ -450,7 +450,7 @@ Virtual Thread가 등장하면서 "I/O 성능을 위해 WebFlux를 써야 한다
 
 ## 마무리
 
-세 모델의 성능 차이는 "어떤 것이 우월한가"가 아니라 "**어떤 워크로드에 적합한가**"로 해석해야 한다.
+세 모델의 성능 차이는 "어떤 것이 우월한가"가 아니라 "**어떤 워크로드에 적합한가**"로 해석한다.
 
 - **I/O Bound** → Virtual Thread (기존 동기 코드 그대로, 설정만으로 처리량 대폭 개선)
 - **CPU Bound** → Platform Thread / Virtual Thread (Coroutine은 스케줄링 오버헤드로 다소 불리)
@@ -458,8 +458,8 @@ Virtual Thread가 등장하면서 "I/O 성능을 위해 WebFlux를 써야 한다
 
 일반적인 웹 서비스는 DB 쿼리, 외부 API 호출, 캐시 조회 등 I/O 대기가 요청 처리 시간의 대부분을 차지한다. 이런 환경에서 Virtual Thread는 JDK 버전업과 설정 몇 줄만으로 기존 동기 코드를 그대로 유지하면서 성능을 비약적으로 개선할 수 있다는 점이 가장 큰 장점이다.
 
-Kotlin을 사용 중이고 높은 동시성이 필요하다면, Coroutine이 최고의 성능과 메모리 효율을 제공한다. 다만 코드 패러다임 전환 비용을 감안해야 한다.
+Kotlin을 사용 중이고 높은 동시성이 필요하다면, Coroutine이 최고의 성능과 메모리 효율을 제공한다. 다만 코드 패러다임 전환 비용은 감안한다.
 
-이 벤치마크는 `Thread.sleep()`과 단순 반복 연산으로 워크로드를 시뮬레이션한 것이다. 실무에서는 DB 커넥션 풀, 네트워크 레이턴시, GC 튜닝, 서드파티 라이브러리의 `synchronized` 사용 여부 등 훨씬 다양한 변수가 개입한다. 환경에 따라 여기서 본 성능 차이보다 효과가 미비할 수도 있고, 오히려 더 큰 차이가 날 수도 있다. 벤치마크 수치 자체보다는 각 모델의 특성과 트레이드오프를 이해하고, 자신의 워크로드에 맞게 판단하는 것이 중요하다.
+이 벤치마크는 `Thread.sleep()`과 단순 반복 연산으로 워크로드를 시뮬레이션했다. 실무에서는 DB 커넥션 풀, 네트워크 레이턴시, GC 튜닝, 서드파티 라이브러리의 `synchronized` 사용 여부 등 훨씬 다양한 변수가 개입한다. 환경에 따라 여기서 본 성능 차이보다 효과가 미비할 수도 있고 오히려 더 큰 차이가 날 수도 있다. 벤치마크 수치 자체보다는 각 모델의 특성과 트레이드오프를 이해하고 자신의 워크로드에 맞게 판단하는 것이 중요하다.
 
 > **벤치마크 코드**: [jvm-concurrency-benchmark GitHub Repository](https://github.com/devy1540/jvm-concurrency-benchmark)

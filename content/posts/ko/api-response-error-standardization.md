@@ -8,7 +8,7 @@ draft: false
 
 ## 배경
 
-서비스 초기부터 쌓여온 API 응답 코드에는 독특한 관례가 있었다. **모든 응답이 HTTP 200이었다.** 에러가 발생해도 200을 반환하고, 실제 에러 정보는 JSON body 안에 문자열로 담았다.
+서비스 초기부터 쌓여온 API 응답 코드에는 독특한 관례가 있었다. **모든 응답이 HTTP 200이었다.** 에러가 발생해도 200을 반환하고 실제 에러 정보는 JSON body 안에 문자열로 담았다.
 
 ```java
 // 데이터를 못 찾아도 HTTP 200
@@ -18,7 +18,7 @@ return ResponseEntity.ok(CommonClass.ResponseResult("404", "데이터를 찾을 
 return ResponseEntity.ok(CommonClass.ResponseResult("200", result));
 ```
 
-빠르게 개발하던 시기에 자연스럽게 자리 잡은 패턴이었다. 문제는 서비스가 성장하면서 드러났다. 모니터링 시스템을 붙이고, 프론트엔드 팀과 API 스펙을 맞추고, 장애 대응 프로세스를 정비하는 과정에서 이 구조가 곳곳에서 발목을 잡기 시작했다.
+빠르게 개발하던 시기에 자연스럽게 자리 잡은 패턴이었다. 문제는 서비스가 성장하면서 드러났다. 모니터링 시스템을 붙이고 프론트엔드 팀과 API 스펙을 맞추고 장애 대응 프로세스를 정비하는 과정에서 이 구조가 곳곳에서 발목을 잡기 시작했다.
 
 ---
 
@@ -69,7 +69,7 @@ return ResponseEntity.ok(resultMap);
 return ResponseEntity.ok(CommonClass.ok(result));
 ```
 
-정해진 방식이 없으니 각자 편한 방법을 쓰게 되고, 코드베이스 전체로 보면 같은 일을 하는 코드가 여러 형태로 흩어져 있었다.
+정해진 방식이 없으니 각자 편한 방법을 쓰게 되고 코드베이스 전체로 보면 같은 일을 하는 코드가 여러 형태로 흩어져 있었다.
 
 **3. 에러 코드의 의미가 모호하다**
 
@@ -98,7 +98,7 @@ public ResponseEntity<?> getItemList(@RequestParam(required = false) Integer lim
 }
 ```
 
-컨트롤러마다 `null` 체크, 에러 응답 생성, 성공 응답 포맷팅을 직접 하고 있었다. 비슷한 코드가 모든 컨트롤러에 복사되어 있었고, 응답 포맷을 바꾸려면 모든 컨트롤러를 찾아서 수정해야 했다.
+컨트롤러마다 `null` 체크, 에러 응답 생성, 성공 응답 포맷팅을 직접 하고 있었다. 비슷한 코드가 모든 컨트롤러에 복사되어 있었고 응답 포맷을 바꾸려면 모든 컨트롤러를 찾아서 수정해야 했다.
 
 ---
 
@@ -121,7 +121,7 @@ return ResponseEntity.ok(resultMap);
 return ResponseEntity.ok(CommonClass.ResponseResult("200", result));
 ```
 
-반복 코드를 줄인 것은 의미가 있었지만, 근본적인 문제 - HTTP 상태코드를 제대로 쓰지 않는 것 - 는 그대로였다. 여전히 모든 응답이 HTTP 200이었고, `resultCd`는 문자열이었다.
+반복 코드를 줄인 것은 의미가 있었지만 근본적인 문제 - HTTP 상태코드를 제대로 쓰지 않는 것 - 는 그대로였다. 여전히 모든 응답이 HTTP 200이었고 `resultCd`는 문자열이었다.
 
 ### Phase 2 - 인프라만 만들고 켜지 못했던 시간
 
@@ -140,7 +140,7 @@ public class GlobalExceptionHandler {
 }
 ```
 
-`@RestControllerAdvice`가 주석 처리되어 있었다. 전역 예외 핸들러를 켜면 기존에 컨트롤러마다 `try-catch`로 처리하던 에러 흐름이 깨질 수 있었고, 운영 중인 서비스에서 그 영향 범위를 확신할 수 없었다. 한동안 비활성 상태로 남았다.
+`@RestControllerAdvice`가 주석 처리되어 있었다. 전역 예외 핸들러를 켜면 기존에 컨트롤러마다 `try-catch`로 처리하던 에러 흐름이 깨질 수 있었고 운영 중인 서비스에서 그 영향 범위를 확신할 수 없었다. 한동안 비활성 상태로 남았다.
 
 ### Phase 3 - 공통 에러 정의와 활성화
 
@@ -150,7 +150,7 @@ public class GlobalExceptionHandler {
 
 2. **Slack 연동** - `BaseException` 발생 시 AOP로 Slack 알림을 보내는 기능이 추가됐다. 장애 감지의 첫 자동화.
 
-3. **`ApiResponse<T>` 통합** - 기존의 `ErrorResponse`(에러 전용 DTO)를 삭제하고, 성공과 에러 모두 동일한 `ApiResponse<T>` 구조로 통합했다. **이 시점에서 현재의 응답 포맷이 확정됐다.**
+3. **`ApiResponse<T>` 통합** - 기존의 `ErrorResponse`(에러 전용 DTO)를 삭제하고 성공과 에러 모두 동일한 `ApiResponse<T>` 구조로 통합했다. **이 시점에서 현재의 응답 포맷이 확정됐다.**
 
 ```
 ErrorResponse (에러 전용)   →  삭제
@@ -158,9 +158,9 @@ CommonClass (성공 전용)     →  레거시, 점진적 교체 대상
                             →  ApiResponse<T> (성공 + 에러 통합)
 ```
 
-이후 `ApiErrorCode`는 2개에서 **120개 이상**으로 확장됐고, 새로 만드는 모든 API는 `ApiResponse` 기반으로 작성됐다.
+이후 `ApiErrorCode`는 2개에서 **120개 이상**으로 확장됐고 새로 만드는 모든 API는 `ApiResponse` 기반으로 작성됐다.
 
-참고로 2단계에서 추가했던 Slack 연동은 이후 제거했다. Grafana, Loki 같은 모니터링 시스템이 도입되면서 예외 발생 시 자동 알림이 인프라 레벨에서 처리됐고, 애플리케이션 코드에서 직접 Slack을 호출할 이유가 없어졌다.
+참고로 2단계에서 추가했던 Slack 연동은 이후 제거했다. Grafana, Loki 같은 모니터링 시스템이 도입되면서 예외 발생 시 자동 알림이 인프라 레벨에서 처리됐고 애플리케이션 코드에서 직접 Slack을 호출할 이유가 없어졌다.
 
 ---
 
@@ -188,7 +188,7 @@ flowchart TB
     end
 ```
 
-개발자가 할 일은 두 가지뿐이다. 성공이면 `ApiResponse.success()`로 감싸고, 실패면 예외를 던진다. 에러 응답 포맷은 전역 예외 핸들러가 알아서 만든다.
+개발자가 할 일은 두 가지뿐이다. 성공이면 `ApiResponse.success()`로 감싸고 실패면 예외를 던진다. 에러 응답 포맷은 전역 예외 핸들러가 알아서 만든다.
 
 ---
 
@@ -301,7 +301,7 @@ public enum ApiErrorCode {
 }
 ```
 
-`INVALID_PAYMENT`, `INTERNAL_SERVER_ERROR` 딱 2개로 시작한 enum이 120개 이상으로 확장됐다. 새로운 에러가 필요하면 여기에 한 줄만 추가하면 된다. 도메인별로 정리되어 있어서, "결제에서 어떤 에러가 발생할 수 있는지"를 enum 하나만 보면 파악할 수 있다.
+`INVALID_PAYMENT`, `INTERNAL_SERVER_ERROR` 딱 2개로 시작한 enum이 120개 이상으로 확장됐다. 새로운 에러가 필요하면 여기에 한 줄만 추가하면 된다. 도메인별로 정리되어 있어서 "결제에서 어떤 에러가 발생할 수 있는지"를 enum 하나만 보면 파악할 수 있다.
 
 ### 커스텀 예외 - BaseException
 
@@ -375,7 +375,7 @@ public class GlobalExceptionHandler {
 
 `BaseException`은 개발자가 의도적으로 던진 비즈니스 에러이므로, `ApiErrorCode`에 정의된 메시지가 **그대로 클라이언트에 전달**된다. "이미 등록된 카드입니다", "쿠폰을 찾을 수 없습니다" 같은 사용자 친화적 메시지다.
 
-반면 `RuntimeException`은 예상하지 못한 에러 - `NullPointerException`, `ArrayIndexOutOfBoundsException` 같은 것이다. 이런 에러의 내부 메시지를 클라이언트에 노출하면 보안 문제가 될 수 있다. 초기에는 `e.getMessage()`를 그대로 클라이언트에 반환했는데, 내부 스택 정보나 DB 쿼리 같은 민감한 정보가 노출될 수 있었다. 이를 인지한 뒤 `createSafeMessage()`로 안전한 일반 메시지로 치환하도록 개선했다:
+반면 `RuntimeException`은 예상하지 못한 에러 - `NullPointerException`, `ArrayIndexOutOfBoundsException` 같은 종류다. 이런 에러의 내부 메시지를 클라이언트에 노출하면 보안 문제가 될 수 있다. 초기에는 `e.getMessage()`를 그대로 클라이언트에 반환했는데, 내부 스택 정보나 DB 쿼리 같은 민감한 정보가 노출될 수 있었다. 이를 인지한 뒤 `createSafeMessage()`로 안전한 일반 메시지로 치환하도록 개선했다:
 
 ```java
 private String createSafeMessage(HttpStatus status) {
@@ -436,7 +436,7 @@ private void log(HttpStatus status, HttpServletRequest request, Exception e) {
 
 `ApiErrorCode` 중 일부는 HTTP 2xx를 사용한다 - 예를 들어 `ALREADY_PROCESSING(HttpStatus.ACCEPTED)`은 "이미 진행 중"이라는 비즈니스 상태를 202로 표현한다. 이런 경우는 에러가 아니므로 INFO로 기록한다.
 
-4xx는 클라이언트의 잘못이므로 WARN, 5xx는 서버의 잘못이므로 ERROR로 기록한다. Grafana Loki에서 `level=error`로 필터링하면 **서버 문제만 바로 볼 수 있다.** 4xx는 무시해도 되는 로그가 아니지만, 5xx와 섞여 있으면 진짜 중요한 에러를 놓치기 쉽다.
+4xx는 클라이언트의 잘못이므로 WARN, 5xx는 서버의 잘못이므로 ERROR로 기록한다. Grafana Loki에서 `level=error`로 필터링하면 **서버 문제만 바로 볼 수 있다.** 4xx는 무시해도 되는 로그가 아니지만 5xx와 섞여 있으면 진짜 중요한 에러를 놓치기 쉽다.
 
 5xx의 경우 `findApplicationErrorSource()`로 자사 패키지 내 에러 발생 위치를 최대 5단계까지 추적하여 로그에 남긴다. Spring 프레임워크의 수십 줄짜리 스택 트레이스를 뒤질 필요 없이, 애플리케이션 코드의 에러 지점만 바로 확인할 수 있다.
 
@@ -448,7 +448,7 @@ OpenTelemetry Span에도 `error.message`를 기록하기 때문에, Tempo 같은
 
 ### Before
 
-가장 많은 코드가 변한 곳은 예약 관련 컨트롤러였다. 예약/변경/취소 API는 발생 가능한 에러 유형이 많아서, 컨트롤러 메서드 하나가 수십 줄에 달했다.
+가장 많은 코드가 변한 곳은 예약 관련 컨트롤러였다. 예약/변경/취소 API는 발생 가능한 에러 유형이 많아서 컨트롤러 메서드 하나가 수십 줄에 달했다.
 
 ```java
 @PostMapping("/reserve")
@@ -479,7 +479,7 @@ public ResponseEntity<?> reserve(...) {
 }
 ```
 
-에러 유형별로 catch 블록이 늘어나고, 각 블록에서 응답 포맷을 직접 만들고, HTTP 상태코드도 직접 매핑했다. 새로운 에러 유형이 추가될 때마다 catch 블록이 하나 더 생겼다.
+에러 유형별로 catch 블록이 늘어나고 각 블록에서 응답 포맷을 직접 만들고 HTTP 상태코드도 직접 매핑했다. 새로운 에러 유형이 추가될 때마다 catch 블록이 하나 더 생겼다.
 
 ### After
 
@@ -493,7 +493,7 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 
 컨트롤러는 성공 케이스만 다룬다. Service에서 `throw new BaseException(ApiErrorCode.CUSTOMER_NOT_FOUND)`이 던져지면 `GlobalExceptionHandler`가 HTTP 404 응답을 만든다. `throw new BaseException(ApiErrorCode.ORDER_ALREADY_PROCESSING)`이면 HTTP 429가 나간다.
 
-에러 처리 코드가 컨트롤러에서 완전히 사라졌다. 컨트롤러 메서드가 짧아지니 코드 리뷰도 빨라졌고, "에러 응답 포맷을 맞춰주세요"라는 리뷰 코멘트도 사라졌다.
+에러 처리 코드가 컨트롤러에서 완전히 사라졌다. 컨트롤러 메서드가 짧아지니 코드 리뷰도 빨라졌고 "에러 응답 포맷을 맞춰주세요"라는 리뷰 코멘트도 사라졌다.
 
 ---
 
@@ -515,9 +515,9 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 
 ![신규 API의 트레이스 - HTTP 상태코드가 실제 상태를 반영한다](/images/grafana-after.png)
 
-`ApiResponse` 기반으로 전환된 API의 트레이스다. `200`, `400`, `404`, `500`이 섞여 있고, 에러 요청이 어떤 상태코드로 처리됐는지 한눈에 보인다. 모니터링 도구에서 `status_code >= 400`으로 필터링하면 문제가 있는 요청만 바로 추려낼 수 있다.
+`ApiResponse` 기반으로 전환된 API의 트레이스다. `200`, `400`, `404`, `500`이 섞여 있고 에러 요청이 어떤 상태코드로 처리됐는지 한눈에 보인다. 모니터링 도구에서 `status_code >= 400`으로 필터링하면 문제가 있는 요청만 바로 추려낼 수 있다.
 
-가장 체감이 컸던 건 모니터링이다. 이전에는 장애가 나면 Grafana에서 아무 이상이 없어서, Slack 알림이나 CS 접수로 먼저 장애를 인지하는 경우가 있었다. 지금은 5xx가 급증하면 Grafana 알림이 먼저 온다. 대응 속도가 근본적으로 달라졌다.
+가장 체감이 컸던 건 모니터링이다. 이전에는 장애가 나면 Grafana에서 아무 이상이 없어서 Slack 알림이나 CS 접수로 먼저 장애를 인지하는 경우가 있었다. 지금은 5xx가 급증하면 Grafana 알림이 먼저 온다. 대응 속도가 근본적으로 달라졌다.
 
 ---
 
@@ -525,7 +525,7 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 
 돌이켜보면, "모든 응답을 200으로 보내는" 방식이 틀렸다기보다는 서비스 규모에 맞지 않게 된 것이었다. 팀이 2~3명일 때는 body 안의 `resultCd`만으로 충분히 소통이 됐다. 모니터링 도구 없이도 Slack 알림과 로그 검색으로 장애를 대응할 수 있었다.
 
-하지만 팀이 커지고, 모니터링 체계를 갖추고, 프론트엔드와 백엔드가 API 스펙을 명확히 맞춰야 하는 단계에 오면 이야기가 달라진다. HTTP 표준을 따르는 것만으로도 모니터링 도구가 그대로 동작하고, 프론트엔드 라이브러리의 에러 핸들링이 자연스럽게 작동하고, 새로 합류한 개발자가 별도 설명 없이 API를 이해할 수 있다.
+하지만 팀이 커지고 모니터링 체계를 갖추고 프론트엔드와 백엔드가 API 스펙을 명확히 맞춰야 하는 단계에 오면 이야기가 달라진다. HTTP 표준을 따르는 것만으로도 모니터링 도구가 그대로 동작하고 프론트엔드 라이브러리의 에러 핸들링이 자연스럽게 작동하고 새로 합류한 개발자가 별도 설명 없이 API를 이해할 수 있다.
 
 전환은 아직 진행 중이다. 현재 코드베이스에는 세 가지 응답 패턴이 공존하고 있다:
 
@@ -535,8 +535,8 @@ public ResponseEntity<ApiResponse<String>> reserve(...) {
 | `CommonClass.ResponseResult()` | 60회 | 9개 | 레거시 래퍼 |
 | `resultMap.put("resultCd", ...)` | 104회 | 19개 | 가장 오래된 패턴 |
 
-한 번에 전부 바꿀 수는 없었다. 운영 중인 API의 응답 포맷이 바뀌면 프론트엔드도 함께 수정해야 하기 때문이다. 새로 만드는 API부터 `ApiResponse`를 적용하고, 기존 API도 기능 수정이나 리팩토링 시점에 점진적으로 전환하고 있다. 한 파일 안에 세 가지 패턴이 공존하는 컨트롤러도 아직 있다.
+한 번에 전부 바꿀 수는 없었다. 운영 중인 API의 응답 포맷이 바뀌면 프론트엔드도 함께 수정해야 하기 때문이다. 새로 만드는 API부터 `ApiResponse`를 적용하고 기존 API도 기능 수정이나 리팩토링 시점에 점진적으로 전환하고 있다. 한 파일 안에 세 가지 패턴이 공존하는 컨트롤러도 아직 있다.
 
 같은 맥락에서, 초기에 만들어졌던 개별 예외 클래스들(`ItemNotFoundException`, `InvalidTimeSlotException` 등)도 `BaseException(ApiErrorCode)`으로 점진적으로 대체하고 있다. 예외 하나를 마이그레이션할 때마다 해당 예외를 던지는 모든 코드와 잡는 모든 catch 블록을 확인해야 해서, 기능 작업과 병행하면서 진행 중이다.
 
-방법이 하나면 선택의 여지가 없고, 선택의 여지가 없으면 커뮤니케이션 비용이 사라진다. 이번 작업에서 가장 크게 느낀 점이다.
+방법이 하나면 선택의 여지가 없고 선택의 여지가 없으면 커뮤니케이션 비용이 사라진다. 이번 작업에서 가장 크게 느낀 점이다.

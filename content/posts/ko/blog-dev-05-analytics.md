@@ -7,7 +7,7 @@ series: "React 블로그 만들기"
 seriesOrder: 5
 ---
 
-## 문제: 정적 사이트에서 GA 데이터 보여주기
+## 정적 사이트에서 GA 데이터 보여주기
 
 Google Analytics를 추가하는 것 자체는 간단합니다. `index.html`에 스크립트 태그를 넣으면 끝입니다.
 
@@ -23,9 +23,9 @@ Google Analytics를 추가하는 것 자체는 간단합니다. `index.html`에 
 
 하지만 수집된 데이터를 **블로그에 직접 표시**하려면 이야기가 달라집니다. GA4 Data API는 서비스 계정 인증이 필요해서, 클라이언트 JavaScript에서 직접 호출할 수 없습니다.
 
-## 해결: Google Apps Script 프록시
+## Google Apps Script 프록시
 
-**Google Apps Script**를 중간 프록시로 사용했습니다. 무료이고, 별도 서버 없이 GA4 Data API를 호출할 수 있습니다.
+**Google Apps Script**를 중간 프록시로 사용했습니다. 무료이고 별도 서버 없이 GA4 Data API를 호출할 수 있습니다.
 
 ### 구조
 
@@ -74,7 +74,7 @@ function getDailyViews(propertyId) {
 
 ### Apps Script 설정 시 주의사항
 
-1. **고급 서비스 활성화** - Apps Script 에디터에서 `Google Analytics Data API` 서비스를 추가해야 합니다. 이걸 빠뜨리면 `AnalyticsData is not defined` 에러가 발생합니다.
+1. **고급 서비스 활성화** - Apps Script 에디터에서 `Google Analytics Data API` 서비스를 추가합니다. 이걸 빠뜨리면 `AnalyticsData is not defined` 에러가 발생합니다.
 
 2. **Property ID vs Measurement ID** - API에는 숫자로 된 Property ID가 필요합니다. `G-XXXXXXXXXX` 형태의 Measurement ID가 아닙니다. GA 관리 > 속성 설정에서 확인할 수 있습니다.
 
@@ -82,7 +82,7 @@ function getDailyViews(propertyId) {
 
 ## 블로그 측 구현
 
-### 데이터 공유: usePageViews 훅
+### usePageViews 훅으로 데이터 공유
 
 API를 한 번만 호출하고 여러 컴포넌트에서 공유하기 위해 모듈 레벨 캐싱 + `sessionStorage` 캐싱을 적용했습니다.
 

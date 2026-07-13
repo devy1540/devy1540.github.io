@@ -1,7 +1,7 @@
 ---
 title: "Spring AI 적용 가이드 (2) - 멀티 프로바이더 전략"
 date: "2026-03-17"
-description: "OpenAI, AWS Bedrock, Google Gemini를 하나의 ChatClient 인터페이스로 추상화하고, 런타임에 동적으로 전환하는 방법을 다룹니다."
+description: "OpenAI, AWS Bedrock, Google Gemini를 하나의 ChatClient 인터페이스로 추상화하고 런타임에 동적으로 전환하는 방법을 다룹니다."
 tags: ["spring-ai", "spring-boot", "ai", "openai", "bedrock", "gemini"]
 series: "Spring AI 적용 가이드"
 seriesOrder: 2
@@ -74,7 +74,7 @@ spring:
         enabled: false  # 자동 ChatClient 생성 비활성화
 ```
 
-`chat.client.enabled: false`가 핵심이다. Spring AI는 기본적으로 하나의 `ChatClient` 빈을 자동 생성하는데, 멀티 프로바이더 환경에서는 이를 끄고 직접 등록해야 한다.
+`chat.client.enabled: false`가 핵심이다. Spring AI는 기본적으로 하나의 `ChatClient` 빈을 자동 생성하는데, 멀티 프로바이더 환경에서는 이를 끄고 직접 등록한다.
 
 ### ChatClient Bean 등록
 
@@ -103,7 +103,7 @@ public class ChatClientConfig {
 
 ### Bedrock 별도 설정
 
-AWS Bedrock은 다른 프로바이더와 달리 `BedrockProxyChatModel`을 직접 빌드해야 한다. AWS 인증과 리전 설정이 필요하기 때문이다.
+AWS Bedrock은 다른 프로바이더와 달리 `BedrockProxyChatModel`을 직접 빌드한다. AWS 인증과 리전 설정이 필요하기 때문이다.
 
 ```java
 @Bean
@@ -147,7 +147,7 @@ public ChatClient.ChatClientRequestSpec getAi(String provider, String model, Str
 
 각 프로바이더의 `ChatOptions` 구현체(`OpenAiChatOptions`, `GoogleGenAiChatOptions`, `BedrockChatOptions`)를 통해 모델명, temperature, maxTokens, responseFormat 등을 호출 시점에 동적으로 설정한다.
 
-여기서 주목할 점은 `application.yml`에서 설정한 기본값을 **호출 시점에 오버라이드**할 수 있다는 것이다. 기본 모델은 `gpt-4o-mini`지만, 특정 호출에서는 `gpt-4o`를 쓰고 싶다면 `.options()`에서 모델만 바꿔주면 된다.
+여기서 주목할 점은 `application.yml`에서 설정한 기본값을 **호출 시점에 오버라이드**할 수 있다는 점이다. 기본 모델은 `gpt-4o-mini`지만 특정 호출에서는 `gpt-4o`를 쓰고 싶다면 `.options()`에서 모델만 바꿔주면 된다.
 
 ## Bedrock Cross-Region Inference
 
@@ -201,7 +201,7 @@ public Optional<String> resolveProviderByModelId(String modelId) {
 }
 ```
 
-각 프로바이더의 모델 목록을 캐싱해두고, 모델 ID로 어떤 프로바이더에 속하는지 탐색한다. 덕분에 프롬프트 설정에서 `modelId`만 지정하면 프로바이더는 자동으로 결정된다.
+각 프로바이더의 모델 목록을 캐싱해두고 모델 ID로 어떤 프로바이더에 속하는지 탐색한다. 덕분에 프롬프트 설정에서 `modelId`만 지정하면 프로바이더는 자동으로 결정된다.
 
 ### 모델 목록 캐싱
 
@@ -233,7 +233,7 @@ private void refreshModelCache() {
 
 ## Gemini 인증 설정
 
-Google Gemini(Vertex AI)는 인증 설정이 조금 복잡하다. 서비스 계정 키 파일을 사용하고, 토큰이 만료되면 자동으로 갱신해야 한다.
+Google Gemini(Vertex AI)는 인증 설정이 조금 복잡하다. 서비스 계정 키 파일을 사용하고 토큰이 만료되면 자동으로 갱신한다.
 
 ```java
 @Bean("geminiRestClient")

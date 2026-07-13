@@ -16,9 +16,9 @@ draft: false
 
 Phase 1에서 JDK 21까지 올린 뒤 한동안은 안정적으로 운영했다. 굳이 더 올릴 이유가 없었다. 그런데 몇 가지 상황이 겹치면서 25까지 가게 됐다.
 
-**Virtual Threads**가 가장 큰 동기였다. 우리 서비스는 SQS 리스너, 외부 API 호출, DB 쿼리 등 I/O 바운드 작업이 많다. 특히 [Spring AI 기반 진단 파이프라인](/posts/spring-ai-pipeline-real-world)에서 청크별로 LLM을 병렬 호출하는 구조를 도입하면서, `CompletableFuture.allOf()`로 동시에 수십 개의 외부 API 호출이 발생하는 상황이 생겼다. 기존에는 `ThreadPoolTaskExecutor`의 corePoolSize, maxPoolSize, queueCapacity를 직접 튜닝하면서 동시 처리량을 관리했는데, 트래픽 패턴이 바뀔 때마다 설정을 재조정하는 게 번거로웠다. Virtual Threads를 적용하면 스레드 풀 관리 자체가 불필요해진다.
+**Virtual Threads**가 가장 큰 동기였다. 우리 서비스는 SQS 리스너, 외부 API 호출, DB 쿼리 등 I/O 바운드 작업이 많다. 특히 [Spring AI 기반 진단 파이프라인](/posts/spring-ai-pipeline-real-world)에서 청크별로 LLM을 병렬 호출하는 구조를 도입하면서 `CompletableFuture.allOf()`로 동시에 수십 개의 외부 API 호출이 발생하는 상황이 생겼다. 기존에는 `ThreadPoolTaskExecutor`의 corePoolSize, maxPoolSize, queueCapacity를 직접 튜닝하면서 동시 처리량을 관리했는데, 트래픽 패턴이 바뀔 때마다 설정을 재조정하는 게 번거로웠다. Virtual Threads를 적용하면 스레드 풀 관리 자체가 불필요해진다.
 
-Virtual Threads 자체는 JDK 21에서 정식 도입되었지만, 실제로 프로덕션에 적용하기엔 **pinning 문제**가 걸렸다. `synchronized` 블록 안에서 I/O가 발생하면 Virtual Thread가 carrier thread에 고정(pin)되어 플랫폼 스레드를 점유하게 되는데, 이렇게 되면 Virtual Threads의 이점이 사라진다. Hibernate, JDBC 드라이버 등 내부적으로 `synchronized`를 쓰는 라이브러리가 많아서 JPA 기반 서비스에서는 이 문제를 피하기 어려웠다. JDK 24(JEP 491)에서 `synchronized` 블록에서도 Virtual Thread가 unmount될 수 있도록 개선되면서 pinning 문제가 근본적으로 해소됐고, JDK 25에서는 이 개선이 안정화된 상태다. Spring Boot 3.5+에서 설정 한 줄로 전체 적용이 가능해지면서 타이밍이 맞았다.
+Virtual Threads 자체는 JDK 21에서 정식 도입되었지만 실제로 프로덕션에 적용하기엔 **pinning 문제**가 걸렸다. `synchronized` 블록 안에서 I/O가 발생하면 Virtual Thread가 carrier thread에 고정(pin)되어 플랫폼 스레드를 점유하게 되는데, 이렇게 되면 Virtual Threads의 이점이 사라진다. Hibernate, JDBC 드라이버 등 내부적으로 `synchronized`를 쓰는 라이브러리가 많아서 JPA 기반 서비스에서는 이 문제를 피하기 어려웠다. JDK 24(JEP 491)에서 `synchronized` 블록에서도 Virtual Thread가 unmount될 수 있도록 개선되면서 pinning 문제가 근본적으로 해소됐고 JDK 25에서는 이 개선이 안정화된 상태다. Spring Boot 3.5+에서 설정 한 줄로 전체 적용이 가능해지면서 타이밍이 맞았다.
 
 **보안 강화 작업과 맞물린 것**도 있었다. AWS 인프라 보안 설정을 전면 재검토하면서 런타임 환경도 함께 최신화하자는 방향이 잡혔다.
 
@@ -44,7 +44,7 @@ FROM amazoncorretto:21-alpine
 FROM amazoncorretto:25-alpine
 ```
 
-JDK 25에서 FFM(Foreign Function & Memory) API 전환이 완료되기 전까지 네이티브 접근 경고를 억제해야 한다:
+JDK 25에서 FFM(Foreign Function & Memory) API 전환이 완료되기 전까지 네이티브 접근 경고를 억제한다:
 
 ```dockerfile
 ENV JAVA_TOOL_OPTIONS="--enable-native-access=ALL-UNNAMED"
@@ -150,7 +150,7 @@ log.info("is virtual: {}", Thread.currentThread().isVirtual());
 
 ## JDK 25 언어 기능 적용
 
-버전업의 부가적인 즐거움이다. 꼭 바꿔야 하는 건 아니지만, 새 문법을 적용하면 코드가 깔끔해진다.
+버전업의 부가적인 즐거움이다. 꼭 바꿔야 하는 건 아니지만 새 문법을 적용하면 코드가 깔끔해진다.
 
 ### Pattern Matching for switch
 
@@ -201,13 +201,13 @@ JDK 25에서는 `main` 메서드의 `public static` 수식어가 선택사항이
 // before
 public static void main(String[] args) {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    SpringApplication.run(PodoApplication.class, args);
+    SpringApplication.run(BackendApplication.class, args);
 }
 
 // after
 void main(String[] args) {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    SpringApplication.run(PodoApplication.class, args);
+    SpringApplication.run(BackendApplication.class, args);
 }
 ```
 
@@ -253,6 +253,6 @@ Kotlin DSL로 바꾸면 IDE 자동완성이 된다는 게 가장 크다. Groovy 
 
 ## 마무리
 
-JDK 11에서 25까지 올리는 데 약 8개월이 걸렸다. Phase 1(11→21)에서 219개 파일을 건드렸지만, Phase 2(21→25)는 16개 파일로 끝났다. 메이저 업그레이드를 한 번 넘기면 이후는 훨씬 수월해진다.
+JDK 11에서 25까지 올리는 데 약 8개월이 걸렸다. Phase 1(11→21)에서 219개 파일을 건드렸지만 Phase 2(21→25)는 16개 파일로 끝났다. 메이저 업그레이드를 한 번 넘기면 이후는 훨씬 수월해진다.
 
 한 번에 올리면 디버깅이 불가능하다. 어떤 문제가 JDK 때문인지, Spring Boot 때문인지, 라이브러리 호환성 때문인지 구분할 수 없기 때문이다. **단계적 접근**이 핵심이다.
