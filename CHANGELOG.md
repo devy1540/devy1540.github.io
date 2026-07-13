@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.3](https://github.com/devy1540/devy1540.github.io/compare/v1.27.2...v1.27.3) (2026-07-13)
+
+
+### 문서
+
+* **posts:** 블로그 글 문체와 식별자 정리 ([#189](https://github.com/devy1540/devy1540.github.io/issues/189)) ([0576f95](https://github.com/devy1540/devy1540.github.io/commit/0576f9500d590545ad2f277b936164baf66363eb))
+
 ## [1.27.2](https://github.com/devy1540/devy1540.github.io/compare/v1.27.1...v1.27.2) (2026-07-12)
 
 
