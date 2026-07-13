@@ -1,7 +1,7 @@
 ---
 title: "블로그 만들기 #2 - Command Palette 검색 & View Transitions"
 date: "2026-02-26"
-description: "cmdk로 Cmd+K 검색을 구현하고, View Transitions API로 페이지 전환 애니메이션을 적용한 과정입니다."
+description: "cmdk로 Cmd+K 검색을 구현하고 View Transitions API로 페이지 전환 애니메이션을 적용한 과정입니다."
 tags: ["react", "cmdk", "view-transitions", "blog"]
 series: "React 블로그 만들기"
 seriesOrder: 2
@@ -31,11 +31,11 @@ export function searchPosts(query: string): PostMeta[] {
 }
 ```
 
-### 삽질: cmdk의 내장 필터
+### 삽질 - cmdk의 내장 필터
 
 처음에는 검색어를 입력해도 결과가 표시되지 않는 문제가 있었습니다. 원인은 cmdk의 내장 필터가 `CommandItem`의 `value` 속성(slug)으로 매칭하기 때문이었습니다.
 
-자체 검색 로직을 사용할 때는 반드시 `shouldFilter={false}`를 설정해야 합니다.
+자체 검색 로직을 사용할 때는 반드시 `shouldFilter={false}`를 설정합니다.
 
 ```tsx
 <CommandDialog shouldFilter={false}>
@@ -103,7 +103,7 @@ export function App() {
 
 기본 View Transition은 old 페이지와 new 페이지가 크로스페이드됩니다. 이때 아주 잠깐 두 페이지가 겹쳐 보이는 현상이 있었습니다.
 
-old 페이지는 즉시 사라지고, new 페이지만 페이드인하도록 수정했습니다.
+old 페이지는 즉시 사라지고 new 페이지만 페이드인하도록 수정했습니다.
 
 ```css
 ::view-transition-old(root) {

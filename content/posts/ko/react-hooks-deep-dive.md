@@ -12,7 +12,7 @@ React Hooks는 함수형 컴포넌트에서 상태 관리와 사이드 이펙트
 
 ## useState 완벽 이해
 
-`useState`는 가장 기본적인 Hook입니다. 컴포넌트에 상태를 추가하고, 상태가 변경되면 리렌더링을 트리거합니다.
+`useState`는 가장 기본적인 Hook입니다. 컴포넌트에 상태를 추가하고 상태가 변경되면 리렌더링을 트리거합니다.
 
 ```tsx
 const [count, setCount] = useState(0)
@@ -30,7 +30,7 @@ const [data, setData] = useState(() => {
 
 ### 함수형 업데이트
 
-이전 상태를 기반으로 업데이트할 때는 함수형 업데이트를 사용해야 합니다. 특히 비동기 상황에서 stale closure 문제를 방지할 수 있습니다.
+이전 상태를 기반으로 업데이트할 때는 함수형 업데이트를 사용합니다. 특히 비동기 상황에서 stale closure 문제를 방지할 수 있습니다.
 
 ```tsx
 setCount(prev => prev + 1)
@@ -206,4 +206,4 @@ function useMediaQuery(query: string): boolean {
 
 ## 마치며
 
-React Hooks는 단순해 보이지만, 올바르게 사용하려면 클로저, 참조 동일성, 렌더링 사이클에 대한 이해가 필요합니다. 각 Hook의 특성을 정확히 파악하고 적절한 상황에서 사용하는 것이 중요합니다.
+React Hooks는 단순해 보이지만 올바르게 사용하려면 클로저, 참조 동일성, 렌더링 사이클에 대한 이해가 필요합니다. 각 Hook의 특성을 정확히 파악하고 적절한 상황에서 사용하는 것이 중요합니다.

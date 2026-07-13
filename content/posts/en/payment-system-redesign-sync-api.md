@@ -311,8 +311,8 @@ The key is to **filter cases that should not be refunded first**.
 catch (BaseException e) {
     // Cases that do not need refund: already cancelled, not paid, duplicate processing
     if (Set.of(CANCELLED_PAYMENT, PAYMENT_NOT_PAID, ALREADY_PROCESSING)
-            .contains(e.getPodoStatusCode())) {
-        log.warn("[{}] Skip refund. paymentId: {}", e.getPodoStatusCode(), paymentId);
+            .contains(e.getErrorCode())) {
+        log.warn("[{}] Skip refund. paymentId: {}", e.getErrorCode(), paymentId);
         return;
     }
 

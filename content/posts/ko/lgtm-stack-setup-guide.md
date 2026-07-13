@@ -1,18 +1,18 @@
 ---
 title: "EKS에 LGTM 스택 구축하기 - Loki, Grafana, Tempo, Mimir 실전 셋업 가이드"
 date: "2026-03-17"
-description: "EKS 클러스터에 Grafana LGTM 스택을 Helm으로 배포하고, OTel Collector 사이드카로 Spring Boot 앱의 로그·트레이스·메트릭을 수집하는 전체 과정을 다룹니다."
+description: "EKS 클러스터에 Grafana LGTM 스택을 Helm으로 배포하고 OTel Collector 사이드카로 Spring Boot 앱의 로그·트레이스·메트릭을 수집하는 전체 과정을 다룹니다."
 tags: ["grafana", "loki", "tempo", "mimir", "opentelemetry", "kubernetes", "helm", "observability"]
 draft: false
 ---
 
 ## 배경
 
-EKS 클러스터에서 서비스를 운영하다 보면 로그, 트레이스, 메트릭을 한 곳에서 볼 수 있는 모니터링 환경이 필요해진다. Datadog이나 New Relic 같은 SaaS를 쓰면 편하지만, 호스트와 로그량 기반 과금이 서비스가 커질수록 부담이 된다.
+EKS 클러스터에서 서비스를 운영하다 보면 로그, 트레이스, 메트릭을 한 곳에서 볼 수 있는 모니터링 환경이 필요해진다. Datadog이나 New Relic 같은 SaaS를 쓰면 편하지만 호스트와 로그량 기반 과금이 서비스가 커질수록 부담이 된다.
 
-LGTM 스택(Loki, Grafana, Tempo, Mimir)은 Grafana Labs의 오픈소스 조합으로, EKS에 Helm으로 배포하면 인프라 비용만으로 운영할 수 있다. OTel(OpenTelemetry) 표준 기반이라 벤더 종속 없이 수집 파이프라인을 구성할 수 있고, 나중에 백엔드를 바꿔도 애플리케이션 코드를 수정할 필요가 없다.
+LGTM 스택(Loki, Grafana, Tempo, Mimir)은 Grafana Labs의 오픈소스 조합으로, EKS에 Helm으로 배포하면 인프라 비용만으로 운영할 수 있다. OTel(OpenTelemetry) 표준 기반이라 벤더 종속 없이 수집 파이프라인을 구성할 수 있고 나중에 백엔드를 바꿔도 애플리케이션 코드를 수정할 필요가 없다.
 
-이 글에서는 LGTM 스택을 EKS에 배포하고, Spring Boot 앱에 OTel Collector 사이드카를 붙여 로그·트레이스·메트릭을 수집하는 전체 과정을 단계별로 다룬다.
+이 글에서는 LGTM 스택을 EKS에 배포하고 Spring Boot 앱에 OTel Collector 사이드카를 붙여 로그·트레이스·메트릭을 수집하는 전체 과정을 단계별로 다룬다.
 
 최종 구성:
 
@@ -48,7 +48,7 @@ flowchart LR
 kubectl create namespace observability
 ```
 
-## 1단계: IRSA - S3 접근 권한 설정
+## 1단계 - IRSA로 S3 접근 권한 설정
 
 Loki, Tempo, Mimir 모두 S3에 데이터를 저장한다. IRSA(IAM Roles for Service Accounts)로 Pod에 S3 접근 권한을 부여하면 Access Key를 하드코딩할 필요가 없다.
 
@@ -94,7 +94,7 @@ kubectl apply -f lgtm-serviceaccount.yaml
 
 모든 LGTM 컴포넌트가 이 ServiceAccount를 공유한다. Helm values에서 `serviceAccount.create: false`, `serviceAccount.name: lgtm`으로 설정하면 된다.
 
-## 2단계: Loki 배포 - 로그 저장소
+## 2단계 - Loki 로그 저장소 배포
 
 Helm repo 추가:
 
@@ -178,7 +178,7 @@ helm upgrade --install loki grafana/loki \
 
 > **주의**: `auth_enabled: true`로 두면 Grafana 데이터소스 설정에서 `X-Scope-OrgID` 헤더를 직접 넣어야 한다. 단일 테넌트에서는 `false`가 편하다.
 
-## 3단계: Tempo 배포 - 분산 트레이싱
+## 3단계 - Tempo 분산 트레이싱 배포
 
 ### Tempo values 작성
 
@@ -277,7 +277,7 @@ helm upgrade --install tempo grafana/tempo-distributed \
 
 `metricsGenerator`를 켜면 Grafana에서 서비스 간 호출 관계를 시각적으로 볼 수 있다. 트레이스를 수동 분석하지 않아도 서비스 토폴로지가 자동으로 그려진다.
 
-## 4단계: Mimir 배포 - 메트릭 장기 저장
+## 4단계 - Mimir 메트릭 장기 저장소 배포
 
 ### Mimir values 작성
 
@@ -401,9 +401,9 @@ helm upgrade --install mimir grafana/mimir-distributed \
 | `retention_period` | `2160h` | 90일 보관. 필요에 따라 조정 |
 | `zoneAwareReplication` | `false` | 단일 레플리카에서는 비활성 필수 |
 
-> **주의**: Mimir 6.x (3.0)부터 기본이 Kafka 기반 ingest로 바뀌었다. classic 모드로 쓰려면 `ingest_storage.enabled: false`를 명시해야 한다.
+> **주의**: Mimir 6.x (3.0)부터 기본이 Kafka 기반 ingest로 바뀌었다. classic 모드로 쓰려면 `ingest_storage.enabled: false`를 명시한다.
 
-## 5단계: Grafana 배포 - 대시보드
+## 5단계 - Grafana 대시보드 배포
 
 ### Grafana values 작성
 
@@ -459,7 +459,7 @@ Mimir는 Prometheus 호환 API를 제공하므로 데이터소스 타입을 **Pr
 
 > **Tip**: Tempo 데이터소스 설정에서 "Trace to logs" → Loki 데이터소스를 연결하면, 트레이스에서 원클릭으로 해당 시점의 로그를 볼 수 있다. "Trace to metrics" → Mimir를 연결하면 메트릭까지 연동된다.
 
-## 6단계: OTel Collector 사이드카 - 데이터 수집
+## 6단계 - OTel Collector 사이드카로 데이터 수집
 
 ### RBAC 설정
 
@@ -654,10 +654,10 @@ spec:
 핵심 포인트:
 
 - `OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317` - 사이드카는 같은 Pod이라 localhost로 통신한다
-- `OTEL_SERVICE_NAME` - Tempo에서 서비스를 구분하는 이름. 반드시 설정해야 한다
+- `OTEL_SERVICE_NAME` - Tempo에서 서비스를 구분하는 이름. 반드시 설정한다
 - Prometheus 어노테이션으로 메트릭 스크래핑을 활성화한다
 
-## 7단계: OTel Java Agent 적용
+## 7단계 - OTel Java Agent 적용
 
 ### Dockerfile
 
@@ -716,7 +716,7 @@ dependencies {
 
 OTel Java Agent는 바이트코드 계측 방식이라 코드 수정 없이 HTTP, JDBC, Redis, gRPC 등을 자동 추적한다. `opentelemetry-api` 의존성은 수동으로 span을 만들거나 attribute를 추가할 때만 필요하다.
 
-## 8단계: MDC로 사용자 컨텍스트 연결
+## 8단계 - MDC로 사용자 컨텍스트 연결
 
 로그에 사용자 ID를 넣으면 "이 에러가 어떤 사용자의 요청에서 발생했는지" 바로 추적할 수 있다.
 
@@ -839,7 +839,7 @@ filter/drop-noise:
 
 노이즈 필터링을 적용하면 Tempo에 저장되는 스팬 수가 절반 이하로 줄어든다. 네트워크 전송, 스토리지 비용 모두 절약된다.
 
-### 보안: 민감 정보 제거
+### 보안 민감 정보 제거
 
 OTel Agent가 HTTP 헤더를 span attribute로 기록하므로, Authorization 헤더 같은 민감 정보가 Tempo에 저장될 수 있다:
 

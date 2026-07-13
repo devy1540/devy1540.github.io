@@ -16,11 +16,11 @@ draft: false
 
 미루고 미뤘지만 더 이상 버틸 수 없는 시점이 왔다.
 
-가장 직접적인 문제는 **새 기능 개발이 막히기 시작한 것**이다. 신규 라이브러리들이 JDK 17+, Jakarta EE를 최소 요구사항으로 내걸면서, 도입하고 싶은 라이브러리가 있어도 호환성 때문에 포기하는 일이 반복됐다. 기존 라이브러리의 최신 버전도 마찬가지였다. 버그 픽스나 성능 개선이 담긴 업데이트를 적용하지 못하고 구버전에 머물러 있는 상황이 점점 잦아졌다.
+가장 직접적인 문제는 **새 기능 개발이 막히기 시작한 것**이다. 신규 라이브러리들이 JDK 17+, Jakarta EE를 최소 요구사항으로 내걸면서 도입하고 싶은 라이브러리가 있어도 호환성 때문에 포기하는 일이 반복됐다. 기존 라이브러리의 최신 버전도 마찬가지였다. 버그 픽스나 성능 개선이 담긴 업데이트를 적용하지 못하고 구버전에 머물러 있는 상황이 점점 잦아졌다.
 
-개발 생산성 측면에서도 JDK 11은 답답한 부분이 많았다. JDK 14+의 **Text Block**을 쓸 수 없어서 복잡한 SQL이나 JSON 문자열을 `+`로 이어붙이고 있었고, **Record** 클래스가 없으니 단순 데이터 전달용 DTO마다 getter/setter/equals/hashCode를 Lombok으로 달아야 했다. **Pattern Matching instanceof**도 없어서 타입 캐스팅할 때마다 `if (obj instanceof String) { String s = (String) obj; ... }` 같은 반복 코드가 쌓였다. 특히 네이티브 쿼리를 아직 많이 사용하고 있는 프로젝트 특성상, Text Block 없이 여러 줄 SQL을 관리하는 건 가독성 면에서 고통이었다. ~~네이티브 쿼리에 `+`와 `\n`이 난무하는 코드를 볼 때마다 JDK 올리고 싶었다.~~
+개발 생산성 측면에서도 JDK 11은 답답한 부분이 많았다. JDK 14+의 **Text Block**을 쓸 수 없어서 복잡한 SQL이나 JSON 문자열을 `+`로 이어붙이고 있었고 **Record** 클래스가 없으니 단순 데이터 전달용 DTO마다 getter/setter/equals/hashCode를 Lombok으로 달아야 했다. **Pattern Matching instanceof**도 없어서 타입 캐스팅할 때마다 `if (obj instanceof String) { String s = (String) obj; ... }` 같은 반복 코드가 쌓였다. 특히 네이티브 쿼리를 아직 많이 사용하고 있는 프로젝트 특성상, Text Block 없이 여러 줄 SQL을 관리하는 건 가독성 면에서 고통이었다. ~~네이티브 쿼리에 `+`와 `\n`이 난무하는 코드를 볼 때마다 JDK 올리고 싶었다.~~
 
-**Spring Boot 2.7.x OSS 지원 종료**도 트리거였다. 보안 패치가 끊기면 프로덕션에서 운영할 명분이 없다. Spring Boot 3.x로 올리려면 JDK 17 이상이 필수이고, 어차피 올릴 거면 LTS인 21까지 한 번에 가기로 했다.
+**Spring Boot 2.7.x OSS 지원 종료**도 트리거였다. 보안 패치가 끊기면 프로덕션에서 운영할 명분이 없다. Spring Boot 3.x로 올리려면 JDK 17 이상이 필수이고 어차피 올릴 거면 LTS인 21까지 한 번에 가기로 했다.
 
 **AWS SDK v1의 유지보수 모드 전환** 역시 무시할 수 없었다. SQS, S3, Lambda를 적극적으로 사용하는 서비스 특성상 새로운 AWS 기능이 SDK v1에 추가되지 않는 건 실질적인 제약이었다. 특히 SQS의 비동기 처리 개선이나 S3의 새로운 API를 활용하려면 SDK v3가 필요했다.
 
@@ -81,7 +81,7 @@ import jakarta.annotation.PostConstruct;
 
 > **주의**: `javax.crypto`, `javax.net.ssl` 같은 **Java SE 표준 패키지**는 변경하면 안 된다. 대상은 `javax.persistence`, `javax.annotation`, `javax.validation` 등 Jakarta EE 패키지만이다.
 
-실제로 변경된 파일 수만 해도 엔티티와 컨버터 관련 파일이 100개 이상이었다. IDE의 전체 치환 기능을 사용하되, 반드시 변경 대상을 필터링해서 적용해야 한다.
+실제로 변경된 파일 수만 해도 엔티티와 컨버터 관련 파일이 100개 이상이었다. IDE의 전체 치환 기능을 사용하되, 반드시 변경 대상을 필터링해서 적용한다.
 
 ## QueryDSL Jakarta 호환
 
@@ -197,17 +197,17 @@ runtimeOnly 'com.mysql:mysql-connector-j'
 
 ## Spring Security 마이그레이션
 
-Spring Boot 3.x에서 `WebSecurityConfigurerAdapter`가 완전히 제거되었다. `SecurityFilterChain` 빈 기반으로 전환해야 한다. 프로젝트마다 설정이 다르므로 상세 코드는 생략하지만, 핵심은 **상속 기반 → 빈 등록 기반** 패턴 전환이다.
+Spring Boot 3.x에서 `WebSecurityConfigurerAdapter`가 완전히 제거되었다. `SecurityFilterChain` 빈 기반으로 전환한다. 프로젝트마다 설정이 다르므로 상세 코드는 생략하지만 핵심은 **상속 기반 → 빈 등록 기반** 패턴 전환이다.
 
 ## 삽질한 것들
 
 ### QueryDSL jakarta classifier 누락
 
-가장 찾기 어려웠던 버그다. Q클래스 생성도 정상, 컴파일도 정상인데 런타임에 `ClassNotFoundException`이 터진다. `:jakarta`를 빠뜨리면 QueryDSL이 내부적으로 `javax.persistence`를 참조하기 때문이다. 컴파일 타임에 잡히지 않으니 CI에서도 통과하고, 로컬 테스트에서도 통과하고, 실제 기동할 때 터진다.
+가장 찾기 어려웠던 버그다. Q클래스 생성도 정상, 컴파일도 정상인데 런타임에 `ClassNotFoundException`이 터진다. `:jakarta`를 빠뜨리면 QueryDSL이 내부적으로 `javax.persistence`를 참조하기 때문이다. 컴파일 타임에 잡히지 않으니 CI에서도 통과하고 로컬 테스트에서도 통과하고 실제 기동할 때 터진다.
 
 ### AWS SDK v3 비동기 전환
 
-SDK v1의 동기 API에 익숙해져 있으면 v3의 `CompletableFuture` 기반 비동기 패턴이 낯설 수 있다. 기존 동기 코드를 그대로 `.join()`으로 감싸는 것도 방법이지만, 장기적으로는 비동기 패턴을 도입하는 것이 좋다.
+SDK v1의 동기 API에 익숙해져 있으면 v3의 `CompletableFuture` 기반 비동기 패턴이 낯설 수 있다. 기존 동기 코드를 그대로 `.join()`으로 감싸는 것도 방법이지만 장기적으로는 비동기 패턴을 도입하는 것이 좋다.
 
 ### 219개 파일을 한 번에 바꾼 것
 
@@ -219,4 +219,4 @@ JDK 11 → 21은 단순한 버전업이 아니라 **Java 생태계 전체의 패
 
 219개 파일을 한 번에 바꿨지만 프로덕션에 무사히 올라갔을 때의 안도감은 아직도 생생하다.
 
-다음 편에서는 JDK 21에서 25로의 업그레이드를 다룬다. Phase 1에 비하면 훨씬 가벼운 작업이었지만, `sun.misc.Unsafe` 제거라는 런타임 수준의 변경 때문에 예상치 못한 곳에서 문제가 터졌다.
+다음 편에서는 JDK 21에서 25로의 업그레이드를 다룬다. Phase 1에 비하면 훨씬 가벼운 작업이었지만 `sun.misc.Unsafe` 제거라는 런타임 수준의 변경 때문에 예상치 못한 곳에서 문제가 터졌다.

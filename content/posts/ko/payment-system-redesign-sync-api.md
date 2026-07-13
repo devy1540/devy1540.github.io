@@ -1,7 +1,7 @@
 ---
 title: "결제 시스템 재설계 (2) - SQS를 걷어내고 동기 API로"
 date: "2026-03-06"
-description: "이벤트 드리븐의 매력에 빠져 도입한 SQS였지만, 결제 도메인에서는 오히려 복잡도만 높였다. SQS를 제거하고 동기 API + Portone 웹훅 기반으로 전환하면서 결제 프로세스를 안정화한 이야기."
+description: "이벤트 드리븐의 매력에 빠져 도입한 SQS였지만 결제 도메인에서는 오히려 복잡도만 높였다. SQS를 제거하고 동기 API + Portone 웹훅 기반으로 전환하면서 결제 프로세스를 안정화한 이야기."
 tags: ["java", "spring-boot", "payment", "portone", "refactoring"]
 series: "결제 시스템 재설계"
 seriesOrder: 2
@@ -10,7 +10,7 @@ draft: false
 
 ## 1편 요약
 
-[1편](/posts/payment-system-migration-php-to-spring)에서는 PHP 레거시 결제 시스템을 Java/Spring + SQS 기반 이벤트 드리븐 아키텍처로 전환한 과정을 다뤘다. 결과적으로 PHP 탈출과 중복 결제 방지에는 성공했지만, SQS 기반 구조에서 예상치 못한 문제들이 드러났다.
+[1편](/posts/payment-system-migration-php-to-spring)에서는 PHP 레거시 결제 시스템을 Java/Spring + SQS 기반 이벤트 드리븐 아키텍처로 전환한 과정을 다뤘다. 결과적으로 PHP 탈출과 중복 결제 방지에는 성공했지만 SQS 기반 구조에서 예상치 못한 문제들이 드러났다.
 
 - 결제 → 티켓 발급 → 알림이 각각 다른 SQS 메시지로 처리되어 전체 흐름 추적이 어려움
 - SQS 발행과 DB 트랜잭션이 분리되면서 정합성 문제 발생
@@ -28,7 +28,7 @@ SQS 기반 구조의 가장 큰 문제는 **트랜잭션 경계**였다. 결제 
 PAYMENT → 결제 검증 + 저장 → PAYMENT_DATA 발행 + PAYMENT_SCHEDULE 발행
 ```
 
-DB에 결제 정보를 저장하고, SQS에 다음 단계 메시지를 발행하는데 - 이 두 작업이 하나의 트랜잭션이 아니다. DB 커밋은 성공했는데 SQS 발행이 실패하면? 결제 정보는 저장됐지만 티켓 발급은 영원히 안 된다. 반대로 SQS 발행은 성공했는데 DB 롤백이 일어나면? 존재하지 않는 결제에 대해 후처리가 실행된다.
+DB에 결제 정보를 저장하고 SQS에 다음 단계 메시지를 발행하는데 - 이 두 작업이 하나의 트랜잭션이 아니다. DB 커밋은 성공했는데 SQS 발행이 실패하면? 결제 정보는 저장됐지만 티켓 발급은 영원히 안 된다. 반대로 SQS 발행은 성공했는데 DB 롤백이 일어나면? 존재하지 않는 결제에 대해 후처리가 실행된다.
 
 ### 디버깅의 악몽
 
@@ -42,11 +42,11 @@ DB에 결제 정보를 저장하고, SQS에 다음 단계 메시지를 발행하
 
 하나의 결제 건을 추적하는 데 여러 시스템을 넘나들어야 했다. **결제 도메인에서 비동기는 오버 엔지니어링이었다.**
 
-## 설계: 동기 API + Portone 웹훅
+## 동기 API와 Portone 웹훅으로 다시 설계
 
 ### 핵심 결정
 
-SQS를 제거하고, **Portone 웹훅이 백엔드를 직접 호출**하는 구조로 전환했다.
+SQS를 제거하고 **Portone 웹훅이 백엔드를 직접 호출**하는 구조로 전환했다.
 
 ```mermaid
 flowchart TB
@@ -76,11 +76,11 @@ flowchart TB
 | **디버깅** | 멀티 시스템 로그 | 하나의 콜스택 |
 | **결제 타입 분기** | if-else 체인 | Strategy 패턴 |
 
-가장 큰 변화는 **모든 결제 처리가 하나의 트랜잭션 안에서 완결**된다는 점이다. 결제 검증, 티켓 생성, 구독 매핑, 알림 발송이 전부 하나의 HTTP 요청 안에서 처리되고, 하나라도 실패하면 전부 롤백된다.
+가장 큰 변화는 **모든 결제 처리가 하나의 트랜잭션 안에서 완결**된다는 점이다. 결제 검증, 티켓 생성, 구독 매핑, 알림 발송이 전부 하나의 HTTP 요청 안에서 처리되고 하나라도 실패하면 전부 롤백된다.
 
 ## 웹훅 기반 결제 흐름
 
-### 프론트엔드: 웹훅 URL 생성
+### 프론트엔드에서 웹훅 URL 생성
 
 클라이언트에서 결제를 시작할 때, **백엔드 웹훅 URL을 미리 구성**해서 Portone SDK에 전달한다.
 
@@ -99,7 +99,7 @@ const createNotificationWebhookUrl = (): URL => {
 
 결제 유형, 사용자 ID, 구독 ID, 쿠폰 ID 등 후처리에 필요한 정보를 **웹훅 URL의 쿼리 파라미터**에 실어 보낸다. Portone이 결제를 완료하면 이 URL로 웹훅을 쏜다.
 
-### 프론트엔드: 폴링으로 결과 확인
+### 프론트엔드에서 폴링으로 결과 확인
 
 웹훅은 백엔드로 직접 가기 때문에, 프론트엔드는 결제 결과를 **폴링**으로 확인한다.
 
@@ -121,9 +121,9 @@ usePolling({
 })
 ```
 
-이전에는 BFF가 SQS에 메시지를 보내고, SQS가 백엔드로 전달하는 구조였다. 지금은 Portone이 백엔드에 직접 웹훅을 보내니까, BFF의 역할이 대폭 줄었다.
+이전에는 BFF가 SQS에 메시지를 보내고 SQS가 백엔드로 전달하는 구조였다. 지금은 Portone이 백엔드에 직접 웹훅을 보내니까, BFF의 역할이 대폭 줄었다.
 
-### 백엔드: 웹훅 수신 및 처리
+### 백엔드에서 웹훅 수신 및 처리
 
 웹훅 엔드포인트에서는 먼저 **웹훅 타입을 필터링**한다.
 
@@ -166,9 +166,9 @@ if (type == FIRST_BILLING) {
 }
 ```
 
-타입이 추가될 때마다 이 메서드가 비대해졌고, 하나의 타입을 수정할 때 다른 타입에 영향을 줄 위험이 있었다.
+타입이 추가될 때마다 이 메서드가 비대해졌고 하나의 타입을 수정할 때 다른 타입에 영향을 줄 위험이 있었다.
 
-### 2차: 타입별 Processor 분리
+### 2차 분리 - 타입별 Processor
 
 각 결제 타입을 독립된 Processor로 분리했다.
 
@@ -240,11 +240,11 @@ public interface PaymentValidator {
 
 ### 왜 V2인가
 
-V1(구 아임포트)은 REST API가 일부 비직관적이고, 웹훅 포맷이 단순해서 결제 상태를 정확히 파악하기 어려웠다. V2로 전환한 이유는 API 개선뿐 아니라, **개발 생산성** 측면이 컸다.
+V1(구 아임포트)은 REST API가 일부 비직관적이고 웹훅 포맷이 단순해서 결제 상태를 정확히 파악하기 어려웠다. V2로 전환한 이유는 API 개선뿐 아니라, **개발 생산성** 측면이 컸다.
 
 **공식 Java SDK (`io.portone.sdk.server`)**
 
-V1에서는 `HttpClient`로 직접 HTTP 요청을 보내고, `ObjectMapper`로 JSON을 수동 파싱하고, 결과를 `Map<String, Object>`로 다루고 있었다. 토큰 발급·갱신도 직접 구현해야 했다. V2 SDK는 이 모든 걸 타입 안전한 객체로 제공한다.
+V1에서는 `HttpClient`로 직접 HTTP 요청을 보내고 `ObjectMapper`로 JSON을 수동 파싱하고 결과를 `Map<String, Object>`로 다루고 있었다. 토큰 발급·갱신도 직접 구현해야 했다. V2 SDK는 이 모든 걸 타입 안전한 객체로 제공한다.
 
 ```java
 // V1: 수동 HTTP + JSON 파싱
@@ -258,11 +258,11 @@ Map<String, Object> result = objectMapper.convertValue(dto.getResponse(), new Ty
 Payment payment = portOneClient.getPayment().getPayment(paymentId).get();
 ```
 
-`Payment.Recognized`, `PaidPayment`, `FailedPayment` 같은 sealed interface 덕분에 패턴 매칭으로 결제 상태를 분기할 수 있고, 컴파일 타임에 누락된 케이스를 잡을 수 있다.
+`Payment.Recognized`, `PaidPayment`, `FailedPayment` 같은 sealed interface 덕분에 패턴 매칭으로 결제 상태를 분기할 수 있고 컴파일 타임에 누락된 케이스를 잡을 수 있다.
 
 **포트원 MCP (Model Context Protocol)**
 
-포트원이 제공하는 MCP 서버를 통해 Claude Code에서 V2 API 문서와 SDK 사용법을 직접 조회할 수 있다. V1 시절에는 문서를 브라우저에서 찾아봐야 했지만, V2는 개발 중에 MCP로 정확한 스펙을 바로 확인하면서 코드를 작성할 수 있다. 실제로 `PortoneV2Service`의 상당 부분을 MCP 기반으로 작성했다.
+포트원이 제공하는 MCP 서버를 통해 Claude Code에서 V2 API 문서와 SDK 사용법을 직접 조회할 수 있다. V1 시절에는 문서를 브라우저에서 찾아봐야 했지만 V2는 개발 중에 MCP로 정확한 스펙을 바로 확인하면서 코드를 작성할 수 있다. 실제로 `PortoneV2Service`의 상당 부분을 MCP 기반으로 작성했다.
 
 **V2 API 자체의 개선**
 
@@ -276,7 +276,7 @@ Payment payment = portOneClient.getPayment().getPayment(paymentId).get();
 
 ## 결제 실패 재시도
 
-정기결제가 실패하면 자동으로 재시도한다. 최대 14일간 재시도하며, 횟수에 따라 알림 방식을 달리한다.
+정기결제가 실패하면 자동으로 재시도한다. 최대 14일간 재시도하며 횟수에 따라 알림 방식을 달리한다.
 
 ```mermaid
 flowchart TB
@@ -291,7 +291,7 @@ flowchart TB
 
 ## 자동 환불 시스템
 
-동기 API의 장점 중 하나는 **결제 처리 중 오류가 발생하면 즉시 환불**할 수 있다는 점이다. SQS 기반에서는 메시지 소비 실패 시 재시도 큐에 쌓이기만 했지만, 동기 구조에서는 try-catch 한 번으로 환불까지 처리된다.
+동기 API의 장점 중 하나는 **결제 처리 중 오류가 발생하면 즉시 환불**할 수 있다는 점이다. SQS 기반에서는 메시지 소비 실패 시 재시도 큐에 쌓이기만 했지만 동기 구조에서는 try-catch 한 번으로 환불까지 처리된다.
 
 ```mermaid
 flowchart TB
@@ -311,8 +311,8 @@ flowchart TB
 catch (BaseException e) {
     // 환불이 불필요한 케이스: 이미 취소됨, 미결제 상태, 중복 처리 중
     if (Set.of(CANCELLED_PAYMENT, PAYMENT_NOT_PAID, ALREADY_PROCESSING)
-            .contains(e.getPodoStatusCode())) {
-        log.warn("[{}] 환불 스킵. paymentId: {}", e.getPodoStatusCode(), paymentId);
+            .contains(e.getErrorCode())) {
+        log.warn("[{}] 환불 스킵. paymentId: {}", e.getErrorCode(), paymentId);
         return;
     }
 
@@ -335,11 +335,11 @@ catch (BaseException e) {
 
 `CANCELLED_PAYMENT`이나 `PAYMENT_NOT_PAID`는 사용자가 결제를 취소했거나 결제가 완료되지 않은 상태에서 웹훅이 온 경우다. 이미 돈이 빠져나가지 않았으니 환불할 필요가 없다. `ALREADY_PROCESSING`은 동일 결제에 대해 웹훅이 중복으로 들어온 경우로, 다른 스레드가 이미 처리 중이므로 스킵한다.
 
-이 세 가지를 제외한 나머지 예외 - 검증 실패, 티켓 생성 오류, DB 에러 등 - 에서는 포트원 V2 API로 즉시 결제를 취소하고, 실패 정보를 `REFUNDED` 상태로 기록한 뒤, Slack으로 운영팀에 알린다. 예외를 다시 던져서 트랜잭션을 롤백하므로, **환불된 결제에 대한 티켓이나 구독이 남지 않는다.**
+이 세 가지를 제외한 나머지 예외 - 검증 실패, 티켓 생성 오류, DB 에러 등 - 에서는 포트원 V2 API로 즉시 결제를 취소하고 실패 정보를 `REFUNDED` 상태로 기록한 뒤, Slack으로 운영팀에 알린다. 예외를 다시 던져서 트랜잭션을 롤백하므로, **환불된 결제에 대한 티켓이나 구독이 남지 않는다.**
 
 ## 전체 아키텍처 비교
 
-### Before: SQS 기반 이벤트 드리븐
+### Before - SQS 기반 이벤트 드리븐
 
 ```mermaid
 flowchart TB
@@ -367,7 +367,7 @@ flowchart TB
     E -->|"SQS"| G
 ```
 
-### After: 동기 API + Portone 웹훅
+### After - 동기 API + Portone 웹훅
 
 ```mermaid
 flowchart TB
@@ -411,8 +411,8 @@ flowchart TB
 
 ### 배운 점
 
-이벤트 드리븐 아키텍처는 강력한 패턴이지만, **모든 도메인에 적합한 건 아니다**. 결제처럼 **순차적이고, 트랜잭션 정합성이 중요하고, 실패 시 즉각 대응이 필요한** 도메인에서는 동기 처리가 더 적합했다.
+이벤트 드리븐 아키텍처는 강력한 패턴이지만 **모든 도메인에 적합한 건 아니다**. 결제처럼 **순차적이고 트랜잭션 정합성이 중요하고 실패 시 즉각 대응이 필요한** 도메인에서는 동기 처리가 더 적합했다.
 
-SQS가 빛을 발하는 건 알림 발송, 로그 적재, 이미지 처리처럼 **실패해도 재시도하면 되고, 순서가 중요하지 않은** 작업이다. 실제로 우리 시스템에서도 Slack 알림이나 리플레이 생성 같은 비결제 영역에서는 여전히 SQS를 쓰고 있다.
+SQS가 빛을 발하는 건 알림 발송, 로그 적재, 이미지 처리처럼 **실패해도 재시도하면 되고 순서가 중요하지 않은** 작업이다. 실제로 우리 시스템에서도 Slack 알림이나 리플레이 생성 같은 비결제 영역에서는 여전히 SQS를 쓰고 있다.
 
 기술 선택은 항상 도메인의 특성에 맞춰야 한다.

@@ -16,9 +16,9 @@ Spring AI를 처음 도입하려는 분들이 빠르게 시작할 수 있도록,
 
 ## Spring AI란
 
-[Spring AI](https://spring.io/projects/spring-ai)는 Spring 팀이 공식으로 개발하는 AI 통합 프레임워크다. Python 생태계의 LangChain과 비슷한 위치에 있지만, 접근 방식이 다르다.
+[Spring AI](https://spring.io/projects/spring-ai)는 Spring 팀이 공식으로 개발하는 AI 통합 프레임워크다. Python 생태계의 LangChain과 비슷한 위치에 있지만 접근 방식이 다르다.
 
-Spring AI의 핵심 철학은 **"기존 Spring 개발 경험을 그대로 쓸 수 있게"** 하는 것이다. 의존성 주입, 자동 설정, 프로퍼티 바인딩 같은 Spring Boot의 장점을 AI 영역에서도 동일하게 활용할 수 있다.
+Spring AI의 핵심 철학은 **"기존 Spring 개발 경험을 그대로 쓸 수 있게"** 하는 데 있다. 의존성 주입, 자동 설정, 프로퍼티 바인딩 같은 Spring Boot의 장점을 AI 영역에서도 동일하게 활용할 수 있다.
 
 ```mermaid
 flowchart LR
@@ -61,7 +61,7 @@ dependencies {
 
 > **참고**: Spring AI 1.0부터 artifact 이름이 변경됐다. 이전의 `spring-ai-openai-spring-boot-starter`가 `spring-ai-starter-model-openai`로 바뀌었으니 주의하자.
 
-한 프로바이더만 쓴다면 해당 의존성 하나만 추가하면 된다. 우리는 세 개를 모두 사용하고 있지만, 처음 시작한다면 OpenAI 하나부터 시작하는 걸 추천한다.
+한 프로바이더만 쓴다면 해당 의존성 하나만 추가하면 된다. 우리는 세 개를 모두 사용하고 있지만 처음 시작한다면 OpenAI 하나부터 시작하는 걸 추천한다.
 
 ### Maven
 
@@ -125,7 +125,7 @@ BedrockProxyChatModel  // AWS Bedrock
 GoogleGenAiChatModel   // Google Gemini
 ```
 
-Spring Boot 자동 설정으로 해당 프로바이더의 `ChatModel` 빈이 자동 등록된다. 직접 사용할 수도 있지만, 일반적으로는 `ChatClient`를 통해 사용한다.
+Spring Boot 자동 설정으로 해당 프로바이더의 `ChatModel` 빈이 자동 등록된다. 직접 사용할 수도 있지만 일반적으로는 `ChatClient`를 통해 사용한다.
 
 ### ChatClient
 
@@ -153,9 +153,9 @@ public class ChatClientConfig {
 }
 ```
 
-Spring Boot가 `OpenAiChatModel`을 자동 생성하고, 우리는 그걸로 `ChatClient`를 만든다.
+Spring Boot가 `OpenAiChatModel`을 자동 생성하고 우리는 그걸로 `ChatClient`를 만든다.
 
-> **`spring.ai.chat.client.enabled`** 를 `false`로 설정하면 Spring AI가 자동으로 ChatClient 빈을 만들지 않는다. 여러 프로바이더를 사용할 때는 이렇게 자동 생성을 끄고, 위처럼 직접 Bean으로 등록하는 게 깔끔하다.
+> **`spring.ai.chat.client.enabled`** 를 `false`로 설정하면 Spring AI가 자동으로 ChatClient 빈을 만들지 않는다. 여러 프로바이더를 사용할 때는 이렇게 자동 생성을 끄고 위처럼 직접 Bean으로 등록하는 게 깔끔하다.
 
 ```yaml
 spring:
@@ -184,7 +184,7 @@ public class AiService {
 }
 ```
 
-`chatClient.prompt()`로 요청을 시작하고, `.user()`로 사용자 메시지를 설정하고, `.call()`로 호출하고, `.content()`로 응답 텍스트를 꺼낸다.
+`chatClient.prompt()`로 요청을 시작하고 `.user()`로 사용자 메시지를 설정하고 `.call()`로 호출하고 `.content()`로 응답 텍스트를 꺼낸다.
 
 ### 3. System Prompt 추가
 
@@ -252,7 +252,7 @@ src/main/java/
 
 ## 정리
 
-이번 편에서는 Spring AI 프로젝트 설정과 기본적인 ChatClient 사용법을 다뤘다. 핵심을 요약하면:
+이번 편에서는 Spring AI 프로젝트 설정과 기본적인 ChatClient 사용법을 다뤘다. 핵심은 다음과 같다:
 
 - Spring AI는 Spring Boot 자동 설정과 완전히 통합된다
 - 의존성 추가 + `application.yml` 설정만으로 바로 시작할 수 있다
