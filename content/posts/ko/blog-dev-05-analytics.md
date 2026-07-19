@@ -1,6 +1,7 @@
 ---
 title: "블로그 만들기 #5 - Google Analytics 연동 & 방문자 수 표시"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "정적 사이트에서 GA4 데이터를 활용해 방문자 수와 일별 조회수 차트를 표시하는 방법을 정리합니다."
 tags: ["react", "google-analytics", "shadcn-ui", "blog"]
 series: "React 블로그 만들기"

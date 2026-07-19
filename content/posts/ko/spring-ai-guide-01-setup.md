@@ -1,6 +1,7 @@
 ---
 title: "Spring AI 적용 가이드 (1) - 프로젝트 설정부터 첫 번째 AI 호출까지"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "Spring AI의 핵심 개념과 프로젝트 설정, ChatClient를 이용한 첫 번째 AI 호출까지를 정리합니다."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "java"]
 series: "Spring AI 적용 가이드"

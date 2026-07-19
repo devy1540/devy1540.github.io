@@ -1,6 +1,7 @@
 ---
 title: "로그인 책임 분리 (3) - 기존 토큰과 새 백엔드 토큰을 함께 검증하기"
 date: "2026-04-17"
+updated: "2026-04-17"
 description: "브라우저에는 토큰이 쿠키로 전달되지만 기존 토큰과 새 백엔드 토큰의 검증 기준이 다를 때 순서와 실패 처리를 어떻게 나눴는지 정리합니다."
 tags: ["authentication", "oauth", "jwt", "testing", "migration", "java", "spring"]
 series: "로그인 책임 분리"

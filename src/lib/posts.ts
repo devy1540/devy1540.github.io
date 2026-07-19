@@ -1,5 +1,6 @@
 import type { Post, PostMeta } from "@/types/post"
 import type { Language } from "@/i18n"
+import { assertValidPostDates } from "@/lib/post-dates"
 
 const postFiles = import.meta.glob("/content/posts/*/*.md", {
   query: "?raw",
@@ -75,12 +76,13 @@ function parsePost(filePath: string, raw: string): Post {
   const slug = parsedPath?.slug ?? filePath.replace(/^.*\//, "").replace(".md", "")
   const { data, content } = parseFrontmatter(raw)
 
-  return {
+  const post: Post = {
     slug,
     language,
     availableLanguages: getAvailableLanguages(slug),
     title: (data.title as string) ?? slug,
     date: (data.date as string) ?? "",
+    updated: (data.updated as string) ?? "",
     description: (data.description as string) ?? "",
     tags: (data.tags as string[]) ?? [],
     series: (data.series as string) || undefined,
@@ -89,6 +91,9 @@ function parsePost(filePath: string, raw: string): Post {
     publishDate: (data.publishDate as string) || undefined,
     content,
   }
+
+  assertValidPostDates(post)
+  return post
 }
 
 function isHidden(post: Pick<PostMeta, "draft" | "publishDate">): boolean {
@@ -104,6 +109,7 @@ function toPostMeta(post: Post): PostMeta {
     availableLanguages: post.availableLanguages,
     title: post.title,
     date: post.date,
+    updated: post.updated,
     description: post.description,
     tags: post.tags,
     series: post.series,

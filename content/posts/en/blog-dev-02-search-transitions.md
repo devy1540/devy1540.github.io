@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #2 - Command Palette Search and View Transitions"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "How I implemented Cmd+K search with cmdk and added page transition animation with the View Transitions API."
 tags: ["react", "cmdk", "view-transitions", "blog"]
 series: "Building a React Blog"

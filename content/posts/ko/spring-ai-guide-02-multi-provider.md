@@ -1,6 +1,7 @@
 ---
 title: "Spring AI 적용 가이드 (2) - 멀티 프로바이더 전략"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "OpenAI, AWS Bedrock, Google Gemini를 하나의 ChatClient 인터페이스로 추상화하고 런타임에 동적으로 전환하는 방법을 다룹니다."
 tags: ["spring-ai", "spring-boot", "ai", "openai", "bedrock", "gemini"]
 series: "Spring AI 적용 가이드"

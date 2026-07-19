@@ -1,6 +1,7 @@
 ---
 title: "Payment System Redesign (1) - From PHP Legacy to Java/Spring"
 date: "2026-03-06"
+updated: "2026-03-06"
 description: "How I migrated a legacy payment system written in PHP to a Java/Spring and SQS-based event-driven architecture."
 tags: ["java", "spring-boot", "payment", "sqs", "migration"]
 series: "Payment System Redesign"

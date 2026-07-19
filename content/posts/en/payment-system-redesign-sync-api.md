@@ -1,6 +1,7 @@
 ---
 title: "Payment System Redesign (2) - Removing SQS and Moving to Synchronous APIs"
 date: "2026-03-06"
+updated: "2026-03-06"
 description: "SQS looked attractive as an event-driven architecture, but in the payment domain it added more complexity than value. This post covers how I removed SQS and stabilized payment processing with synchronous APIs and Portone webhooks."
 tags: ["java", "spring-boot", "payment", "portone", "refactoring"]
 series: "Payment System Redesign"

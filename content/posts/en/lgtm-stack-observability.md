@@ -1,6 +1,7 @@
 ---
 title: "Replacing Datadog with an LGTM Stack - OTel Sidecar with Grafana, Loki, Tempo, and Mimir"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "How I moved from Datadog to an open-source LGTM stack and built observability with an OTel Collector sidecar, noise filtering, MDC request tracing, and IRSA-backed S3 storage."
 tags: ["grafana", "loki", "tempo", "mimir", "opentelemetry", "kubernetes", "observability", "devops"]
 series: "Service Infrastructure Modernization"

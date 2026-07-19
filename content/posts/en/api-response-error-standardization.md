@@ -1,6 +1,7 @@
 ---
 title: "Standardizing API Responses and Error Handling - Getting HTTP Status Codes Right"
 date: "2026-03-10"
+updated: "2026-03-10"
 description: "How I migrated from a legacy structure where every API returned 200 to a shared response and error system that uses HTTP status codes properly, improving monitoring, debugging, and team communication."
 tags: ["java", "spring-boot", "architecture", "error-handling", "refactoring"]
 draft: false

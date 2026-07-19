@@ -1,6 +1,7 @@
 ---
 title: "Service Internationalization (1) - Stripping Out Hardcoded Korean"
 date: "2026-05-19"
+updated: "2026-05-19"
 description: "Frontend internationalization, kicked off ahead of our launch in Japan. Here's how we settled on a locale model, managed our messages, and flowed the locale through the entire system."
 tags: ["i18n", "nextjs", "react", "typescript"]
 series: "Service Internationalization"

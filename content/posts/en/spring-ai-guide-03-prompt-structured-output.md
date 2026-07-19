@@ -1,6 +1,7 @@
 ---
 title: "Spring AI Guide (3) - Prompt Management and Structured Output"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "How to use Spring AI's message model, variable templating, database-backed prompt management, and JSON Schema-based structured output."
 tags: ["spring-ai", "spring-boot", "ai", "prompt-engineering", "structured-output"]
 series: "Spring AI Guide"

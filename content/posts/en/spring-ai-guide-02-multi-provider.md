@@ -1,6 +1,7 @@
 ---
 title: "Spring AI Guide (2) - Multi-Provider Strategy"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "How to abstract OpenAI, AWS Bedrock, and Google Gemini behind one ChatClient interface and switch providers dynamically at runtime."
 tags: ["spring-ai", "spring-boot", "ai", "openai", "bedrock", "gemini"]
 series: "Spring AI Guide"

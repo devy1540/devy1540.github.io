@@ -1,6 +1,7 @@
 ---
 title: "Platform Thread vs Virtual Thread vs Coroutine - 10,000 Task Benchmark"
 date: "2026-03-24"
+updated: "2026-03-24"
 description: "A benchmark comparing JDK 25 Platform Threads, Virtual Threads, and Kotlin Coroutines across I/O-bound, CPU-bound, and high-concurrency scenarios with 10,000 tasks repeated 100 times."
 tags: ["java", "kotlin", "virtual-threads", "coroutine", "benchmark", "concurrency"]
 draft: false

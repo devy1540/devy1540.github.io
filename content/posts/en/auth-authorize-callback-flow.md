@@ -1,6 +1,7 @@
 ---
 title: "Splitting Login Responsibility (2) - Connecting the authorize/callback Flow"
 date: "2026-04-16"
+updated: "2026-04-16"
 description: "How the frontend connects the login flow from protected page access to backend authorize, callback, and token issuance."
 tags: ["authentication", "oauth", "frontend", "backend", "typescript", "java", "spring"]
 series: "Splitting Login Responsibility"

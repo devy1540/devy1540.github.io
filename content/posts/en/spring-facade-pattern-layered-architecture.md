@@ -1,6 +1,7 @@
 ---
 title: "Introducing the Facade Pattern to Spring MVC - Improving Layered Architecture with a @Gateway Annotation"
 date: "2026-03-10"
+updated: "2026-03-10"
 description: "How I introduced a custom @Gateway annotation and facade layer into a traditional Controller-Service-Repository architecture to clarify domain responsibilities and improve team productivity."
 tags: ["java", "spring-boot", "architecture", "design-pattern", "facade"]
 draft: false

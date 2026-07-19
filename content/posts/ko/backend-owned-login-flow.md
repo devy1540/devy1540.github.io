@@ -1,6 +1,7 @@
 ---
 title: "로그인 책임 분리 (1) - 프론트엔드에서 백엔드로 옮긴 이유"
 date: "2026-04-15"
+updated: "2026-04-15"
 description: "프론트엔드가 로그인 상태를 직접 만들던 구조를 백엔드 중심의 인증 흐름으로 바꾸며 정리한 책임 분리 기준."
 tags: ["authentication", "oauth", "backend", "frontend", "architecture"]
 series: "로그인 책임 분리"

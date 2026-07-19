@@ -1,6 +1,7 @@
 ---
 title: "Splitting Login Responsibility (1) - Why I Moved It from Frontend to Backend"
 date: "2026-04-15"
+updated: "2026-04-15"
 description: "The responsibility boundaries I used while moving login state from a frontend-owned flow to a backend-owned authentication flow."
 tags: ["authentication", "oauth", "backend", "frontend", "architecture"]
 series: "Splitting Login Responsibility"

@@ -1,6 +1,7 @@
 ---
 title: "AWS에서 GCP로 - 클라우드 이관에서 실제로 바뀐 것들"
 date: "2026-06-18"
+updated: "2026-06-18"
 description: "AWS에서 GCP로 서비스를 옮기면서 런타임, 배포, 시크릿, 데이터 연결, 캐시, 관측성의 기준이 어떻게 바뀌었는지 정리합니다."
 tags: ["gcp", "aws", "migration", "kubernetes", "devops", "cloud"]
 series: "서비스 인프라 현대화"

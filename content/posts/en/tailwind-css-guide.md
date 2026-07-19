@@ -1,6 +1,7 @@
 ---
 title: "Getting Started with Tailwind CSS"
 date: "2026-02-15"
+updated: "2026-02-15"
 description: "A quick look at the core ideas and common usage patterns of Tailwind CSS."
 tags: ["css", "tailwind"]
 draft: true

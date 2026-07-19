@@ -1,6 +1,7 @@
 ---
 title: "API 응답/에러 처리 구조 공통화 - HTTP 상태코드를 제대로 쓰기까지"
 date: "2026-03-10"
+updated: "2026-03-10"
 description: "모든 API가 200을 반환하던 레거시 구조에서, HTTP 상태코드를 올바르게 활용하는 공통 응답/에러 체계로 전면 개선한 과정. 모니터링 정상화, 디버깅 효율화, 개발자 간 커뮤니케이션 비용 절감까지."
 tags: ["java", "spring-boot", "architecture", "error-handling", "refactoring"]
 draft: false

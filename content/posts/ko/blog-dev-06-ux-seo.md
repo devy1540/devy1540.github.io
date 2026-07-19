@@ -1,6 +1,7 @@
 ---
 title: "블로그 만들기 #6 - UX 개선 & SEO 마무리"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "글 목록 연도별 그룹핑, 모바일 사이드바 UX 개선, robots.txt, OG 이미지 등 블로그의 완성도를 높이는 작업들을 정리합니다."
 tags: ["react", "seo", "ux", "blog"]
 series: "React 블로그 만들기"

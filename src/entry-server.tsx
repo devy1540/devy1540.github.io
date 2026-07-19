@@ -5,6 +5,7 @@ import { AppProviders } from "./app-shell"
 import { createServerRoutes } from "./routes.server"
 import { PROJECTS } from "./data/resume"
 import { getAllPosts, getPostBySlug } from "./lib/posts"
+import { getPostModifiedDate } from "./lib/post-dates"
 import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
 import type { Language } from "./i18n"
 import type { PostMeta } from "./types/post"
@@ -83,6 +84,7 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
           headline: post.title,
           description: post.description,
           datePublished: post.date,
+          dateModified: getPostModifiedDate(post),
           url: `${BASE_URL}${postPath(post.slug, language)}`,
         })),
       },
@@ -267,6 +269,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
           headline: post.title,
           description: post.description,
           datePublished: post.date,
+          dateModified: getPostModifiedDate(post),
           url: `${BASE_URL}/posts/${post.slug}/`,
           image: OG_IMAGE_URL,
           author: { "@type": "Person", name: "Devy" },
@@ -313,6 +316,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
           headline: post.title,
           description: post.description,
           datePublished: post.date,
+          dateModified: getPostModifiedDate(post),
           url: `${BASE_URL}${toCanonicalPath(path)}`,
           image: OG_IMAGE_URL,
           author: { "@type": "Person", name: "Devy" },

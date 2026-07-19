@@ -1,6 +1,7 @@
 ---
 title: "블로그 만들기 #4 - 고급 검색 & SEO 최적화"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "날짜/태그 필터가 포함된 검색 페이지를 만들고 메타 태그, sitemap, RSS 피드로 SEO를 최적화한 과정입니다."
 tags: ["react", "seo", "shadcn-ui", "blog"]
 series: "React 블로그 만들기"

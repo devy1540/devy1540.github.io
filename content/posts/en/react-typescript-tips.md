@@ -1,6 +1,7 @@
 ---
 title: "Practical React + TypeScript Tips"
 date: "2026-02-20"
+updated: "2026-02-20"
 description: "Practical TypeScript patterns that make React projects safer and easier to maintain."
 tags: ["react", "typescript"]
 series: "Mastering React"

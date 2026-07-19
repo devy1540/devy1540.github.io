@@ -1,6 +1,7 @@
 ---
 title: "React Hooks Deep Dive"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "A closer look at how React Hooks work and the practical patterns I use in real projects."
 tags: ["react", "hooks", "typescript"]
 series: "Mastering React"

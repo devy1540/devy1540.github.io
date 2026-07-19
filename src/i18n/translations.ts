@@ -32,6 +32,7 @@ export interface Translations {
     nextPost: string
     readingTime: (minutes: number) => string
     views: string
+    updatedAt: (date: string) => string
     translation: string
     languageKo: string
     languageEn: string
@@ -242,6 +243,7 @@ export const ko: Translations = {
     nextPost: "다음 글",
     readingTime: (minutes) => `${minutes}분 읽기`,
     views: "조회",
+    updatedAt: (date) => `수정 ${date}`,
     translation: "번역",
     languageKo: "한국어",
     languageEn: "English",
@@ -452,6 +454,7 @@ export const en: Translations = {
     nextPost: "Next",
     readingTime: (minutes) => `${minutes} min read`,
     views: "views",
+    updatedAt: (date) => `Updated ${date}`,
     translation: "Translation",
     languageKo: "Korean",
     languageEn: "English",

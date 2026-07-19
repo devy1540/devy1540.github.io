@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #6 - UX Improvements and Final SEO Polish"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "Year-based post grouping, mobile sidebar UX improvements, robots.txt, OG image setup, and other small refinements that make the blog feel more complete."
 tags: ["react", "seo", "ux", "blog"]
 series: "Building a React Blog"

@@ -1,6 +1,7 @@
 ---
 title: "Building a Multi-Channel Notification Server - From PHP Legacy to Java/Spring"
 date: "2026-03-09"
+updated: "2026-03-09"
 description: "How I moved scattered PHP notification logic into an independent Spring Boot notification server that handles Kakao AlimTalk, SMS, email, push, and Slack through one structure."
 tags: ["java", "spring-boot", "notification", "sqs", "architecture"]
 draft: false

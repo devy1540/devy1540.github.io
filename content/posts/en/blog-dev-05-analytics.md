@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #5 - Google Analytics Integration and View Counts"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "How I display visitor counts and daily page view charts on a static site using GA4 data."
 tags: ["react", "google-analytics", "shadcn-ui", "blog"]
 series: "Building a React Blog"

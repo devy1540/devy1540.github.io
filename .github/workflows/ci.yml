@@ -26,4 +26,6 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run type-check
+      - run: npm run test:post-dates
       - run: npm run build
+      - run: npm run test:sitemap-lastmod

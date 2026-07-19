@@ -1,6 +1,7 @@
 ---
 title: "결제 시스템 재설계 (1) - PHP 레거시에서 Java/Spring으로"
 date: "2026-03-06"
+updated: "2026-03-06"
 description: "PHP로 구현된 레거시 결제 시스템을 Java/Spring + SQS 기반 이벤트 드리븐 아키텍처로 전환한 과정을 공유합니다."
 tags: ["java", "spring-boot", "payment", "sqs", "migration"]
 series: "결제 시스템 재설계"

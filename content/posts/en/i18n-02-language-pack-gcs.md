@@ -1,6 +1,7 @@
 ---
 title: "Service Internationalization (2) - Serving Language Packs: Bundle, GCS Runtime Load, and Cache"
 date: "2026-06-03"
+updated: "2026-06-03"
 description: "If you ship translations together with the app, every one-line copy fix means a redeploy. This post covers the structure that loads language packs from GCS at runtime and falls back to the bundle, plus the cache problem where copy wouldn't change even after deploying."
 tags: ["i18n", "nextjs", "gcs", "typescript"]
 series: "Service Internationalization"
