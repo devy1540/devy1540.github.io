@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.4](https://github.com/devy1540/devy1540.github.io/compare/v1.27.3...v1.27.4) (2026-07-19)
+
+
+### 버그 수정
+
+* publish explicit post modification dates ([#191](https://github.com/devy1540/devy1540.github.io/issues/191)) ([60ed57c](https://github.com/devy1540/devy1540.github.io/commit/60ed57cb16fb6f94bc0770534fc4f9e31c0f4328))
+
 ## [1.27.3](https://github.com/devy1540/devy1540.github.io/compare/v1.27.2...v1.27.3) (2026-07-13)
 
 
