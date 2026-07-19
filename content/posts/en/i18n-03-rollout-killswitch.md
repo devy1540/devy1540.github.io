@@ -1,6 +1,7 @@
 ---
 title: "Service Internationalization (3) - Zero-Downtime Rollout with a GrowthBook Kill Switch"
 date: "2026-06-17"
+updated: "2026-06-17"
 description: "Even with all translations ready, flipping the switch for everyone at once is risky. The story of funneling locale decisions into a single choke point and rolling out i18n with zero downtime, gradually, via a GrowthBook kill switch."
 tags: ["i18n", "nextjs", "growthbook", "feature-flag"]
 series: "Service Internationalization"

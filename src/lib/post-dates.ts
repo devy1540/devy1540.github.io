@@ -1,5 +1,10 @@
 export interface PostDates {
   date: string
+  updated: string
+}
+
+interface UnvalidatedPostDates {
+  date: string
   updated?: string
 }
 
@@ -13,7 +18,7 @@ function isValidIsoDate(value: string): boolean {
 }
 
 export function getPostModifiedDate(post: PostDates): string {
-  return post.updated || post.date
+  return post.updated
 }
 
 export function hasDistinctUpdatedDate(post: PostDates): boolean {
@@ -21,14 +26,16 @@ export function hasDistinctUpdatedDate(post: PostDates): boolean {
 }
 
 export function assertValidPostDates(
-  post: PostDates,
+  post: UnvalidatedPostDates,
   today = new Date().toISOString().slice(0, 10),
 ): void {
   if (!isValidIsoDate(post.date)) {
     throw new Error(`Post publication date must be a valid YYYY-MM-DD value: ${post.date || "(missing)"}`)
   }
 
-  if (!post.updated) return
+  if (!post.updated) {
+    throw new Error("Post updated date is required")
+  }
 
   if (!isValidIsoDate(post.updated)) {
     throw new Error(`Post updated date must be a valid YYYY-MM-DD value: ${post.updated}`)

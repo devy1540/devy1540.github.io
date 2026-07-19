@@ -82,7 +82,7 @@ function parsePost(filePath: string, raw: string): Post {
     availableLanguages: getAvailableLanguages(slug),
     title: (data.title as string) ?? slug,
     date: (data.date as string) ?? "",
-    updated: (data.updated as string) || undefined,
+    updated: (data.updated as string) ?? "",
     description: (data.description as string) ?? "",
     tags: (data.tags as string[]) ?? [],
     series: (data.series as string) || undefined,

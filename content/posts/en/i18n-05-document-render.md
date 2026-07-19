@@ -1,6 +1,7 @@
 ---
 title: "Service Internationalization (5) - From Image-Baked Documents to HTML: Multilingual PDF Rendering"
 date: "2026-07-04"
+updated: "2026-07-04"
 description: "For a long time, the language of our certificates and reports was baked into images. This is the story of moving image-based documents to HTML templates plus Cloud Run rendering, so that adding a new language became a single JSON file."
 tags: ["i18n", "cloud-run", "pdf", "weasyprint"]
 series: "Service Internationalization"

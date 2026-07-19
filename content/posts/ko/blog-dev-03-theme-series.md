@@ -1,6 +1,7 @@
 ---
 title: "블로그 만들기 #3 - 컬러 테마 프리셋 & 포스트 시리즈"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "shadcn/ui의 oklch 색상 시스템으로 6가지 컬러 프리셋을 만들고 포스트 시리즈 기능을 구현한 과정입니다."
 tags: ["react", "shadcn-ui", "css", "blog"]
 series: "React 블로그 만들기"

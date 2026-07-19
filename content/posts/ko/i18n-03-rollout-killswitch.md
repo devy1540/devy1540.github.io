@@ -1,6 +1,7 @@
 ---
 title: "서비스 국제화 적용기 (3) - GrowthBook 킬스위치로 무중단 점진 롤아웃"
 date: "2026-06-17"
+updated: "2026-06-17"
 description: "번역을 다 만들었어도 전원에게 한 번에 켜면 위험하다. 로케일 결정을 단일 차단점으로 모으고 GrowthBook 킬스위치로 i18n을 무중단·점진 롤아웃한 이야기."
 tags: ["i18n", "nextjs", "growthbook", "feature-flag"]
 series: "서비스 국제화 적용기"

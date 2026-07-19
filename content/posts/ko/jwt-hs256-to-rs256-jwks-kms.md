@@ -1,6 +1,7 @@
 ---
 title: "JWT 서명 전환 - HS256에서 RS256/JWKS/KMS로"
 date: "2026-04-24"
+updated: "2026-04-24"
 description: "대칭키 JWT 서명을 RS256/JWKS/KMS 구조로 바꾸며 서명 책임, kid, key rotation, legacy 토큰 처리를 어떻게 나눴는지 정리합니다."
 tags: ["authentication", "jwt", "jwks", "kms", "java", "spring", "security"]
 draft: false

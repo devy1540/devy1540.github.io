@@ -1,6 +1,7 @@
 ---
 title: "JDK 마이그레이션 (1) - JDK 11에서 21로, Spring Boot 3.x 전환기"
 date: "2026-03-18"
+updated: "2026-03-18"
 description: "프로덕션 Spring Boot 서비스를 JDK 11 → 21로 업그레이드하며 겪은 javax→jakarta 전환, AWS SDK v3 마이그레이션, QueryDSL 호환성 해결 등 실전 경험을 정리합니다."
 tags: ["java", "jdk", "spring-boot", "migration", "devops"]
 series: "JDK Migration"

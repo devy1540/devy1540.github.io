@@ -1,6 +1,7 @@
 ---
 title: "JDK 마이그레이션 (2) - JDK 21에서 25로, Virtual Threads와 모던 Java"
 date: "2026-03-18"
+updated: "2026-03-18"
 description: "JDK 21 → 25 업그레이드 실전기. Virtual Threads 활성화, pinning 이슈 해소, pattern matching switch 적용, Gradle Kotlin DSL 전환까지."
 tags: ["java", "jdk", "spring-boot", "virtual-threads", "devops"]
 series: "JDK Migration"

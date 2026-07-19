@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #4 - Advanced Search and SEO Optimization"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "How I built a search page with date and tag filters, then improved SEO with meta tags, sitemap, and RSS feed generation."
 tags: ["react", "seo", "shadcn-ui", "blog"]
 series: "Building a React Blog"

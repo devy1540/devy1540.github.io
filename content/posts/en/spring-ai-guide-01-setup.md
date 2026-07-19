@@ -1,6 +1,7 @@
 ---
 title: "Spring AI Guide (1) - From Project Setup to the First AI Call"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "A guide to Spring AI core concepts, project setup, and the first AI call with ChatClient."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "java"]
 series: "Spring AI Guide"

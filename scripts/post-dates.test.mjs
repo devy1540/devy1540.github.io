@@ -7,9 +7,11 @@ import {
   hasDistinctUpdatedDate,
 } from "../src/lib/post-dates.ts"
 
-test("uses the publication date when updated is absent", () => {
-  assert.equal(getPostModifiedDate({ date: "2026-07-01" }), "2026-07-01")
-  assert.equal(hasDistinctUpdatedDate({ date: "2026-07-01" }), false)
+test("requires an explicit updated date", () => {
+  assert.throws(
+    () => assertValidPostDates({ date: "2026-07-01" }, "2026-07-19"),
+    /updated date.*required/,
+  )
 })
 
 test("uses and exposes a distinct updated date", () => {
@@ -28,7 +30,7 @@ test("treats an updated date equal to the publication date as unchanged", () => 
 
 test("rejects invalid calendar dates", () => {
   assert.throws(
-    () => assertValidPostDates({ date: "2026-02-30" }, "2026-07-19"),
+    () => assertValidPostDates({ date: "2026-02-30", updated: "2026-02-30" }, "2026-07-19"),
     /publication date.*YYYY-MM-DD/,
   )
 })

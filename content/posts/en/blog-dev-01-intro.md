@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #1 - Project Overview and Tech Stack"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "Why I rebuilt my personal blog with React 19, Vite 7, and shadcn/ui, and how the project is structured."
 tags: ["react", "vite", "shadcn-ui", "blog"]
 series: "Building a React Blog"

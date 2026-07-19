@@ -1,6 +1,7 @@
 ---
 title: "Tailwind CSS 시작하기"
 date: "2026-02-15"
+updated: "2026-02-15"
 description: "Tailwind CSS의 기본 개념과 활용법을 알아봅니다."
 tags: ["css", "tailwind"]
 draft: true

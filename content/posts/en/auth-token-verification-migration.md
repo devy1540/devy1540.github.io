@@ -1,6 +1,7 @@
 ---
 title: "Splitting Login Responsibility (3) - Verifying Old Tokens and New Backend Tokens Together"
 date: "2026-04-17"
+updated: "2026-04-17"
 description: "How I split verification order and failure handling when old frontend tokens and new backend-issued tokens had to be accepted through the same browser cookies."
 tags: ["authentication", "oauth", "jwt", "testing", "migration", "java", "spring"]
 series: "Splitting Login Responsibility"

@@ -1,6 +1,7 @@
 ---
 title: "EKS에 LGTM 스택 구축하기 - Loki, Grafana, Tempo, Mimir 실전 셋업 가이드"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "EKS 클러스터에 Grafana LGTM 스택을 Helm으로 배포하고 OTel Collector 사이드카로 Spring Boot 앱의 로그·트레이스·메트릭을 수집하는 전체 과정을 다룹니다."
 tags: ["grafana", "loki", "tempo", "mimir", "opentelemetry", "kubernetes", "helm", "observability"]
 draft: false

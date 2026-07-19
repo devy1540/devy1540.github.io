@@ -25,7 +25,7 @@ function readPublishedPosts(language) {
         slug: file.slice(0, -3),
         language,
         date: frontmatterValue(raw, "date"),
-        updated: frontmatterValue(raw, "updated") || undefined,
+        updated: frontmatterValue(raw, "updated"),
         draft: frontmatterValue(raw, "draft") === "true",
         publishDate: frontmatterValue(raw, "publishDate"),
       }
@@ -57,13 +57,14 @@ function readBlogPostingJsonLd(post) {
 
 const posts = [...readPublishedPosts("ko"), ...readPublishedPosts("en")]
 
-test("published posts use updated or date as sitemap lastmod", () => {
+test("published posts use explicit updated as sitemap lastmod", () => {
   const entries = new Map(parseSitemapEntries().map((entry) => [entry.loc, entry]))
 
   for (const post of posts) {
     const entry = entries.get(postUrl(post))
     assert.ok(entry, `missing sitemap entry for ${postUrl(post)}`)
-    assert.equal(entry.lastmod, post.updated ?? post.date, `wrong lastmod for ${postUrl(post)}`)
+    assert.ok(post.updated, `missing updated frontmatter for ${postUrl(post)}`)
+    assert.equal(entry.lastmod, post.updated, `wrong lastmod for ${postUrl(post)}`)
   }
 })
 
@@ -81,11 +82,12 @@ test("static and aggregate pages omit unreliable sitemap lastmod", () => {
   }
 })
 
-test("post JSON-LD keeps publication and modification dates distinct", () => {
+test("post JSON-LD uses date for publication and updated for modification", () => {
   for (const post of posts) {
     const jsonLd = readBlogPostingJsonLd(post)
     assert.ok(jsonLd, `missing BlogPosting JSON-LD for ${postUrl(post)}`)
     assert.equal(jsonLd.datePublished, post.date, `wrong datePublished for ${postUrl(post)}`)
-    assert.equal(jsonLd.dateModified, post.updated ?? post.date, `wrong dateModified for ${postUrl(post)}`)
+    assert.ok(post.updated, `missing updated frontmatter for ${postUrl(post)}`)
+    assert.equal(jsonLd.dateModified, post.updated, `wrong dateModified for ${postUrl(post)}`)
   }
 })

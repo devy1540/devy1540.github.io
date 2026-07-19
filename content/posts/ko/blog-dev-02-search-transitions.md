@@ -1,6 +1,7 @@
 ---
 title: "블로그 만들기 #2 - Command Palette 검색 & View Transitions"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "cmdk로 Cmd+K 검색을 구현하고 View Transitions API로 페이지 전환 애니메이션을 적용한 과정입니다."
 tags: ["react", "cmdk", "view-transitions", "blog"]
 series: "React 블로그 만들기"

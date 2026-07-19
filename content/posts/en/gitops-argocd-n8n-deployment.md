@@ -1,6 +1,7 @@
 ---
 title: "GitOps Deployment Automation - Building a Slack Approval Pipeline with ArgoCD, n8n, and GitHub Actions"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "How I built a GitOps-based deployment automation system during the ECS to EKS migration, combining ArgoCD, n8n, and GitHub Actions with different deployment strategies per environment."
 tags: ["kubernetes", "argocd", "gitops", "n8n", "devops", "github-actions"]
 draft: false

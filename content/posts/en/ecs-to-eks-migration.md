@@ -1,6 +1,7 @@
 ---
 title: "From ECS to EKS - Building an Operating Environment with kustomize and Gateway API"
 date: "2026-03-12"
+updated: "2026-03-12"
 description: "What I learned while migrating from AWS ECS to EKS and building an operating model with kustomize base/overlay, Kubernetes Gateway API, Karpenter node autoscaling, and blue/green deployment."
 tags: ["kubernetes", "eks", "kustomize", "gateway-api", "karpenter", "devops", "aws"]
 series: "Service Infrastructure Modernization"

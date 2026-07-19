@@ -1,6 +1,7 @@
 ---
 title: "JWT Signing Migration - From HS256 to RS256/JWKS/KMS"
 date: "2026-04-24"
+updated: "2026-04-24"
 description: "How I split signing responsibility, kid, key rotation, and legacy token handling while moving symmetric JWT signing to RS256, JWKS, and KMS."
 tags: ["authentication", "jwt", "jwks", "kms", "java", "spring", "security"]
 draft: false

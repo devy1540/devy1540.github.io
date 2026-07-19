@@ -1,6 +1,7 @@
 ---
 title: "로그인 책임 분리 (2) - authorize/callback 흐름 연결하기"
 date: "2026-04-16"
+updated: "2026-04-16"
 description: "보호 페이지 접근부터 백엔드 authorize, callback, 토큰 발급까지 이어지는 로그인 흐름을 프론트엔드에서 어떻게 연결했는지 정리합니다."
 tags: ["authentication", "oauth", "frontend", "backend", "typescript", "java", "spring"]
 series: "로그인 책임 분리"

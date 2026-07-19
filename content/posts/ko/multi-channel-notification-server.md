@@ -1,6 +1,7 @@
 ---
 title: "멀티채널 알림 서버 구축기 - php 레거시에서 Java/Spring으로"
 date: "2026-03-09"
+updated: "2026-03-09"
 description: "PHP 파일에 흩어져 있던 알림 로직을 Spring Boot 기반 독립 알림 서버로 구축한 과정. 카카오 알림톡, SMS, 이메일, 푸시, Slack까지 6개 채널을 하나의 서버에서 처리하는 구조를 만들기까지."
 tags: ["java", "spring-boot", "notification", "sqs", "architecture"]
 draft: false

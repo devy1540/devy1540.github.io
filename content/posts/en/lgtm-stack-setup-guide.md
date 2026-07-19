@@ -1,6 +1,7 @@
 ---
 title: "Building an LGTM Stack on EKS - Practical Setup Guide for Loki, Grafana, Tempo, and Mimir"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "A practical guide to deploying Grafana's LGTM stack on EKS with Helm and collecting Spring Boot logs, traces, and metrics through an OTel Collector sidecar."
 tags: ["grafana", "loki", "tempo", "mimir", "opentelemetry", "kubernetes", "helm", "observability"]
 draft: false

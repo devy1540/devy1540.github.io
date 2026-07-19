@@ -1,6 +1,7 @@
 ---
 title: "Service Internationalization (4) - The Backend's Part: User Language, Timezone, and Document Locale"
 date: "2026-06-26"
+updated: "2026-06-26"
 description: "Translate the front end alone and the server keeps mixing Korean back in through its responses and documents. This is the story of how the backend stored each user's language and timezone, carried them along in the authentication context, and pushed the locale all the way through to responses and documents."
 tags: ["i18n", "spring-boot", "java", "backend"]
 series: "Service Internationalization"

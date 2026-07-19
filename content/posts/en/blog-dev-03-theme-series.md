@@ -1,6 +1,7 @@
 ---
 title: "Building a Blog #3 - Color Theme Presets and Post Series"
 date: "2026-02-26"
+updated: "2026-02-26"
 description: "How I created six color presets with shadcn/ui's oklch color system and implemented post series navigation."
 tags: ["react", "shadcn-ui", "css", "blog"]
 series: "Building a React Blog"

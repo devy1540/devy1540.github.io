@@ -1,6 +1,7 @@
 ---
 title: "ECS에서 EKS로 - kustomize + Gateway API 기반 운영 환경 구축기"
 date: "2026-03-12"
+updated: "2026-03-12"
 description: "AWS ECS에서 EKS로 마이그레이션하면서 kustomize base/overlay 패턴, K8s Gateway API, Karpenter 노드 오토스케일링, Blue/Green 배포 전략까지 구축한 경험을 공유합니다."
 tags: ["kubernetes", "eks", "kustomize", "gateway-api", "karpenter", "devops", "aws"]
 series: "서비스 인프라 현대화"

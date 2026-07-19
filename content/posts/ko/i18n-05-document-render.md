@@ -1,6 +1,7 @@
 ---
 title: "서비스 국제화 적용기 (5) - 이미지로 박은 문서를 HTML로: 다국어 PDF 렌더링"
 date: "2026-07-04"
+updated: "2026-07-04"
 description: "수강확인증·리포트는 오랫동안 언어가 이미지에 구워져 있었다. 이미지 기반 문서를 HTML 템플릿 + Cloud Run 렌더링으로 옮겨 '새 언어 = JSON 파일 하나'로 만든 아키텍처 전환기."
 tags: ["i18n", "cloud-run", "pdf", "weasyprint"]
 series: "서비스 국제화 적용기"

@@ -1,6 +1,7 @@
 ---
 title: "Spring AI 적용 가이드 (3) - 프롬프트 관리 & Structured Output"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "Spring AI의 메시지 모델, 변수 템플릿링, DB 기반 프롬프트 관리, JSON Schema를 활용한 Structured Output을 다룹니다."
 tags: ["spring-ai", "spring-boot", "ai", "prompt-engineering", "structured-output"]
 series: "Spring AI 적용 가이드"

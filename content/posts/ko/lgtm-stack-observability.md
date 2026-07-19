@@ -1,6 +1,7 @@
 ---
 title: "Datadog 걷어내고 LGTM 스택 구축하기 - OTel Sidecar + Grafana/Loki/Tempo/Mimir"
 date: "2026-03-17"
+updated: "2026-03-17"
 description: "Datadog 비용 압박으로 오픈소스 LGTM 스택(Grafana, Loki, Tempo, Mimir)으로 전환한 경험을 공유합니다. OTel Collector 사이드카 설계부터 노이즈 필터링, MDC 기반 요청 추적, IRSA 기반 S3 저장소 구성까지 실전 구축기입니다."
 tags: ["grafana", "loki", "tempo", "mimir", "opentelemetry", "kubernetes", "observability", "devops"]
 series: "서비스 인프라 현대화"

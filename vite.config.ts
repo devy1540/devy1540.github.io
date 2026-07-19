@@ -15,7 +15,7 @@ interface BuildPost {
   title: string
   description: string
   date: string
-  updated?: string
+  updated: string
   draft: boolean
   publishDate: string
 }
@@ -68,7 +68,7 @@ function readPosts(language: ContentLanguage): BuildPost[] {
         title: data.title || f.replace(".md", ""),
         description: data.description || "",
         date: data.date || "",
-        updated: data.updated || undefined,
+        updated: data.updated || "",
         draft: data.draft === "true",
         publishDate: data.publishDate || "",
       }

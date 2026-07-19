@@ -1,6 +1,7 @@
 ---
 title: "Spring AI in Practice - Building a Seven-Step AI Diagnostic Pipeline"
 date: "2026-02-28"
+updated: "2026-02-28"
 description: "A real-world record of redesigning direct HTTP calls and one large synchronous prompt into a seven-step Spring AI pipeline."
 tags: ["spring-ai", "spring-boot", "ai", "llm"]
 draft: false

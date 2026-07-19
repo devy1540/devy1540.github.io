@@ -6,7 +6,7 @@ export interface PostMeta {
   availableLanguages: Language[]
   title: string
   date: string
-  updated?: string
+  updated: string
   description: string
   tags: string[]
   series?: string
