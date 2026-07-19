@@ -199,8 +199,14 @@ export function PostPage() {
           <h1 className="text-3xl font-bold tracking-tight mb-3">
             {post.title}
           </h1>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <time dateTime={post.date}>{post.date}</time>
+            {post.updated && post.updated !== post.date && (
+              <>
+                <span aria-hidden>·</span>
+                <time dateTime={post.updated}>{t.post.updatedAt(post.updated)}</time>
+              </>
+            )}
             <span aria-hidden>·</span>
             <span>{t.post.readingTime(getReadingMinutes(post.content))}</span>
             <span aria-hidden>·</span>

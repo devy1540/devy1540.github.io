@@ -125,6 +125,7 @@ npm run dev
 ---
 title: "제목"
 date: "2025-01-01"
+updated: "2025-02-01"      # optional, 의미 있는 최종 수정일
 description: "설명"
 tags: ["react", "typescript"]
 series: "시리즈명"          # optional
@@ -135,6 +136,7 @@ publishDate: "2025-12-01"   # optional, 예약 발행
 ```
 
 `draft: true` 또는 미래의 `publishDate`가 있는 글은 production 빌드에서 자동으로 제외됩니다.
+`updated`가 없으면 `date`를 최종 수정일로 사용합니다. 본문, 구조화 데이터, 주요 링크처럼 검색 결과에 영향을 주는 내용을 실제로 수정했을 때만 `updated`를 추가하며, 게시일보다 빠르거나 미래인 날짜는 빌드에서 거부됩니다.
 
 ## 프로젝트 구조
 

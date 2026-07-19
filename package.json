@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "check:internal-links": "node scripts/check-internal-post-links.mjs"
+    "check:internal-links": "node scripts/check-internal-post-links.mjs",
+    "test:post-dates": "node --test scripts/post-dates.test.mjs",
+    "test:sitemap-lastmod": "node --test scripts/sitemap-lastmod.test.mjs"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",

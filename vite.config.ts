@@ -2,6 +2,7 @@ import path from "path"
 import fs from "fs"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 
 const BASE_URL = "https://devy1540.dev"
 const LANGUAGES = ["ko", "en"] as const
@@ -14,6 +15,7 @@ interface BuildPost {
   title: string
   description: string
   date: string
+  updated?: string
   draft: boolean
   publishDate: string
 }
@@ -60,15 +62,25 @@ function readPosts(language: ContentLanguage): BuildPost[] {
     .map((f) => {
       const raw = fs.readFileSync(path.resolve(postsDir, f), "utf-8")
       const { data } = parseFrontmatter(raw)
-      return {
+      const post: BuildPost = {
         slug: f.replace(".md", ""),
         language,
         title: data.title || f.replace(".md", ""),
         description: data.description || "",
         date: data.date || "",
+        updated: data.updated || undefined,
         draft: data.draft === "true",
         publishDate: data.publishDate || "",
       }
+
+      try {
+        assertValidPostDates(post)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        throw new Error(`Invalid post dates in content/posts/${language}/${f}: ${message}`)
+      }
+
+      return post
     })
     .filter((p) => !p.draft && !(p.publishDate && p.publishDate > new Date().toISOString().split("T")[0]!))
     .sort((a, b) => (a.date > b.date ? -1 : 1))
@@ -121,17 +133,15 @@ function sitemapPlugin(): Plugin {
       const enPosts = readPosts("en")
       const enPostSlugs = new Set(enPosts.map((p) => p.slug))
       const staticPages = ["/", "/posts/", "/tags/", "/series/", "/analytics/", "/about/", "/privacy/"]
-      const today = new Date().toISOString().split("T")[0]
-
       function alternateEntry(hreflang: string, href: string) {
         return `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}"/>`
       }
 
-      function urlEntry(loc: string, lastmod: string, alternates: { hreflang: string; href: string }[] = []) {
+      function urlEntry(loc: string, lastmod: string | undefined, alternates: { hreflang: string; href: string }[] = []) {
         return [
           "  <url>",
           `    <loc>${escapeXml(loc)}</loc>`,
-          `    <lastmod>${lastmod}</lastmod>`,
+          ...(lastmod ? [`    <lastmod>${lastmod}</lastmod>`] : []),
           ...alternates.map((alt) => alternateEntry(alt.hreflang, alt.href)),
           "  </url>",
         ].join("\n")
@@ -144,7 +154,7 @@ function sitemapPlugin(): Plugin {
             { hreflang: "en", href: staticPageUrl(page, "en") },
             { hreflang: "x-default", href: staticPageUrl(page, "ko") },
           ]
-          return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), today, alternates))
+          return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), undefined, alternates))
         }),
         ...koPosts.map((p) => {
           const alternates = [
@@ -152,7 +162,7 @@ function sitemapPlugin(): Plugin {
             ...(enPostSlugs.has(p.slug) ? [{ hreflang: "en", href: `${BASE_URL}/en/posts/${p.slug}/` }] : []),
             { hreflang: "x-default", href: postUrl(p) },
           ]
-          return urlEntry(postUrl(p), p.date || today, alternates)
+          return urlEntry(postUrl(p), getPostModifiedDate(p), alternates)
         }),
         ...enPosts.map((p) => {
           const koPost = koPosts.find((candidate) => candidate.slug === p.slug)
@@ -161,7 +171,7 @@ function sitemapPlugin(): Plugin {
             { hreflang: "en", href: postUrl(p) },
             ...(koPost ? [{ hreflang: "x-default", href: postUrl(koPost) }] : []),
           ]
-          return urlEntry(postUrl(p), p.date || today, alternates)
+          return urlEntry(postUrl(p), getPostModifiedDate(p), alternates)
         }),
       ]
 
