@@ -8,11 +8,11 @@
 ## 배포
 
 ```bash
-npm install
-npx wrangler login
-npx wrangler secret put GITHUB_CLIENT_ID
-npx wrangler secret put GITHUB_CLIENT_SECRET
-npm run deploy
+pnpm install --frozen-lockfile
+pnpm exec wrangler login
+pnpm exec wrangler secret put GITHUB_CLIENT_ID
+pnpm exec wrangler secret put GITHUB_CLIENT_SECRET
+pnpm deploy
 ```
 
 ## 바인딩

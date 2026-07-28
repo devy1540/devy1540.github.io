@@ -137,7 +137,7 @@ publishDate: "2025-12-01" # optional - 예약 발행
 - 글 상세와 프로젝트 상세 경로는 빌드 시 개별 HTML로 프리렌더
 - 클라이언트는 `src/routes.tsx`에서 현재 경로 컴포넌트만 hydration 전에 preload하고, 나머지 라우트는 lazy 유지
 - `PostPage` 코드블록은 서버에서 안정적인 `<pre>` fallback을 렌더하고 hydration 후 `CodeBlock`/Shiki를 로드
-- hydration 관련 변경 후에는 `npm run build`, `npm run preview`로 `Loading...`, Suspense hidden segment, React hydration warning이 없는지 확인
+- hydration 관련 변경 후에는 `pnpm build`, `pnpm preview`로 `Loading...`, Suspense hidden segment, React hydration warning이 없는지 확인
 
 ### Page Views
 - Google Apps Script API로 GA 데이터 조회
@@ -151,11 +151,11 @@ publishDate: "2025-12-01" # optional - 예약 발행
 
 ## Commands
 ```bash
-npm run dev        # 개발 서버 (Vite)
-npm run build      # 프로덕션 빌드 (tsc + client build + SSR build + hydrated SSG 생성)
-npm run preview    # 빌드 결과 미리보기
-npm run lint       # ESLint 실행
-npm run type-check # TypeScript 타입 체크
+pnpm dev        # 개발 서버 (Vite)
+pnpm build      # 프로덕션 빌드 (tsc + client build + SSR build + hydrated SSG 생성)
+pnpm preview    # 빌드 결과 미리보기
+pnpm lint       # ESLint 실행
+pnpm type-check # TypeScript 타입 체크
 ```
 
 ## Deployment

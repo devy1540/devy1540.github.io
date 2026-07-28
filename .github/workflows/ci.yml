@@ -18,14 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run type-check
-      - run: npm run test:post-dates
-      - run: npm run build
-      - run: npm run test:sitemap-lastmod
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm type-check
+      - run: pnpm test:post-dates
+      - run: pnpm build
+      - run: pnpm test:sitemap-lastmod

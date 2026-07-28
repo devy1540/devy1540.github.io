@@ -101,9 +101,11 @@ flowchart LR
 ## 빠른 시작
 
 ```bash
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
+
+`packageManager`에 pnpm 11.17.0을 고정합니다. 루트 앱과 `oauth-proxy`는 하나의 workspace/lockfile을 공유하며, 패키지 파일은 머신 전역 pnpm store에서 중복 없이 재사용합니다. 프로젝트별 `node_modules`에는 실행에 필요한 링크만 생성되고 Git에서는 제외됩니다.
 
 개발 서버는 기본적으로 `http://localhost:5173`에서 실행됩니다.
 
@@ -111,11 +113,11 @@ npm run dev
 
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Vite 개발 서버 실행 |
-| `npm run build` | 타입 체크, client/SSR 빌드, hydrated SSG 생성 |
-| `npm run preview` | `dist` 결과 미리보기 |
-| `npm run lint` | ESLint 검사 |
-| `npm run type-check` | TypeScript 타입 검사 |
+| `pnpm dev` | Vite 개발 서버 실행 |
+| `pnpm build` | 타입 체크, client/SSR 빌드, hydrated SSG 생성 |
+| `pnpm preview` | `dist` 결과 미리보기 |
+| `pnpm lint` | ESLint 검사 |
+| `pnpm type-check` | TypeScript 타입 검사 |
 
 ## 글 작성
 
