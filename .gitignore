@@ -1,5 +1,5 @@
-# Dependencies
-node_modules
+# Dependencies (all workspace packages; pnpm links these from the global store)
+node_modules/
 
 # Build
 dist
@@ -12,6 +12,7 @@ dist-ssr
 # Logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 
 # Editor
 .vscode/*

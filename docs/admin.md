@@ -38,15 +38,14 @@ GitHub OAuth로 로그인한 관리자가 블로그 페이지 안에서 글의 *
 ## 2. Cloudflare Worker 배포 (`oauth-proxy/`)
 
 ```bash
-cd oauth-proxy
-npm install
-npx wrangler login            # 최초 1회
+pnpm install --frozen-lockfile
+pnpm --dir oauth-proxy exec wrangler login            # 최초 1회
 
 # 시크릿 주입
-npx wrangler secret put GITHUB_CLIENT_ID       # 위에서 받은 Client ID
-npx wrangler secret put GITHUB_CLIENT_SECRET   # 위에서 받은 Client Secret
+pnpm --dir oauth-proxy exec wrangler secret put GITHUB_CLIENT_ID       # 위에서 받은 Client ID
+pnpm --dir oauth-proxy exec wrangler secret put GITHUB_CLIENT_SECRET   # 위에서 받은 Client Secret
 
-npm run deploy
+pnpm --dir oauth-proxy deploy
 ```
 
 배포되면 `https://devy-blog-oauth-proxy.<your-subdomain>.workers.dev` 같은 URL이 출력됩니다. 이 URL을 메모하세요.
@@ -72,7 +71,7 @@ VITE_OAUTH_PROXY_URL=https://devy-blog-oauth-proxy.<your-subdomain>.workers.dev
 ## 4. 빌드 & 배포
 
 ```bash
-npm run build      # /admin, /admin/callback 정적 셸도 함께 프리렌더됨
+pnpm build      # /admin, /admin/callback 정적 셸도 함께 프리렌더됨
 git commit && git push   # main 푸시 → GitHub Actions 배포
 ```
 
@@ -99,6 +98,6 @@ git commit && git push   # main 푸시 → GitHub Actions 배포
 
 ```bash
 # .env.development 에 client_id / 프록시 URL 채우고
-npm run dev
+pnpm dev
 # OAuth App callback에 http://localhost:5173/admin/callback/ 가 등록되어 있어야 함
 ```
