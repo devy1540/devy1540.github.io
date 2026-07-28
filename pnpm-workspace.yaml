@@ -1,12 +1,3 @@
-packages:
-  - oauth-proxy
-
 # Package contents remain deduplicated in pnpm's machine-wide content store.
 # Keep the virtual store workspace-local for reliable ESM/type resolution.
 enableGlobalVirtualStore: false
-
-# Native tooling required by Vite/image rendering and the Cloudflare Worker.
-allowBuilds:
-  esbuild: true
-  sharp: true
-  workerd: true

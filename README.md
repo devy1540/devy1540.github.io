@@ -105,7 +105,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-`packageManager`에 pnpm 11.17.0을 고정합니다. 루트 앱과 `oauth-proxy`는 하나의 workspace/lockfile을 공유하며, 패키지 파일은 머신 전역 pnpm store에서 중복 없이 재사용합니다. 프로젝트별 `node_modules`에는 실행에 필요한 링크만 생성되고 Git에서는 제외됩니다.
+`packageManager`에 pnpm 11.17.0을 고정합니다. 패키지 파일은 머신 전역 pnpm store에서 중복 없이 재사용하며, 프로젝트의 `node_modules`에는 실행에 필요한 링크만 생성되고 Git에서는 제외됩니다.
 
 개발 서버는 기본적으로 `http://localhost:5173`에서 실행됩니다.
 

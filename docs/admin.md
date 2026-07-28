@@ -5,7 +5,7 @@ GitHub OAuth로 로그인한 관리자가 블로그 페이지 안에서 글의 *
 ## 동작 구조
 
 ```
-[블로그 SPA]                    [Cloudflare Worker]            [GitHub]
+[블로그 SPA]                 [외부 토큰 교환 API]             [GitHub]
   /admin 에서 로그인 클릭 ───────────────────────────────────▶ OAuth authorize
   ◀──────────── redirect /admin/callback?code=… ──────────────
   code 전달 ──────────▶ client_secret으로 교환 ──▶ access_token
@@ -31,27 +31,16 @@ GitHub OAuth로 로그인한 관리자가 블로그 페이지 안에서 글의 *
      - 로컬 테스트도 하려면 **Add another callback URL**로 `http://localhost:5173/admin/callback/` 추가
 3. 생성 후 **Client ID** 복사. **Generate a new client secret**으로 secret도 발급(한 번만 표시되니 보관).
 
-> client_id는 공개되어도 되는 값입니다. client_secret은 절대 프론트/저장소에 두지 마세요(Worker 전용).
+> client_id는 공개되어도 되는 값입니다. client_secret은 절대 프론트/저장소에 두지 말고 토큰 교환 API에서만 관리하세요.
 
 ---
 
-## 2. Cloudflare Worker 배포 (`oauth-proxy/`)
+## 2. 외부 토큰 교환 API 준비
 
-```bash
-pnpm install --frozen-lockfile
-pnpm --dir oauth-proxy exec wrangler login            # 최초 1회
-
-# 시크릿 주입
-pnpm --dir oauth-proxy exec wrangler secret put GITHUB_CLIENT_ID       # 위에서 받은 Client ID
-pnpm --dir oauth-proxy exec wrangler secret put GITHUB_CLIENT_SECRET   # 위에서 받은 Client Secret
-
-pnpm --dir oauth-proxy deploy
-```
-
-배포되면 `https://devy-blog-oauth-proxy.<your-subdomain>.workers.dev` 같은 URL이 출력됩니다. 이 URL을 메모하세요.
-
-- `wrangler.toml`의 `ALLOWED_ORIGIN`이 CORS 허용 도메인입니다. 기본값은 `https://devy1540.dev`.
-  로컬 테스트 시 임시로 `*`로 바꾸거나 별도 Worker를 쓰세요.
+이 저장소는 OAuth 토큰 교환 서버를 포함하지 않습니다. 별도로 운영하는 HTTPS API가
+`POST { "code": "..." }` 요청을 받아 GitHub OAuth App의 `client_secret`으로 토큰을 교환하고,
+성공 시 `{ "access_token": "..." }`을 반환해야 합니다. API에서는 허용 Origin을
+`https://devy1540.dev`로 제한하고 `client_secret`을 서버 측 시크릿으로 관리하세요.
 
 ---
 
@@ -61,7 +50,7 @@ pnpm --dir oauth-proxy deploy
 
 ```dotenv
 VITE_GITHUB_CLIENT_ID=Iv1.xxxxxxxxxxxx
-VITE_OAUTH_PROXY_URL=https://devy-blog-oauth-proxy.<your-subdomain>.workers.dev
+VITE_OAUTH_PROXY_URL=https://<your-token-exchange-api>
 ```
 
 비어 있으면 `/admin` 진입 시 "미설정" 안내가 표시됩니다(앱은 정상 빌드/동작).
@@ -92,7 +81,7 @@ git commit && git push   # main 푸시 → GitHub Actions 배포
   UI 가드일 뿐 아니라, **토큰이 없으면 어떤 변경도 불가능**하므로 실질 권한은 토큰이 강제합니다.
 - OAuth scope는 `public_repo`(공개 repo 쓰기)로 최소화.
 - access_token은 `sessionStorage`에 저장 → 탭을 닫으면 사라집니다. (XSS 노출 리스크는 1인 관리자 기준 수용)
-- client_secret은 Worker 시크릿에만 존재. 저장소/번들 어디에도 없습니다.
+- client_secret은 외부 토큰 교환 API에만 존재해야 하며 저장소/번들에 포함하면 안 됩니다.
 
 ## 로컬 개발
 
