@@ -1,174 +1,266 @@
 ---
-title: "Building a CS Automation System with Spring AI - Function Calling and FAQ Instructions"
+title: "Operating a CS Support System with Spring AI - From Function Calling to an Operator Suggestion Workflow"
 date: "2026-07-06"
-updated: "2026-07-06"
-description: "How we automated repetitive customer inquiries with Spring AI - using function calling to fetch user context and registering FAQs as instructions to combine auto-replies with draft recommendations."
+updated: "2026-07-28"
+description: "How a Spring AI customer-support draft system moved from function calling to parallel lookups, QA, error diagnosis, and an operator-review workflow in production."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "cs"]
 draft: false
 ---
 
-## Background
+## Background and operating boundaries
 
-As the service grew, so did customer inquiries. But when I looked at what came in, a large share were **repeats of the same question**.
+This work started in June 2026 as a migration of customer-support draft and tag-suggestion features spread across PHP and n8n into a Spring backend. The first implementation centered on FAQ instructions and Spring AI function calling: the model read the inquiry, fetched the customer data it needed, and wrote a reply draft.
 
-- "I think I was charged twice"
-- "How many days are left on my pass?"
-- "When will my refund arrive?"
-- "My coupon won't apply"
+The system changed as we prepared it for production. We drew a firm boundary around it as a **support assistant that prepares a draft and its evidence for an operator**, not an autonomous system that sends replies. Model-driven function calling was also replaced in the first-draft path by parallel, read-only prefetching controlled by the backend.
 
-For these, the answer is nearly fixed, and the information needed is mostly already in our DB. Yet agents kept opening the admin page every time to check a user's status and rewriting similar answers by hand. Repetitive inquiries ate up support capacity, which slowed responses even for the sensitive inquiries that actually need a human.
+This article covers that evolution rather than only the initial proof of concept. It includes the asynchronous pipeline, deduplication, QA, confidence evaluation, error diagnosis, schema rollout, and performance work that were added before production use.
 
-So we decided to build a CS automation system on top of Java/Spring that **handles repetitive inquiries automatically and drafts answers for the ones a human needs to review**.
+**The operating goal was not automatic sending.**
 
-## The goal: not "automate everything" but "split well"
+Some support questions are predictable lookups, while refunds, payments, and account changes require judgment. Automatic sending was considered in the early design, but it was deliberately excluded from the final production scope.
 
-CS automation often conjures up "the AI answers every inquiry on its own," but doing that causes incidents. If the AI auto-sends a wrong answer to a money-related inquiry like a payment or refund, that itself becomes a second support ticket.
+The current flow is:
 
-So from the start we set the goal like this:
+1. A new inquiry or a customer follow-up triggers a reply draft and tag suggestions.
+2. For an error inquiry, the system also prepares an operator-only diagnosis from logs, traces, and customer activity.
+3. An operator sends the draft as-is or edits it first.
+4. The AI never sends a reply itself or executes state-changing operations such as refunds, holds, or account deletion.
 
-1. **Simple, certain inquiries** → the AI fetches user context and **auto-sends the reply**
-2. **Ambiguous or sensitive inquiries** → the AI **recommends a draft reply**, and an operator reviews it before sending
-
-In other words, the heart of automation isn't "how much you auto-send" but **"how well you separate what can be auto-sent from what a human must see."**
+This boundary let us improve generation quality without turning a bad answer into an immediate customer-facing incident.
 
 ```mermaid
 flowchart TB
-    A["Inquiry received"] --> B["Classify intent/type"]
-    B --> C["Fetch user context via<br/>Function Calling<br/>(orders, payments, enrollment)"]
-    C --> D["Generate answer from<br/>FAQ instructions"]
-    D --> E{"Auto-sendable?"}
-    E -->|"Simple, certain"| F["Auto-send reply"]
-    E -->|"Ambiguous, sensitive"| G["Recommend draft"]
-    G --> H["Operator reviews, then sends"]
+    A["New inquiry or customer follow-up"] --> B["Transaction committed"]
+    B --> C["Publish Pub/Sub event"]
+    C --> D["Per-ticket Redis lock<br/>Reject duplicates and stale events"]
+    D --> E["Full conversation snapshot"]
+    E --> F["Six customer-data lookups<br/>Parallel, three-second limit"]
+    E --> G["FAQ + File Search"]
+    E --> H["Error-inquiry diagnosis"]
+    E --> I["Tag suggestion"]
+    F --> J["Generate and save fast draft"]
+    G --> K["QA correction and citations"]
+    J --> K
+    K --> L["Confidence evaluation"]
+    H --> M["Operator-only diagnosis"]
+    I --> N["Suggested tags"]
+    L --> O["Operator UI"]
+    M --> O
+    N --> O
+    O --> P{"Operator decision"}
+    P -->|"Send as-is or after editing"| Q["APPLIED"]
+    P -->|"Dismiss"| R["REJECTED"]
 ```
 
-## Why Spring AI
+## How the draft-generation structure changed
 
-Our team already worked on Spring Boot, and the data needed for CS automation (orders, payments, enrollment status) all lived inside existing Spring services. So there was no reason to stand up a separate Python server just to call our own APIs again.
+**From one FAQ prompt to mixed knowledge retrieval**
 
-Two reasons drove the choice of Spring AI.
+The first version loaded every public FAQ into the prompt. If the FAQ set is only a few hundred entries, this is a practical way to start without building a separate retrieval service. The backend reads up to 200 active FAQs and formats their titles and content as answer context.
 
-- **Function Calling (Tool)** — when the LLM decides "I should look up this user's payment history," it can call a Java method we've registered directly. We don't have to cram all the user context into the prompt up front.
-- **`ChatClient` abstraction** — the same code works even if the provider changes, and system instructions and structured output attach cleanly in a Spring-native way.
+Once operator-managed documents and inquiry images also had to be used as evidence, we added Google File Search. The two knowledge paths now have different jobs:
 
-## Design 1 - Registering the FAQ as "instructions"
+- Public FAQs are included fresh at generation time.
+- Operator-managed documents are retrieved from a File Search Store.
+- Search citations are resolved to internal document names and saved with the draft.
+- A separate QA stage compares the fast draft with the retrieved evidence.
 
-The first thing we did was define the answer criteria. We consolidated scattered FAQs and support guides and registered them as a **system instruction (system prompt)**. Its job is to keep the model from making things up freely and to answer only within the rules and tone we defined.
+RAG in this system does not mean that every document goes through one vector search. Small, frequently used FAQs stay in the prompt; material that needs retrieval and source tracking goes through File Search.
 
-```java
-String faqInstruction = """
-    You are an assistant that helps with %s customer support.
-    Answer only within the FAQ and policy scope below.
+**The first problem with function calling**
 
-    [Answer rules]
-    - If something is not in policy, do not guess; reply that it needs to be checked.
-    - Payment and refund amounts must be based only on actual queried data.
-    - Answer politely, in three sentences or fewer.
+Adding Spring AI's `@Tool` annotation did not make the model use tools well. Shadow results showed that the legacy path frequently called ticket, hold, and withdrawal tools, while the new path often stopped after giving a generic FAQ answer.
 
-    [FAQ]
-    %s
-    """.formatted(serviceName, faqDocument);
-```
+The issue was the tool descriptions and the prompt. A description such as "looks up tickets" did not tell the model when to call it. A rule that said to request manual confirmation when an answer was absent from the FAQ also gave the model an easy way to avoid tools.
 
-Our FAQ isn't large, so instead of going all the way to vector-store-based RAG, **injecting the organized FAQ document straight into the system prompt** was enough. RAG is the card you play when the knowledge base grows too big to fit into context or changes often — retrieving only the relevant pieces to cut token cost and hallucination. If the documents fit within a manageable size, there's no reason to bolt on a search pipeline.
-
-## Design 2 - Fetching user context with Function Calling
-
-FAQs alone can't answer **personalized inquiries** like "How many days are left on my pass?" That's where Function Calling comes in. If you annotate the methods that look up user state with `@Tool`, the LLM calls them on its own when it decides it needs to.
+We added explicit usage conditions to each description and instructed the model to prefer a real lookup whenever an answer depended on customer-specific facts.
 
 ```java
-@Component
-class CustomerSupportTools {
-
-    @Tool(description = "Look up the user's recent payments and orders")
-    List<OrderSummary> getRecentOrders(String userId) {
-        return orderQueryService.findRecentSummaries(userId);
-    }
-
-    @Tool(description = "Look up the user's current pass status and expiration date")
-    EnrollmentStatus getEnrollmentStatus(String userId) {
-        return enrollmentQueryService.getStatus(userId);
-    }
-
-    @Tool(description = "Look up the coupons the user holds and their eligibility")
-    List<CouponInfo> getAvailableCoupons(String userId) {
-        return couponQueryService.findUsable(userId);
-    }
+@Tool(
+    description = """
+        Returns the customer's passes, remaining sessions, start date, and expiry.
+        Use it for questions about passes, remaining lessons, expiry, or refund eligibility.
+        """
+)
+List<TicketView> getTicketList() {
+    invocationLog.add("getTicketList");
+    return ticketService.findAll(userId).stream()
+        .map(TicketView::from)
+        .toList();
 }
 ```
 
-When handling an inquiry, we pass the FAQ instruction and the user tools together.
+The tool implementation also needed safeguards that no prompt could provide:
+
+- `userId` and `ticketId` are fixed in a per-request tool instance, so the model cannot supply another user's identifier.
+- Domain DTOs are converted to AI-specific DTOs, keeping passwords, tokens, and full card data out of model context.
+- Detailed lesson lookup verifies that the lesson belongs to the inquiry's customer.
+- Every invoked tool name is recorded so operators can see whether a reply used customer data.
+
+An early branch also contained a state-changing account-deletion tool. The final suggestion workflow removed it. Customer-data tools used for reply generation are read-only.
+
+**Why model-driven calls became parallel prefetching**
+
+After tool-use quality improved, latency became the problem. A model that chooses a tool, waits for its result, and reasons again adds LLM round trips. At one point, when File Search, QA, error diagnosis, and confidence evaluation were also serial, one replay took about 36.8 seconds to persist the draft and 41.1 seconds to finish the pipeline.
+
+The first improvement separated draft visibility from enrichment. We then ran reply generation, error diagnosis, and tag suggestion in parallel, while starting File Search and internal data lookup together. In one comparison window from development logs, first-draft visibility fell from 72.7 to 23.2 seconds. QA completion fell from 72.7 to 40.8 seconds, and full completion through confidence evaluation fell from 81.1 to 52.1 seconds.
+
+We changed the structure once more. Read-only data that the fast draft commonly needs is now fetched directly by the backend rather than selected by the model.
 
 ```java
-CsAnswer answer = chatClient.prompt()
-        .system(faqInstruction)          // FAQ instructions
-        .user(inquiry.content())          // raw customer inquiry
-        .tools(customerSupportTools)      // user-context tools
-        .call()
-        .entity(CsAnswer.class);          // structured output
+var contextTasks = List.of(
+    async("getUserInfo", tools::getUserInfo),
+    async("getClassHistory", tools::getClassHistory),
+    async("getTicketList", tools::getTicketList),
+    async("getPaymentHistory", tools::getPaymentHistory),
+    async("getHoldingHistory", tools::getHoldingHistory),
+    async("getCardInfo", tools::getCardInfo)
+);
+
+FastContext context = awaitWithin(contextTasks, Duration.ofSeconds(3));
+String fastDraft = generateDraft(conversation, faq, context);
 ```
 
-Now the LLM decides on its own, "They asked about the expiration date, so I should call `getEnrollmentStatus`," and builds the answer grounded in the actual DB value. Since we don't preload user info into the prompt, the context stays light.
+Internal lookup gets at most three seconds. List data is limited to the ten most recent items, and the draft continues with successful results when one lookup fails. Phone numbers and email addresses, which are unnecessary for the fast draft, are excluded from its model input.
 
-## Design 3 - Auto-send vs. draft recommendation
+This removed Spring AI tool round trips from the first-draft path. It did not eliminate function calling from the system: the read tools remain useful in other paths and for traceability, and the error-diagnosis model still invokes a read-only diagnostic tool. The practical lesson was not to delegate every lookup to the model when latency and selection uncertainty matter.
 
-Rather than taking the answer as plain text, we had the model **also judge "whether it's OK to auto-send"** through structured output.
+In one production ticket observed after recovery, the draft became visible in roughly 2.2 seconds and QA completed in about six seconds. That single trace is not a general latency benchmark, but it confirmed the effect of prefetching and staged draft visibility.
 
-```java
-record CsAnswer(
-        String reply,          // generated answer
-        String category,       // inquiry type (payment/refund/enrollment/usage ...)
-        boolean autoSendable,  // whether it can be auto-sent
-        double confidence      // confidence 0.0 - 1.0
-) {}
-```
+## The production workflow
 
-Then the application makes the final branch. It doesn't blindly trust the model's judgment; it adds a safeguard that **hands sensitive categories to a human regardless of confidence**.
+**Asynchronous events and freshness guarantees**
 
-```java
-if (answer.autoSendable()
-        && answer.confidence() >= AUTO_SEND_THRESHOLD
-        && !SENSITIVE_CATEGORIES.contains(answer.category())) {
-    csSender.sendToUser(inquiry, answer.reply());        // auto-send
-} else {
-    draftInbox.recommend(inquiry, answer.reply());        // recommend draft to operator
-}
-```
+If the inquiry request waits for an AI call, a model failure can turn into a customer-facing inquiry-submission failure. The backend therefore publishes an event after the transaction commits, and a Pub/Sub subscriber performs the AI work.
 
-We set the bar conservatively. We auto-send only when confidence is above the threshold (e.g., `0.9`) and the category isn't a sensitive one — like payment or refund, where money or the account is at stake. Payment, refund, personal information, and account changes are classified as sensitive categories, so no matter how confident the model is, a human must review. New categories start with auto-send off, accumulating drafts only until we've checked their quality, before they enter the automation scope.
+Asynchrony introduces duplicates and reordering. Pub/Sub may redeliver a message, and an older event may arrive after a customer has already posted another follow-up.
 
-As a result, agents no longer write answers from a blank screen; they work by **reviewing and editing an already-filled draft and sending it right away**. Certain inquiries need no touch at all, and even ambiguous ones have a starting point, so response time drops.
+We use three layers of protection:
 
-## Trial and error
+1. A Redis lock keyed by ticket ID serializes generation for a ticket.
+2. The handler verifies that the event still points to the latest customer input before and after AI work.
+3. Every draft stores a `source_input_id`, so only redelivery of the same input is treated as a duplicate.
 
-**1. The model confidently made up things that weren't in policy.** Early on, it would answer with confident numbers that weren't in our policy, like "refunds take three business days." So we spelled out in the instructions, "if there's no basis, don't guess — say it needs to be checked," and forced fact-bound items like amounts and durations to rely only on actual values fetched via Function Calling. Answers received as structured output were also validated for format and required fields before sending, to filter out broken responses.
+The third layer fixed a real design defect. A rule that merely asked whether a ticket already had a recent draft could misclassify a new customer follow-up as a duplicate. With `source_input_id`, redelivery of the same input is skipped while a new input generates a fresh draft. The previous `GENERATED` draft becomes `SUPERSEDED`.
 
-**2. We opened auto-send too aggressively, then narrowed it.** At first we set the threshold low, and even ambiguous answers tried to go out automatically. A misfire is itself a second support ticket, so we raised the threshold conservatively and excluded sensitive categories from auto-send entirely. We firmly chose "don't send the wrong thing" over "automate a lot."
+**Show the draft first, attach quality signals afterward**
 
-## Expected impact
+The original pipeline waited for File Search, QA, error diagnosis, and confidence evaluation before saving anything. Operators got a complete result, but they waited too long to see it.
 
-How much automation pays off is ultimately decided by **the composition of incoming inquiries**. The CS automation pipeline classifies and tags incoming inquiries by type, so we quantified that type data over the last 12 months (about 22,000 tickets) and converted each type by the criterion of "is it OK to handle automatically."
+The current pipeline stores results in stages:
 
-| Category | Share | Automatable | Representative types |
-| --- | --- | --- | --- |
-| Simple, lookup inquiries | ~22% | Automated | pass, curriculum, events, how-to, documents |
-| Procedural, intake inquiries | ~20% | Automated | hold requests, improvement intake |
-| Inquiries needing a human | ~57% | Human | refunds, unpaid payments, cancellation, errors, tutor issues |
+1. Build a fast draft from customer context and FAQs.
+2. Save it as `GENERATED` so the operator UI can display it.
+3. Have a QA model compare File Search evidence with the fast draft.
+4. Update the same draft with the corrected reply, pre-QA text, citations, and actual model used.
+5. Attach error-diagnosis and confidence results afterward.
 
-- **Simple, lookup inquiries (~22%)** — the answers are standardized and the needed information is mostly in the DB, so auto-replies or drafts can absorb almost all of them.
-- **Procedural, intake inquiries (~20%)** — the flow is fixed, as with hold requests and intake, so they're handled by auto-reply and intake automation.
-- **Inquiries needing a human (~57%)** — money, investigation, and sensitive issues, so we assist with a draft but a person sends it.
+The fast draft records that File Search review is pending. Confidence and diagnosis use `PENDING` states. If processing stops or Pub/Sub redelivers the event, the handler can resume only the incomplete enrichment.
 
-Adding the two types converted to automated handling gives about **43%** of all inquiries. Absorbing this share with auto-replies and draft automation reduces the CS handling load that agents carried directly by roughly 43% as well. The remaining ~57% — money, investigation, and sensitive issues — stays with a human for the final judgment and send.
+Freshness is checked again before each write. If the customer posts another message while the AI is working, the stale result is discarded and the new event regenerates from the full conversation.
 
-The point isn't "automate every inquiry," but to strip away the data-confirmed automatable zone (~43%) first, so agents focus on the inquiries that genuinely need judgment. Agents write fewer answers from scratch, and certain inquiries get handled without them touching them at all.
+**Separate the customer reply from error diagnosis**
 
-## Wrap-up
+An inquiry such as "booking does not work" cannot be answered safely from FAQs alone. Even when logs exist, the system must distinguish a correlated event from the direct cause of the current inquiry. Mixing customer copy and root-cause analysis in one prompt made observations and guesses too easy to blur.
 
-The core of this system wasn't flashy AI but **setting boundaries**.
+Error inquiries now have a separate operator-only diagnostic path:
 
-- Register the FAQ as instructions so the model doesn't stray outside our policy
-- Use Function Calling so it answers only based on real data
-- Split auto-send and draft recommendation so inquiries that must not be wrong always pass through a human
+- The model must first call the read-only `getErrorDiagnosticContext` tool.
+- The tool gathers logs, traces, customer activity, and business data around the reported time.
+- Credentials, personal information, internal URLs, and raw stack traces are excluded from model output.
+- The model must return `FAILURE_POINT_IDENTIFIED`, `PARTIAL_EVIDENCE`, or `INSUFFICIENT`.
+- It cannot identify a failure point without direct evidence.
 
-Even with the same Spring AI, reading this alongside the [Spring AI in Practice](/posts/spring-ai-pipeline-real-world) post — which focused on "what was built" with a seven-step diagnostic pipeline — lets you compare a pipeline-style design with a support-assist-style design.
+Customer activity shows a sequence of actions, but it is supporting evidence rather than proof of a backend failure. If activity events exist without request-flow or error evidence, the highest allowed verdict is `PARTIAL_EVIDENCE`. A similar historical error also cannot be presented as the cause of the current inquiry.
+
+The diagnosis is never sent to the customer. It gives the operator observed evidence, an AI interpretation, and suggested follow-up checks alongside the reply draft.
+
+**Confidence is not an auto-send score**
+
+The earlier version of this post described a model returning `autoSendable` and a single confidence value, with the application sending a reply above a threshold. That is not how the production workflow works. Confidence evaluation does not decide whether to send.
+
+The current evaluator stores four values between zero and one:
+
+- `groundedness`: whether the reply is supported by FAQs, documents, or queried data
+- `completeness`: whether it addresses the necessary parts of the inquiry
+- `safety`: whether it avoids personal-data exposure and risky instructions
+- `uncertaintyHandling`: whether it states limitations instead of guessing
+
+It also stores reasons and `hardBlockers`. A reply is penalized if it asserts a cause despite insufficient diagnosis or recommends a destructive, platform-inappropriate step such as reinstalling an app. The evaluation prompt explicitly forbids outputting a total score, an auto-send decision, or a threshold.
+
+Confidence is a quality signal for the operator. A person still decides what the customer receives.
+
+**Record operator decisions as quality data**
+
+Generating drafts alone does not show whether the system is useful. We need to know whether an operator used a draft, edited it heavily, or discarded it.
+
+`ticket_ai_draft` records these outcomes:
+
+| Situation | State and record |
+| --- | --- |
+| New draft | `GENERATED` |
+| Replaced after new customer input | `SUPERSEDED` |
+| Dismissed by an operator | `REJECTED` |
+| Sent unchanged | `APPLIED` + `UNCHANGED` |
+| Sent after editing | `APPLIED` + `EDITED` + edit ratio |
+
+The final sent text, operator, and application time are also recorded. Suggested tags are not applied automatically; only the tags selected by an operator are added.
+
+This is more useful than counting successful generations. Unchanged acceptance rate, edited acceptance rate, average edit ratio, and rejection rate by inquiry type show which prompts or documents need work. The same data can feed a knowledge-gap analysis that compares AI drafts with actual operator replies.
+
+## Rollout and results
+
+**A safe transition depended on deployment order**
+
+The first migration used a `shadow` value for `spring_ai_enabled` so the old and new paths could be compared on the same inquiry. Shadow drafts and tags were isolated, and state-changing tools were not injected.
+
+The final operator-suggestion workflow excluded long-term shadow operation and automatic sending. When the Spring path is enabled it creates drafts, tags, and diagnoses; when disabled it stops new CS AI work. It does not silently fall back to the old PHP inference path, which would split data contracts and quality standards again.
+
+The strongest production lesson was the ordering of schema and code. Code that read `source_input_id` was deployed before the production table had the column, causing an `Unknown column` error before any model call began. The problem had nothing to do with the model or prompt.
+
+After the column was applied, the error disappeared and the reply draft, QA, error diagnosis, and confidence evaluation all completed. We now verify the rollout in distinct stages:
+
+1. Apply database schema and setting keys first.
+2. Deploy the backend with the feature disabled.
+3. Deploy the operator UI.
+4. Verify Pub/Sub subscriptions, DLQ, model settings, and the File Search Store.
+5. Enable the feature and follow one real inquiry through draft, QA, diagnosis, confidence, and operator application.
+
+A successful code deployment is not the same as a working feature. The schema, settings, messaging infrastructure, and operator UI must agree.
+
+**What went wrong along the way**
+
+**Registered tools were not necessarily called.** We added when-to-use guidance, then removed model selection from the fast path by prefetching read-only data in parallel.
+
+**Waiting for one complete result made operators wait too long.** We saved a fast draft first and attached File Search, QA, diagnosis, and confidence to the same record later.
+
+**"A recent draft exists" was an unsafe deduplication rule.** Storing `source_input_id` distinguished redelivery from a genuinely new customer follow-up.
+
+**A failing LLM proxy became fixed latency on every call.** Drafting, File Search, QA, confidence, summaries, and tag suggestion now call a fast Gemini model directly and retry once with a stronger model. Error diagnosis keeps the more capable model.
+
+**Structured output still needed defensive handling.** JSON Schema, normalization, required-field validation, retries, and explicit failure states were all necessary. A successful model call is not the same as a valid business result.
+
+**CS volume fell by roughly 43% in the observed operating data**
+
+The analysis covered about 22,000 inquiries from the preceding 12 months. The roughly 43% figure was not an estimate of the automation candidate pool; it was an observed reduction in CS volume in the operating data. It should not be interpreted as only the size of a candidate pool.
+
+The current system does not auto-send. Operators review every draft and edit it when necessary. Even with that boundary, the operating data after adoption showed a reduction of roughly 43% in CS volume. This figure alone cannot isolate how much the model, FAQ maintenance, reply drafts, operator review, or other workflow changes contributed.
+
+The 43% reduction is an observed result. The following metrics should be tracked alongside it to identify which stages contributed to the change:
+
+- time from inquiry receipt to first visible draft
+- time through QA, diagnosis, and confidence completion
+- unchanged and edited acceptance rates
+- average edit ratio
+- rejection rate by inquiry category
+- generation failures, retries, and DLQ volume
+
+This keeps the measured result and the system's operating model in the same account. The reduction should continue to be measured, while draft-generation and operator-decision data should be separated to identify the next improvement.
+
+## Closing
+
+The work started with function calling that fetched customer data for an FAQ-based reply. Production raised harder questions: how to process only the latest conversation, show a useful draft quickly, separate evidence from inference, and capture the operator's final decision.
+
+Spring AI provided implementation tools such as `ChatClient`, Tool, and structured output. The quality of the production system came from the boundaries around them: read versus write, fast output versus verified output, and AI suggestions versus human decisions.
+
+For another production use of Spring AI, see [Spring AI in Practice](/posts/spring-ai-pipeline-real-world), which covers a multi-stage diagnostic pipeline.
