@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.5](https://github.com/devy1540/devy1540.github.io/compare/v1.27.4...v1.27.5) (2026-07-28)
+
+
+### 문서
+
+* **blog:** Spring AI CS 운영 사례를 고도화 ([675d80e](https://github.com/devy1540/devy1540.github.io/commit/675d80ed8e305353c261c1f63e69300c2e46bc45))
+
 ## [1.27.4](https://github.com/devy1540/devy1540.github.io/compare/v1.27.3...v1.27.4) (2026-07-19)
 
 
