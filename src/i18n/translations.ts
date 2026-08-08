@@ -169,6 +169,7 @@ export interface Translations {
   about: {
     description: string
     introduction: string
+    aiNativeDevelopment: string
     skills: string
     experience: string
     projects: string
@@ -378,8 +379,9 @@ export const ko: Translations = {
     noSeriesData: "시리즈 데이터 없음",
   },
   about: {
-    description: "비즈니스 흐름을 제품 기능으로 만들고, 안정적으로 확장되는 서비스 구조까지 설계하는 백엔드 엔지니어입니다.",
+    description: "생성형 AI를 개발 전 과정에 활용하며, BE/FE와 인프라를 연결해 제품을 완성하는 소프트웨어 엔지니어입니다.",
     introduction: "자기소개",
+    aiNativeDevelopment: "AI-native 개발 방식",
     skills: "기술 스택",
     experience: "경력",
     projects: "프로젝트",
@@ -589,8 +591,9 @@ export const en: Translations = {
     noSeriesData: "No series data",
   },
   about: {
-    description: "Backend engineer who turns business flows into product features and designs service structures that scale reliably.",
+    description: "Software engineer who uses generative AI throughout development to deliver products across backend, frontend, and infrastructure.",
     introduction: "About Me",
+    aiNativeDevelopment: "AI-native Development",
     skills: "Skills",
     experience: "Experience",
     projects: "Projects",

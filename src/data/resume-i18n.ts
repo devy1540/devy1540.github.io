@@ -1,17 +1,20 @@
 import type { Language } from "@/i18n"
 import {
   PROFILE,
+  AI_NATIVE_WORKFLOW,
   SKILLS,
   COMPANIES,
   CERTIFICATIONS,
   PROJECTS,
   type Certification,
+  type AiNativeWorkflowItem,
   type Company,
   type ProjectDetail,
 } from "@/data/resume"
 
 interface ResumeData {
   profile: typeof PROFILE
+  aiNativeWorkflow: AiNativeWorkflowItem[]
   skills: typeof SKILLS
   companies: Company[]
   certifications: Certification[]
@@ -22,8 +25,23 @@ const EN_PROFILE: typeof PROFILE = {
   ...PROFILE,
   name: "Hyukjun Yoon",
   introduction:
-    "I am a backend engineer who turns business requirements into product features such as payments, reservations, lessons, and notifications, then designs service structures that scale reliably.\nI have migrated legacy payment and authentication systems to Java/Spring and reshaped high-risk operational domains into observable, change-friendly systems.\nRecently, I have been applying LLM pipelines and AI code review automation in production to improve both product quality and development productivity.",
+    "I am a software engineer who centers on backend engineering and connects frontend and infrastructure work as needed to turn business requirements into production-ready product capabilities.\nI have redesigned legacy payment and authentication domains on Java/Spring and introduced LLM diagnostic pipelines and AI-powered CS automation in production, improving service reliability and operational efficiency.\nI treat generative AI as a development partner, not merely a code generator. I integrate it across requirements analysis, codebase exploration, design, implementation, testing, review, and documentation, while personally validating outcomes against official documentation, executable code, automated tests, and production data.",
 }
+
+const EN_AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
+  {
+    title: "AI throughout the development lifecycle",
+    description: "I integrate generative AI agents into the daily development loop, from requirements analysis and codebase exploration to design, **backend/frontend implementation**, testing, code review, and documentation.",
+  },
+  {
+    title: "End-to-end product delivery",
+    description: "With Java/Spring as my backend foundation, I connect React/TypeScript interfaces, E2E tests, deployment, and observability to deliver complete product features.",
+  },
+  {
+    title: "Verifiable outcomes",
+    description: "I use MCP and official documentation to check current specifications, then validate AI-generated work through **compilation, automated tests, runtime logs, and production metrics** before adopting it.",
+  },
+]
 
 const EN_COMPANIES: Company[] = [
   {
@@ -157,10 +175,13 @@ const EN_PROJECTS: ProjectDetail[] = [
     company: "Day1 Company",
     name: "Payment System Redesign",
     period: "Mar 2025 - Sep 2025",
-    tech: ["Java", "Spring Boot", "Redis", "PortOne"],
+    tech: ["Java", "Spring Boot", "Redis", "PortOne", "Claude Code", "MCP"],
     tasks: [
       {
         content: "Migrated a legacy PHP payment system to Java/Spring while gradually moving from PortOne v1 to v2 with backward compatibility",
+      },
+      {
+        content: "Connected **PortOne MCP to Claude Code** to inspect V2 API and SDK specifications directly in the development context and used them to implement `PortoneV2Service`",
       },
       {
         content: "Separated payment approval, verification, and post-processing stages and redesigned the flow around APIs to simplify payment-state tracking and transaction boundaries",
@@ -455,6 +476,7 @@ const EN_PROJECTS: ProjectDetail[] = [
 
 const KO_RESUME: ResumeData = {
   profile: PROFILE,
+  aiNativeWorkflow: AI_NATIVE_WORKFLOW,
   skills: SKILLS,
   companies: COMPANIES,
   certifications: CERTIFICATIONS,
@@ -463,6 +485,7 @@ const KO_RESUME: ResumeData = {
 
 const EN_RESUME: ResumeData = {
   profile: EN_PROFILE,
+  aiNativeWorkflow: EN_AI_NATIVE_WORKFLOW,
   skills: SKILLS,
   companies: EN_COMPANIES,
   certifications: EN_CERTIFICATIONS,
