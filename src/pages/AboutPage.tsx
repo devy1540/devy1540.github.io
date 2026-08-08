@@ -271,6 +271,23 @@ export function AboutPage() {
 
       <Separator />
 
+      {/* AI-native Development */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">{t.about.aiNativeDevelopment}</h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          {resume.aiNativeWorkflow.map((item) => (
+            <div key={item.title} className="rounded-lg border bg-card p-4">
+              <h3 className="font-semibold">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {renderBold(item.description)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Separator />
+
       {/* Experience + Projects */}
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.experience}</h2>

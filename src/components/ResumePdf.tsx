@@ -10,6 +10,7 @@ import {
 } from "@react-pdf/renderer"
 import {
   PROFILE,
+  AI_NATIVE_WORKFLOW,
   SKILLS,
   COMPANIES,
   CERTIFICATIONS,
@@ -72,6 +73,11 @@ const s = StyleSheet.create({
   skillRow: { flexDirection: "row", marginBottom: 6 },
   skillCategory: { width: 92, fontSize: 8.5, fontWeight: 600, color: colors.primary },
   skillList: { flex: 1, fontSize: 8.5, color: colors.secondary },
+  workflowItem: { flexDirection: "row", marginBottom: 6, paddingLeft: 2 },
+  workflowBullet: { width: 9, fontSize: 8.5, color: colors.accent, lineHeight: 1.6 },
+  workflowContent: { flex: 1 },
+  workflowTitle: { fontSize: 8.5, fontWeight: 600, color: colors.primary, lineHeight: 1.6 },
+  workflowDescription: { fontSize: 8, color: colors.muted, lineHeight: 1.55 },
   // Company
   companyOuterFirst: { marginTop: 6 },
   companyHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 },
@@ -186,7 +192,7 @@ export function ResumePdfDocument() {
         {/* Header */}
         <View style={s.header}>
           <Text style={s.name}>{PROFILE.name}</Text>
-          <Text style={s.role}>Backend Engineer</Text>
+          <Text style={s.role}>Software Engineer · AI-native Product Delivery</Text>
           <View style={s.contactRow}>
             <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
             <Text style={s.contactSep}>·</Text>
@@ -194,6 +200,18 @@ export function ResumePdfDocument() {
           </View>
           <Text style={s.intro}>{PROFILE.introduction}</Text>
         </View>
+
+        {/* AI-native Development */}
+        <Text style={s.sectionTitle}>AI-native Development</Text>
+        {AI_NATIVE_WORKFLOW.map((item) => (
+          <View key={item.title} style={s.workflowItem} wrap={false}>
+            <Text style={s.workflowBullet}>·</Text>
+            <View style={s.workflowContent}>
+              <Text style={s.workflowTitle}>{item.title}</Text>
+              <BoldText style={s.workflowDescription}>{item.description}</BoldText>
+            </View>
+          </View>
+        ))}
 
         {/* Experience */}
         <Text style={s.sectionTitle}>Experience</Text>

@@ -39,6 +39,11 @@ export interface Certification {
   year: string
 }
 
+export interface AiNativeWorkflowItem {
+  title: string
+  description: string
+}
+
 export const PROFILE = {
   name: "윤혁준",
   phone: "010-6709-1540",
@@ -46,14 +51,31 @@ export const PROFILE = {
   linkedin: "https://www.linkedin.com/in/%ED%98%81%EC%A4%80-%EC%9C%A4-21a3bb22a/",
   email: "gurwns1540@gmail.com",
   introduction:
-    "비즈니스 요구를 결제·예약·수업·알림 같은 제품 기능으로 풀어내고, 안정적으로 확장되는 서비스 구조까지 설계하는 백엔드 엔지니어입니다.\n레거시 결제·인증 구조를 Java/Spring 기반으로 전환하고, 운영 리스크가 큰 도메인을 관측 가능하고 변경에 강한 구조로 정비해왔습니다.\n최근에는 LLM 파이프라인과 AI 코드리뷰 자동화를 프로덕션에 적용하며, 제품 품질과 개발 생산성을 함께 높이는 시스템을 만들고 있습니다.",
+    "백엔드를 중심으로 제품에 필요한 프론트엔드와 인프라까지 직접 연결하며, 비즈니스 요구를 실제 운영되는 기능으로 완성해온 소프트웨어 엔지니어입니다.\n결제·인증 같은 핵심 도메인의 레거시를 Java/Spring 기반으로 재설계하고, LLM 진단 파이프라인과 AI 기반 CS 자동화를 프로덕션에 적용해 서비스 안정성과 운영 효율을 개선했습니다.\n생성형 AI를 단순한 코드 생성 도구가 아닌 개발 파트너로 활용합니다. 요구사항 분석과 코드베이스 탐색부터 설계·구현·테스트·리뷰·문서화까지 개발 과정 전반에 통합하되, 최종 결과는 공식 문서와 코드 실행·자동화 테스트·운영 데이터로 직접 검증합니다.",
 }
+
+export const AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
+  {
+    title: "개발 전 과정에 AI 활용",
+    description: "요구사항 분석과 코드베이스 탐색부터 설계, **BE/FE 구현**, 테스트, 코드 리뷰, 문서화까지 생성형 AI 에이전트를 일상적인 개발 루프에 통합합니다.",
+  },
+  {
+    title: "경계 없는 제품 전달",
+    description: "Java/Spring 백엔드를 중심으로 React/TypeScript 화면, E2E 테스트, 배포·관측까지 필요한 영역을 직접 연결해 기능을 끝까지 완성합니다.",
+  },
+  {
+    title: "검증 가능한 결과",
+    description: "MCP와 공식 문서로 최신 명세를 확인하고, AI가 만든 결과는 **컴파일·자동화 테스트·실행 로그·운영 지표**로 검증한 뒤 반영합니다.",
+  },
+]
 
 export const SKILLS: Record<string, string[]> = {
   Backend: ["Java", "Spring Boot", "QueryDSL", "MyBatis", "JPA", "Kafka"],
+  Frontend: ["React", "TypeScript", "Vite", "Tailwind CSS", "Playwright"],
   Infrastructure: ["AWS", "Kubernetes", "Docker", "ArgoCD", "Terraform", "Nginx"],
   Database: ["PostgreSQL", "Redis", "DynamoDB", "Apache Druid"],
-  "AI / LLM": ["OpenAI", "Gemini", "AWS Bedrock"],
+  "AI Engineering": ["Spring AI", "Function Calling", "OpenAI", "Gemini", "AWS Bedrock"],
+  "AI-native Workflow": ["Claude Code", "Codex", "MCP", "AI-assisted Code Review"],
   Monitoring: ["Grafana", "Loki", "Tempo", "Mimir", "OpenTelemetry", "Prometheus"],
   Tools: ["Git", "GitHub Actions", "JMeter", "Notion"],
 }
@@ -190,10 +212,13 @@ export const PROJECTS: ProjectDetail[] = [
     company: "주식회사 데이원컴퍼니",
     name: "결제 시스템 전면 재설계",
     period: "2025.03 — 2025.09",
-    tech: ["Java", "Spring Boot", "Redis", "Portone"],
+    tech: ["Java", "Spring Boot", "Redis", "Portone", "Claude Code", "MCP"],
     tasks: [
       {
         content: "PHP 레거시 결제 시스템을 Java/Spring으로 이관하고, PortOne v1에서 v2로 점진 전환하면서 하위 호환성 유지",
+      },
+      {
+        content: "**PortOne MCP를 Claude Code에 연결**해 V2 API·SDK 명세를 개발 컨텍스트에서 직접 확인하고 `PortoneV2Service` 구현에 활용",
       },
       {
         content: "결제 승인·검증·후처리 단계를 명확히 분리하고 API 기반 처리 흐름으로 재설계해 결제 상태 추적과 트랜잭션 경계를 단순화",
