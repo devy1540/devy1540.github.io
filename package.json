@@ -1,7 +1,7 @@
 {
   "name": "devy1540",
   "private": true,
-  "version": "1.27.5",
+  "version": "1.28.0",
   "packageManager": "pnpm@11.17.0",
   "type": "module",
   "scripts": {
