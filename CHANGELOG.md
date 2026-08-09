@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/devy1540/devy1540.github.io/compare/v1.27.5...v1.28.0) (2026-08-08)
+
+
+### 새로운 기능
+
+* **resume:** AI-native 개발 경험 보강 ([#197](https://github.com/devy1540/devy1540.github.io/issues/197)) ([3e0d0b1](https://github.com/devy1540/devy1540.github.io/commit/3e0d0b197075957ae191323573bfe8b87e907270))
+
 ## [1.27.5](https://github.com/devy1540/devy1540.github.io/compare/v1.27.4...v1.27.5) (2026-07-28)
 
 
