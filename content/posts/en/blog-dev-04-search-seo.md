@@ -90,7 +90,7 @@ export function useMetaTags({ title, description, url, type = "website" }) {
 
     setMeta("description", description || "Notes from development work.")
     setMeta("og:title", title || "Devy's Blog")
-    setMeta("og:url", `https://devy1540.dev${url || "/"}`)
+    setMeta("og:url", `https://dev.devy.dev${url || "/"}`)
     // ...
   }, [title, description, url, type])
 }
@@ -130,7 +130,7 @@ The same Vite plugin generates `rss.xml` at build time. It parses each post's fr
 ```html
 <link rel="alternate" type="application/rss+xml"
   title="Devy's Blog RSS"
-  href="https://devy1540.dev/rss.xml" />
+  href="https://dev.devy.dev/rss.xml" />
 ```
 
 ---

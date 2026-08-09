@@ -4,7 +4,7 @@ import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 
-const BASE_URL = "https://devy1540.dev"
+const BASE_URL = "https://dev.devy.dev"
 const LANGUAGES = ["ko", "en"] as const
 
 type ContentLanguage = typeof LANGUAGES[number]

@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://devy1540.dev">
+<a href="https://dev.devy.dev">
   <img src="./public/og-image.png" alt="Devy Archive preview" width="720">
 </a>
 
@@ -13,15 +13,15 @@ React, TypeScript, Vite로 만든 개인 기술 블로그입니다.<br>
 
 <br>
 
-[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=github%20pages&logo=github&style=for-the-badge)](https://devy1540.dev)
+[![Deploy](https://img.shields.io/github/deployments/devy1540/devy1540.github.io/github-pages?label=github%20pages&logo=github&style=for-the-badge)](https://dev.devy.dev)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=for-the-badge)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white&style=for-the-badge)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white&style=for-the-badge)](https://vite.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white&style=for-the-badge)](https://tailwindcss.com)
 
-[Live Site](https://devy1540.dev) &nbsp;&middot;&nbsp;
-[RSS](https://devy1540.dev/rss.xml) &nbsp;&middot;&nbsp;
-[Sitemap](https://devy1540.dev/sitemap.xml)
+[Live Site](https://dev.devy.dev) &nbsp;&middot;&nbsp;
+[RSS](https://dev.devy.dev/rss.xml) &nbsp;&middot;&nbsp;
+[Sitemap](https://dev.devy.dev/sitemap.xml)
 
 <br>
 
@@ -174,8 +174,8 @@ publishDate: "2025-12-01"   # optional, 예약 발행
 | Data Viz | Recharts |
 | Community | Giscus |
 | Analytics | Google Analytics, Google Apps Script API |
-| Deploy | GitHub Pages, custom domain `devy1540.dev` |
+| Deploy | GitHub Pages, custom domain `dev.devy.dev` |
 
 ## 배포
 
-GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `devy1540.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, route별 prerendered HTML이 함께 생성됩니다.
+GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `dev.devy.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, route별 prerendered HTML이 함께 생성됩니다.

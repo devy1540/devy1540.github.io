@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, "..")
 const distDir = path.resolve(rootDir, "dist")
 const template = fs.readFileSync(path.resolve(distDir, "index.html"), "utf-8")
-const baseUrl = "https://devy1540.dev"
+const baseUrl = "https://dev.devy.dev"
 
 function escapeAttr(value) {
   return value
