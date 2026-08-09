@@ -27,7 +27,7 @@ export interface PrerenderRoute {
   jsonLd?: Record<string, unknown>
 }
 
-const BASE_URL = "https://devy1540.dev"
+const BASE_URL = "https://dev.devy.dev"
 const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260610`
 
 function markdownToText(md: string) {
@@ -171,7 +171,7 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
       path: path("/privacy/"),
       language,
       title: isEnglish ? "Privacy Policy" : "개인정보처리방침",
-      description: isEnglish ? "Privacy policy for devy1540.dev." : "devy1540.dev의 개인정보처리방침입니다.",
+      description: isEnglish ? "Privacy policy for dev.devy.dev." : "dev.devy.dev의 개인정보처리방침입니다.",
       alternates: {
         ko: "/privacy/",
         en: "/en/privacy/",

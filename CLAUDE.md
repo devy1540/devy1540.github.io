@@ -1,7 +1,7 @@
 # Devy's Blog - Project Guide
 
 ## Overview
-React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커스텀 도메인(`devy1540.dev`)에 배포.
+React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커스텀 도메인(`dev.devy.dev`)에 배포.
 블로그 글은 Markdown 파일로 관리하며, 빌드 타임에 `import.meta.glob`으로 로드.
 
 ## Tech Stack
@@ -159,9 +159,9 @@ pnpm type-check # TypeScript 타입 체크
 ```
 
 ## Deployment
-- GitHub Pages: `devy1540.dev` (custom domain)
-- BASE_URL: `https://devy1540.dev`
-- Custom domain: `public/CNAME` = `devy1540.dev`
+- GitHub Pages: `dev.devy.dev` (custom domain)
+- BASE_URL: `https://dev.devy.dev`
+- Custom domain: `public/CNAME` = `dev.devy.dev`
 - 댓글: Giscus → `devy1540/devy1540.github.io` repo의 GitHub Discussions
 
 ## Code Conventions

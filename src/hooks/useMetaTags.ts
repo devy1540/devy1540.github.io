@@ -15,7 +15,7 @@ interface MetaTagsOptions {
   alternateUrls?: Partial<Record<Language, string>>
 }
 
-const BASE_URL = "https://devy1540.dev"
+const BASE_URL = "https://dev.devy.dev"
 const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260610`
 const OG_IMAGE_ALT = "Devy Archive preview image"
 

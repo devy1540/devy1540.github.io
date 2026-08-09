@@ -44,7 +44,7 @@ function getContent(language: Language, email: string): PrivacyContent {
     return {
       effectiveLabel: `Effective date: ${EFFECTIVE_DATE}`,
       intro:
-        "This Privacy Policy explains what information is collected and how it is processed when you use the services provided at devy1540.dev (the “Site”).",
+        "This Privacy Policy explains what information is collected and how it is processed when you use the services provided at dev.devy.dev (the “Site”).",
       sections: [
         {
           heading: "1. Information we collect",
@@ -111,7 +111,7 @@ function getContent(language: Language, email: string): PrivacyContent {
   return {
     effectiveLabel: "시행일: 2026년 6월 29일",
     intro:
-      "본 개인정보처리방침은 Devy(이하 ‘본 블로그’)가 devy1540.dev에서 제공하는 서비스 이용과 관련하여 수집하는 정보와 그 처리 방침을 안내합니다.",
+      "본 개인정보처리방침은 Devy(이하 ‘본 블로그’)가 dev.devy.dev에서 제공하는 서비스 이용과 관련하여 수집하는 정보와 그 처리 방침을 안내합니다.",
     sections: [
       {
         heading: "1. 수집하는 정보",
@@ -182,7 +182,7 @@ export function PrivacyPage() {
 
   useMetaTags({
     title: t.common.privacy,
-    description: language === "en" ? "Privacy policy for devy1540.dev." : "devy1540.dev의 개인정보처리방침입니다.",
+    description: language === "en" ? "Privacy policy for dev.devy.dev." : "dev.devy.dev의 개인정보처리방침입니다.",
     url: localizePath("/privacy", language),
   })
 

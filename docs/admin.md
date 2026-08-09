@@ -26,8 +26,8 @@ GitHub OAuth로 로그인한 관리자가 블로그 페이지 안에서 글의 *
 1. https://github.com/settings/developers → **New OAuth App**
 2. 입력:
    - **Application name**: `devy-blog-admin` (자유)
-   - **Homepage URL**: `https://devy1540.dev`
-   - **Authorization callback URL**: `https://devy1540.dev/admin/callback/`
+   - **Homepage URL**: `https://dev.devy.dev`
+   - **Authorization callback URL**: `https://dev.devy.dev/admin/callback/`
      - 로컬 테스트도 하려면 **Add another callback URL**로 `http://localhost:5173/admin/callback/` 추가
 3. 생성 후 **Client ID** 복사. **Generate a new client secret**으로 secret도 발급(한 번만 표시되니 보관).
 
@@ -40,7 +40,7 @@ GitHub OAuth로 로그인한 관리자가 블로그 페이지 안에서 글의 *
 이 저장소는 OAuth 토큰 교환 서버를 포함하지 않습니다. 별도로 운영하는 HTTPS API가
 `POST { "code": "..." }` 요청을 받아 GitHub OAuth App의 `client_secret`으로 토큰을 교환하고,
 성공 시 `{ "access_token": "..." }`을 반환해야 합니다. API에서는 허용 Origin을
-`https://devy1540.dev`로 제한하고 `client_secret`을 서버 측 시크릿으로 관리하세요.
+`https://dev.devy.dev`로 제한하고 `client_secret`을 서버 측 시크릿으로 관리하세요.
 
 ---
 
@@ -68,7 +68,7 @@ git commit && git push   # main 푸시 → GitHub Actions 배포
 
 ## 5. 사용
 
-1. `https://devy1540.dev/admin` 접속 → **GitHub로 로그인**
+1. `https://dev.devy.dev/admin` 접속 → **GitHub로 로그인**
 2. 인증되면 글 목록이 뜨고, 각 글의 **초안으로 / 발행하기** 버튼으로 토글
 3. 토글 시 frontmatter가 커밋되고, 재빌드 후 반영(목록 상단에 안내)
 4. 로그인하면 사이드바에도 **관리자** 메뉴가 나타남

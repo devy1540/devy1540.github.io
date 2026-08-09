@@ -5,7 +5,7 @@ import test from "node:test"
 import { fileURLToPath } from "node:url"
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
-const baseUrl = "https://devy1540.dev"
+const baseUrl = "https://dev.devy.dev"
 const today = new Date().toISOString().slice(0, 10)
 
 function frontmatterValue(raw, key) {
