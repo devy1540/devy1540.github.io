@@ -3,6 +3,7 @@ import fs from "fs"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
+import { PROJECTS } from "./src/data/resume"
 
 const BASE_URL = "https://dev.devy.dev"
 const LANGUAGES = ["ko", "en"] as const
@@ -155,6 +156,19 @@ function sitemapPlugin(): Plugin {
             { hreflang: "x-default", href: staticPageUrl(page, "ko") },
           ]
           return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), undefined, alternates))
+        }),
+        ...PROJECTS.flatMap((project) => {
+          const koUrl = `${BASE_URL}/about/projects/${project.slug}/`
+          const enUrl = `${BASE_URL}/en/about/projects/${project.slug}/`
+          const alternates = [
+            { hreflang: "ko-KR", href: koUrl },
+            { hreflang: "en", href: enUrl },
+            { hreflang: "x-default", href: koUrl },
+          ]
+          return [
+            urlEntry(koUrl, undefined, alternates),
+            urlEntry(enUrl, undefined, alternates),
+          ]
         }),
         ...koPosts.map((p) => {
           const alternates = [

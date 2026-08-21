@@ -34,6 +34,15 @@ export function detectBrowserLanguage(): Language {
   return primaryLanguage?.startsWith("ko") ? "ko" : "en"
 }
 
+export function prefersEnglishBrowser(): boolean {
+  if (typeof navigator === "undefined") return false
+
+  const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
+  const primaryLanguage = languages.find((language) => language.trim().length > 0)?.toLowerCase()
+
+  return primaryLanguage?.startsWith("en") ?? false
+}
+
 export function getRouteLanguage(pathname: string): Language {
   const normalized = pathname.replace(/\/+$/, "") || "/"
   return normalized === "/en" || normalized.startsWith("/en/") ? "en" : "ko"

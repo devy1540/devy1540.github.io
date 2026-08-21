@@ -3,7 +3,8 @@ import { renderToPipeableStream } from "react-dom/server"
 import { PassThrough } from "node:stream"
 import { AppProviders } from "./app-shell"
 import { createServerRoutes } from "./routes.server"
-import { PROJECTS } from "./data/resume"
+import { getResumeData } from "./data/resume-i18n"
+import type { ProjectDetail } from "./data/resume"
 import { getAllPosts, getPostBySlug } from "./lib/posts"
 import { getPostModifiedDate } from "./lib/post-dates"
 import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
@@ -180,9 +181,45 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
   ]
 }
 
+function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): PrerenderRoute[] {
+  const isEnglish = language === "en"
+
+  return projects.map((project) => {
+    const path = localizePath(`/about/projects/${project.slug}`, language)
+    const description = `${project.company} — ${project.name}`
+
+    return {
+      path,
+      language,
+      title: project.name,
+      description,
+      alternates: {
+        ko: localizePath(`/about/projects/${project.slug}`, "ko"),
+        en: localizePath(`/about/projects/${project.slug}`, "en"),
+      },
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: project.name,
+        description,
+        url: `${BASE_URL}${path}`,
+        inLanguage: isEnglish ? "en" : "ko-KR",
+        mainEntity: {
+          "@type": "CreativeWork",
+          name: project.name,
+          description: project.tasks.map((task) => task.content).join(" "),
+          dateCreated: project.period,
+        },
+      },
+    }
+  })
+}
+
 export function getPrerenderRoutes(): PrerenderRoute[] {
   const koPosts = getAllPosts("ko")
   const enPosts = getAllPosts("en")
+  const koProjects = getResumeData("ko").projects
+  const enProjects = getResumeData("en").projects
 
   return [
     ...localizedStaticRoutes("ko", koPosts),
@@ -203,50 +240,8 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
       description: "GitHub 로그인 처리 중입니다.",
       noindex: true,
     },
-    ...PROJECTS.map((project) => ({
-      path: `/about/projects/${project.slug}/`,
-      language: "ko" as const,
-      title: project.name,
-      description: `${project.company} - ${project.name}`,
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        name: project.name,
-        description: `${project.company} - ${project.name}`,
-        url: `${BASE_URL}/about/projects/${project.slug}/`,
-        inLanguage: "ko-KR",
-        mainEntity: {
-          "@type": "CreativeWork",
-          name: project.name,
-          description: project.tasks.map((task) => task.content).join(" "),
-          dateCreated: project.period,
-        },
-      },
-    })),
-    ...PROJECTS.map((project) => ({
-      path: `/en/about/projects/${project.slug}/`,
-      language: "en" as const,
-      title: project.name,
-      description: `${project.company} - ${project.name}`,
-      alternates: {
-        ko: `/about/projects/${project.slug}/`,
-        en: `/en/about/projects/${project.slug}/`,
-      },
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        name: project.name,
-        description: `${project.company} - ${project.name}`,
-        url: `${BASE_URL}/en/about/projects/${project.slug}/`,
-        inLanguage: "en",
-        mainEntity: {
-          "@type": "CreativeWork",
-          name: project.name,
-          description: project.tasks.map((task) => task.content).join(" "),
-          dateCreated: project.period,
-        },
-      },
-    })),
+    ...localizedProjectRoutes("ko", koProjects),
+    ...localizedProjectRoutes("en", enProjects),
     ...koPosts.map((post) => {
       const fullPost = getPostBySlug(post.slug, "ko")
       const articleBody = fullPost ? markdownToText(fullPost.content).slice(0, 5000) : ""

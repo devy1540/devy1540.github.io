@@ -38,7 +38,37 @@ function parseSitemapEntries() {
   return [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => ({
     loc: match[1].match(/<loc>(.*?)<\/loc>/)?.[1],
     lastmod: match[1].match(/<lastmod>(.*?)<\/lastmod>/)?.[1],
+    alternates: [...match[1].matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)]
+      .map((alternate) => ({ hreflang: alternate[1], href: alternate[2] })),
   }))
+}
+
+function readPrerenderedProjectSlugs(language) {
+  const prefix = language === "en" ? ["en"] : []
+  const projectsDir = path.join(rootDir, "dist", ...prefix, "about", "projects")
+  return fs.readdirSync(projectsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && fs.existsSync(path.join(projectsDir, entry.name, "index.html")))
+    .map((entry) => entry.name)
+    .sort()
+}
+
+function projectUrl(slug, language) {
+  const prefix = language === "en" ? "/en" : ""
+  return `${baseUrl}${prefix}/about/projects/${slug}/`
+}
+
+function readPrerenderedProjectHtml(slug, language) {
+  const prefix = language === "en" ? ["en"] : []
+  return fs.readFileSync(path.join(rootDir, "dist", ...prefix, "about", "projects", slug, "index.html"), "utf8")
+}
+
+function htmlText(value) {
+  return value
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim()
 }
 
 function postUrl(post) {
@@ -80,6 +110,68 @@ test("static and aggregate pages omit unreliable sitemap lastmod", () => {
       assert.equal(entries.get(url).lastmod, undefined, `unexpected lastmod for ${url}`)
     }
   }
+})
+
+test("all localized project pages are linked and included in sitemap with reciprocal alternates", () => {
+  const entries = new Map(parseSitemapEntries().map((entry) => [entry.loc, entry]))
+  const koSlugs = readPrerenderedProjectSlugs("ko")
+  const enSlugs = readPrerenderedProjectSlugs("en")
+
+  assert.ok(koSlugs.length > 0, "missing prerendered Korean project pages")
+  assert.deepEqual(enSlugs, koSlugs, "Korean and English project routes differ")
+
+  for (const slug of koSlugs) {
+    const koUrl = projectUrl(slug, "ko")
+    const enUrl = projectUrl(slug, "en")
+    const expectedAlternates = [
+      { hreflang: "ko-KR", href: koUrl },
+      { hreflang: "en", href: enUrl },
+      { hreflang: "x-default", href: koUrl },
+    ]
+
+    for (const url of [koUrl, enUrl]) {
+      const entry = entries.get(url)
+      assert.ok(entry, `missing sitemap entry for ${url}`)
+      assert.equal(entry.lastmod, undefined, `unexpected lastmod for ${url}`)
+      assert.deepEqual(entry.alternates, expectedAlternates, `wrong alternates for ${url}`)
+    }
+  }
+
+  for (const language of ["ko", "en"]) {
+    const prefix = language === "en" ? ["en"] : []
+    const aboutHtml = fs.readFileSync(path.join(rootDir, "dist", ...prefix, "about", "index.html"), "utf8")
+    for (const slug of koSlugs) {
+      const expectedPath = language === "en"
+        ? `/en/about/projects/${slug}/`
+        : `/about/projects/${slug}/`
+      assert.match(aboutHtml, new RegExp(`href="${expectedPath}"`), `missing About link to ${expectedPath}`)
+    }
+  }
+})
+
+test("localized project HTML has matching language, title, canonical, and alternates", () => {
+  for (const language of ["ko", "en"]) {
+    for (const slug of readPrerenderedProjectSlugs(language)) {
+      const html = readPrerenderedProjectHtml(slug, language)
+      const url = projectUrl(slug, language)
+      const title = htmlText(html.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? "")
+      const heading = htmlText(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? "")
+
+      assert.match(html, new RegExp(`<html lang="${language}"`), `wrong HTML language for ${url}`)
+      assert.ok(heading, `missing project heading for ${url}`)
+      assert.equal(title, `${heading} | Devy Archive`, `title and rendered project name differ for ${url}`)
+      assert.match(html, /<meta name="robots" content="index, follow"/, `project is not indexable: ${url}`)
+      assert.match(html, new RegExp(`<link rel="canonical" href="${url}"`), `wrong canonical for ${url}`)
+      assert.match(html, /hreflang="ko-KR"/, `missing Korean alternate for ${url}`)
+      assert.match(html, /hreflang="en"/, `missing English alternate for ${url}`)
+      assert.match(html, /hreflang="x-default"/, `missing x-default alternate for ${url}`)
+    }
+  }
+})
+
+test("404 fallback is explicitly excluded from indexing", () => {
+  const html = fs.readFileSync(path.join(rootDir, "dist", "404.html"), "utf8")
+  assert.match(html, /<meta name="robots" content="noindex, nofollow"/)
 })
 
 test("post JSON-LD uses date for publication and updated for modification", () => {
