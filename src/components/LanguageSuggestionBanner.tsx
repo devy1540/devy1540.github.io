@@ -2,57 +2,63 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { en } from "@/i18n/translations"
+import { en, ko, type Language } from "@/i18n/translations"
 import { analytics } from "@/lib/analytics"
 import {
+  detectSupportedBrowserLanguage,
   getRouteLanguage,
   getStoredLanguage,
   localizePath,
-  prefersEnglishBrowser,
   setStoredLanguage,
   stripLanguagePrefix,
 } from "@/lib/i18n-routing"
 
-const SESSION_DISMISS_KEY = "language-suggestion-dismissed"
+const koreanPostFiles = import.meta.glob("/content/posts/ko/*.md", {
+  query: "?raw",
+  import: "default",
+})
 const englishPostFiles = import.meta.glob("/content/posts/en/*.md", {
   query: "?raw",
   import: "default",
 })
+const localizedPostFiles = { ko: koreanPostFiles, en: englishPostFiles } satisfies Record<Language, Record<string, () => Promise<unknown>>>
 const localizedStaticPaths = new Set(["/", "/posts", "/tags", "/series", "/analytics", "/about", "/privacy"])
 
-function isSessionDismissed() {
+function sessionDismissKey(source: Language, target: Language) {
+  return `language-suggestion-dismissed:${source}-${target}`
+}
+
+function isSessionDismissed(source: Language, target: Language) {
   try {
-    return window.sessionStorage.getItem(SESSION_DISMISS_KEY) === "true"
+    return window.sessionStorage.getItem(sessionDismissKey(source, target)) === "true"
   } catch {
     return false
   }
 }
 
-function dismissForSession() {
+function dismissForSession(source: Language, target: Language) {
   try {
-    window.sessionStorage.setItem(SESSION_DISMISS_KEY, "true")
+    window.sessionStorage.setItem(sessionDismissKey(source, target), "true")
   } catch {
     // Restricted browser storage should not prevent dismissing the current render.
   }
 }
 
-async function hasEnglishAlternative(pathname: string) {
-  if (getRouteLanguage(pathname) === "en") return false
-
+async function hasLanguageAlternative(pathname: string, targetLanguage: Language) {
   const normalizedPath = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
   if (localizedStaticPaths.has(normalizedPath)) return true
 
   const projectSlug = normalizedPath.match(/^\/about\/projects\/([^/]+)$/)?.[1]
   if (projectSlug) {
     const { getResumeData } = await import("@/data/resume-i18n")
-    return getResumeData("en").projects.some((project) => project.slug === decodeURIComponent(projectSlug))
+    return getResumeData(targetLanguage).projects.some((project) => project.slug === decodeURIComponent(projectSlug))
   }
 
   const postSlug = normalizedPath.match(/^\/posts\/([^/]+)$/)?.[1]
   if (!postSlug) return false
 
   try {
-    return Boolean(englishPostFiles[`/content/posts/en/${decodeURIComponent(postSlug)}.md`])
+    return Boolean(localizedPostFiles[targetLanguage][`/content/posts/${targetLanguage}/${decodeURIComponent(postSlug)}.md`])
   } catch {
     return false
   }
@@ -61,22 +67,27 @@ async function hasEnglishAlternative(pathname: string) {
 export function LanguageSuggestionBanner() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [visible, setVisible] = useState(false)
-  const copy = en.components
+  const [targetLanguage, setTargetLanguage] = useState<Language | null>(null)
 
   useEffect(() => {
     let active = true
 
     async function updateVisibility() {
-      if (isSessionDismissed()) {
-        if (active) setVisible(false)
+      const sourceLanguage = getRouteLanguage(location.pathname)
+      const preferredLanguage = getStoredLanguage() ?? detectSupportedBrowserLanguage()
+
+      if (!preferredLanguage || preferredLanguage === sourceLanguage) {
+        if (active) setTargetLanguage(null)
         return
       }
 
-      const storedLanguage = getStoredLanguage()
-      const prefersEnglish = storedLanguage ? storedLanguage === "en" : prefersEnglishBrowser()
-      const hasAlternative = prefersEnglish && await hasEnglishAlternative(location.pathname)
-      if (active) setVisible(hasAlternative)
+      if (isSessionDismissed(sourceLanguage, preferredLanguage)) {
+        if (active) setTargetLanguage(null)
+        return
+      }
+
+      const hasAlternative = await hasLanguageAlternative(location.pathname, preferredLanguage)
+      if (active) setTargetLanguage(hasAlternative ? preferredLanguage : null)
     }
 
     void updateVisibility()
@@ -85,21 +96,25 @@ export function LanguageSuggestionBanner() {
     }
   }, [location.pathname])
 
-  if (!visible) return null
+  if (!targetLanguage) return null
 
-  function viewInEnglish() {
-    setStoredLanguage("en")
-    analytics.changeLanguage("en")
-    setVisible(false)
+  const sourceLanguage = getRouteLanguage(location.pathname)
+  const target = targetLanguage
+  const copy = (target === "en" ? en : ko).components
+
+  function viewInPreferredLanguage() {
+    setStoredLanguage(target)
+    analytics.changeLanguage(target)
+    setTargetLanguage(null)
     navigate(
-      localizePath(`${location.pathname}${location.search}${location.hash}`, "en"),
+      localizePath(`${location.pathname}${location.search}${location.hash}`, target),
       { viewTransition: true },
     )
   }
 
   function dismiss() {
-    dismissForSession()
-    setVisible(false)
+    dismissForSession(sourceLanguage, target)
+    setTargetLanguage(null)
   }
 
   return (
@@ -117,8 +132,8 @@ export function LanguageSuggestionBanner() {
           </div>
         </div>
         <div className="flex shrink-0 gap-2">
-          <Button type="button" size="sm" className="flex-1 sm:flex-none" onClick={viewInEnglish}>
-            {copy.viewInEnglish}
+          <Button type="button" size="sm" className="flex-1 sm:flex-none" onClick={viewInPreferredLanguage}>
+            {copy.viewInLanguage}
           </Button>
           <Button type="button" size="sm" variant="outline" className="flex-1 bg-background sm:flex-none" onClick={dismiss}>
             {copy.notNow}
