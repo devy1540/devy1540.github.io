@@ -206,7 +206,7 @@ export interface Translations {
     shortcutHelp: string
     languageSuggestionTitle: string
     languageSuggestionDescription: string
-    viewInEnglish: string
+    viewInLanguage: string
     notNow: string
     general: string
   }
@@ -421,9 +421,9 @@ export const ko: Translations = {
     shortcutSearch: "검색 열기",
     shortcutHelp: "단축키 안내 열기",
     shortcutSidebar: "사이드바 토글",
-    languageSuggestionTitle: "영문 페이지도 제공됩니다.",
-    languageSuggestionDescription: "현재 페이지를 유지하면서 영어로 전환할 수 있습니다.",
-    viewInEnglish: "영어로 보기",
+    languageSuggestionTitle: "이 페이지는 한국어로도 제공됩니다.",
+    languageSuggestionDescription: "현재 페이지를 유지하면서 한국어로 전환할 수 있습니다.",
+    viewInLanguage: "한국어로 보기",
     notNow: "나중에",
     general: "일반",
   },
@@ -640,7 +640,7 @@ export const en: Translations = {
     shortcutSidebar: "Toggle sidebar",
     languageSuggestionTitle: "This page is available in English.",
     languageSuggestionDescription: "Switch without losing your current page.",
-    viewInEnglish: "View in English",
+    viewInLanguage: "View in English",
     notNow: "Not now",
     general: "General",
   },

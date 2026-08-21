@@ -25,22 +25,15 @@ export function setStoredLanguage(language: Language) {
   }
 }
 
-export function detectBrowserLanguage(): Language {
-  if (typeof navigator === "undefined") return "ko"
+export function detectSupportedBrowserLanguage(): Language | null {
+  if (typeof navigator === "undefined") return null
 
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
   const primaryLanguage = languages.find((language) => language.trim().length > 0)?.toLowerCase()
 
-  return primaryLanguage?.startsWith("ko") ? "ko" : "en"
-}
-
-export function prefersEnglishBrowser(): boolean {
-  if (typeof navigator === "undefined") return false
-
-  const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
-  const primaryLanguage = languages.find((language) => language.trim().length > 0)?.toLowerCase()
-
-  return primaryLanguage?.startsWith("en") ?? false
+  if (primaryLanguage?.startsWith("ko")) return "ko"
+  if (primaryLanguage?.startsWith("en")) return "en"
+  return null
 }
 
 export function getRouteLanguage(pathname: string): Language {
