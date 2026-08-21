@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.1](https://github.com/devy1540/devy1540.github.io/compare/v1.28.0...v1.28.1) (2026-08-21)
+
+
+### 버그 수정
+
+* **seo:** 다국어 색인 신호와 언어 안내 개선 ([#200](https://github.com/devy1540/devy1540.github.io/issues/200)) ([eb339e9](https://github.com/devy1540/devy1540.github.io/commit/eb339e9238653ead011846c133d7dce19cf5f550))
+
 ## [1.28.0](https://github.com/devy1540/devy1540.github.io/compare/v1.27.5...v1.28.0) (2026-08-08)
 
 
