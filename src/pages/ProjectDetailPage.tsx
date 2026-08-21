@@ -21,6 +21,11 @@ export function ProjectDetailPage() {
     title: project?.name,
     description: project ? `${project.company} — ${project.name}` : undefined,
     url: slug ? localizePath(`/about/projects/${slug}`, language) : undefined,
+    noindex: !project,
+    alternateUrls: slug && project ? {
+      ko: localizePath(`/about/projects/${slug}`, "ko"),
+      en: localizePath(`/about/projects/${slug}`, "en"),
+    } : undefined,
   })
 
   if (!project) {

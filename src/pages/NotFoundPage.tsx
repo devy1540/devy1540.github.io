@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
 
 export function NotFoundPage() {
-  useMetaTags({ title: "404" })
+  useMetaTags({ title: "404", noindex: true })
   const { language, t } = useLanguage()
   return (
     <PageContainer className="flex flex-col items-center justify-center min-h-[60vh] text-center">

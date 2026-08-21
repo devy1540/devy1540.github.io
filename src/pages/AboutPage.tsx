@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Mail, Phone, ChevronDown, Download, Loader2, FileText, ExternalLink } from "lucide-react"
+import { Link } from "react-router-dom"
+import { Mail, Phone, ChevronDown, Download, Loader2, FileText, ExternalLink, ArrowRight } from "lucide-react"
 
 function Github({ className }: { className?: string }) {
   return (
@@ -32,7 +33,7 @@ function phoneHref(phone: string, language: Language) {
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/PageContainer"
-import { useLanguage } from "@/i18n"
+import { useLanguage, useT } from "@/i18n"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -57,6 +58,8 @@ function CompanySection({
   projects: ProjectDetail[]
   language: Language
 }) {
+  const t = useT()
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8">
       {/* Left: Company Info */}
@@ -71,6 +74,8 @@ function CompanySection({
         {company.projects.map((ps, index) => {
           const project = projects.find((p) => p.slug === ps.slug)
           if (!project) return null
+          const relatedPostData = project.relatedPosts?.map((slug) => getPostBySlug(slug, language)).filter(Boolean) ?? []
+          const relatedLinks = project.relatedLinks ?? []
 
           return (
             <Collapsible
@@ -121,37 +126,38 @@ function CompanySection({
                   </ul>
                 </div>
               </CollapsibleContent>
-              {(() => {
-                const relatedPostData = project.relatedPosts?.map((slug) => getPostBySlug(slug, language)).filter(Boolean) ?? []
-                const relatedLinks = project.relatedLinks ?? []
-                if (relatedPostData.length === 0 && relatedLinks.length === 0) return null
-                return (
-                  <div className="border-t border-dashed px-3 py-2 space-y-1.5">
-                    {relatedPostData.map((rp) => (
-                      <a
-                        key={rp!.slug}
-                        href={postPath(rp!.slug, language)}
-                        className="flex items-center gap-2 text-sm text-primary hover:underline"
-                      >
-                        <FileText className="h-3.5 w-3.5 shrink-0" />
-                        <span>{rp!.title}</span>
-                      </a>
-                    ))}
-                    {relatedLinks.map((link) => (
-                      <a
-                        key={link.url}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-sm text-primary hover:underline"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                        <span>{link.title}</span>
-                      </a>
-                    ))}
-                  </div>
-                )
-              })()}
+              <div className="border-t border-dashed px-3 py-2 space-y-1.5">
+                <Link
+                  to={localizePath(`/about/projects/${project.slug}`, language)}
+                  viewTransition
+                  className="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                >
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+                  <span>{t.about.projectDetails}</span>
+                </Link>
+                {relatedPostData.map((rp) => (
+                  <a
+                    key={rp!.slug}
+                    href={postPath(rp!.slug, language)}
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    <FileText className="h-3.5 w-3.5 shrink-0" />
+                    <span>{rp!.title}</span>
+                  </a>
+                ))}
+                {relatedLinks.map((link) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                    <span>{link.title}</span>
+                  </a>
+                ))}
+              </div>
             </Collapsible>
           )
         })}

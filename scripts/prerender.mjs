@@ -110,6 +110,7 @@ const notFoundRoute = {
   path: "/404/",
   title: "404",
   description: "요청한 페이지를 찾을 수 없습니다.",
+  noindex: true,
 }
 const notFoundHtml = injectAppHtml(withHead(template, notFoundRoute), await render(notFoundRoute.path))
 fs.writeFileSync(path.resolve(distDir, "404.html"), notFoundHtml)
