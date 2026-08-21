@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.2](https://github.com/devy1540/devy1540.github.io/compare/v1.28.1...v1.28.2) (2026-08-21)
+
+
+### 버그 수정
+
+* **i18n:** 언어 전환 안내 양방향 지원 ([#202](https://github.com/devy1540/devy1540.github.io/issues/202)) ([2c6b923](https://github.com/devy1540/devy1540.github.io/commit/2c6b923a1ef54efad3985838e284a9d54ef05f12))
+
 ## [1.28.1](https://github.com/devy1540/devy1540.github.io/compare/v1.28.0...v1.28.1) (2026-08-21)
 
 
