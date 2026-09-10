@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Font,
   Link,
+  Image,
   type Styles,
 } from "@react-pdf/renderer"
 import {
@@ -17,6 +18,7 @@ import {
   PROJECTS,
   type Company,
 } from "@/data/resume"
+import resumePhoto from "@/assets/resume-photo.jpg"
 
 Font.register({
   family: "Pretendard",
@@ -48,7 +50,10 @@ const s = StyleSheet.create({
     lineHeight: 1.5,
   },
   // Header
-  header: { marginBottom: 24 },
+  header: { marginBottom: 18 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: 20 },
+  headerInfo: { flex: 1 },
+  portrait: { width: 70, height: 98, objectFit: "contain" },
   name: { fontSize: 23, fontWeight: 600, letterSpacing: -0.3, lineHeight: 1.25, marginBottom: 9 },
   role: { fontSize: 8.5, fontWeight: 500, letterSpacing: 1.8, textTransform: "uppercase", color: colors.muted, marginBottom: 13 },
   contactRow: { flexDirection: "row", gap: 8 },
@@ -85,11 +90,13 @@ const s = StyleSheet.create({
   companyPeriod: { fontSize: 8.5, color: colors.muted },
   companyRole: { fontSize: 9, color: colors.muted, marginBottom: 12 },
   // Project
-  projectBox: { marginBottom: 14 },
-  projectName: { fontSize: 10, fontWeight: 600, color: colors.primary, marginBottom: 3 },
+  projectBox: { marginBottom: 8 },
+  projectHeader: { flexDirection: "row", alignItems: "baseline", marginBottom: 3 },
+  projectName: { flex: 1, fontSize: 10, fontWeight: 600, color: colors.primary, marginRight: 12 },
+  projectPeriod: { fontSize: 8, color: colors.muted, textAlign: "right" },
   techInline: { fontSize: 8, color: colors.muted, letterSpacing: 0.2, marginBottom: 8 },
   // Task
-  taskGroup: { marginBottom: 5 },
+  taskGroup: { marginBottom: 4 },
   taskRow: { flexDirection: "row", paddingLeft: 2 },
   taskBullet: { width: 9, fontSize: 8.5, color: colors.faint, lineHeight: 1.6 },
   taskItem: { flex: 1, fontSize: 8.5, color: colors.secondary, lineHeight: 1.6 },
@@ -162,7 +169,10 @@ function CompanySection({ company, isFirst }: { company: Company; isFirst: boole
       {companyProjects.map((project) => (
         <View key={project!.slug} style={s.projectBox}>
           <View wrap={false}>
-            <Text style={s.projectName}>{project!.name}</Text>
+            <View style={s.projectHeader}>
+              <Text style={s.projectName}>{project!.name}</Text>
+              <Text style={s.projectPeriod}>{project!.period}</Text>
+            </View>
             <Text style={s.techInline}>{project!.tech.join("   ·   ")}</Text>
             {project!.tasks[0] && <TaskGroup task={project!.tasks[0]} />}
           </View>
@@ -191,18 +201,23 @@ export function ResumePdfDocument() {
       <Page size="A4" style={s.page}>
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.name}>{PROFILE.name}</Text>
-          <Text style={s.role}>Software Engineer · AI-native Product Delivery</Text>
-          <View style={s.contactRow}>
-            <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
-            <Text style={s.contactSep}>·</Text>
-            <Text style={s.contactText}>{PROFILE.phone}</Text>
+          <View style={s.headerRow}>
+            <View style={s.headerInfo}>
+              <Text style={s.name}>{PROFILE.name}</Text>
+              <Text style={s.role}>Applied AI Engineering · Backend Engineering</Text>
+              <View style={s.contactRow}>
+                <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
+                <Text style={s.contactSep}>·</Text>
+                <Text style={s.contactText}>{PROFILE.phone}</Text>
+              </View>
+            </View>
+            <Image src={resumePhoto} style={s.portrait} />
           </View>
           <Text style={s.intro}>{PROFILE.introduction}</Text>
         </View>
 
-        {/* AI-native Development */}
-        <Text style={s.sectionTitle}>AI-native Development</Text>
+        {/* Development approach */}
+        <Text style={s.sectionTitle}>How I Build and Operate</Text>
         {AI_NATIVE_WORKFLOW.map((item) => (
           <View key={item.title} style={s.workflowItem} wrap={false}>
             <Text style={s.workflowBullet}>·</Text>

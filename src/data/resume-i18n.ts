@@ -25,21 +25,21 @@ const EN_PROFILE: typeof PROFILE = {
   ...PROFILE,
   name: "Hyukjun Yoon",
   introduction:
-    "I am a software engineer who centers on backend engineering and connects frontend and infrastructure work as needed to turn business requirements into production-ready product capabilities.\nI have redesigned legacy payment and authentication domains on Java/Spring and introduced LLM diagnostic pipelines and AI-powered CS automation in production, improving service reliability and operational efficiency.\nI treat generative AI as a development partner, not merely a code generator. I integrate it across requirements analysis, codebase exploration, design, implementation, testing, review, and documentation, while personally validating outcomes against official documentation, executable code, automated tests, and production data.",
+    "I design backend systems and apply AI to real services and business workflows.\nI have redesigned payment and authentication systems and brought LLM-based diagnostics and support-assistance features into production.\nTo reduce repetitive development work, I have built development and review agents and am developing E2E and audit agents.\nI connect implementation, testing, deployment, and operations, verifying changes through execution records and actual behavior.",
 }
 
 const EN_AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
   {
-    title: "AI throughout the development lifecycle",
-    description: "I integrate generative AI agents into the daily development loop, from requirements analysis and codebase exploration to design, **backend/frontend implementation**, testing, code review, and documentation.",
+    title: "From requirements to working features",
+    description: "I connect backend design and implementation with interfaces, tests, deployment, and observability. My experience operating payment, authentication, and AI services informs the scope of each change.",
   },
   {
-    title: "End-to-end product delivery",
-    description: "With Java/Spring as my backend foundation, I connect React/TypeScript interfaces, E2E tests, deployment, and observability to deliver complete product features.",
+    title: "Workflows for agent collaboration",
+    description: "I **separate development and review responsibilities** and preserve request context and evidence across handoffs. I define where agents can proceed and where people need to decide.",
   },
   {
-    title: "Verifiable outcomes",
-    description: "I use MCP and official documentation to check current specifications, then validate AI-generated work through **compilation, automated tests, runtime logs, and production metrics** before adopting it.",
+    title: "Outcomes checked against execution evidence",
+    description: "I verify results with code, tests, and runtime logs. I **distinguish PR creation, deployment, and actual resolution**, and turn failures into reproduction and regression checks.",
   },
 ]
 
@@ -49,16 +49,17 @@ const EN_COMPANIES: Company[] = [
     role: "Backend Engineer",
     period: "Aug 2024 - Present",
     projects: [
-      { slug: "global-expansion", name: "Global (Japan) Expansion", period: "Jun 2026 - Present", summary: "In-progress backend work for Japan: LINE auth diversification, i18n, and locale" },
-      { slug: "cs-automation", name: "AI-based CS Automation System", period: "Feb 2026 - Jun 2026", summary: "Built a Spring AI CS automation system with auto-replies and draft recommendations" },
+      { slug: "ai-agent-workflow", name: "AI Agent Workflows for Development and Operations", period: "2026 - Present", summary: "Development and review agents built; E2E and audit agents in development" },
+      { slug: "cs-automation", name: "AI-assisted Customer Support System", period: "May 2026 - Jul 2026", summary: "Built drafts, QA, error diagnosis, and human review; CS handling volume fell by about 43% after adoption" },
       { slug: "ai-diagnostic-pipeline", name: "AI Diagnostic and Feedback Pipeline", period: "Oct 2025 - Jan 2026", summary: "Redesigned a 7-step AI pipeline and reduced CS tickets by 98%" },
       { slug: "payment-system", name: "Payment System Redesign", period: "Mar 2025 - Sep 2025", summary: "Migrated PHP to Java and reduced duplicate payments to zero" },
+      { slug: "global-expansion", name: "Service Localization for Japan Expansion", period: "Jun 2026 - Aug 2026", summary: "Completed authentication, app internationalization, language and timezone support, and multilingual document generation" },
+      { slug: "infra-modernization", name: "Infrastructure Modernization and Security Foundation", period: "Oct 2025 - Jul 2026", summary: "ECS-to-EKS and AWS-to-GCP migrations, storage transitions, GitOps, security, and observability" },
       { slug: "notification-server", name: "Multi-channel Notification Server", period: "Jun 2025 - Oct 2025", summary: "Built an independent 4-channel notification server from scratch with 0% duplicate sends" },
       { slug: "personalization-system", name: "User Data-driven Personalization System", period: "Jan 2025 - Jan 2026", summary: "Built segmented coupon and churn-prevention flows" },
       { slug: "onboarding-trial-flow", name: "Onboarding and Trial Lesson Flow Improvement", period: "Apr 2026 - May 2026", summary: "Improved consistency across first-lesson booking, preview, and entry states" },
       { slug: "auth-refactoring", name: "Authentication Refactoring and Legacy Migration", period: "Sep 2024 - Apr 2026", summary: "Migrated legacy authentication and separated signing and verification responsibilities" },
       { slug: "dev-process", name: "Development Process Improvements", period: "Sep 2024 - Feb 2026", summary: "Introduced Facade patterns, standardized responses/errors, and redesigned domains around metadata" },
-      { slug: "infra-modernization", name: "Infrastructure Modernization and Security Foundation", period: "Oct 2025 - Jan 2026", summary: "Migrated ECS to EKS and built WAF and GitOps foundations" },
     ],
   },
   {
@@ -83,61 +84,103 @@ const EN_CERTIFICATIONS: Certification[] = [
 
 const EN_PROJECTS: ProjectDetail[] = [
   {
-    slug: "global-expansion",
+    slug: "ai-agent-workflow",
     company: "Day1 Company",
-    name: "Global (Japan) Expansion",
-    period: "Jun 2026 - Present",
-    tech: ["Spring Boot", "Spring OAuth2", "React", "TypeScript", "GrowthBook", "GCS"],
+    name: "AI Agent Workflows for Development and Operations",
+    period: "2026 - Present",
+    tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "SQLite"],
     tasks: [
       {
-        content: "**In progress**: backend and app localization for entering the Japanese market",
+        content: "**Built development and review agents** to reduce repeated context sharing and follow-up instructions; extending the workflow with E2E and audit agents",
       },
       {
-        content: "Diversified authentication by adding **LINE, Google, and Apple social login**, and integrated a LINE friend-add prompt for Japanese users",
-      },
-      {
-        content: "Built the app **internationalization (i18n)** foundation with GCS runtime-loaded language packs and bundle fallback, using a GrowthBook kill switch for zero-downtime rollout",
+        content: "Built a development agent on Codex App Server to **reuse the Codex harness's tool execution, session management, and approval workflows in Slack**",
         details: [
-          "Cleaned up hardcoded Korean into message-based strings with locale fallback",
+          "Connect Slack development requests to requirements analysis, code changes, testing, and PR creation, mapping conversations to work sessions to preserve context for follow-up requests",
+          "Pass the original request and recent conversation into the execution input, and assign repositories and worktrees per task",
         ],
       },
       {
-        content: "Added user **language and timezone (locale) settings** APIs and screens, and propagated language codes to authenticated user data",
-      },
-      {
-        content: "Rebuilt issued documents (completion certificates, level-test reports) **from an image-based approach to an HTML rendering architecture** for multilingual support — adding a new language now means adding a string file, not redrawing per-language background images",
+        content: "Built an **independent review agent with Hermes Agent**, connecting its Slack Gateway, dedicated GitHub and Slack MCP tools, and PR and security review skills",
         details: [
-          "The backend only publishes issuance events; rendering is delegated to a Cloud Run service that renders HTML templates and locale strings into PDF",
+          "Reserved product-code modification for the development agent and designed revision, re-review, and human escalation rules based on review findings",
+          "Pinned reviews to a commit and checked the current code before posting, preventing duplicate reviews and blind retries when delivery is uncertain",
+          "Customized Gateway behavior to route progress logs separately from final replies and prevent mentions in intermediate messages from triggering other bots",
         ],
       },
       {
-        content: "Implemented language-based home banner segmentation",
+        content: "**Developing an E2E agent that automates per-PR test environment setup and verification of changed functionality**",
+        details: [
+          "Combine PR branches across repositories to automatically provision a web, backend, and admin test environment, then select and run Playwright tests based on the scope of changes",
+        ],
       },
+      {
+        content: "**Developing an audit agent** to compare execution records with deliverables and identify incomplete work, omissions, and recurring errors",
+      },
+      {
+        content: "**Stored work results separately from message delivery state**, implementing delivery recovery without repeating code work when sending fails",
+        details: ["Distinguish permission, review, and deployment waits from confirmed resolution, and attach the next owner and action to results"],
+      },
+      {
+        content: "Wrote a **self-improvement skill** that reproduces failures and checks fixes against unchanged tests and normal cases; defined daily audit procedures to track unfinished work and recurring errors",
+      },
+    ],
+  },
+  {
+    slug: "global-expansion",
+    company: "Day1 Company",
+    name: "Service Localization for Japan Expansion",
+    period: "Jun 2026 - Aug 2026",
+    tech: ["Spring Boot", "Spring OAuth2", "React", "TypeScript", "GrowthBook", "GCS", "Cloud Run"],
+    relatedPosts: ["i18n-01-foundation", "i18n-02-language-pack-gcs", "i18n-05-document-render"],
+    tasks: [
+      {
+        content: "Added **LINE, Google, and Apple social login** and LINE friend-add integration to offer Japanese users more ways to access the service",
+      },
+      {
+        content: "Built an **app internationalization (i18n) foundation** that separates localized text from app code, loading language packs from GCS at runtime so translations can change without redeploying the app",
+        details: [
+          "Fall back to bundled text if language-pack loading fails, and control rollout scope with a GrowthBook kill switch",
+        ],
+      },
+      {
+        content: "Implemented **user language and timezone settings APIs and screens**, propagated language codes through authentication data, and added language-based home banner targeting",
+      },
+      {
+        content: "Reworked completion certificates and level-test reports into **HTML templates and language-specific strings**, replacing per-language background image redesigns with multilingual document generation",
+        details: [
+          "Separated responsibilities: the backend sends issuance events and a Cloud Run service renders HTML and localized text into PDFs",
+        ],
+      },
+    ],
+    achievements: [
+      "Completed backend and app localization required for entering the Japanese market",
+      "Enabled translation updates without app redeployment and document localization without recreating images for each language",
     ],
   },
   {
     slug: "cs-automation",
     company: "Day1 Company",
-    name: "AI-based CS Automation System",
-    period: "Feb 2026 - Jun 2026",
-    tech: ["Spring AI", "Spring Boot", "OpenAI"],
+    name: "AI-assisted Customer Support System",
+    period: "May 2026 - Jul 2026",
+    tech: ["Spring AI", "Spring Boot", "Gemini", "Redis", "Pub/Sub"],
     relatedPosts: ["spring-ai-cs-automation"],
     tasks: [
       {
-        content: "Built a **Spring AI**-based CS automation system from scratch in the Java/Spring environment to automate repetitive customer inquiries",
+        content: "Consolidated draft replies and tag suggestions from PHP and n8n into Spring AI, with **human support staff reviewing and sending replies**",
       },
       {
-        content: "Used **function calling** to look up user, order, and enrollment data for context-aware responses, and registered FAQs as **instructions** to keep answers consistent",
+        content: "Fetched customer context in parallel in the backend and **separated fast draft generation from FAQ and document-based QA** to reduce waiting time",
       },
       {
-        content: "Auto-sent replies for simple inquiries and **recommended draft replies** for the rest so operators could review and send immediately",
-        details: [
-          "Reduced repetitive handling by triaging automatable inquiries and sped up operator responses with draft recommendations",
-        ],
+        content: "Used Pub/Sub events, per-ticket Redis locks, and customer-input identifiers to **prevent duplicate drafts and stale-event processing** while generating new drafts for follow-up inquiries",
+      },
+      {
+        content: "Added error diagnosis using logs, traces, and user activity, together with citations and confidence evaluation, so support staff can review evidence and unresolved questions",
       },
     ],
     achievements: [
-      "Auto-handled repetitive and templated inquiries with draft recommendations for a **~43% reduction** in CS handling volume",
+      "Observed an **approximately 43% reduction in CS handling volume** in operational data after system adoption",
     ],
   },
   {
@@ -175,19 +218,16 @@ const EN_PROJECTS: ProjectDetail[] = [
     company: "Day1 Company",
     name: "Payment System Redesign",
     period: "Mar 2025 - Sep 2025",
-    tech: ["Java", "Spring Boot", "Redis", "PortOne", "Claude Code", "MCP"],
+    tech: ["Java", "Spring Boot", "Redis", "PortOne"],
     tasks: [
       {
-        content: "Migrated a legacy PHP payment system to Java/Spring while gradually moving from PortOne v1 to v2 with backward compatibility",
+        content: "**Migrated the legacy PHP payment system to Java/Spring** and redesigned payment verification, lesson-pass issuance, and failure recovery",
       },
       {
-        content: "Connected **PortOne MCP to Claude Code** to inspect V2 API and SDK specifications directly in the development context and used them to implement `PortoneV2Service`",
+        content: "Handled payment verification, storage, and lesson-pass issuance on the server after PortOne payment-completion webhooks, while the app queried an API for processing results",
       },
       {
-        content: "Separated payment approval, verification, and post-processing stages and redesigned the flow around APIs to simplify payment-state tracking and transaction boundaries",
-      },
-      {
-        content: "Handled concurrent payments and delayed PG responses with Redis Lock idempotency checks plus webhook and polling double verification, achieving **0 duplicate payments**",
+        content: "Controlled concurrent payment processing with Redis locks and checked whether a payment had already been processed, achieving **0 duplicate payments**",
       },
       {
         content: "Designed defensive logic for edge cases such as automatic refunds, coupon recovery, and compensation-ticket recovery, reducing payment-related **CS issues by 90%**",
@@ -372,21 +412,31 @@ const EN_PROJECTS: ProjectDetail[] = [
     slug: "infra-modernization",
     company: "Day1 Company",
     name: "Infrastructure Modernization and Security Foundation",
-    period: "Oct 2025 - Jan 2026",
-    tech: ["Kubernetes", "ArgoCD", "Terraform", "Grafana", "Loki", "Tempo", "Mimir", "OpenTelemetry", "AWS WAF"],
+    period: "Oct 2025 - Jul 2026",
+    tech: ["AWS", "GCP", "Kubernetes", "ArgoCD", "Terraform", "Firestore", "Valkey", "OpenTelemetry"],
     relatedPosts: ["ecs-to-eks-migration", "lgtm-stack-observability"],
     tasks: [
       {
-        content: "Migrated ECS to EKS and configured operations around kustomize and the Kubernetes Gateway API. Built an **ArgoCD-based GitOps** deployment pipeline from PR merge to build, deployment, and Slack notification",
+        content: "Established Kubernetes operations through an **ECS-to-EKS migration** and built an **ArgoCD-based GitOps deployment flow** connecting builds, deployments, and completion notifications",
       },
       {
-        content: "Introduced **AWS WAF** after detecting web attacks such as SQL injection and codified the rules with Terraform. Removed secrets from code by moving to Secrets Manager",
+        content: "Worked on **AWS-to-GCP service migration**, moving backend, web, and notification services to GKE and adapting deployment, cache connections, and authentication to the new environment",
       },
       {
-        content: "Built an **LGTM observability stack** with Grafana, Loki, Tempo, and Mimir to reduce Datadog cost and added basic server-metric dashboards",
+        content: "**Used a WAF to block web attacks and managed security rules with Terraform**, moving credentials into a secrets management service instead of storing them in code",
       },
       {
-        content: "Added MDC-based request tracing logs so logs, traces, and metrics can be investigated together by trace ID",
+        content: "Decoupled notification storage from DynamoDB through a storage interface and implemented a **Firestore adapter and data migration tools**",
+        details: [
+          "Designed for compatibility with existing queries, conditional updates, and scheduled-notification behavior, and wrote emulator-based regression tests",
+          "Implemented backfill, incremental synchronization, and pre-migration checks; disabled queue consumers and schedulers during migration to separate it from live notification delivery",
+        ],
+      },
+      {
+        content: "Built an **LGTM observability stack** to reduce Datadog cost, connecting logs, traces, and metrics through MDC and trace IDs",
+        details: [
+          "Stabilized migrated services by adjusting JVM memory, resource settings, and log and metric collection paths for GKE",
+        ],
       },
     ],
   },
