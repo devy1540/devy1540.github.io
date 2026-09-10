@@ -102,7 +102,7 @@ export function ProjectDetailPage() {
               {project.achievements.map((achievement, i) => (
                 <li key={i} className="flex gap-3 text-sm text-muted-foreground leading-relaxed">
                   <span className="text-primary mt-0.5 shrink-0">•</span>
-                  <span>{achievement}</span>
+                  <span>{renderBold(achievement)}</span>
                 </li>
               ))}
             </ul>

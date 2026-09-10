@@ -384,9 +384,9 @@ export const ko: Translations = {
     noSeriesData: "시리즈 데이터 없음",
   },
   about: {
-    description: "생성형 AI를 개발 전 과정에 활용하며, BE/FE와 인프라를 연결해 제품을 완성하는 소프트웨어 엔지니어입니다.",
+    description: "Applied AI Engineering · Backend Engineering",
     introduction: "자기소개",
-    aiNativeDevelopment: "AI-native 개발 방식",
+    aiNativeDevelopment: "개발·운영 방식",
     skills: "기술 스택",
     experience: "경력",
     projects: "프로젝트",
@@ -601,9 +601,9 @@ export const en: Translations = {
     noSeriesData: "No series data",
   },
   about: {
-    description: "Software engineer who uses generative AI throughout development to deliver products across backend, frontend, and infrastructure.",
+    description: "Applied AI Engineering · Backend Engineering",
     introduction: "About Me",
-    aiNativeDevelopment: "AI-native Development",
+    aiNativeDevelopment: "How I Build and Operate",
     skills: "Skills",
     experience: "Experience",
     projects: "Projects",

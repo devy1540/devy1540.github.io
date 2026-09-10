@@ -277,7 +277,7 @@ export function AboutPage() {
 
       <Separator />
 
-      {/* AI-native Development */}
+      {/* Development approach */}
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.aiNativeDevelopment}</h2>
         <div className="grid gap-3 md:grid-cols-3">
