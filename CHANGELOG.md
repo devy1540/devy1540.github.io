@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.0](https://github.com/devy1540/devy1540.github.io/compare/v1.28.2...v1.29.0) (2026-09-10)
+
+
+### 새로운 기능
+
+* **resume:** 경력 소개와 PDF 이력서 개편 ([#204](https://github.com/devy1540/devy1540.github.io/issues/204)) ([35b1856](https://github.com/devy1540/devy1540.github.io/commit/35b1856a09ae49d9c31575b4f2f88a13ab480dc9))
+
 ## [1.28.2](https://github.com/devy1540/devy1540.github.io/compare/v1.28.1...v1.28.2) (2026-08-21)
 
 
