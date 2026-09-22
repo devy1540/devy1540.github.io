@@ -126,6 +126,7 @@ export const PROJECTS: ProjectDetail[] = [
     name: "AI 에이전트 기반 개발·운영 업무의 AX 전환",
     period: "2026 — 현재",
     tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "GitHub Actions", "SQLite"],
+    relatedPosts: ["odin-ax-transformation"],
     tasks: [
       {
         content: "반복적인 맥락 전달과 후속 지시를 줄이기 위해 **요청 접수·개발·리뷰·검증·배포를 연결하는 업무 흐름 설계**, 개발·리뷰 에이전트 구축 및 PM 에이전트 연계",

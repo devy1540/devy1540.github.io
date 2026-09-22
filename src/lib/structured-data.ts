@@ -6,7 +6,7 @@ import { getPostModifiedDate } from "./post-dates"
 
 const BASE_URL = "https://dev.devy.dev"
 const SITE_NAME = "Devy Archive"
-const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-4`
+const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-5`
 
 function articleText(markdown: string) {
   return markdown
