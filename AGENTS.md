@@ -25,7 +25,7 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 │   ├── main.tsx            # 엔트리포인트 (ThemeProvider > LanguageProvider > App)
 │   ├── app-shell.tsx       # SSR/CSR 공통 Provider shell
 │   ├── App.tsx             # RouterProvider 생성
-│   ├── routes.tsx          # 클라이언트 라우트 + 현재 경로 preload
+│   ├── routes.tsx          # 클라이언트 라우트 (lib/route-modules.ts에서 preload 공유)
 │   ├── routes.server.tsx   # SSG용 정적 라우트
 │   ├── entry-server.tsx    # React SSR 렌더링 + prerender route metadata
 │   ├── layouts/
@@ -122,9 +122,11 @@ publishDate: "2025-12-01" # optional - 예약 발행
 - 컬러 테마: `document.documentElement.dataset.color`로 관리
 
 ### Post Data
-- `content/posts/*.md` 파일을 `import.meta.glob`으로 eager 로드
+- `scripts/post-assets.ts`의 Vite 플러그인으로 목록 메타데이터(`?post-meta`)만 eager 로드
+- 글 본문(`?post-body`)은 필요할 때 로드하고, 본문 검색 인덱스는 검색 시 해당 언어만 로드
 - `src/lib/posts.ts`에서 frontmatter 파싱, 정렬, 필터링, 검색 제공
-- draft/scheduled 글은 production 빌드에서 자동 필터링
+- `usePostContent`, `usePostSearchIndex`로 비동기 로드 상태와 데이터 갱신 구독
+- draft/scheduled 글은 production 메타데이터·본문·검색 인덱스에서 자동 필터링
 
 ### SEO
 - `useMetaTags()` 훅으로 페이지별 title, description, OG 태그 설정
@@ -135,7 +137,9 @@ publishDate: "2025-12-01" # optional - 예약 발행
 ### Hydrated SSG
 - 서버 렌더는 `src/routes.server.tsx`의 정적 라우트로 실제 React UI HTML을 생성
 - 글 상세와 프로젝트 상세 경로는 빌드 시 개별 HTML로 프리렌더
-- 클라이언트는 `src/routes.tsx`에서 현재 경로 컴포넌트만 hydration 전에 preload하고, 나머지 라우트는 lazy 유지
+- `src/lib/route-modules.ts`에서 현재 경로 컴포넌트를 hydration 전에 preload하고, 메뉴 의도/idle 시 다른 라우트를 사전 로드
+- 글 상세는 빌드 시 본문을 준비하고 해당 글 하나의 JSON을 HTML에 넣어 hydration 시 본문을 다시 다운로드하지 않음
+- 분석 차트는 hydration 이후 로드해 차트 다운로드가 화면 전체 진입을 막지 않음
 - `PostPage` 코드블록은 서버에서 안정적인 `<pre>` fallback을 렌더하고 hydration 후 `CodeBlock`/Shiki를 로드
 - hydration 관련 변경 후에는 `pnpm build`, `pnpm preview`로 `Loading...`, Suspense hidden segment, React hydration warning이 없는지 확인
 
@@ -156,6 +160,7 @@ pnpm build      # 프로덕션 빌드 (tsc + client build + SSR build + hydrated
 pnpm preview    # 빌드 결과 미리보기
 pnpm lint       # ESLint 실행
 pnpm type-check # TypeScript 타입 체크
+pnpm test:loading # 빌드 후 로딩 분리, 재시도, SSG 회귀 검사
 ```
 
 ## Deployment

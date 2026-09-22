@@ -8,6 +8,7 @@ export interface PostMeta {
   date: string
   updated: string
   description: string
+  readingMinutes?: number
   tags: string[]
   series?: string
   seriesOrder?: number

@@ -4,15 +4,10 @@ import { Activity, AlertCircle, CalendarDays, Eye, FileText, Gauge, Library, Pen
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Bar, BarChart, CartesianGrid, Label, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart"
-import { DailyVisitsChart } from "@/components/DailyVisitsChart"
+import { ChartPlaceholder } from "@/components/ChartPlaceholder"
+import { useDeferredModule } from "@/hooks/useDeferredModule"
+import { createRetryableLoader } from "@/lib/async-loader"
 import { PageContainer } from "@/components/PageContainer"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { usePageViews } from "@/hooks/usePageViews"
@@ -21,6 +16,8 @@ import { averageViews, buildDailySeries, getPeakDay, getPercentChange, getPrevio
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
 import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
+
+const loadAnalyticsCharts = createRetryableLoader(() => import("@/components/AnalyticsCharts"))
 
 const TAG_COLORS = [
   "oklch(0.65 0.2 250)",   // blue
@@ -66,6 +63,7 @@ function formatPercent(value: number | null) {
 
 export function AnalyticsPage() {
   const { language, t } = useLanguage()
+  const { value: charts, error: chartError, retry: retryCharts } = useDeferredModule(loadAnalyticsCharts)
   const [rangeDays, setRangeDays] = useState<RangeDays>(14)
   useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: localizePath("/analytics", language) })
 
@@ -167,21 +165,6 @@ export function AnalyticsPage() {
 
     return result
   }, [posts, t])
-
-  const tagChartConfig = useMemo(() => {
-    const config: ChartConfig = { count: { label: t.analytics.postsCount } }
-    for (const item of tagDistribution) {
-      config[item.tag] = { label: item.tag, color: item.fill }
-    }
-    return config
-  }, [tagDistribution, t])
-
-  const monthlyChartConfig = useMemo<ChartConfig>(() => ({
-    count: {
-      label: t.analytics.postsCount,
-      color: "var(--primary)",
-    },
-  }), [t])
 
   const monthlyPosts = useMemo(() => {
     const map = new Map<string, number>()
@@ -293,12 +276,11 @@ export function AnalyticsPage() {
 
       {/* Daily Visits Chart */}
       <section className="mb-8">
-        <DailyVisitsChart
-          totalViews={totalViews}
-          daily={daily}
-          isLoading={isLoading}
-          rangeDays={rangeDays}
-        />
+        {charts ? (
+          <charts.DailyVisitsChart totalViews={totalViews} daily={daily} isLoading={isLoading} rangeDays={rangeDays} />
+        ) : (
+          <ChartPlaceholder error={chartError} retry={retryCharts} height={166} />
+        )}
       </section>
 
       {/* Traffic Momentum */}
@@ -479,37 +461,7 @@ export function AnalyticsPage() {
             {tagDistribution.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t.analytics.noData}</p>
             ) : (
-              <ChartContainer config={tagChartConfig} className="mx-auto aspect-square max-h-[300px]">
-                <PieChart>
-                  <ChartTooltip content={<ChartTooltipContent nameKey="tag" hideLabel />} />
-                  <Pie
-                    data={tagDistribution}
-                    dataKey="count"
-                    nameKey="tag"
-                    innerRadius={60}
-                    strokeWidth={2}
-                    stroke="var(--background)"
-                  >
-                    <Label
-                      content={({ viewBox }) => {
-                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                          const total = tagDistribution.reduce((s, d) => s + d.count, 0)
-                          return (
-                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                              <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-                                {total}
-                              </tspan>
-                              <tspan x={viewBox.cx} y={(viewBox.cy ?? 0) + 24} className="fill-muted-foreground text-sm">
-                                {t.analytics.postsCount}
-                              </tspan>
-                            </text>
-                          )
-                        }
-                      }}
-                    />
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
+              charts ? <charts.TagDistributionChart data={tagDistribution} /> : <ChartPlaceholder error={chartError} retry={retryCharts} height={300} />
             )}
           </CardContent>
         </Card>
@@ -527,39 +479,7 @@ export function AnalyticsPage() {
             {monthlyPosts.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t.analytics.noData}</p>
             ) : (
-              <ChartContainer config={monthlyChartConfig} className="h-[200px] w-full">
-                <BarChart data={monthlyPosts} margin={{ left: 0, right: 0, top: 4, bottom: 0 }}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="month"
-                    tickFormatter={(v) => {
-                      const [y, m] = v.split("-")
-                      return `${y.slice(2)}/${m}`
-                    }}
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    minTickGap={30}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={4}
-                    width={24}
-                  />
-                  <ChartTooltip
-                    content={<ChartTooltipContent hideLabel={false} />}
-                    labelFormatter={(v) => v}
-                  />
-                  <Bar
-                    dataKey="count"
-                    fill="var(--color-count)"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={60}
-                  />
-                </BarChart>
-              </ChartContainer>
+              charts ? <charts.MonthlyPostsChart data={monthlyPosts} /> : <ChartPlaceholder error={chartError} retry={retryCharts} height={200} />
             )}
           </CardContent>
         </Card>

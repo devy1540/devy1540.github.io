@@ -29,6 +29,7 @@ function rehypeCodeBrFix() {
   }
 }
 import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
+import { usePostContent } from "@/hooks/usePostData"
 import { getReadingMinutes } from "@/lib/reading-time"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -98,6 +99,7 @@ function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>()
   const { language, setLanguage, t } = useLanguage()
+  const body = usePostContent(slug, language)
   const post = slug ? getPostBySlug(slug, language) : undefined
   const fallbackPost = !post && slug && language === "en" ? getPostBySlug(slug, "ko") : undefined
   const { prev, next } = slug && post ? getAdjacentPosts(slug, language) : { prev: null, next: null }
@@ -208,7 +210,7 @@ export function PostPage() {
               </>
             )}
             <span aria-hidden>·</span>
-            <span>{t.post.readingTime(getReadingMinutes(post.content))}</span>
+            <span>{t.post.readingTime(post.readingMinutes ?? getReadingMinutes(post.content))}</span>
             <span aria-hidden>·</span>
             <span className="flex items-center gap-1">
               <Eye className="size-3" />
@@ -257,7 +259,12 @@ export function PostPage() {
         )}
 
         <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <ReactMarkdown
+          {!body.loaded ? (
+            <div className="not-prose rounded-lg border p-6" role="status">
+              <p>{body.error ? t.common.postLoadError : t.common.postLoading}</p>
+              {body.error && <Button className="mt-3" onClick={() => window.location.reload()}>{t.common.retry}</Button>}
+            </div>
+          ) : <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSlug]}
             components={{
@@ -271,7 +278,7 @@ export function PostPage() {
             }}
           >
             {post.content}
-          </ReactMarkdown>
+          </ReactMarkdown>}
         </div>
 
         {(prev || next) && (
@@ -318,7 +325,7 @@ export function PostPage() {
       </PageContainer>
 
       <div className="post-toc-layer">
-        <TableOfContents key={`${language}:${slug}`} />
+        {body.loaded && <TableOfContents key={`${language}:${slug}`} />}
       </div>
     </div>
   )

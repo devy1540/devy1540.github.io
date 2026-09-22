@@ -7,6 +7,8 @@ import { SearchCommand } from "@/components/SearchCommand"
 import { ScrollToTopButton } from "@/components/ScrollToTopButton"
 import { Confetti } from "@/components/Confetti"
 import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner"
+import { NavigationStatus } from "@/components/NavigationStatus"
+import { RoutePreloader } from "@/components/RoutePreloader"
 import { trackPageView } from "@/lib/analytics"
 import { getRouteLanguage } from "@/lib/i18n-routing"
 import { useLanguage } from "@/i18n"
@@ -44,6 +46,8 @@ function RouteLanguageSync() {
 export function RootLayout() {
   return (
     <SidebarProvider>
+      <NavigationStatus />
+      <RoutePreloader />
       <ScrollToTop />
       <RouteAnalytics />
       <RouteLanguageSync />
