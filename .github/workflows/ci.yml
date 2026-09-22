@@ -31,5 +31,6 @@ jobs:
       - run: pnpm type-check
       - run: pnpm test:post-dates
       - run: pnpm build
+      - run: pnpm test:seo
       - run: pnpm test:loading
       - run: pnpm test:sitemap-lastmod

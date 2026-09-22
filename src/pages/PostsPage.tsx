@@ -20,6 +20,8 @@ import { usePageViews } from "@/hooks/usePageViews"
 import { useLanguage } from "@/i18n"
 import { filteredViewMeta, localizePath } from "@/lib/i18n-routing"
 import type { PostMeta } from "@/types/post"
+import { StructuredData } from "@/components/StructuredData"
+import { postListStructuredData } from "@/lib/structured-data"
 
 type SortMode = "latest" | "popular" | "oldest"
 type SearchScope = "all" | "summary" | "tags"
@@ -153,6 +155,9 @@ export function PostsPage() {
 
   return (
     <PageContainer>
+      {!hasFilters && (
+        <StructuredData data={postListStructuredData(allPosts, language, t.common.posts, t.posts.description)} />
+      )}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold tracking-tight">{t.common.posts}</h1>
         <ToggleGroup

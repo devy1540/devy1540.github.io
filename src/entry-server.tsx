@@ -5,11 +5,9 @@ import { AppProviders } from "./app-shell"
 import { createServerRoutes } from "./routes.server"
 import { getResumeData } from "./data/resume-i18n"
 import type { ProjectDetail } from "./data/resume"
-import { getAllPosts, getPostBySlug } from "./lib/posts"
-import { getPostModifiedDate } from "./lib/post-dates"
+import { getAllPosts } from "./lib/posts"
 import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
 import type { Language } from "./i18n"
-import type { PostMeta } from "./types/post"
 export { preparePostContentForPrerender, getPostHydrationData } from "./lib/posts"
 
 export interface PrerenderRoute {
@@ -21,32 +19,10 @@ export interface PrerenderRoute {
   type?: "website" | "article"
   date?: string
   tags?: string[]
-  articleBody?: string
   language?: Language
   noindex?: boolean
   canonicalPath?: string
   alternates?: Partial<Record<Language, string>>
-  jsonLd?: Record<string, unknown>
-}
-
-const BASE_URL = "https://dev.devy.dev"
-const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-5`
-
-function markdownToText(md: string) {
-  return md
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/!\[.*?\]\(.*?\)/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/#{1,6}\s+/g, "")
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/\*([^*]+)\*/g, "$1")
-    .replace(/^\s*[-*+]\s+/gm, "")
-    .replace(/^\s*\d+\.\s+/gm, "")
-    .replace(/^\s*>/gm, "")
-    .replace(/---/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim()
 }
 
 function toCanonicalPath(path: string) {
@@ -54,7 +30,7 @@ function toCanonicalPath(path: string) {
   return path.endsWith("/") ? path : `${path}/`
 }
 
-function localizedStaticRoutes(language: Language, posts: PostMeta[]): PrerenderRoute[] {
+function localizedStaticRoutes(language: Language): PrerenderRoute[] {
   const isEnglish = language === "en"
   const path = (basePath: string) => toCanonicalPath(localizePath(basePath, language))
   const homeDescription = isEnglish
@@ -73,23 +49,6 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
         ko: "/",
         en: "/en/",
       },
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "Blog",
-        name: "Devy Archive",
-        description: homeDescription,
-        url: `${BASE_URL}${path("/") === "/" ? "" : path("/")}`,
-        inLanguage: isEnglish ? "en" : "ko-KR",
-        author: { "@type": "Person", name: "Devy" },
-        blogPost: posts.slice(0, 10).map((post) => ({
-          "@type": "BlogPosting",
-          headline: post.title,
-          description: post.description,
-          datePublished: post.date,
-          dateModified: getPostModifiedDate(post),
-          url: `${BASE_URL}${postPath(post.slug, language)}`,
-        })),
-      },
     },
     {
       path: path("/posts/"),
@@ -99,22 +58,6 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
       alternates: {
         ko: "/posts/",
         en: "/en/posts/",
-      },
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        name: isEnglish ? "Posts" : "글 목록",
-        description: postsDescription,
-        url: `${BASE_URL}${path("/posts/")}`,
-        mainEntity: {
-          "@type": "ItemList",
-          itemListElement: posts.map((post, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            url: `${BASE_URL}${postPath(post.slug, language)}`,
-            name: post.title,
-          })),
-        },
       },
     },
     {
@@ -183,8 +126,6 @@ function localizedStaticRoutes(language: Language, posts: PostMeta[]): Prerender
 }
 
 function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): PrerenderRoute[] {
-  const isEnglish = language === "en"
-
   return projects.map((project) => {
     const path = localizePath(`/about/projects/${project.slug}`, language)
     const description = `${project.company} — ${project.name}`
@@ -198,20 +139,6 @@ function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): 
         ko: localizePath(`/about/projects/${project.slug}`, "ko"),
         en: localizePath(`/about/projects/${project.slug}`, "en"),
       },
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        name: project.name,
-        description,
-        url: `${BASE_URL}${path}`,
-        inLanguage: isEnglish ? "en" : "ko-KR",
-        mainEntity: {
-          "@type": "CreativeWork",
-          name: project.name,
-          description: project.tasks.map((task) => task.content).join(" "),
-          dateCreated: project.period,
-        },
-      },
     }
   })
 }
@@ -223,8 +150,8 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
   const enProjects = getResumeData("en").projects
 
   return [
-    ...localizedStaticRoutes("ko", koPosts),
-    ...localizedStaticRoutes("en", enPosts),
+    ...localizedStaticRoutes("ko"),
+    ...localizedStaticRoutes("en"),
     // 어드민 진입 화면은 클라이언트 전용 동작이지만, 정적 셸을 프리렌더해서
     // SPA fallback(404.html) hydration 불일치를 피한다. 색인은 막는다(noindex).
     {
@@ -244,8 +171,6 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
     ...localizedProjectRoutes("ko", koProjects),
     ...localizedProjectRoutes("en", enProjects),
     ...koPosts.map((post) => {
-      const fullPost = getPostBySlug(post.slug, "ko")
-      const articleBody = fullPost ? markdownToText(fullPost.content).slice(0, 5000) : ""
       const alternates: Partial<Record<Language, string>> = { ko: postPath(post.slug, "ko") }
       if (post.availableLanguages.includes("en")) alternates.en = postPath(post.slug, "en")
 
@@ -257,29 +182,11 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
         type: "article" as const,
         date: post.date,
         tags: post.tags,
-        articleBody,
         alternates,
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: post.title,
-          description: post.description,
-          datePublished: post.date,
-          dateModified: getPostModifiedDate(post),
-          url: `${BASE_URL}/posts/${post.slug}/`,
-          image: OG_IMAGE_URL,
-          author: { "@type": "Person", name: "Devy" },
-          publisher: { "@type": "Organization", name: "Devy Archive" },
-          mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${post.slug}/` },
-          articleBody,
-          ...(post.tags.length > 0 ? { keywords: post.tags.join(", ") } : {}),
-        },
       }
     }),
     ...koPosts.map((koPost) => {
       const post = enPosts.find((candidate) => candidate.slug === koPost.slug)
-      const fullPost = post ? getPostBySlug(post.slug, "en") : undefined
-      const articleBody = fullPost ? markdownToText(fullPost.content).slice(0, 5000) : ""
       const path = postPath(koPost.slug, "en")
       const alternates: Partial<Record<Language, string>> = { ko: postPath(koPost.slug, "ko") }
       if (post) alternates.en = path
@@ -304,24 +211,7 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
         type: "article" as const,
         date: post.date,
         tags: post.tags,
-        articleBody,
         alternates,
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: post.title,
-          description: post.description,
-          datePublished: post.date,
-          dateModified: getPostModifiedDate(post),
-          url: `${BASE_URL}${toCanonicalPath(path)}`,
-          image: OG_IMAGE_URL,
-          author: { "@type": "Person", name: "Devy" },
-          publisher: { "@type": "Organization", name: "Devy Archive" },
-          mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}${toCanonicalPath(path)}` },
-          articleBody,
-          inLanguage: "en",
-          ...(post.tags.length > 0 ? { keywords: post.tags.join(", ") } : {}),
-        },
       }
     }),
   ].map((route) => ({ ...route, path: toCanonicalPath(route.path) }))
