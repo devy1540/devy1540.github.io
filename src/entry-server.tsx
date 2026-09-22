@@ -10,6 +10,7 @@ import { getPostModifiedDate } from "./lib/post-dates"
 import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
 import type { Language } from "./i18n"
 import type { PostMeta } from "./types/post"
+export { preparePostContentForPrerender, getPostHydrationData } from "./lib/posts"
 
 export interface PrerenderRoute {
   path: string

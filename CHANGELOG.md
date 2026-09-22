@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.29.6](https://github.com/devy1540/devy1540.github.io/compare/v1.29.5...v1.29.6) (2026-09-22)
+
+
+### 문서
+
+* **blog:** 하네스 설명을 개발 경험과 선택 이유로 보강 ([#216](https://github.com/devy1540/devy1540.github.io/issues/216)) ([c40d0de](https://github.com/devy1540/devy1540.github.io/commit/c40d0de6dff7f4b480004b38d4a563d59ac28542))
+
+## [1.29.5](https://github.com/devy1540/devy1540.github.io/compare/v1.29.4...v1.29.5) (2026-09-22)
+
+
+### 문서
+
+* **resume:** AX 전환 경력에 관련 블로그 글 연결 ([#214](https://github.com/devy1540/devy1540.github.io/issues/214)) ([b179acb](https://github.com/devy1540/devy1540.github.io/commit/b179acba9d11b34b9c8f7f9427a6f9231a9ab95b))
+
+## [1.29.4](https://github.com/devy1540/devy1540.github.io/compare/v1.29.3...v1.29.4) (2026-09-22)
+
+
+### 문서
+
+* **blog:** 팀의 업무 병목을 줄이기 위한 AX 전환 글 발행 ([#212](https://github.com/devy1540/devy1540.github.io/issues/212)) ([45c082e](https://github.com/devy1540/devy1540.github.io/commit/45c082e71e26e8c42ce3fedf31a524d3f0b4e312))
+
+## [1.29.3](https://github.com/devy1540/devy1540.github.io/compare/v1.29.2...v1.29.3) (2026-09-22)
+
+
+### 성능 개선
+
+* **navigation:** 화면 전환 대기와 초기 로딩 개선 ([#210](https://github.com/devy1540/devy1540.github.io/issues/210)) ([8991837](https://github.com/devy1540/devy1540.github.io/commit/8991837d4bf0d77a9fe06c3b9a8b1d71a639cba9))
+
+## [1.29.2](https://github.com/devy1540/devy1540.github.io/compare/v1.29.1...v1.29.2) (2026-09-22)
+
+
+### 스타일
+
+* **site:** 블로그 썸네일과 홈 슬로건 개편 ([2a7534d](https://github.com/devy1540/devy1540.github.io/commit/2a7534dc5ceb59e8b79b21399896acf44b0d29c1))
+
 ## [1.29.1](https://github.com/devy1540/devy1540.github.io/compare/v1.29.0...v1.29.1) (2026-09-22)
 
 

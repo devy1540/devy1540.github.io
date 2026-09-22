@@ -13,6 +13,16 @@ export interface Translations {
     recentPosts: string
     goHome: string
     viewAll: string
+    retry: string
+    chartLoading: string
+    chartLoadError: string
+    navigating: string
+    navigationSlow: string
+    reloadPage: string
+    postLoading: string
+    postLoadError: string
+    searchLoading: string
+    searchLoadError: string
   }
   home: {
     title: string
@@ -220,6 +230,16 @@ export interface Translations {
 
 export const ko: Translations = {
   common: {
+    postLoading: "본문을 불러오는 중…",
+    postLoadError: "본문을 불러오지 못했습니다.",
+    searchLoading: "본문까지 검색하는 중…",
+    searchLoadError: "본문 검색을 불러오지 못했습니다. 현재 결과는 제목·설명·태그 기준입니다.",
+    retry: "다시 시도",
+    chartLoading: "차트를 불러오는 중…",
+    chartLoadError: "차트를 불러오지 못했습니다.",
+    navigating: "페이지를 불러오는 중…",
+    navigationSlow: "연결이 지연되고 있습니다.",
+    reloadPage: "페이지 새로 열기",
     home: "홈",
     posts: "글 목록",
     series: "시리즈",
@@ -438,6 +458,16 @@ export const ko: Translations = {
 
 export const en: Translations = {
   common: {
+    postLoading: "Loading article…",
+    postLoadError: "Could not load the article.",
+    searchLoading: "Searching article content…",
+    searchLoadError: "Could not load full-text search. Current results match titles, descriptions, and tags.",
+    retry: "Try again",
+    chartLoading: "Loading chart…",
+    chartLoadError: "Could not load the chart.",
+    navigating: "Loading page…",
+    navigationSlow: "The connection is taking longer than expected.",
+    reloadPage: "Reload page",
     home: "Home",
     posts: "Posts",
     series: "Series",
