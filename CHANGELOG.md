@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.10](https://github.com/devy1540/devy1540.github.io/compare/v1.29.9...v1.29.10) (2026-09-22)
+
+
+### 문서
+
+* **blog:** 오딘 도입 전후 지표와 해석 보강 ([#224](https://github.com/devy1540/devy1540.github.io/issues/224)) ([89b611c](https://github.com/devy1540/devy1540.github.io/commit/89b611cfa9cca5bf814257b22da5bf1097718765))
+
 ## [1.29.9](https://github.com/devy1540/devy1540.github.io/compare/v1.29.8...v1.29.9) (2026-09-22)
 
 
