@@ -25,7 +25,7 @@ const EN_PROFILE: typeof PROFILE = {
   ...PROFILE,
   name: "Hyukjun Yoon",
   introduction:
-    "I design backend systems and apply AI to real services and business workflows.\nI have redesigned payment and authentication systems and brought LLM-based diagnostics and support-assistance features into production.\nTo reduce repetitive development work, I have built development and review agents and am developing E2E and audit agents.\nI connect implementation, testing, deployment, and operations, verifying changes through execution records and actual behavior.",
+    "I draw on my experience designing and operating backend systems to apply AI to products and team workflows.\nI have redesigned payment and authentication systems and built LLM-based diagnostics and support-assistance features, taking responsibility from design through operational improvements.\nI am now building collaboration between development, review, and PM agents to improve how the team handles work from request intake to deployment.",
 }
 
 const EN_AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
@@ -35,7 +35,7 @@ const EN_AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
   },
   {
     title: "Workflows for agent collaboration",
-    description: "I **separate development and review responsibilities** and preserve request context and evidence across handoffs. I define where agents can proceed and where people need to decide.",
+    description: "I define responsibilities and handoff criteria across intake, development, review, and deployment. I **connect original requests, issues, PRs, and deployments**, distinguishing where agents can proceed from where people need to decide.",
   },
   {
     title: "Outcomes checked against execution evidence",
@@ -49,12 +49,12 @@ const EN_COMPANIES: Company[] = [
     role: "Backend Engineer",
     period: "Aug 2024 - Present",
     projects: [
-      { slug: "ai-agent-workflow", name: "AI Agent Workflows for Development and Operations", period: "2026 - Present", summary: "Development and review agents built; E2E and audit agents in development" },
+      { slug: "ai-agent-workflow", name: "Transforming Development and Operations with AI Agents", period: "2026 - Present", summary: "Built development and review agents; improving request-to-deployment tracking and extending E2E and audit workflows" },
       { slug: "cs-automation", name: "AI-assisted Customer Support System", period: "May 2026 - Jul 2026", summary: "Built drafts, QA, error diagnosis, and human review; CS handling volume fell by about 43% after adoption" },
       { slug: "ai-diagnostic-pipeline", name: "AI Diagnostic and Feedback Pipeline", period: "Oct 2025 - Jan 2026", summary: "Redesigned a 7-step AI pipeline and reduced CS tickets by 98%" },
       { slug: "payment-system", name: "Payment System Redesign", period: "Mar 2025 - Sep 2025", summary: "Migrated PHP to Java and reduced duplicate payments to zero" },
       { slug: "global-expansion", name: "Service Localization for Japan Expansion", period: "Jun 2026 - Aug 2026", summary: "Completed authentication, app internationalization, language and timezone support, and multilingual document generation" },
-      { slug: "infra-modernization", name: "Infrastructure Modernization and Security Foundation", period: "Oct 2025 - Jul 2026", summary: "ECS-to-EKS and AWS-to-GCP migrations, storage transitions, GitOps, security, and observability" },
+      { slug: "infra-modernization", name: "Infrastructure Modernization and Security Foundation", period: "Oct 2025 - Sep 2026", summary: "Cloud and storage migrations, STT migration to a shared Mac Studio for GPU cost optimization, GitOps, security, and observability" },
       { slug: "notification-server", name: "Multi-channel Notification Server", period: "Jun 2025 - Oct 2025", summary: "Built an independent 4-channel notification server from scratch with 0% duplicate sends" },
       { slug: "personalization-system", name: "User Data-driven Personalization System", period: "Jan 2025 - Jan 2026", summary: "Built segmented coupon and churn-prevention flows" },
       { slug: "onboarding-trial-flow", name: "Onboarding and Trial Lesson Flow Improvement", period: "Apr 2026 - May 2026", summary: "Improved consistency across first-lesson booking, preview, and entry states" },
@@ -86,16 +86,20 @@ const EN_PROJECTS: ProjectDetail[] = [
   {
     slug: "ai-agent-workflow",
     company: "Day1 Company",
-    name: "AI Agent Workflows for Development and Operations",
+    name: "Transforming Development and Operations with AI Agents",
     period: "2026 - Present",
-    tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "SQLite"],
+    tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "GitHub Actions", "SQLite"],
     tasks: [
       {
-        content: "**Built development and review agents** to reduce repeated context sharing and follow-up instructions; extending the workflow with E2E and audit agents",
+        content: "**Designed workflows connecting request intake, development, review, verification, and deployment** to reduce repeated context sharing and follow-up instructions; built development and review agents and connected them with a PM agent",
+        details: [
+          "Defined handling paths for PRD-based features and bug or support requests without a PRD, including stage ownership and conditions requiring human judgment",
+        ],
       },
       {
-        content: "Built a development agent on Codex App Server to **reuse the Codex harness's tool execution, session management, and approval workflows in Slack**",
+        content: "**Built a development agent on the Codex harness**, preserving the familiar Codex experience from daily work when interacting through Slack",
         details: [
+          "Reused the harness's tool execution, session management, and approval workflows through Codex App Server",
           "Connect Slack development requests to requirements analysis, code changes, testing, and PR creation, mapping conversations to work sessions to preserve context for follow-up requests",
           "Pass the original request and recent conversation into the execution input, and assign repositories and worktrees per task",
         ],
@@ -109,20 +113,26 @@ const EN_PROJECTS: ProjectDetail[] = [
         ],
       },
       {
+        content: "**Designed GitHub-based work management and deployment tracking**",
+        details: [
+          "Implemented assignee, schedule, and progress management in a PM agent",
+          "Distinguished development completion from deployment, requiring deployment confirmation before closing work",
+        ],
+      },
+      {
+        content: "**Packaged shared skills and MCP tools** for database, log, browser, and development-environment access; verified package tests and live reads through available integrations",
+      },
+      {
         content: "**Developing an E2E agent that automates per-PR test environment setup and verification of changed functionality**",
         details: [
-          "Combine PR branches across repositories to automatically provision a web, backend, and admin test environment, then select and run Playwright tests based on the scope of changes",
+          "Connect verification environments combining PR branches across repositories with Playwright test selection based on changes, and design QA-specific authentication",
         ],
       },
       {
         content: "**Developing an audit agent** to compare execution records with deliverables and identify incomplete work, omissions, and recurring errors",
-      },
-      {
-        content: "**Stored work results separately from message delivery state**, implementing delivery recovery without repeating code work when sending fails",
-        details: ["Distinguish permission, review, and deployment waits from confirmed resolution, and attach the next owner and action to results"],
-      },
-      {
-        content: "Wrote a **self-improvement skill** that reproduces failures and checks fixes against unchanged tests and normal cases; defined daily audit procedures to track unfinished work and recurring errors",
+        details: [
+          "Wrote a self-improvement skill that reproduces failures and checks fixes against unchanged tests and normal cases; defined daily audit procedures to track unfinished work",
+        ],
       },
     ],
   },
@@ -412,8 +422,8 @@ const EN_PROJECTS: ProjectDetail[] = [
     slug: "infra-modernization",
     company: "Day1 Company",
     name: "Infrastructure Modernization and Security Foundation",
-    period: "Oct 2025 - Jul 2026",
-    tech: ["AWS", "GCP", "Kubernetes", "ArgoCD", "Terraform", "Firestore", "Valkey", "OpenTelemetry"],
+    period: "Oct 2025 - Sep 2026",
+    tech: ["AWS", "GCP", "Kubernetes", "ArgoCD", "Terraform", "Firestore", "Valkey", "OpenTelemetry", "whisper.cpp", "Metal"],
     relatedPosts: ["ecs-to-eks-migration", "lgtm-stack-observability"],
     tasks: [
       {
@@ -421,6 +431,14 @@ const EN_PROJECTS: ProjectDetail[] = [
       },
       {
         content: "Worked on **AWS-to-GCP service migration**, moving backend, web, and notification services to GKE and adapting deployment, cache connections, and authentication to the new environment",
+      },
+      {
+        content: "**Migrated STT inference traffic from EKS GPUs to a shared Mac Studio to reduce GPU costs**",
+        details: [
+          "Estimated baseline compute cost for two always-on GPU nodes at US$470–630/month using published minimum Seoul Spot rates and 730 hours per month",
+          "Built a whisper.cpp and Metal transcription server with a gateway compatible with the existing API, and switched production and non-production processing paths",
+          "Compared transcription quality using English and Japanese audio, and verified transcription, subtitle generation, and diagnostic reports for actual lessons",
+        ],
       },
       {
         content: "**Used a WAF to block web attacks and managed security rules with Terraform**, moving credentials into a secrets management service instead of storing them in code",

@@ -204,7 +204,7 @@ export function ResumePdfDocument() {
           <View style={s.headerRow}>
             <View style={s.headerInfo}>
               <Text style={s.name}>{PROFILE.name}</Text>
-              <Text style={s.role}>Applied AI Engineering · Backend Engineering</Text>
+              <Text style={s.role}>Applied AI Engineer · Product &amp; Backend Engineer</Text>
               <View style={s.contactRow}>
                 <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
                 <Text style={s.contactSep}>·</Text>
