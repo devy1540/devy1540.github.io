@@ -260,7 +260,7 @@ export function ResumePdfDocument() {
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>LinkedIn</Text>
-          <Link src={PROFILE.linkedin} style={s.contactLink}>linkedin.com/in/혁준-윤</Link>
+          <Link src={PROFILE.linkedin} style={s.contactLink}>{decodeURI(PROFILE.linkedin).replace(/^https?:\/\/(www\.)?/, "")}</Link>
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>Blog</Text>
