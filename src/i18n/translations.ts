@@ -15,6 +15,7 @@ export interface Translations {
     viewAll: string
   }
   home: {
+    title: string
     subtitle: string
     viewPosts: string
     introduction: string
@@ -232,7 +233,8 @@ export const ko: Translations = {
     viewAll: "전체 보기",
   },
   home: {
-    subtitle: "백엔드 개발과 플랫폼 운영에서 마주한 문제, 선택, 해결 과정을 기록합니다.",
+    title: "Behind the code.",
+    subtitle: "백엔드와 인프라를 만들고 운영하며 배운 것들을 기록합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "인기 글",
@@ -449,7 +451,8 @@ export const en: Translations = {
     viewAll: "View All",
   },
   home: {
-    subtitle: "Notes on backend engineering, platform operations, and the decisions behind them.",
+    title: "Behind the code.",
+    subtitle: "Notes on building and operating backends and infrastructure.",
     viewPosts: "View Posts",
     introduction: "About",
     popularPosts: "Popular Posts",
