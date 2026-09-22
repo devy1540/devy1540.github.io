@@ -204,7 +204,7 @@ export function ResumePdfDocument() {
           <View style={s.headerRow}>
             <View style={s.headerInfo}>
               <Text style={s.name}>{PROFILE.name}</Text>
-              <Text style={s.role}>Applied AI Engineering · Backend Engineering</Text>
+              <Text style={s.role}>Applied AI Engineer · Product &amp; Backend Engineer</Text>
               <View style={s.contactRow}>
                 <Link src={`mailto:${PROFILE.email}`} style={s.contactLink}>{PROFILE.email}</Link>
                 <Text style={s.contactSep}>·</Text>
@@ -260,7 +260,7 @@ export function ResumePdfDocument() {
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>LinkedIn</Text>
-          <Link src={PROFILE.linkedin} style={s.contactLink}>linkedin.com/in/혁준-윤</Link>
+          <Link src={PROFILE.linkedin} style={s.contactLink}>{decodeURI(PROFILE.linkedin).replace(/^https?:\/\/(www\.)?/, "")}</Link>
         </View>
         <View style={s.urlRow}>
           <Text style={s.urlLabel}>Blog</Text>

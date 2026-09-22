@@ -51,7 +51,7 @@ export const PROFILE = {
   linkedin: "https://www.linkedin.com/in/%ED%98%81%EC%A4%80-%EC%9C%A4-21a3bb22a/",
   email: "gurwns1540@gmail.com",
   introduction:
-    "백엔드 시스템을 설계하고, AI를 실제 서비스와 업무에 적용하는 엔지니어입니다.\n결제·인증 시스템을 재설계하고, LLM 기반 진단과 상담 보조 기능을 서비스에 적용했습니다.\n반복적인 개발 업무를 줄이기 위해 개발·리뷰 에이전트를 구축했으며, E2E·감사 에이전트를 개발하고 있습니다.\n구현부터 테스트·배포·운영까지 직접 연결하고, 변경 결과는 실행 기록과 실제 동작으로 확인합니다.",
+    "백엔드 설계·운영 경험을 바탕으로 AI를 제품과 팀의 업무에 적용하는 엔지니어입니다.\n결제·인증 시스템을 재설계하고 LLM 기반 진단·상담 보조 기능을 구축하며, 설계부터 운영 개선까지 맡아 왔습니다.\n현재는 개발·리뷰·PM 에이전트의 협업 체계를 구축하고, 요청 접수부터 배포까지 팀의 업무 흐름을 개선하는 AX 전환을 진행하고 있습니다.",
 }
 
 export const AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
@@ -61,7 +61,7 @@ export const AI_NATIVE_WORKFLOW: AiNativeWorkflowItem[] = [
   },
   {
     title: "에이전트가 협업하는 업무 흐름",
-    description: "**개발과 리뷰의 책임을 나누고**, 요청 맥락과 수정 근거가 이어지도록 설계합니다. 사람이 판단할 조건과 에이전트가 진행할 범위를 함께 정리합니다.",
+    description: "요청 접수부터 개발·리뷰·배포까지 책임과 인계 기준을 정합니다. **원 요청·이슈·PR·배포를 연결**하고, 사람이 판단할 조건과 에이전트가 진행할 범위를 구분합니다.",
   },
   {
     title: "실행 근거로 확인하는 결과",
@@ -86,12 +86,12 @@ export const COMPANIES: Company[] = [
     role: "Backend Engineer",
     period: "2024.08 — 현재",
     projects: [
-      { slug: "ai-agent-workflow", name: "AI 에이전트 기반 개발·운영 워크플로우 개선", period: "2026 — 현재", summary: "개발·리뷰 에이전트 구축, E2E·감사 에이전트 개발 진행 중" },
+      { slug: "ai-agent-workflow", name: "AI 에이전트 기반 개발·운영 업무의 AX 전환", period: "2026 — 현재", summary: "개발·리뷰 에이전트 구축, 요청·이슈·PR·배포 추적 개선, E2E·감사 영역 확장 중" },
       { slug: "cs-automation", name: "AI 기반 CS 상담 보조 시스템 구축", period: "2026.05 — 2026.07", summary: "초안·QA·오류 진단과 상담원 검수 흐름 구축, 적용 후 CS 처리량 약 43% 감소" },
       { slug: "ai-diagnostic-pipeline", name: "AI 진단/피드백 파이프라인 구축", period: "2025.10 — 2026.01", summary: "7단계 AI 파이프라인 재설계, CS 98% 감소" },
       { slug: "payment-system", name: "결제 시스템 전면 재설계", period: "2025.03 — 2025.09", summary: "PHP→Java 전면 이관, 중복 결제 0건 달성" },
       { slug: "global-expansion", name: "일본 시장 진출을 위한 서비스 현지화", period: "2026.06 — 2026.08", summary: "인증·앱 국제화·언어 및 시간대 처리·다국어 문서 발급 체계 구축 완료" },
-      { slug: "infra-modernization", name: "서비스 인프라 현대화 및 보안 체계 구축", period: "2025.10 — 2026.07", summary: "ECS→EKS·AWS→GCP 이관, 저장소 전환, GitOps·보안·관측 체계 구축" },
+      { slug: "infra-modernization", name: "서비스 인프라 현대화 및 보안 체계 구축", period: "2025.10 — 2026.09", summary: "클라우드·저장소 이관, GPU 비용 최적화를 위한 STT의 Mac Studio 전환, GitOps·보안·관측 체계 구축" },
       { slug: "notification-server", name: "멀티채널 알림서버 신규 구축", period: "2025.06 — 2025.10", summary: "4채널 통합 독립 알림서버 0→1 구축, 중복 발송률 0%" },
       { slug: "personalization-system", name: "사용자 데이터 기반 개인화 시스템 구축", period: "2025.01 — 2026.01", summary: "세그멘테이션 기반 차등 쿠폰·해지방어 시스템" },
       { slug: "onboarding-trial-flow", name: "온보딩 및 체험레슨 예약 플로우 고도화", period: "2026.04 — 2026.05", summary: "첫 수업 예약·예습·입장 상태 정합성 개선" },
@@ -123,16 +123,20 @@ export const PROJECTS: ProjectDetail[] = [
   {
     slug: "ai-agent-workflow",
     company: "주식회사 데이원컴퍼니",
-    name: "AI 에이전트 기반 개발·운영 워크플로우 개선",
+    name: "AI 에이전트 기반 개발·운영 업무의 AX 전환",
     period: "2026 — 현재",
-    tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "SQLite"],
+    tech: ["TypeScript", "Python", "Codex App Server", "Hermes Agent", "MCP", "Slack API", "GitHub Actions", "SQLite"],
     tasks: [
       {
-        content: "반복적인 맥락 전달과 후속 지시를 줄이기 위한 **개발·리뷰 에이전트 구축**, E2E·감사 에이전트로 업무 흐름 확장 중",
+        content: "반복적인 맥락 전달과 후속 지시를 줄이기 위해 **요청 접수·개발·리뷰·검증·배포를 연결하는 업무 흐름 설계**, 개발·리뷰 에이전트 구축 및 PM 에이전트 연계",
+        details: [
+          "PRD 기반 기능 개발과 PRD 없는 버그·CS 요청의 처리 경로를 정리하고, 단계별 담당과 사람이 판단할 조건 정의",
+        ],
       },
       {
-        content: "**Codex harness의 도구 실행·세션 관리·승인 흐름을 Slack에서도 재사용**하기 위해 Codex App Server 기반 개발 에이전트 구현",
+        content: "**Codex harness 기반 개발 에이전트 구현**: 기존 업무에서 익숙한 Codex 사용 경험을 Slack에서도 유지하도록 설계",
         details: [
+          "Codex App Server를 통해 하네스의 도구 실행·세션 관리·승인 흐름을 재사용",
           "Slack으로 받은 개발 요청을 요구사항 분석·코드 수정·테스트·PR 작성까지 연결하고, 대화와 작업 세션을 매핑해 후속 요청의 맥락 유지",
           "원 요청과 최근 대화를 작업 입력에 전달하고, 작업별 저장소·worktree를 배정하는 흐름 구성",
         ],
@@ -146,20 +150,26 @@ export const PROJECTS: ProjectDetail[] = [
         ],
       },
       {
-        content: "**PR별 테스트 환경 준비부터 변경된 기능의 검증까지 자동화하는 E2E 에이전트 개발 중**",
+        content: "**GitHub 기반 업무 관리·배포 추적 체계 설계**",
         details: [
-          "여러 저장소의 PR 브랜치를 묶어 웹·백엔드·어드민 테스트 환경을 자동 구성하고, 변경 범위에 맞는 Playwright 테스트를 선별 실행하도록 연계",
+          "PM 에이전트에 담당자·일정·진행 상태 관리 기능 구현",
+          "개발 완료와 배포 완료를 구분하고, 실제 배포 확인을 업무 종료 기준으로 정의",
         ],
       },
       {
-        content: "에이전트의 실행 기록과 산출물을 대조해 완료 여부·누락·반복 오류를 점검하는 **감사 에이전트 개발 중**",
+        content: "DB·로그·브라우저·개발환경 접근을 위한 **스킬·MCP 기반 공통 도구 패키지 구성**, 패키지 테스트와 사용 가능한 연결의 실제 읽기 검증",
       },
       {
-        content: "**작업 결과와 메시지 전달 상태를 분리해 저장**하고, 전송 실패 시 코드 작업을 반복하지 않고 결과 전달을 복구하는 흐름 구현",
-        details: ["권한·리뷰·배포 대기와 해결 확인을 구분하고, 다음 담당자와 조치를 결과에 연결"],
+        content: "**PR별 테스트 환경 준비부터 변경된 기능의 검증까지 자동화하는 E2E 에이전트 개발 중**",
+        details: [
+          "여러 저장소의 PR 브랜치를 묶는 검증 환경과 변경 범위에 맞는 Playwright 테스트 선별 실행을 연계하고, QA 전용 인증 설계",
+        ],
       },
       {
-        content: "실제 실패를 재현하고 수정 전후에 같은 테스트와 정상 사례를 확인하는 **자가개선 스킬 작성**, 일일 점검으로 미완료 업무와 반복 오류를 추적하는 절차 정리",
+        content: "실행 기록과 산출물을 대조해 완료 여부·누락·반복 오류를 점검하는 **감사 에이전트 개발 중**",
+        details: [
+          "실패를 재현하고 수정 전후에 같은 테스트와 정상 사례를 확인하는 자가개선 스킬 작성, 일일 점검으로 미완료 업무를 추적하는 절차 정리",
+        ],
       },
     ],
   },
@@ -449,8 +459,8 @@ export const PROJECTS: ProjectDetail[] = [
     slug: "infra-modernization",
     company: "주식회사 데이원컴퍼니",
     name: "서비스 인프라 현대화 및 보안 체계 구축",
-    period: "2025.10 — 2026.07",
-    tech: ["AWS", "GCP", "Kubernetes", "ArgoCD", "Terraform", "Firestore", "Valkey", "OpenTelemetry"],
+    period: "2025.10 — 2026.09",
+    tech: ["AWS", "GCP", "Kubernetes", "ArgoCD", "Terraform", "Firestore", "Valkey", "OpenTelemetry", "whisper.cpp", "Metal"],
     relatedPosts: ["ecs-to-eks-migration", "aws-to-gcp-migration", "lgtm-stack-observability"],
     tasks: [
       {
@@ -458,6 +468,14 @@ export const PROJECTS: ProjectDetail[] = [
       },
       {
         content: "**AWS→GCP 서비스 이관** 과정에서 백엔드·웹·알림 서비스를 GKE로 옮기고, 배포·캐시 연결·인증 설정을 새 환경에 맞게 전환",
+      },
+      {
+        content: "**GPU 비용 절감을 위해 STT 추론 트래픽을 EKS에서 공용 Mac Studio로 이관**",
+        details: [
+          "이관 전 상시 GPU 2대의 컴퓨팅 비용을 월 약 US$470~630으로 환산(서울 리전 공개 최저 Spot 단가·730시간 기준 추정)",
+          "whisper.cpp·Metal 기반 전사 서버와 기존 API 호환 Gateway를 구축하고, 운영·비운영의 처리 경로를 전환",
+          "영어·일본어 음원으로 전사 품질을 비교하고, 실제 수업의 전사·자막·진단 생성 흐름을 검증",
+        ],
       },
       {
         content: "**WAF로 웹 공격을 차단하고 Terraform으로 보안 규칙을 관리**하며, 인증 정보를 시크릿 관리 서비스로 분리해 코드에 저장하지 않도록 개선",

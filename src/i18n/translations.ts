@@ -384,7 +384,7 @@ export const ko: Translations = {
     noSeriesData: "시리즈 데이터 없음",
   },
   about: {
-    description: "Applied AI Engineering · Backend Engineering",
+    description: "Applied AI Engineer · Product & Backend Engineer",
     introduction: "자기소개",
     aiNativeDevelopment: "개발·운영 방식",
     skills: "기술 스택",
@@ -601,7 +601,7 @@ export const en: Translations = {
     noSeriesData: "No series data",
   },
   about: {
-    description: "Applied AI Engineering · Backend Engineering",
+    description: "Applied AI Engineer · Product & Backend Engineer",
     introduction: "About Me",
     aiNativeDevelopment: "How I Build and Operate",
     skills: "Skills",
