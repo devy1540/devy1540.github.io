@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.2](https://github.com/devy1540/devy1540.github.io/compare/v1.29.1...v1.29.2) (2026-09-22)
+
+
+### 스타일
+
+* **site:** 블로그 썸네일과 홈 슬로건 개편 ([2a7534d](https://github.com/devy1540/devy1540.github.io/commit/2a7534dc5ceb59e8b79b21399896acf44b0d29c1))
+
 ## [1.29.1](https://github.com/devy1540/devy1540.github.io/compare/v1.29.0...v1.29.1) (2026-09-22)
 
 
