@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.9](https://github.com/devy1540/devy1540.github.io/compare/v1.29.8...v1.29.9) (2026-09-22)
+
+
+### 버그 수정
+
+* **seo:** 본문 보존과 구조화 데이터 갱신 개선 ([#222](https://github.com/devy1540/devy1540.github.io/issues/222)) ([3bf9f69](https://github.com/devy1540/devy1540.github.io/commit/3bf9f6990a0d410016779f83bd86101597a80694))
+
 ## [1.29.8](https://github.com/devy1540/devy1540.github.io/compare/v1.29.7...v1.29.8) (2026-09-22)
 
 
