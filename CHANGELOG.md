@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/devy1540/devy1540.github.io/compare/v1.29.10...v1.30.0) (2026-09-22)
+
+
+### 새로운 기능
+
+* **blog:** Markdown 데이터 차트를 shadcn으로 표시 ([#226](https://github.com/devy1540/devy1540.github.io/issues/226)) ([76b7cc0](https://github.com/devy1540/devy1540.github.io/commit/76b7cc04361f274d2ed5fc23271a9d8fa5248b8e))
+
 ## [1.29.10](https://github.com/devy1540/devy1540.github.io/compare/v1.29.9...v1.29.10) (2026-09-22)
 
 
