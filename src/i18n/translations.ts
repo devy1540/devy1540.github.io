@@ -208,6 +208,14 @@ export interface Translations {
     last30Days: string
     tableOfContents: string
     copyCode: string
+    chartView: string
+    chartTable: string
+    chartViewLabel: string
+    chartUnit: string
+    chartNote: string
+    chartPartial: string
+    chartLegend: string
+    chartDataError: string
     selectDate: string
     scrollToTop: string
     toggleLanguage: string
@@ -436,6 +444,14 @@ export const ko: Translations = {
     last30Days: "최근 30일",
     tableOfContents: "목차",
     copyCode: "코드 복사",
+    chartView: "차트",
+    chartTable: "표",
+    chartViewLabel: "보기 방식",
+    chartUnit: "단위",
+    chartNote: "집계 조건",
+    chartPartial: "진행 중",
+    chartLegend: "범례",
+    chartDataError: "차트 데이터를 표시할 수 없습니다.",
     selectDate: "날짜 선택",
     scrollToTop: "맨 위로",
     toggleLanguage: "언어 변경",
@@ -664,6 +680,14 @@ export const en: Translations = {
     last30Days: "Last 30 Days",
     tableOfContents: "Table of Contents",
     copyCode: "Copy code",
+    chartView: "Chart",
+    chartTable: "Table",
+    chartViewLabel: "View",
+    chartUnit: "Unit",
+    chartNote: "Measurement notes",
+    chartPartial: "Partial period",
+    chartLegend: "Legend",
+    chartDataError: "The chart data could not be displayed.",
     selectDate: "Select date",
     scrollToTop: "Scroll to top",
     toggleLanguage: "Toggle language",

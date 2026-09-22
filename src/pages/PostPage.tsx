@@ -48,6 +48,8 @@ import { localizePath, postPath } from "@/lib/i18n-routing"
 import type { Language } from "@/i18n"
 import { StructuredData } from "@/components/StructuredData"
 import { postStructuredData } from "@/lib/structured-data"
+import { MarkdownChart } from "@/components/MarkdownChart"
+import { readMarkdownCode } from "@/lib/markdown-code"
 
 const LazyCodeBlock = lazy(() =>
   import("@/components/CodeBlock").then((module) => ({ default: module.CodeBlock }))
@@ -85,6 +87,12 @@ function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre
 }
 
 function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
+  const { language, code } = readMarkdownCode(props.children)
+  if (language === "chart") return <MarkdownChart key={code} source={code} />
+  return <HydratedCodeBlock {...props} />
+}
+
+function HydratedCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
   const isClient = useSyncExternalStore(subscribeHydration, getClientSnapshot, getServerSnapshot)
 
   if (!isClient) {

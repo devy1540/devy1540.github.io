@@ -1,10 +1,12 @@
-import { type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
+import { lazy, Suspense, type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
 import { Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 import { useTheme } from "@/hooks/useTheme"
 import mermaid from "mermaid"
-import { BenchmarkChart } from "@/components/BenchmarkChart"
+import { readMarkdownCode } from "@/lib/markdown-code"
+
+const BenchmarkChart = lazy(() => import("@/components/BenchmarkChart").then((module) => ({ default: module.BenchmarkChart })))
 
 function getCssHex(varName: string): string {
   const temp = document.createElement("div")
@@ -301,32 +303,15 @@ function ShikiBlock({ code, language, children, preProps }: { code: string; lang
   )
 }
 
-function extractCode(node: React.ReactNode): string {
-  if (typeof node === "string") return node
-  if (typeof node === "number") return String(node)
-  if (!node) return ""
-  if (Array.isArray(node)) return node.map(extractCode).join("")
-  if (typeof node === "object" && "type" in node) {
-    const el = node as React.ReactElement<{ children?: React.ReactNode }>
-    if ((el.type as string) === "br" || el.type === "br") return "<br/>"
-    return extractCode(el.props?.children)
-  }
-  return ""
-}
-
 export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
-  const codeEl = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>
-  const className = codeEl?.props?.className || ""
-  const match = className.match(/language-(\w+)/)
-  const language = match?.[1] ?? ""
-  const code = extractCode(codeEl?.props?.children).replace(/\n$/, "")
+  const { language, code } = readMarkdownCode(children)
 
   if (language === "mermaid") {
     return <MermaidBlock code={code} />
   }
 
   if (language === "benchmark") {
-    return <BenchmarkChart data={code} />
+    return <Suspense fallback={<pre {...props}>{children}</pre>}><BenchmarkChart data={code} /></Suspense>
   }
 
   return <ShikiBlock code={code} language={language} preProps={props}>{children}</ShikiBlock>
