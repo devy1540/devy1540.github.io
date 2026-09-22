@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.4](https://github.com/devy1540/devy1540.github.io/compare/v1.29.3...v1.29.4) (2026-09-22)
+
+
+### 문서
+
+* **blog:** 팀의 업무 병목을 줄이기 위한 AX 전환 글 발행 ([#212](https://github.com/devy1540/devy1540.github.io/issues/212)) ([45c082e](https://github.com/devy1540/devy1540.github.io/commit/45c082e71e26e8c42ce3fedf31a524d3f0b4e312))
+
 ## [1.29.3](https://github.com/devy1540/devy1540.github.io/compare/v1.29.2...v1.29.3) (2026-09-22)
 
 
