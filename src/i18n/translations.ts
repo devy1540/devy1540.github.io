@@ -253,8 +253,8 @@ export const ko: Translations = {
     viewAll: "전체 보기",
   },
   home: {
-    title: "Behind the code.",
-    subtitle: "백엔드와 인프라를 만들고 운영하며 배운 것들을 기록합니다.",
+    title: "What works, and why.",
+    subtitle: "무엇이 통했고, 왜 그랬는지 기록합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "인기 글",
@@ -481,8 +481,8 @@ export const en: Translations = {
     viewAll: "View All",
   },
   home: {
-    title: "Behind the code.",
-    subtitle: "Notes on building and operating backends and infrastructure.",
+    title: "What works, and why.",
+    subtitle: "Documenting what worked, and why.",
     viewPosts: "View Posts",
     introduction: "About",
     popularPosts: "Popular Posts",

@@ -16,8 +16,8 @@ interface MetaTagsOptions {
 }
 
 const BASE_URL = "https://dev.devy.dev"
-const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-4`
-const OG_IMAGE_ALT = "Behind the code. — Engineering notes by Devy"
+const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-5`
+const OG_IMAGE_ALT = "What works, and why. — Engineering notes by Devy"
 
 function toCanonicalUrl(path?: string) {
   if (!path) return BASE_URL
