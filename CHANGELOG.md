@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.1](https://github.com/devy1540/devy1540.github.io/compare/v1.29.0...v1.29.1) (2026-09-22)
+
+
+### 문서
+
+* **resume:** AX 경험과 프로필 소개 보강 ([5c0545a](https://github.com/devy1540/devy1540.github.io/commit/5c0545a11678b23d049b68196e345ebd2f591987))
+
 ## [1.29.0](https://github.com/devy1540/devy1540.github.io/compare/v1.28.2...v1.29.0) (2026-09-10)
 
 
