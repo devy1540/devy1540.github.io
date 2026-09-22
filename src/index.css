@@ -25,6 +25,11 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --radius: 0.625rem;
+  --chart-1: #4263a6;
+  --chart-2: #bb750c;
+  --chart-3: #8558ae;
+  --chart-4: #858e9c;
+  --chart-5: #598049;
   --sidebar: hsl(0 0% 98%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
@@ -36,6 +41,11 @@
 }
 
 .dark {
+  --chart-1: #8aa9ed;
+  --chart-2: #efb253;
+  --chart-3: #bc98e2;
+  --chart-4: #a5aebc;
+  --chart-5: #9cbf85;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);

@@ -12,6 +12,7 @@
     "type-check": "tsc --noEmit",
     "check:internal-links": "node scripts/check-internal-post-links.mjs",
     "test:post-dates": "node --test scripts/post-dates.test.mjs",
+    "test:charts": "node --test scripts/markdown-chart.test.mjs",
     "test:loading": "node --test scripts/async-loader.test.mjs scripts/loading.test.mjs",
     "test:seo": "node --test scripts/seo.test.mjs",
     "test:sitemap-lastmod": "node --test scripts/sitemap-lastmod.test.mjs"

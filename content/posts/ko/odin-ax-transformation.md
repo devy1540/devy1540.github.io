@@ -251,15 +251,133 @@ App Server 클라이언트는 사용한 Codex CLI 버전의 계약에 맞춰 구
 
 먼저 달라진 것은 요청 게시글의 호출 대상이었다. 도입 전에는 34개 중 32개가 개발자를 태그했다. 도입 후에는 75개 중 50개가 오딘만 태그했고, 개발자 태그가 포함된 게시글은 동시 호출을 합쳐 22개였다. **이 두 채널의 도입 후 요청 중 66.7%가 오딘 단독 호출이었다.**
 
-[![주차별 요청 게시글에서 개발자와 오딘을 호출한 스레드 수](/images/odin-ax/06-odin-request-routing-metrics.png)](https://dev.devy.dev/images/odin-ax/06-odin-request-routing-metrics.png)
+```chart
+{
+  "type": "stacked-bar",
+  "title": "요청 게시글의 호출 대상이 달라졌다",
+  "description": "두 업무 채널 · 주차별 요청 스레드 수 · 게시글 본문의 멘션 기준",
+  "categoryLabel": "주 시작일",
+  "unit": "개",
+  "series": [
+    {
+      "key": "developer",
+      "label": "개발자",
+      "color": "chart-1"
+    },
+    {
+      "key": "odin",
+      "label": "오딘",
+      "color": "chart-2"
+    },
+    {
+      "key": "both",
+      "label": "동시 호출",
+      "color": "chart-3"
+    },
+    {
+      "key": "none",
+      "label": "명시 호출 없음",
+      "color": "chart-4"
+    }
+  ],
+  "data": [
+    {
+      "label": "8/10",
+      "note": "도입 전",
+      "developer": 23,
+      "odin": 0,
+      "both": 0,
+      "none": 2
+    },
+    {
+      "label": "8/17",
+      "note": "도입 전",
+      "developer": 9,
+      "odin": 0,
+      "both": 0,
+      "none": 0
+    },
+    {
+      "label": "8/24",
+      "note": "전환기",
+      "developer": 41,
+      "odin": 0,
+      "both": 0,
+      "none": 4
+    },
+    {
+      "label": "8/31",
+      "note": "전환기",
+      "developer": 43,
+      "odin": 0,
+      "both": 0,
+      "none": 2
+    },
+    {
+      "label": "9/7",
+      "note": "도입 후",
+      "developer": 12,
+      "odin": 16,
+      "both": 1,
+      "none": 3
+    },
+    {
+      "label": "9/14",
+      "note": "도입 후",
+      "developer": 7,
+      "odin": 34,
+      "both": 2,
+      "none": 0
+    },
+    {
+      "label": "9/21",
+      "partial": true,
+      "note": "9/22 22:01 KST까지 · 진행 중인 주",
+      "developer": 6,
+      "odin": 11,
+      "both": 1,
+      "none": 0
+    }
+  ]
+}
+```
 
-*조회 당시 게시글 본문의 멘션을 기준으로 분류했다. 같은 스레드에서 여러 번 부른 것은 합산하지 않았다. 사선으로 표시한 마지막 주는 9월 22일 22:01까지의 진행 중 집계다. 그래프를 누르면 크게 볼 수 있다.*
+*조회 당시 게시글 본문의 멘션을 기준으로 분류했다. 같은 스레드에서 여러 번 부른 것은 합산하지 않았다. 사선으로 표시한 마지막 주는 9월 22일 22:01까지의 진행 중 집계다. 표 보기에서 항목별 수치를 확인할 수 있다.*
 
 최근 기록에서도 9월 21–22일의 요청 18개 중 11개는 오딘만 태그했다. 이 구간은 아직 진행 중이어서 완료된 2주 단위의 전후 비교에는 섞지 않았다.
 
 다음으로 요청을 남긴 뒤 첫 답글이 달리기까지의 시간을 봤다. 24시간 안에 개발자나 오딘의 첫 텍스트 답글이 관측된 요청의 대기 중앙값은 **35.4분에서 3.4분**으로 짧아졌다. 관측된 요청은 도입 전 34개 중 29개, 도입 후 75개 중 70개였다.
 
-[![도입 전후 첫 담당자 텍스트 답글까지의 대기 중앙값 비교](/images/odin-ax/07-odin-first-reply-metrics.png)](https://dev.devy.dev/images/odin-ax/07-odin-first-reply-metrics.png)
+```chart
+{
+  "type": "bar",
+  "orientation": "horizontal",
+  "title": "첫 담당자 답글까지의 대기",
+  "description": "24시간 내 첫 텍스트 답글이 관측된 요청의 중앙값",
+  "categoryLabel": "비교 기간",
+  "unit": "분",
+  "decimals": 1,
+  "series": [
+    {
+      "key": "minutes",
+      "label": "대기 중앙값",
+      "color": "chart-1"
+    }
+  ],
+  "data": [
+    {
+      "label": "도입 전",
+      "minutes": 35.404,
+      "note": "8/10–23 · 24시간 내 관측 29/34건"
+    },
+    {
+      "label": "도입 후",
+      "minutes": 3.4438,
+      "note": "9/7–20 · 24시간 내 관측 70/75건"
+    }
+  ]
+}
+```
 
 *요청자 본인의 답글을 제외하고, 단순 접수 답변도 포함했다. 편집된 메시지도 최초 생성 시각을 사용한다. 24시간 내 답글이 관측되지 않은 요청은 중앙값에서 제외했으며, 분석 완료나 문제 해결까지 걸린 시간을 뜻하지 않는다.*
 

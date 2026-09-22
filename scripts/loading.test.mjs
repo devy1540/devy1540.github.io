@@ -55,3 +55,23 @@ test("prerendered article keeps its body while analytics has stable chart placeh
   assert.match(analytics, /차트를 불러오는 중/)
   assert.ok(!analytics.includes('id="S:'))
 })
+
+test("Markdown charts are server-rendered as data tables and their renderer stays out of the initial import graph", () => {
+  for (const entry of ["index.html", "src/pages/PostPage.tsx", "src/components/CodeBlock.tsx"]) {
+    assert.deepEqual([...staticImports(entry)].filter((key) => /MarkdownChartPlot|BenchmarkChart|_chart-/.test(key)), [])
+  }
+  assert.ok(manifest["src/components/MarkdownChartPlot.tsx"]?.isDynamicEntry)
+  assert.ok(manifest["src/components/BenchmarkChart.tsx"]?.isDynamicEntry)
+  const article = fs.readFileSync(new URL("../dist/posts/odin-ax-transformation/index.html", import.meta.url), "utf8")
+  const figures = [...article.matchAll(/<figure\b[^>]*data-markdown-chart[^>]*>([\s\S]*?)<\/figure>/g)]
+  assert.equal(figures.length, 2)
+  for (const figure of figures) {
+    assert.match(figure[1], /<table/)
+    assert.ok(!figure[1].includes("<pre"))
+    assert.ok(!figure[1].includes("<svg"))
+  }
+  assert.match(figures[0][1], /22:01 KST/)
+  assert.match(figures[1][1], /35\.4/)
+  assert.match(figures[1][1], /29\/34/)
+  assert.match(figures[1][1], /70\/75/)
+})
