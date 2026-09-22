@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.6](https://github.com/devy1540/devy1540.github.io/compare/v1.29.5...v1.29.6) (2026-09-22)
+
+
+### 문서
+
+* **blog:** 하네스 설명을 개발 경험과 선택 이유로 보강 ([#216](https://github.com/devy1540/devy1540.github.io/issues/216)) ([c40d0de](https://github.com/devy1540/devy1540.github.io/commit/c40d0de6dff7f4b480004b38d4a563d59ac28542))
+
 ## [1.29.5](https://github.com/devy1540/devy1540.github.io/compare/v1.29.4...v1.29.5) (2026-09-22)
 
 
