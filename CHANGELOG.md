@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.8](https://github.com/devy1540/devy1540.github.io/compare/v1.29.7...v1.29.8) (2026-09-22)
+
+
+### 스타일
+
+* **site:** 검증과 회고 중심 슬로건으로 변경 ([5e341f9](https://github.com/devy1540/devy1540.github.io/commit/5e341f9b277c241354d9cea619a878ce913c6e1b))
+
 ## [1.29.7](https://github.com/devy1540/devy1540.github.io/compare/v1.29.6...v1.29.7) (2026-09-22)
 
 
