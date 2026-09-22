@@ -10,6 +10,8 @@ import { getResumeData } from "@/data/resume-i18n"
 import { getPostBySlug } from "@/lib/posts"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { renderBold } from "@/lib/utils"
+import { StructuredData } from "@/components/StructuredData"
+import { projectStructuredData } from "@/lib/structured-data"
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -44,6 +46,7 @@ export function ProjectDetailPage() {
 
   return (
     <PageContainer>
+      <StructuredData data={projectStructuredData(project, language)} />
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
         <Link to={localizePath("/about", language)} viewTransition>
           <ArrowLeft className="mr-2 h-4 w-4" />

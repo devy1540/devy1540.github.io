@@ -46,6 +46,8 @@ import { analytics } from "@/lib/analytics"
 import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import type { Language } from "@/i18n"
+import { StructuredData } from "@/components/StructuredData"
+import { postStructuredData } from "@/lib/structured-data"
 
 const LazyCodeBlock = lazy(() =>
   import("@/components/CodeBlock").then((module) => ({ default: module.CodeBlock }))
@@ -177,6 +179,7 @@ export function PostPage() {
 
   return (
     <div className="post-page-layout relative">
+      {body.loaded && !isDraft && !isScheduled && <StructuredData data={postStructuredData(post)} />}
       <PageContainer as="article" variant="article" className="post-article-centered min-w-0">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
           <Link to={localizePath("/posts", language)} viewTransition>

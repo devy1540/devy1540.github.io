@@ -81,10 +81,6 @@ function withHead(templateHtml, route) {
     }
   }
 
-  if (route.jsonLd) {
-    html = html.replace("</head>", `    <script type="application/ld+json">${safeJsonLd(route.jsonLd)}</script>\n  </head>`)
-  }
-
   return html
 }
 

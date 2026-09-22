@@ -29,8 +29,14 @@ async function start() {
   }
 }
 
-void start().catch(() => {
-  createRoot(document.getElementById("root")!).render(
+void start().catch((error: unknown) => {
+  console.error("Failed to initialize the page", error)
+  const root = document.getElementById("root")!
+  // A failed client chunk must not replace a readable prerendered page with
+  // an indexable error screen. Its ordinary links still work without React.
+  if (root.hasChildNodes()) return
+
+  createRoot(root).render(
     <AppProviders initialLanguage={getRouteLanguage(window.location.pathname)}>
       <AppLoadError />
     </AppProviders>
