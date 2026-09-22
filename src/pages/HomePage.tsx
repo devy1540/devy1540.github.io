@@ -45,7 +45,7 @@ export function HomePage() {
       {/* Hero */}
       <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards">
         <h1 className="text-4xl font-bold tracking-tight mb-2">
-          {t.meta.siteName}
+          {t.home.title}
         </h1>
         <p className="text-muted-foreground">
           {t.home.subtitle}

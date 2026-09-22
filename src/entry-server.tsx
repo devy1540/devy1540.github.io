@@ -29,7 +29,7 @@ export interface PrerenderRoute {
 }
 
 const BASE_URL = "https://dev.devy.dev"
-const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260610`
+const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-4`
 
 function markdownToText(md: string) {
   return md
