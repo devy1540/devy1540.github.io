@@ -59,6 +59,7 @@ test("all published articles include visible content and matching React-owned st
     assert.equal(article["@type"], "BlogPosting", url)
     assert.equal(article.url, url)
     assert.equal(article.mainEntityOfPage["@id"], url)
+    assert.equal(article.image, html.match(/<meta property="og:image" content="([^"]+)"/)?.[1], `article and Open Graph image differ: ${url}`)
     assert.equal(article.inLanguage, new URL(url).pathname.startsWith("/en/") ? "en" : "ko-KR", url)
     assert.equal(article.headline, text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? ""), url)
     assert.ok(article.articleBody.trim().length > 0, `empty article schema: ${url}`)
