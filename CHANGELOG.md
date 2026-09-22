@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.7](https://github.com/devy1540/devy1540.github.io/compare/v1.29.6...v1.29.7) (2026-09-22)
+
+
+### 문서
+
+* **blog:** AX 전환에서 개발책임자의 역할 보강 ([#218](https://github.com/devy1540/devy1540.github.io/issues/218)) ([4bcb4bf](https://github.com/devy1540/devy1540.github.io/commit/4bcb4bf58bf21e09b0f1b43907f90c667a58f7c6))
+
 ## [1.29.6](https://github.com/devy1540/devy1540.github.io/compare/v1.29.5...v1.29.6) (2026-09-22)
 
 
