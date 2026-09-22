@@ -21,6 +21,7 @@ import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
 import { useLanguage } from "@/i18n"
 import { useAdminAuth } from "@/lib/admin/useAdminAuth"
 import { localizePath, stripLanguagePrefix } from "@/lib/i18n-routing"
+import { prefetchRoute } from "@/lib/route-modules"
 
 const navIcons = {
   home: Home,
@@ -43,7 +44,7 @@ export function AppSidebar() {
     e.preventDefault()
     setOpenMobile(false)
     setTimeout(() => {
-      document.startViewTransition(() => navigate(to))
+      navigate(to)
     }, 300)
   }
 
@@ -67,7 +68,6 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
         <NavLink
           to={localizePath("/", language)}
-          viewTransition
           className="text-lg font-bold tracking-tight hover:opacity-80 transition-opacity group-data-[collapsible=icon]:text-center"
         >
           <span className="group-data-[state=collapsed]:hidden">Devy</span>
@@ -86,9 +86,19 @@ export function AppSidebar() {
                     isActive={isActive(item.basePath)}
                     tooltip={item.label}
                   >
-                    <NavLink to={item.to} viewTransition onClick={(e) => handleMobileNav(e, item.to)}>
-                      <item.icon />
-                      <span>{item.label}</span>
+                    <NavLink
+                      to={item.to}
+                      onPointerEnter={() => { void prefetchRoute(item.to) }}
+                      onFocus={() => { void prefetchRoute(item.to) }}
+                      onTouchStart={() => { void prefetchRoute(item.to) }}
+                      onClick={(e) => handleMobileNav(e, item.to)}
+                    >
+                      {({ isPending }) => (
+                        <>
+                          <item.icon className={isPending ? "animate-pulse motion-reduce:animate-none" : undefined} />
+                          <span>{item.label}</span>
+                        </>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -96,7 +106,7 @@ export function AppSidebar() {
               {isAdmin && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="관리자">
-                    <NavLink to="/admin" viewTransition onClick={(e) => handleMobileNav(e, "/admin")}>
+                    <NavLink to="/admin" onClick={(e) => handleMobileNav(e, "/admin")}>
                       <ShieldCheck />
                       <span>관리자</span>
                     </NavLink>
@@ -132,7 +142,6 @@ export function AppSidebar() {
           {" | "}
           <NavLink
             to={localizePath("/privacy", language)}
-            viewTransition
             onClick={(e) => handleMobileNav(e, localizePath("/privacy", language))}
             className="hover:text-sidebar-foreground/80 transition-colors"
           >

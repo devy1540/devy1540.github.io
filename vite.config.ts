@@ -2,6 +2,7 @@ import path from "path"
 import fs from "fs"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import { postAssetsPlugin } from "./scripts/post-assets"
 import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 import { PROJECTS } from "./src/data/resume"
 
@@ -203,6 +204,7 @@ ${urls.join("\n")}
 
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
+    postAssetsPlugin(),
     react(),
     ...(!isSsrBuild ? [sitemapPlugin(), rssPlugin()] : []),
   ],
@@ -212,6 +214,7 @@ export default defineConfig(({ isSsrBuild }) => ({
     },
   },
   build: {
+    manifest: true,
     outDir: "dist",
     rollupOptions: {
       output: {

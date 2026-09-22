@@ -1,7 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { getPrerenderRoutes, render } from "../dist-ssr/entry-server.js"
+import { getPrerenderRoutes, render, preparePostContentForPrerender, getPostHydrationData } from "../dist-ssr/entry-server.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, "..")
@@ -95,11 +95,16 @@ function injectAppHtml(templateHtml, appHtml) {
   )
 }
 
+await preparePostContentForPrerender()
 const routes = getPrerenderRoutes()
 
 for (const route of routes) {
   const appHtml = await render(route.path)
-  const html = injectAppHtml(withHead(template, route), appHtml)
+  let html = injectAppHtml(withHead(template, route), appHtml)
+  const postData = getPostHydrationData(route.path)
+  if (postData) {
+    html = html.replace("</body>", `<script id="post-hydration-data" type="application/json">${safeJsonLd(postData)}</script>\n</body>`)
+  }
   const outPath = outputPathFor(route.path)
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true })

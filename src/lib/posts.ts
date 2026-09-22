@@ -1,56 +1,106 @@
 import type { Post, PostMeta } from "@/types/post"
 import type { Language } from "@/i18n"
 import { assertValidPostDates } from "@/lib/post-dates"
+import { parseFrontmatter } from "@/lib/post-frontmatter"
+import { getReadingMinutes } from "@/lib/reading-time"
+import { createRetryableLoader } from "@/lib/async-loader"
 
 const postFiles = import.meta.glob("/content/posts/*/*.md", {
-  query: "?raw",
+  query: "?post-meta",
   import: "default",
   eager: true,
 }) as Record<string, string>
 
-const supportedLanguages = ["ko", "en"] as const satisfies readonly Language[]
+const postBodies = import.meta.glob("/content/posts/*/*.md", {
+  query: "?post-body",
+  import: "default",
+}) as Record<string, () => Promise<string>>
 
-function parseFrontmatter(raw: string): {
-  data: Record<string, unknown>
-  content: string
-} {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
-  if (!match) return { data: {}, content: raw }
+const contentCache = new Map<string, string>()
+const contentLoaders = new Map<string, () => Promise<void>>()
+const contentErrors = new Set<string>()
+const listeners = new Set<() => void>()
+let version = 0
+function notify() { version++; listeners.forEach((listener) => listener()) }
+export function subscribePostData(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener) } }
+export function getPostDataVersion() { return version }
+export function getServerPostDataVersion() { return 0 }
+function postKey(slug: string, language: Language) { return `/content/posts/${language}/${slug}.md` }
+export function hasPostContent(slug: string, language: Language) { return contentCache.has(postKey(slug, language)) }
+export function hasPostContentError(slug: string, language: Language) { return contentErrors.has(postKey(slug, language)) }
 
-  const frontmatter = match[1]!
-  const content = match[2]!
-  const data: Record<string, unknown> = {}
-
-  for (const line of frontmatter.split("\n")) {
-    const colonIdx = line.indexOf(":")
-    if (colonIdx === -1) continue
-
-    const key = line.slice(0, colonIdx).trim()
-    let value: unknown = line.slice(colonIdx + 1).trim()
-
-    // Remove surrounding quotes
-    if (
-      typeof value === "string" &&
-      value.startsWith('"') &&
-      value.endsWith('"')
-    ) {
-      value = value.slice(1, -1)
-    }
-
-    // Parse YAML-style arrays: ["a", "b"]
-    if (typeof value === "string" && value.startsWith("[")) {
-      try {
-        value = JSON.parse(value.replace(/'/g, '"'))
-      } catch {
-        // keep as string
-      }
-    }
-
-    data[key] = value
-  }
-
-  return { data, content }
+export function getPostHydrationData(pathname: string) {
+  const match = pathname.match(/^\/(en\/)?posts\/([^/]+)\/?$/)
+  if (!match) return undefined
+  const path = postKey(decodeURIComponent(match[2]!), match[1] ? "en" : "ko")
+  const raw = contentCache.get(path)
+  return raw ? { path, raw } : undefined
 }
+
+export function seedPostHydrationData(data: unknown) {
+  if (!data || typeof data !== "object" || !("path" in data) || !("raw" in data)) return
+  if (typeof data.path !== "string" || typeof data.raw !== "string" || !postFiles[data.path]) return
+  contentCache.set(data.path, data.raw)
+}
+
+export function loadPostContent(slug: string, language: Language): Promise<void> {
+  const key = postKey(slug, language)
+  if (!postFiles[key] || contentCache.has(key)) return Promise.resolve()
+  let load = contentLoaders.get(key)
+  if (!load) {
+    const read = postBodies[key]
+    if (!read) return Promise.resolve()
+    load = createRetryableLoader(async () => {
+      const raw = await read()
+      contentCache.set(key, raw)
+      contentErrors.delete(key)
+      notify()
+    })
+    contentLoaders.set(key, load)
+  }
+  return load().catch((error: unknown) => { contentErrors.add(key); notify(); throw error })
+}
+
+export async function preloadPostForPath(pathname: string) {
+  const match = pathname.match(/^\/(en\/)?posts\/([^/]+)\/?$/)
+  if (!match) return
+  try {
+    await loadPostContent(decodeURIComponent(match[2]!), match[1] ? "en" : "ko")
+  } catch {
+    // Hydrate the metadata shell and let the article retry UI handle a failed body request.
+  }
+}
+
+export async function preparePostContentForPrerender() {
+  await Promise.all(Object.keys(postFiles).map((path) => {
+    const parsed = parsePostPath(path)
+    return parsed ? loadPostContent(parsed.slug, parsed.language) : Promise.resolve()
+  }))
+}
+
+type SearchStatus = "idle" | "loading" | "ready" | "error"
+const searchText: Partial<Record<Language, Record<string, string>>> = {}
+const searchStatus: Record<Language, SearchStatus> = { ko: "idle", en: "idle" }
+const searchLoaders = {
+  ko: createRetryableLoader(() => import("virtual:post-search/ko")),
+  en: createRetryableLoader(() => import("virtual:post-search/en")),
+}
+export function getSearchStatus(language: Language) { return searchStatus[language] }
+export function getPostSearchText(language: Language) { return searchText[language] }
+export async function loadPostSearch(language: Language) {
+  if (searchStatus[language] === "ready") return
+  searchStatus[language] = "loading"
+  notify()
+  try {
+    searchText[language] = (await searchLoaders[language]()).default
+    searchStatus[language] = "ready"
+  } catch {
+    searchStatus[language] = "error"
+  }
+  notify()
+}
+
+const supportedLanguages = ["ko", "en"] as const satisfies readonly Language[]
 
 function parsePostPath(filePath: string): { language: Language; slug: string } | undefined {
   const match = filePath.match(/^\/content\/posts\/(ko|en)\/(.+)\.md$/)
@@ -90,6 +140,7 @@ function parsePost(filePath: string, raw: string): Post {
     draft: data.draft === true || data.draft === "true",
     publishDate: (data.publishDate as string) || undefined,
     content,
+    readingMinutes: Number(data.readingMinutes) || getReadingMinutes(content),
   }
 
   assertValidPostDates(post)
@@ -116,12 +167,13 @@ function toPostMeta(post: Post): PostMeta {
     seriesOrder: post.seriesOrder,
     draft: post.draft,
     publishDate: post.publishDate,
+    readingMinutes: post.readingMinutes,
   }
 }
 
 function getAllParsedPosts(language: Language): Post[] {
   return Object.entries(postFiles)
-    .filter(([path]) => parsePostPath(path)?.language === language)
+    .filter(([path, raw]) => Boolean(raw) && parsePostPath(path)?.language === language)
     .map(([path, raw]) => parsePost(path, raw))
     .filter((post) => !import.meta.env.PROD || !isHidden(post))
 }
@@ -146,7 +198,7 @@ export function getPostsByTag(tag: string, language: Language = "ko"): PostMeta[
 
 export function getPostBySlug(slug: string, language: Language = "ko"): Post | undefined {
   const path = `/content/posts/${language}/${slug}.md`
-  const raw = postFiles[path]
+  const raw = contentCache.get(path) ?? postFiles[path]
   if (!raw) return undefined
   const post = parsePost(path, raw)
   if (import.meta.env.PROD && isHidden(post)) return undefined
@@ -157,7 +209,7 @@ export function getPostAvailableLanguages(slug: string): Language[] {
   return getAvailableLanguages(slug)
 }
 
-export function searchPosts(query: string, language: Language = "ko"): PostMeta[] {
+export function searchPosts(query: string, language: Language = "ko", texts = searchText[language]): PostMeta[] {
   if (!query.trim()) return getAllPosts(language)
   const q = query.toLowerCase()
   return getAllParsedPosts(language)
@@ -166,7 +218,7 @@ export function searchPosts(query: string, language: Language = "ko"): PostMeta[
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||
         post.tags.some((t) => t.toLowerCase().includes(q)) ||
-        post.content.toLowerCase().includes(q)
+        (texts?.[post.slug] ?? "").includes(q)
       )
     })
     .map(toPostMeta)
@@ -189,7 +241,7 @@ export function advancedSearch(options: {
         post.title.toLowerCase().includes(q) ||
         post.description.toLowerCase().includes(q) ||
         post.tags.some((t) => t.toLowerCase().includes(q)) ||
-        post.content.toLowerCase().includes(q)
+        (searchText[language]?.[post.slug] ?? "").includes(q)
       )) return false
       if (dateFrom && post.date < dateFrom) return false
       if (dateTo && post.date > dateTo) return false

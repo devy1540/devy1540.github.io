@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
+import { usePostSearchIndex } from "@/hooks/usePostData"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon, SearchIcon, XIcon } from "lucide-react"
 import { getAllPosts, searchPosts } from "@/lib/posts"
@@ -67,6 +68,8 @@ export function PostsPage() {
   const sortMode = toSortMode(searchParams.get("sort"))
   const searchScope = toSearchScope(searchParams.get("scope"))
 
+  const searchIndex = usePostSearchIndex(Boolean(query.trim()) && searchScope === "all", language)
+
   function updateParam(key: string, value: string, defaultValue = "") {
     const next = new URLSearchParams(searchParams)
     if (!value || value === defaultValue) {
@@ -106,7 +109,7 @@ export function PostsPage() {
     const trimmedQuery = query.trim()
     let result = trimmedQuery
       ? searchScope === "all"
-        ? searchPosts(trimmedQuery, language)
+        ? searchPosts(trimmedQuery, language, searchIndex.texts)
         : allPosts.filter((post) => (
           searchScope === "summary"
             ? postMatchesSummary(post, trimmedQuery)
@@ -130,7 +133,7 @@ export function PostsPage() {
       }
       return a.date > b.date ? -1 : 1
     })
-  }, [allPosts, getPostViews, language, query, searchScope, selectedTag, selectedYear, sortMode])
+  }, [allPosts, getPostViews, language, query, searchScope, searchIndex.texts, selectedTag, selectedYear, sortMode])
 
   const groupedByYear = useMemo(() => {
     const groups = new Map<string, PostMeta[]>()
@@ -261,7 +264,9 @@ export function PostsPage() {
         </p>
       </div>
 
-      {filteredPosts.length === 0 ? (
+      {searchIndex.loading && <p role="status" className="mb-4 text-sm text-muted-foreground">{t.common.searchLoading}</p>}
+      {searchIndex.error && <div role="alert" className="mb-4 flex flex-wrap items-center gap-3 text-sm"><p>{t.common.searchLoadError}</p><Button variant="outline" onClick={() => window.location.reload()}>{t.common.retry}</Button></div>}
+      {filteredPosts.length === 0 && (searchIndex.loading || searchIndex.error) ? null : filteredPosts.length === 0 ? (
         <PostList posts={filteredPosts} emptyMessage={t.posts.noResults} />
       ) : (
         [...groupedByYear.entries()].map(([year, yearPosts]) => (

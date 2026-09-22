@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { en, ko, type Language } from "@/i18n/translations"
+import { getPostAvailableLanguages } from "@/lib/posts"
 import { analytics } from "@/lib/analytics"
 import {
   detectSupportedBrowserLanguage,
@@ -13,15 +14,6 @@ import {
   stripLanguagePrefix,
 } from "@/lib/i18n-routing"
 
-const koreanPostFiles = import.meta.glob("/content/posts/ko/*.md", {
-  query: "?raw",
-  import: "default",
-})
-const englishPostFiles = import.meta.glob("/content/posts/en/*.md", {
-  query: "?raw",
-  import: "default",
-})
-const localizedPostFiles = { ko: koreanPostFiles, en: englishPostFiles } satisfies Record<Language, Record<string, () => Promise<unknown>>>
 const localizedStaticPaths = new Set(["/", "/posts", "/tags", "/series", "/analytics", "/about", "/privacy"])
 
 function sessionDismissKey(source: Language, target: Language) {
@@ -58,7 +50,7 @@ async function hasLanguageAlternative(pathname: string, targetLanguage: Language
   if (!postSlug) return false
 
   try {
-    return Boolean(localizedPostFiles[targetLanguage][`/content/posts/${targetLanguage}/${decodeURIComponent(postSlug)}.md`])
+    return getPostAvailableLanguages(decodeURIComponent(postSlug)).includes(targetLanguage)
   } catch {
     return false
   }

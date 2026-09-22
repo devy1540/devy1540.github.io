@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { SearchIcon } from "lucide-react"
+import { usePostSearchIndex } from "@/hooks/usePostData"
 import { searchPosts } from "@/lib/posts"
 import { analytics } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,7 @@ export function SearchCommand() {
   const navigate = useNavigate()
   const { language, t } = useLanguage()
 
+  const searchIndex = usePostSearchIndex(open && Boolean(query.trim()), language)
   const results = searchPosts(query, language)
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export function SearchCommand() {
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>{t.components.noResults}</CommandEmpty>
+          {searchIndex.loading ? <p role="status" className="p-3 text-sm text-muted-foreground">{t.common.searchLoading}</p> : searchIndex.error ? <div role="alert" className="p-3 text-sm"><p>{t.common.searchLoadError}</p><Button variant="outline" size="sm" onClick={() => window.location.reload()}>{t.common.retry}</Button></div> : <CommandEmpty>{t.components.noResults}</CommandEmpty>}
           <CommandGroup heading={t.components.postsGroup}>
             {results.map((post) => (
               <CommandItem
