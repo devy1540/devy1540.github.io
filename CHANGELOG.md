@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.5](https://github.com/devy1540/devy1540.github.io/compare/v1.29.4...v1.29.5) (2026-09-22)
+
+
+### 문서
+
+* **resume:** AX 전환 경력에 관련 블로그 글 연결 ([#214](https://github.com/devy1540/devy1540.github.io/issues/214)) ([b179acb](https://github.com/devy1540/devy1540.github.io/commit/b179acba9d11b34b9c8f7f9427a6f9231a9ab95b))
+
 ## [1.29.4](https://github.com/devy1540/devy1540.github.io/compare/v1.29.3...v1.29.4) (2026-09-22)
 
 
