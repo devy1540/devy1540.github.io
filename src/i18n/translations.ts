@@ -208,6 +208,7 @@ export interface Translations {
     last30Days: string
     tableOfContents: string
     copyCode: string
+    codeLoadError: string
     chartView: string
     chartTable: string
     chartViewLabel: string
@@ -444,6 +445,7 @@ export const ko: Translations = {
     last30Days: "최근 30일",
     tableOfContents: "목차",
     copyCode: "코드 복사",
+    codeLoadError: "코드·다이어그램을 불러오지 못했습니다. 원본 내용을 표시합니다.",
     chartView: "차트",
     chartTable: "표",
     chartViewLabel: "보기 방식",
@@ -680,6 +682,7 @@ export const en: Translations = {
     last30Days: "Last 30 Days",
     tableOfContents: "Table of Contents",
     copyCode: "Copy code",
+    codeLoadError: "Could not load the code or diagram viewer. Showing the original content.",
     chartView: "Chart",
     chartTable: "Table",
     chartViewLabel: "View",

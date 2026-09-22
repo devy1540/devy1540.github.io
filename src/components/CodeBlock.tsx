@@ -1,12 +1,26 @@
-import { lazy, Suspense, type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
+import { type ComponentPropsWithoutRef, useCallback, useEffect, useId, useRef, useState } from "react"
 import { Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 import { useTheme } from "@/hooks/useTheme"
 import mermaid from "mermaid"
 import { readMarkdownCode } from "@/lib/markdown-code"
+import { createRetryableLoader } from "@/lib/async-loader"
+import { useDeferredModule } from "@/hooks/useDeferredModule"
 
-const BenchmarkChart = lazy(() => import("@/components/BenchmarkChart").then((module) => ({ default: module.BenchmarkChart })))
+const loadBenchmark = createRetryableLoader(() => import("@/components/BenchmarkChart"))
+
+function DeferredBenchmark({ code, children, ...props }: ComponentPropsWithoutRef<"pre"> & { code: string }) {
+  const { value: module, error, retry } = useDeferredModule(loadBenchmark)
+  const t = useT()
+  if (module) return <module.BenchmarkChart data={code} />
+  return <>
+    {error && <div className="not-prose flex flex-wrap items-center gap-3 text-sm text-muted-foreground" role="alert">
+      <p>{t.common.chartLoadError}</p><Button variant="outline" size="sm" onClick={retry}>{t.common.retry}</Button>
+    </div>}
+    <pre {...props}>{children}</pre>
+  </>
+}
 
 function getCssHex(varName: string): string {
   const temp = document.createElement("div")
@@ -311,7 +325,7 @@ export function CodeBlock({ children, ...props }: ComponentPropsWithoutRef<"pre"
   }
 
   if (language === "benchmark") {
-    return <Suspense fallback={<pre {...props}>{children}</pre>}><BenchmarkChart data={code} /></Suspense>
+    return <DeferredBenchmark code={code} {...props}>{children}</DeferredBenchmark>
   }
 
   return <ShikiBlock code={code} language={language} preProps={props}>{children}</ShikiBlock>

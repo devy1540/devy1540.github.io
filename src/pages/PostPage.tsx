@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentPropsWithoutRef, useEffect, useSyncExternalStore } from "react"
+import { type ComponentPropsWithoutRef, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -50,29 +50,16 @@ import { StructuredData } from "@/components/StructuredData"
 import { postStructuredData } from "@/lib/structured-data"
 import { MarkdownChart } from "@/components/MarkdownChart"
 import { readMarkdownCode } from "@/lib/markdown-code"
+import { createRetryableLoader } from "@/lib/async-loader"
+import { useDeferredModule } from "@/hooks/useDeferredModule"
 
-const LazyCodeBlock = lazy(() =>
-  import("@/components/CodeBlock").then((module) => ({ default: module.CodeBlock }))
-)
+const loadCodeBlock = createRetryableLoader(() => import("@/components/CodeBlock"))
 
 function localizeMarkdownLink(href: string, language: Language) {
   if (/^\/(posts|tags|series|search|analytics|about)(\/|[?#]|$)/.test(href)) {
     return localizePath(href, language)
   }
   return href
-}
-
-function subscribeHydration(callback: () => void) {
-  const timer = window.setTimeout(callback, 0)
-  return () => window.clearTimeout(timer)
-}
-
-function getClientSnapshot() {
-  return true
-}
-
-function getServerSnapshot() {
-  return false
 }
 
 function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
@@ -93,16 +80,17 @@ function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
 }
 
 function HydratedCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
-  const isClient = useSyncExternalStore(subscribeHydration, getClientSnapshot, getServerSnapshot)
-
-  if (!isClient) {
-    return <CodeBlockFallback {...props} />
-  }
-
+  const { value: module, error, retry } = useDeferredModule(loadCodeBlock)
+  const { t } = useLanguage()
+  if (module) return <module.CodeBlock {...props} />
   return (
-    <Suspense fallback={<CodeBlockFallback {...props} />}>
-      <LazyCodeBlock {...props} />
-    </Suspense>
+    <>
+      {error && <div className="not-prose flex flex-wrap items-center gap-3 text-sm text-muted-foreground" role="alert">
+        <p>{t.components.codeLoadError}</p>
+        <Button variant="outline" size="sm" onClick={retry}>{t.common.retry}</Button>
+      </div>}
+      <CodeBlockFallback {...props} />
+    </>
   )
 }
 
