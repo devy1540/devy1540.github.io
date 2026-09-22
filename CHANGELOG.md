@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.1](https://github.com/devy1540/devy1540.github.io/compare/v1.30.0...v1.30.1) (2026-09-22)
+
+
+### 버그 수정
+
+* **blog:** 코드 모듈 로딩 실패 시 본문 보존 ([#228](https://github.com/devy1540/devy1540.github.io/issues/228)) ([92198b4](https://github.com/devy1540/devy1540.github.io/commit/92198b41a22adb048e4b6ac9fc53034f64c3b31f))
+
 ## [1.30.0](https://github.com/devy1540/devy1540.github.io/compare/v1.29.10...v1.30.0) (2026-09-22)
 
 
