@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.3](https://github.com/devy1540/devy1540.github.io/compare/v1.29.2...v1.29.3) (2026-09-22)
+
+
+### 성능 개선
+
+* **navigation:** 화면 전환 대기와 초기 로딩 개선 ([#210](https://github.com/devy1540/devy1540.github.io/issues/210)) ([8991837](https://github.com/devy1540/devy1540.github.io/commit/8991837d4bf0d77a9fe06c3b9a8b1d71a639cba9))
+
 ## [1.29.2](https://github.com/devy1540/devy1540.github.io/compare/v1.29.1...v1.29.2) (2026-09-22)
 
 
