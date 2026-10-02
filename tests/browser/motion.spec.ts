@@ -4,6 +4,7 @@ interface MotionRecord {
   path: string
   duration: number
   easing: string
+  keyframeOpacities: number[]
   samples: number[]
   finished: boolean
 }
@@ -32,11 +33,14 @@ test.beforeEach(async ({ page }) => {
       const target = event.target
       if (!(target instanceof HTMLElement) || !target.matches(".page-transition")) return
       const style = getComputedStyle(target)
+      const animation = target.getAnimations().find(animation => animation instanceof CSSAnimation && animation.animationName === event.animationName)
+      const keyframes = animation?.effect instanceof KeyframeEffect ? animation.effect.getKeyframes() : []
       const record: MotionRecord = {
         path: location.pathname,
         duration: parseFloat(style.animationDuration),
         easing: style.animationTimingFunction,
-        samples: [],
+        keyframeOpacities: keyframes.map(frame => Number(frame.opacity)),
+        samples: [Number(style.opacity)],
         finished: false,
       }
       window.motionRecords.push(record)
@@ -60,8 +64,8 @@ async function expectFade(page: Page, navigate: () => Promise<unknown>) {
   const record = await page.evaluate(count => window.motionRecords.slice(count).at(-1)!, before)
   expect(record.duration).toBeGreaterThan(0)
   expect(record.duration).toBeLessThanOrEqual(0.25)
-  expect(record.samples.length).toBeGreaterThan(2)
-  expect(Math.min(...record.samples)).toBeLessThan(0.8)
+  expect(record.keyframeOpacities).toEqual([0, 1])
+  expect(record.samples.some(opacity => opacity > 0 && opacity < 1)).toBe(true)
   expect(record.samples.at(-1)).toBe(1)
   return record
 }
