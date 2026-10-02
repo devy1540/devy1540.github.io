@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.0](https://github.com/devy1540/devy1540.github.io/compare/v1.30.1...v1.31.0) (2026-10-02)
+
+
+### 새로운 기능
+
+* **blog:** 읽기 경험과 렌더링 성능 개선 ([#230](https://github.com/devy1540/devy1540.github.io/issues/230)) ([0e56d1b](https://github.com/devy1540/devy1540.github.io/commit/0e56d1b98545f380af2c8909575890ea0838abca))
+
 ## [1.30.1](https://github.com/devy1540/devy1540.github.io/compare/v1.30.0...v1.30.1) (2026-09-22)
 
 
