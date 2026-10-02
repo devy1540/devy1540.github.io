@@ -4,6 +4,8 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
+import rehypeSanitize from "rehype-sanitize"
+import { PostImage } from "@/components/PostImage"
 import type { Root, Element, Text } from "hast"
 
 /** rehype-raw가 code 블록 안의 <br> 등을 HTML 엘리먼트로 변환하는 것을 원래 텍스트로 복원 */
@@ -52,6 +54,8 @@ import { MarkdownChart } from "@/components/MarkdownChart"
 import { readMarkdownCode } from "@/lib/markdown-code"
 import { createRetryableLoader } from "@/lib/async-loader"
 import { useDeferredModule } from "@/hooks/useDeferredModule"
+import { useNearViewport } from "@/hooks/useNearViewport"
+import { PlainCodeBlock } from "@/components/CodeBlockFrame"
 
 const loadCodeBlock = createRetryableLoader(() => import("@/components/CodeBlock"))
 
@@ -63,14 +67,7 @@ function localizeMarkdownLink(href: string, language: Language) {
 }
 
 function CodeBlockFallback({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
-  return (
-    <pre
-      {...props}
-      className="not-prose my-5 overflow-x-auto rounded-lg border border-border bg-secondary p-4 text-sm text-secondary-foreground"
-    >
-      {children}
-    </pre>
-  )
+  return <PlainCodeBlock {...props}>{children}</PlainCodeBlock>
 }
 
 function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
@@ -80,17 +77,19 @@ function MarkdownCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
 }
 
 function HydratedCodeBlock(props: ComponentPropsWithoutRef<"pre">) {
-  const { value: module, error, retry } = useDeferredModule(loadCodeBlock)
+  const { ref, nearby } = useNearViewport()
+  const { language } = readMarkdownCode(props.children)
+  const { value: module, error, retry } = useDeferredModule(loadCodeBlock, nearby || language === "mermaid")
   const { t } = useLanguage()
-  if (module) return <module.CodeBlock {...props} />
+  if (module) return <div ref={ref}><module.CodeBlock {...props} /></div>
   return (
-    <>
+    <div ref={ref}>
       {error && <div className="not-prose flex flex-wrap items-center gap-3 text-sm text-muted-foreground" role="alert">
         <p>{t.components.codeLoadError}</p>
         <Button variant="outline" size="sm" onClick={retry}>{t.common.retry}</Button>
       </div>}
       <CodeBlockFallback {...props} />
-    </>
+    </div>
   )
 }
 
@@ -131,7 +130,7 @@ export function PostPage() {
     return (
       <PageContainer className="py-16">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-          <Link to={localizePath("/posts", language)} viewTransition>
+          <Link to={localizePath("/posts", language)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.post.backToList}
           </Link>
@@ -149,7 +148,7 @@ export function PostPage() {
               </p>
             </div>
             <Button asChild size="sm">
-              <Link to={postPath(slug, "ko")} viewTransition>
+              <Link to={postPath(slug, "ko")}>
                 {t.post.readKoreanPost}
               </Link>
             </Button>
@@ -164,7 +163,7 @@ export function PostPage() {
       <PageContainer className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
-          <Link to={localizePath("/", language)} viewTransition>
+          <Link to={localizePath("/", language)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.post.backToHome}
           </Link>
@@ -178,7 +177,7 @@ export function PostPage() {
       {body.loaded && !isDraft && !isScheduled && <StructuredData data={postStructuredData(post)} />}
       <PageContainer as="article" variant="article" className="post-article-centered min-w-0">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-          <Link to={localizePath("/posts", language)} viewTransition>
+          <Link to={localizePath("/posts", language)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.post.backToList}
           </Link>
@@ -213,7 +212,7 @@ export function PostPage() {
             <span aria-hidden>·</span>
             <span className="flex items-center gap-1">
               <Eye className="size-3" />
-              <span suppressHydrationWarning>{(views ?? 0).toLocaleString()}</span> {t.post.views}
+              <span>{views == null ? "—" : views.toLocaleString()}</span> {t.post.views}
             </span>
           </div>
           {post.tags.length > 0 && (
@@ -240,7 +239,6 @@ export function PostPage() {
                 >
                   <Link
                     to={postPath(post.slug, availableLanguage)}
-                    viewTransition
                     onClick={() => setLanguage(availableLanguage)}
                   >
                     {availableLanguage === "ko" ? t.post.languageKo : t.post.languageEn}
@@ -265,12 +263,14 @@ export function PostPage() {
             </div>
           ) : <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSlug]}
+            rehypePlugins={[rehypeRaw, rehypeCodeBrFix, rehypeSanitize, rehypeSlug]}
             components={{
               pre: MarkdownCodeBlock,
+              img: PostImage,
               a: ({ href, children, ...props }) => {
-                if (href?.startsWith("/")) {
-                  return <Link to={localizeMarkdownLink(href, language)} viewTransition {...props}>{children}</Link>
+                if (href?.startsWith("#")) return <Link to={href} preventScrollReset {...props}>{children}</Link>
+                if (href?.startsWith("/") && !href.startsWith("//")) {
+                  return <Link to={localizeMarkdownLink(href, language)} {...props}>{children}</Link>
                 }
                 return <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
               },
@@ -286,7 +286,7 @@ export function PostPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {prev ? (
                 <Link
-                  to={postPath(prev.slug, prev.language)} viewTransition
+                  to={postPath(prev.slug, prev.language)}
                   className="group flex flex-col gap-1 min-w-0 overflow-hidden"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -302,7 +302,7 @@ export function PostPage() {
               )}
               {next ? (
                 <Link
-                  to={postPath(next.slug, next.language)} viewTransition
+                  to={postPath(next.slug, next.language)}
                   className="group flex flex-col items-end gap-1 min-w-0 overflow-hidden"
                 >
                   <span className="text-xs text-muted-foreground flex items-center gap-1">

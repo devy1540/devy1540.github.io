@@ -8,19 +8,19 @@ import { AppLoadError } from "./pages/ErrorPage"
 import { getRouteLanguage } from "./lib/i18n-routing"
 
 async function start() {
+  const root = document.getElementById("root")!
+  const fallback404 = root.dataset.prerenderRoute === "/404/"
   const postData = document.getElementById("post-hydration-data")?.textContent
   if (postData) {
     try { seedPostHydrationData(JSON.parse(postData)) } catch { /* Fall back to the article loader. */ }
   }
-  const resolvedComponents = await preloadRouteComponents(window.location.pathname)
-  const routes = createRoutes(resolvedComponents)
+  const resolvedComponents = fallback404 ? {} : await preloadRouteComponents(window.location.pathname)
+  const routes = createRoutes(resolvedComponents, fallback404)
   const app = (
-    <AppProviders>
+    <AppProviders initialLanguage={fallback404 ? "ko" : undefined}>
       <App routes={routes} />
     </AppProviders>
   )
-
-  const root = document.getElementById("root")!
 
   if (root.hasChildNodes()) {
     hydrateRoot(root, app)

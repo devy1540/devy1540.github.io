@@ -47,7 +47,6 @@ export function SeriesNavigator({ series, currentSlug, language }: SeriesNavigat
               ) : (
                 <Link
                   to={postPath(post.slug, language)}
-                  viewTransition
                   onClick={() => analytics.clickSeriesNav(series, post.slug)}
                   className="flex items-center gap-2 text-sm py-1 px-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
                 >

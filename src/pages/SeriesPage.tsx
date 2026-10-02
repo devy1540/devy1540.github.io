@@ -1,5 +1,6 @@
+import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
 import { useMemo } from "react"
-import { Link, useSearchParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { SearchIcon, XIcon } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts, getAllSeries, type SeriesInfo } from "@/lib/posts"
@@ -79,7 +80,7 @@ function getGroupScore(series: SeriesInfo, group: SeriesGroup) {
 export function SeriesPage() {
   const { language, t } = useLanguage()
 
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useHydratedSearchParams()
   const selectedSeriesName = searchParams.get("name") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toSeriesSort(searchParams.get("sort"))
@@ -180,6 +181,7 @@ export function SeriesPage() {
           <Input
             value={query}
             onChange={(event) => updateParam("q", event.target.value)}
+            aria-label={t.series.searchPlaceholder}
             placeholder={t.series.searchPlaceholder}
             className="pl-9"
           />
@@ -234,7 +236,6 @@ export function SeriesPage() {
                     <Link
                       key={series.name}
                       to={seriesPathFor(series.name)}
-                      viewTransition
                       className="grid min-h-20 grid-cols-1 gap-1 border-b py-4 transition-colors hover:bg-accent/40 sm:grid-cols-[minmax(0,1fr)_5rem_7rem] sm:items-center sm:gap-4 sm:px-0"
                     >
                       <span className="min-w-0">
@@ -279,7 +280,6 @@ export function SeriesPage() {
                           <Link
                             key={series.name}
                             to={seriesPathFor(series.name)}
-                            viewTransition
                             className="flex h-8 items-center justify-between gap-3 border-b text-sm transition-colors hover:bg-accent/40"
                           >
                             <span className="truncate">{series.name}</span>
@@ -314,7 +314,6 @@ export function SeriesPage() {
                     <Link
                       key={`${post.language}:${post.slug}`}
                       to={postPath(post.slug, post.language)}
-                      viewTransition
                       className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-2.5 border-b py-4 transition-colors hover:bg-accent/40"
                     >
                       <span className="flex size-6 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
@@ -340,7 +339,7 @@ export function SeriesPage() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {activeSeries.tags.slice(0, 8).map((tag) => (
-                      <Link key={tag} to={localizePath(`/posts?tag=${encodeURIComponent(tag)}`, language)} viewTransition>
+                      <Link key={tag} to={localizePath(`/posts?tag=${encodeURIComponent(tag)}`, language)}>
                         <Badge variant="secondary" className="rounded-full">
                           {tag}
                         </Badge>
@@ -352,7 +351,7 @@ export function SeriesPage() {
 
               {activeSeries.posts[0] && (
                 <Button asChild variant="outline" className="w-full">
-                  <Link to={postPath(activeSeries.posts[0].slug, activeSeries.posts[0].language)} viewTransition>
+                  <Link to={postPath(activeSeries.posts[0].slug, activeSeries.posts[0].language)}>
                     {t.series.startReading}
                   </Link>
                 </Button>

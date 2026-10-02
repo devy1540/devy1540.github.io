@@ -1,5 +1,5 @@
+import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
 import { useMemo, useState } from "react"
-import { useSearchParams } from "react-router-dom"
 import { usePostSearchIndex } from "@/hooks/usePostData"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon, SearchIcon, XIcon } from "lucide-react"
@@ -53,7 +53,7 @@ function postMatchesTags(post: PostMeta, query: string) {
 
 export function PostsPage() {
   const { language, t } = useLanguage()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useHydratedSearchParams()
   useMetaTags({
     title: t.common.posts,
     description: t.posts.description,
@@ -181,6 +181,7 @@ export function PostsPage() {
           <Input
             value={query}
             onChange={(event) => updateParam("q", event.target.value)}
+            aria-label={t.posts.searchPlaceholder}
             placeholder={t.posts.searchPlaceholder}
             className="pl-9"
           />

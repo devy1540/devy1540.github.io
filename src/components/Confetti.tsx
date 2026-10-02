@@ -30,33 +30,8 @@ export function Confetti() {
   const bufferRef = useRef("")
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      const target = e.target as HTMLElement
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return
-
-      clearTimeout(timerRef.current)
-      bufferRef.current += e.code + ","
-
-      if (bufferRef.current.split(",").filter(Boolean).slice(-SECRET_SEQUENCE.length).join(",") === SECRET_SEQUENCE.join(",")) {
-        bufferRef.current = ""
-        fireConfetti()
-        return
-      }
-
-      timerRef.current = setTimeout(() => {
-        bufferRef.current = ""
-      }, SEQUENCE_TIMEOUT)
-    }
-
-    document.addEventListener("keydown", onKeyDown)
-    return () => {
-      document.removeEventListener("keydown", onKeyDown)
-      clearTimeout(timerRef.current)
-    }
-  }, [])
-
   function fireConfetti() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -130,6 +105,33 @@ export function Confetti() {
 
     requestAnimationFrame(animate)
   }
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const target = e.target as HTMLElement
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return
+
+      clearTimeout(timerRef.current)
+      bufferRef.current += e.code + ","
+
+      if (bufferRef.current.split(",").filter(Boolean).slice(-SECRET_SEQUENCE.length).join(",") === SECRET_SEQUENCE.join(",")) {
+        bufferRef.current = ""
+        fireConfetti()
+        return
+      }
+
+      timerRef.current = setTimeout(() => {
+        bufferRef.current = ""
+      }, SEQUENCE_TIMEOUT)
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      clearTimeout(timerRef.current)
+    }
+  }, [])
+
 
   return (
     <canvas

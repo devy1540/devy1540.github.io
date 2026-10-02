@@ -84,10 +84,10 @@ function withHead(templateHtml, route) {
   return html
 }
 
-function injectAppHtml(templateHtml, appHtml) {
+function injectAppHtml(templateHtml, appHtml, routePath) {
   return templateHtml.replace(
     /<div id="root"([^>]*)><\/div>/,
-    `<div id="root"$1>${appHtml}</div>`
+    `<div id="root"$1 data-prerender-route="${escapeAttr(routePath)}">${appHtml}</div>`
   )
 }
 
@@ -96,7 +96,7 @@ const routes = getPrerenderRoutes()
 
 for (const route of routes) {
   const appHtml = await render(route.path)
-  let html = injectAppHtml(withHead(template, route), appHtml)
+  let html = injectAppHtml(withHead(template, route), appHtml, route.path)
   const postData = getPostHydrationData(route.path)
   if (postData) {
     html = html.replace("</body>", `<script id="post-hydration-data" type="application/json">${safeJsonLd(postData)}</script>\n</body>`)
@@ -113,6 +113,6 @@ const notFoundRoute = {
   description: "요청한 페이지를 찾을 수 없습니다.",
   noindex: true,
 }
-const notFoundHtml = injectAppHtml(withHead(template, notFoundRoute), await render(notFoundRoute.path))
+const notFoundHtml = injectAppHtml(withHead(template, notFoundRoute), await render(notFoundRoute.path), notFoundRoute.path)
 fs.writeFileSync(path.resolve(distDir, "404.html"), notFoundHtml)
 console.log(`  [ssg] Hydrated prerender generated ${routes.length} pages`)

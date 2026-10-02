@@ -129,21 +129,20 @@ function CompanySection({
               <div className="border-t border-dashed px-3 py-2 space-y-1.5">
                 <Link
                   to={localizePath(`/about/projects/${project.slug}`, language)}
-                  viewTransition
                   className="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                 >
                   <ArrowRight className="h-3.5 w-3.5 shrink-0" />
                   <span>{t.about.projectDetails}</span>
                 </Link>
                 {relatedPostData.map((rp) => (
-                  <a
+                  <Link
                     key={rp!.slug}
-                    href={postPath(rp!.slug, language)}
+                    to={postPath(rp!.slug, language)}
                     className="flex items-center gap-2 text-sm text-primary hover:underline"
                   >
                     <FileText className="h-3.5 w-3.5 shrink-0" />
                     <span>{rp!.title}</span>
-                  </a>
+                  </Link>
                 ))}
                 {relatedLinks.map((link) => (
                   <a

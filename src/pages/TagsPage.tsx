@@ -1,5 +1,6 @@
+import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
 import { useMemo } from "react"
-import { Link, useSearchParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { SearchIcon, XIcon } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts } from "@/lib/posts"
@@ -106,7 +107,7 @@ export function TagsPage() {
   const { language, t } = useLanguage()
 
   const posts = useMemo(() => getAllPosts(language), [language])
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useHydratedSearchParams()
   const selectedTag = searchParams.get("tag") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toTagSort(searchParams.get("sort"))
@@ -227,6 +228,7 @@ export function TagsPage() {
           <Input
             value={query}
             onChange={(event) => updateParam("q", event.target.value)}
+            aria-label={t.tags.searchPlaceholder}
             placeholder={t.tags.searchPlaceholder}
             className="pl-9"
           />
@@ -281,7 +283,6 @@ export function TagsPage() {
                     <Link
                       key={stats.tag}
                       to={tagsPathFor(stats.tag)}
-                      viewTransition
                       className="grid min-h-14 grid-cols-1 gap-1 border-b py-3 transition-colors hover:bg-accent/40 sm:grid-cols-[minmax(0,1fr)_5rem_7rem] sm:items-center sm:gap-4 sm:px-0"
                     >
                       <span className="flex min-w-0 items-center gap-2 font-medium">
@@ -321,7 +322,6 @@ export function TagsPage() {
                           <Link
                             key={stats.tag}
                             to={tagsPathFor(stats.tag)}
-                            viewTransition
                             className="flex h-8 items-center justify-between gap-3 border-b text-sm transition-colors hover:bg-accent/40"
                           >
                             <span className="truncate">{stats.tag}</span>
@@ -354,7 +354,7 @@ export function TagsPage() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {relatedTags.map(({ tag }) => (
-                      <Link key={tag} to={tagsPathFor(tag)} viewTransition>
+                      <Link key={tag} to={tagsPathFor(tag)}>
                         <Badge variant="secondary" className="rounded-full">
                           {tag}
                         </Badge>
@@ -373,7 +373,6 @@ export function TagsPage() {
                     <Link
                       key={`${post.language}:${post.slug}`}
                       to={postPath(post.slug, post.language)}
-                      viewTransition
                       className="block border-b py-4 transition-colors hover:bg-accent/40"
                     >
                       <time dateTime={post.date} className="text-xs text-muted-foreground">

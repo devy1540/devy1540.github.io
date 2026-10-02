@@ -13,7 +13,7 @@ function pushDataLayer(eventName: string, params?: AnalyticsParams) {
 }
 
 function trackEvent(eventName: string, params?: AnalyticsParams) {
-  if (import.meta.env.DEV) return
+  if (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) return
 
   if (window.gtag) {
     window.gtag("event", eventName, params)

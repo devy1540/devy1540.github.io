@@ -54,6 +54,10 @@ export function DailyVisitsChart({ totalViews, daily, isLoading, rangeDays = 30 
     )
   }
 
+  if (totalViews === null || daily.length === 0) {
+    return <div className="flex min-h-40 items-center justify-center rounded-lg border bg-card p-4 text-sm text-muted-foreground" role="status">{t.analytics.noData}</div>
+  }
+
   return (
     <div className="rounded-lg border bg-card p-4">
       <div className="flex items-start justify-between mb-4">

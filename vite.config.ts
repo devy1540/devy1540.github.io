@@ -5,6 +5,8 @@ import react from "@vitejs/plugin-react"
 import { postAssetsPlugin } from "./scripts/post-assets"
 import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 import { PROJECTS } from "./src/data/resume"
+import { imageAssetsPlugin } from "./scripts/image-assets"
+import { previewPagesPlugin } from "./scripts/preview-pages"
 
 const BASE_URL = "https://dev.devy.dev"
 const LANGUAGES = ["ko", "en"] as const
@@ -205,6 +207,8 @@ ${urls.join("\n")}
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     postAssetsPlugin(),
+    imageAssetsPlugin(),
+    previewPagesPlugin(),
     react(),
     ...(!isSsrBuild ? [sitemapPlugin(), rssPlugin()] : []),
   ],
@@ -219,6 +223,9 @@ export default defineConfig(({ isSsrBuild }) => ({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (/[/\\](render-queue|render-cache|code-languages)\.ts$/.test(id)) {
+            return "rendering-runtime"
+          }
           if (/[/\\]node_modules[/\\](react|react-dom|scheduler)[/\\]/.test(id)) {
             return "react"
           }

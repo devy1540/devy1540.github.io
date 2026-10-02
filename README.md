@@ -179,3 +179,28 @@ publishDate: "2025-12-01"   # optional, 예약 발행
 ## 배포
 
 GitHub Pages로 배포하며, 커스텀 도메인은 `public/CNAME`의 `dev.devy.dev`를 사용합니다. 빌드 시 `rss.xml`, `sitemap.xml`, route별 prerendered HTML이 함께 생성됩니다.
+
+## 읽기 화면과 검증
+
+- 데스크톱의 접기·검색은 사이드바에 모으고, 모바일에만 48px 상단 바를 표시합니다. 검색 창은 하나로 공유하며 `⌘K`와 `Ctrl+K`를 지원합니다.
+
+- 본문 최대 폭은 800px이며, 1280px 이상에서는 옆 목차를 사용합니다. 작은 화면에서는 접는 목차를 제공합니다.
+- 절 링크와 목차 선택은 URL hash에 반영되며, 뒤로가기 시 읽던 위치를 복원합니다.
+- 공개 이미지 원본은 유지하고, Vite 이미지 플러그인이 640/1280/1600px WebP를 생성합니다. 본문 이미지는 크기를 예약하고 지연 로딩합니다. 개발 서버에서도 같은 압축본을 제공합니다.
+- 검색 필터는 hydration이 끝난 뒤 URL에서 읽습니다. 미리보기의 없는 경로는 GitHub Pages처럼 `404.html`을 HTTP 404로 응답합니다.
+- 조회수는 메모리와 sessionStorage에 15분 동안 캐시합니다. 저장소 차단, 손상된 캐시, API 오류에 대비하며 갱신 실패 시 마지막 정상 데이터를 유지합니다.
+- 일별 조회수 비교는 KST 달력 날짜를 사용합니다. `apps-script/Code.js`는 60일 조회 및 명시적 실패 응답으로 변경했습니다. 외부 Apps Script 웹 앱에는 이 소스를 별도로 반영해야 합니다.
+- 예약 글은 UTC 날짜를 기준으로 필터링하고, 매일 KST 09:10의 배포 워크플로에서 다시 빌드합니다.
+
+```bash
+pnpm type-check
+pnpm lint
+pnpm build
+node --test scripts/*.test.mjs
+pnpm check:internal-links
+pnpm exec playwright install chromium
+pnpm test:browser
+pnpm preview --host 127.0.0.1 --port 4173
+```
+
+브라우저 검사는 검색 URL, 404 hydration, 절 링크, 읽던 위치 복원, 모바일 목차, 이미지 크기 예약, 키보드 다이어그램 확대와 저장소 차단을 확인합니다. CI에서도 실행하며, ESLint 경고와 High 이상 의존성 취약점을 차단합니다. shadcn의 정적 variant 및 sidebar hook export는 Fast Refresh 검사 예외로 유지합니다.

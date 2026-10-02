@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+declare module "virtual:post-images" {
+  const images: Record<string, { src: string; width: number; height: number; srcSet: string }>
+  export default images
+}
+
 declare module "virtual:post-search/ko" {
   const texts: Record<string, string>
   export default texts

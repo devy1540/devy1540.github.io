@@ -17,7 +17,7 @@ export function NotFoundPage() {
         {t.notFound.title}
       </h1>
       <Button asChild>
-        <Link to={localizePath("/", language)} viewTransition>{t.common.goHome}</Link>
+        <Link to={localizePath("/", language)}>{t.common.goHome}</Link>
       </Button>
     </PageContainer>
   )

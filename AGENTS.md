@@ -62,7 +62,7 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 │   │   └── ui/                   # shadcn/ui 컴포넌트
 │   ├── hooks/
 │   │   ├── useTheme.tsx      # 테마 Context (light/dark/system)
-│   │   ├── usePageViews.ts   # GA 조회수 (Google Apps Script API, 1시간 캐시)
+│   │   ├── usePageViews.ts   # GA 조회수 (Google Apps Script API, 15분 캐시)
 │   │   ├── useMetaTags.ts    # SEO 메타태그 동적 설정
 │   │   └── use-mobile.ts     # 모바일 감지
 │   ├── i18n/
@@ -102,6 +102,7 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 ---
 title: "제목"
 date: "2025-01-01"
+updated: "2025-01-01"
 description: "설명"
 tags: ["tag1", "tag2"]
 series: "시리즈명"       # optional
@@ -145,7 +146,7 @@ publishDate: "2025-12-01" # optional - 예약 발행
 
 ### Page Views
 - Google Apps Script API로 GA 데이터 조회
-- `usePageViews()` 훅: sessionStorage 캐시 (TTL 1시간)
+- `usePageViews()` 훅: sessionStorage 캐시 (TTL 15분)
 - 메모리 + sessionStorage 이중 캐시
 
 ### About Page Data
@@ -174,3 +175,19 @@ pnpm test:loading # 빌드 후 로딩 분리, 재시도, SSG 회귀 검사
 - 경로 alias: `@/` → `src/`
 - UI 컴포넌트: `src/components/ui/` (shadcn/ui, 직접 수정 가능)
 - Vite 빌드 시 manual chunks: react, shiki, router, ui 분리
+
+### Reader and browser regression checks
+- `scripts/image-assets.ts`에서 본문 이미지의 WebP와 크기 메타데이터를 생성합니다. 원본 파일은 유지합니다.
+- 글 본문은 최대 800px, 1280px 이상에서 옆 목차, 작은 화면에서 접는 목차를 사용합니다.
+- `useHydratedSearchParams`로 첫 렌더를 SSG와 맞춘 후 필터를 적용합니다. 404 프리렌더 표시가 있으면 클라이언트도 404 라우트로 시작합니다.
+- `pnpm preview`는 GitHub Pages의 실제 404 응답을 재현합니다.
+- 이동·hydration·접근성 변경 후 `pnpm build`, `pnpm test:browser`를 실행합니다.
+- 조회수 로직 변경 후 `pnpm test:analytics`를 실행합니다. 외부 Apps Script 배포는 로컬 소스 변경과 별도입니다.
+- 테마, 언어, 관리자 Context와 hook은 Provider 컴포넌트와 분리해 Fast Refresh를 유지합니다.
+
+- 데스크톱 상단 바는 표시하지 않습니다. 접기와 검색은 사이드바, 모바일 메뉴와 검색은 48px 상단 바에 배치합니다.
+- `SearchCommandProvider`는 검색 창과 단축키를 한 번만 등록합니다. 버튼은 `SearchCommandTrigger`로 공유합니다.
+- 화면 전환은 `RootLayout`의 `.page-transition`에서 공통으로 처리합니다. 링크별 `viewTransition`이나 페이지별 진입 애니메이션을 중복 적용하지 않습니다. 같은 화면의 필터와 목차 변경은 본문 전환을 재실행하지 않으며, 모션 감소 설정에서는 전환과 부드러운 스크롤을 끕니다.
+- 코드 블록은 서버에서도 동일한 프레임과 원문을 렌더하고, 화면 근처에서 하이라이팅을 시작합니다. Mermaid는 일반 코드와 별도 로딩하며, 공통 테마 구독과 취소 가능한 렌더 큐·크기 제한 캐시를 사용합니다.
+- 저장된 사이드바 상태는 초기 CSS와 `useSyncExternalStore`로 hydration을 맞춰 복원합니다. 하단 버튼 배치는 데이터의 개수와 인덱스로 계산합니다. 댓글의 테마 갱신을 위해 위젯을 재마운트하지 않습니다.
+- 렌더링 관련 변경 후 `pnpm test:rendering`, `pnpm test:loading`, `pnpm test:browser`를 실행합니다.
