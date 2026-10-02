@@ -31,7 +31,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2383130502932429"
       crossorigin="anonymous"></script>
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <script>(function(w,d,s,l,i){if(/^(localhost|127\.0\.0\.1)$/.test(w.location.hostname))return;w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -39,7 +39,8 @@
     <!-- End Google Tag Manager -->
     <script>
       // Prevent theme FOUC
-      (function(){var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark");var c=localStorage.getItem("color-theme");if(c)document.documentElement.setAttribute("data-color",c)})();
+      (function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark");var c=localStorage.getItem("color-theme");if(c)document.documentElement.setAttribute("data-color",c)}catch{}})();
+      (function(){try{var s=document.cookie.split(";").map(function(v){return v.trim()}).find(function(v){return v.startsWith("sidebar_state=")});if(s){var v=s.slice(14);if(v==="true"||v==="false")document.documentElement.dataset.sidebarState=v==="true"?"expanded":"collapsed"}}catch{}})();
     </script>
   </head>
   <body>

@@ -2,6 +2,7 @@ export type Language = "ko" | "en"
 
 export interface Translations {
   common: {
+    skipToContent: string
     home: string
     posts: string
     series: string
@@ -194,6 +195,10 @@ export interface Translations {
   }
   components: {
     noPostsYet: string
+    collapseSidebar: string
+    expandSidebar: string
+    openMenu: string
+    closeMenu: string
     searchPosts: string
     searchPostsDescription: string
     searchPlaceholder: string
@@ -206,6 +211,10 @@ export interface Translations {
     colorTheme: string
     totalViews: string
     last30Days: string
+    readingProgress: string
+    expandDiagram: string
+    diagramTitle: string
+    diagramDescription: string
     tableOfContents: string
     copyCode: string
     codeLoadError: string
@@ -221,6 +230,7 @@ export interface Translations {
     scrollToTop: string
     toggleLanguage: string
     keyboardShortcuts: string
+    blogInfo: string
     shortcutSearch: string
     shortcutSidebar: string
     shortcutHelp: string
@@ -249,6 +259,7 @@ export const ko: Translations = {
     navigating: "페이지를 불러오는 중…",
     navigationSlow: "연결이 지연되고 있습니다.",
     reloadPage: "페이지 새로 열기",
+    skipToContent: "본문으로 바로가기",
     home: "홈",
     posts: "글 목록",
     series: "시리즈",
@@ -431,6 +442,10 @@ export const ko: Translations = {
   },
   components: {
     noPostsYet: "아직 작성된 글이 없습니다.",
+    collapseSidebar: "사이드바 접기",
+    expandSidebar: "사이드바 펼치기",
+    openMenu: "메뉴 열기",
+    closeMenu: "메뉴 닫기",
     searchPosts: "글 검색",
     searchPostsDescription: "제목, 설명, 태그, 본문에서 글을 검색합니다.",
     searchPlaceholder: "글 검색...",
@@ -443,6 +458,10 @@ export const ko: Translations = {
     colorTheme: "색상 테마 변경",
     totalViews: "전체 조회수",
     last30Days: "최근 30일",
+    readingProgress: "읽기 진행률",
+    expandDiagram: "다이어그램 확대",
+    diagramTitle: "다이어그램",
+    diagramDescription: "확대된 다이어그램입니다. Escape 키로 닫을 수 있습니다.",
     tableOfContents: "목차",
     copyCode: "코드 복사",
     codeLoadError: "코드·다이어그램을 불러오지 못했습니다. 원본 내용을 표시합니다.",
@@ -458,6 +477,7 @@ export const ko: Translations = {
     scrollToTop: "맨 위로",
     toggleLanguage: "언어 변경",
     keyboardShortcuts: "단축키",
+    blogInfo: "블로그 정보 더보기",
     shortcutSearch: "검색 열기",
     shortcutHelp: "단축키 안내 열기",
     shortcutSidebar: "사이드바 토글",
@@ -486,6 +506,7 @@ export const en: Translations = {
     navigating: "Loading page…",
     navigationSlow: "The connection is taking longer than expected.",
     reloadPage: "Reload page",
+    skipToContent: "Skip to content",
     home: "Home",
     posts: "Posts",
     series: "Series",
@@ -668,6 +689,10 @@ export const en: Translations = {
   },
   components: {
     noPostsYet: "No posts yet.",
+    collapseSidebar: "Collapse sidebar",
+    expandSidebar: "Expand sidebar",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
     searchPosts: "Search Posts",
     searchPostsDescription: "Search blog posts by title, description, tags, or content.",
     searchPlaceholder: "Search posts...",
@@ -680,6 +705,10 @@ export const en: Translations = {
     colorTheme: "Change color theme",
     totalViews: "Total Views",
     last30Days: "Last 30 Days",
+    readingProgress: "Reading progress",
+    expandDiagram: "Expand diagram",
+    diagramTitle: "Diagram",
+    diagramDescription: "Expanded diagram. Press Escape to close.",
     tableOfContents: "Table of Contents",
     copyCode: "Copy code",
     codeLoadError: "Could not load the code or diagram viewer. Showing the original content.",
@@ -695,6 +724,7 @@ export const en: Translations = {
     scrollToTop: "Scroll to top",
     toggleLanguage: "Toggle language",
     keyboardShortcuts: "Keyboard Shortcuts",
+    blogInfo: "More blog information",
     shortcutSearch: "Open search",
     shortcutHelp: "Open shortcuts guide",
     shortcutSidebar: "Toggle sidebar",

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useSyncExternalStore } from "react"
+import { readLocalSetting, writeLocalSetting } from "@/lib/browser-storage"
 import { PaletteIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,19 +29,18 @@ function applyColor(value: string) {
   }
 }
 
+let currentColor: string | null = null
+const listeners = new Set<() => void>()
+function subscribe(callback: () => void) { listeners.add(callback); window.addEventListener("storage", callback); return () => { listeners.delete(callback); window.removeEventListener("storage", callback) } }
+function setColor(value: string) { currentColor = value; writeLocalSetting("color-theme", value); listeners.forEach(callback => callback()) }
 export function ColorThemeSelector() {
-  const [selected, setSelected] = useState("")
-  useEffect(() => {
-    const stored = localStorage.getItem("color-theme") || ""
-    applyColor(stored)
-    setSelected(stored)
-  }, [])
+  const selected = useSyncExternalStore(subscribe, () => currentColor ?? readLocalSetting("color-theme") ?? "", () => "")
+  useEffect(() => { applyColor(selected) }, [selected])
 
   const t = useT()
 
   function handleSelect(value: string) {
-    setSelected(value)
-    localStorage.setItem("color-theme", value)
+    setColor(value)
     applyColor(value)
     analytics.changeColorTheme(value || "neutral")
   }

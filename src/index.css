@@ -264,21 +264,72 @@ html.theme-transition *::after {
   overflow: hidden;
 }
 
-/* View Transitions */
-::view-transition-old(root) {
-  animation: none;
+/* 메뉴, 검색 결과, 본문 링크 모두 동일한 본문 전환을 사용한다. */
+.page-transition {
+  min-width: 0;
+  animation: page-enter 200ms ease-out;
 }
-::view-transition-new(root) {
-  animation: fade-in 100ms ease-in;
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-new(root) {
-    animation: none;
-  }
-}
-@keyframes fade-in {
+@keyframes page-enter {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* 사이드바 안의 크기와 위치 변화를 같은 전환으로 맞춘다. */
+[data-slot="sidebar-wrapper"] {
+  --sidebar-motion-duration: 200ms;
+  --sidebar-motion-ease: cubic-bezier(.22, 1, .36, 1);
+}
+[data-slot="sidebar-gap"],
+[data-slot="sidebar-container"],
+[data-sidebar="menu-button"] {
+  transition-duration: var(--sidebar-motion-duration);
+  transition-timing-function: var(--sidebar-motion-ease);
+}
+.sidebar-brand,
+.sidebar-menu-label,
+.sidebar-menu-shortcut {
+  transition: opacity 120ms ease-out 60ms, visibility 0s;
+}
+[data-collapsible="icon"] .sidebar-brand,
+[data-collapsible="icon"] .sidebar-menu-label,
+[data-collapsible="icon"] .sidebar-menu-shortcut {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 80ms ease-out, visibility 0s 80ms;
+}
+.sidebar-actions {
+  position: relative;
+  --action-size: 2rem;
+  --action-step: 2.25rem;
+  --actions-length: calc((var(--action-count) - 1) * var(--action-step) + var(--action-size));
+  width: var(--actions-length);
+  height: var(--action-size);
+  margin-inline: auto;
+  transition: width var(--sidebar-motion-duration) var(--sidebar-motion-ease), height var(--sidebar-motion-duration) var(--sidebar-motion-ease);
+}
+.sidebar-action {
+  --action-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--action-size);
+  height: var(--action-size);
+  transform: translateX(calc(var(--action-index) * var(--action-step)));
+  transition: transform var(--sidebar-motion-duration) var(--sidebar-motion-ease);
+}
+.sidebar-action > button { width: var(--action-size); height: var(--action-size); }
+[data-collapsible="icon"] .sidebar-actions { width: var(--action-size); height: var(--actions-length); }
+[data-collapsible="icon"] .sidebar-action { transform: translateY(calc(var(--action-index) * var(--action-step))); }
+[data-mobile="true"] .sidebar-actions { --action-size: 2.75rem; --action-step: 3rem; }
+
+/* 쿠키에 저장된 접힘 상태를 hydration 전에도 같은 모양으로 표시한다. */
+@media (min-width: 768px) {
+  html[data-sidebar-state="collapsed"]:not([data-sidebar-ready]) [data-slot="sidebar-wrapper"]:not([data-sidebar-controlled]) [data-slot="sidebar"][data-variant="sidebar"] [data-slot="sidebar-gap"],
+  html[data-sidebar-state="collapsed"]:not([data-sidebar-ready]) [data-slot="sidebar-wrapper"]:not([data-sidebar-controlled]) [data-slot="sidebar"][data-variant="sidebar"] [data-slot="sidebar-container"] { width: var(--sidebar-width-icon); }
+  html[data-sidebar-state="collapsed"]:not([data-sidebar-ready]) [data-slot="sidebar"][data-variant="sidebar"] :is(.sidebar-brand, .sidebar-menu-label, .sidebar-menu-shortcut) { opacity: 0; visibility: hidden; pointer-events: none; }
+  html[data-sidebar-state="collapsed"]:not([data-sidebar-ready]) [data-slot="sidebar"][data-variant="sidebar"] .sidebar-actions { width: var(--action-size); height: var(--actions-length); }
+  html[data-sidebar-state="collapsed"]:not([data-sidebar-ready]) [data-slot="sidebar"][data-variant="sidebar"] .sidebar-action { transform: translateY(calc(var(--action-index) * var(--action-step))); }
 }
 
 /* TOC scrollbar: hidden by default, thin on hover */
@@ -340,50 +391,31 @@ html.theme-transition *::after {
   --page-container-max-width: 72rem;
 }
 
-@media (min-width: 1280px) {
-  [data-slot="sidebar-wrapper"] {
-    --content-sidebar-width: 0rem;
-    --content-available-width: calc(100vw - var(--content-sidebar-width) - 10rem);
-  }
-
-  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="expanded"]) {
-    --content-sidebar-width: var(--sidebar-width);
-  }
-
-  [data-slot="sidebar-wrapper"]:has([data-slot="sidebar"][data-state="collapsed"]) {
-    --content-sidebar-width: var(--sidebar-width-icon);
-  }
-
-  .post-toc-layer {
-    display: none;
-  }
+/* 글 본문과 목차를 화면 크기에 맞춰 배치한다. */
+.post-page-layout { display: flex; flex-direction: column; gap: 1.5rem; }
+.page-container-article { --page-container-max-width: 50rem; }
+.post-toc-layer { order: -1; position: sticky; top: 3rem; z-index: 30; }
+.post-toc-panel { padding: .5rem .75rem; background: var(--background); }
+.post-toc-desktop-title { display: none; }
+.post-toc-list { display: none; margin-top: .75rem; max-height: 50vh; overflow-y: auto; }
+.post-toc-list[data-open="true"] { display: block; }
+.prose h2, .prose h3 { scroll-margin-top: 7rem; }
+.prose table { display: block; max-width: 100%; overflow-x: auto; }
+@media (min-width: 768px) {
+  .post-toc-layer { top: 0; }
+  .prose h2, .prose h3 { scroll-margin-top: 5rem; }
 }
-
-@media (min-width: 1856px) {
-  .post-page-layout {
-    --post-article-width: min(72rem, var(--content-available-width));
-    --post-article-half-width: calc(var(--post-article-width) / 2);
-    --post-toc-gap: 2.5rem;
-    /* 본문 + TOC를 한 묶음으로 보고 콘텐츠 영역 중앙에 오도록, 본문을
-       오른쪽 TOC(gap + 15rem)의 절반만큼 왼쪽으로 당긴다. 이러면 그룹의
-       중심이 인셋 중앙과 일치해 본문 폭은 그대로 두고도 자연스럽게 중앙에 온다. */
-    --post-article-shift: calc((var(--post-toc-gap) + 15rem) / -2);
-  }
-
-  .post-article-centered {
-    transform: translateX(var(--post-article-shift));
-    transition: transform 120ms ease-out;
-  }
-
-  .post-toc-layer {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: calc(
-      50% + var(--post-article-shift) + var(--post-article-half-width) + var(--post-toc-gap)
-    );
-    width: 15rem;
-    height: 100%;
-    transition: left 120ms ease-out;
-  }
+@media (min-width: 1280px) {
+  .post-page-layout { display: grid; grid-template-columns: minmax(0, 50rem) 13rem; gap: 2rem; max-width: 65rem; margin-inline: auto; align-items: start; }
+  .post-article-centered { grid-column: 1; grid-row: 1; }
+  .post-toc-layer { grid-column: 2; grid-row: 1; top: 2rem; }
+  .post-toc-panel { padding: .75rem; }
+  .post-toc-toggle { display: none; }
+  .post-toc-desktop-title { display: inline; }
+  .post-toc-list { display: block; max-height: calc(100vh - 8rem); }
+  .prose h2, .prose h3 { scroll-margin-top: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-transition { animation: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
 }

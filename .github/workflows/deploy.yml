@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+  schedule:
+    # UTC 날짜 전환 이후, KST 09:10에 예약 글을 다시 빌드한다.
+    - cron: '10 0 * * *'
 
 permissions:
   contents: read
@@ -16,7 +20,7 @@ concurrency:
 jobs:
   build:
     if: >-
-      ${{ !startsWith(github.event.head_commit.message, 'chore(main): release') }}
+      ${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

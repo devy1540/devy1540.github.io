@@ -100,7 +100,6 @@ export function LanguageSuggestionBanner() {
     setTargetLanguage(null)
     navigate(
       localizePath(`${location.pathname}${location.search}${location.hash}`, target),
-      { viewTransition: true },
     )
   }
 

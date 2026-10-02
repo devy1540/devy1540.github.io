@@ -35,7 +35,7 @@ export function ProjectDetailPage() {
       <PageContainer className="text-center py-20">
         <h1 className="text-2xl font-bold mb-4">{t.post.notFound}</h1>
         <Button asChild variant="ghost">
-          <Link to={localizePath("/about", language)} viewTransition>
+          <Link to={localizePath("/about", language)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.about.backToAbout}
           </Link>
@@ -48,7 +48,7 @@ export function ProjectDetailPage() {
     <PageContainer>
       <StructuredData data={projectStructuredData(project, language)} />
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
-        <Link to={localizePath("/about", language)} viewTransition>
+        <Link to={localizePath("/about", language)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t.about.backToAbout}
         </Link>
@@ -126,7 +126,6 @@ export function ProjectDetailPage() {
                   <Link
                     key={post!.slug}
                     to={postPath(post!.slug, language)}
-                    viewTransition
                     className="block rounded-lg border p-4 hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-start gap-3">

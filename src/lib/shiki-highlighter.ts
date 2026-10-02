@@ -1,5 +1,7 @@
 import { createBundledHighlighter, createSingletonShorthands } from "shiki/core"
 import { createOnigurumaEngine } from "shiki/engine/oniguruma"
+import { createRenderQueue } from "./render-queue"
+import { normalizeCodeLanguage, type SupportedLanguage } from "./code-languages"
 
 const languages = {
   bash: () => import("@shikijs/langs/bash"),
@@ -24,20 +26,7 @@ const themes = {
   "github-dark": () => import("@shikijs/themes/github-dark"),
 } as const
 
-type SupportedLanguage = keyof typeof languages
 type SupportedTheme = keyof typeof themes
-
-const languageAliases: Record<string, SupportedLanguage> = {
-  docker: "dockerfile",
-  js: "javascript",
-  kt: "kotlin",
-  properties: "properties",
-  sh: "bash",
-  shell: "bash",
-  ts: "typescript",
-  yml: "yaml",
-  zsh: "bash",
-}
 
 const createHighlighter = createBundledHighlighter<SupportedLanguage, SupportedTheme>({
   langs: languages,
@@ -47,22 +36,19 @@ const createHighlighter = createBundledHighlighter<SupportedLanguage, SupportedT
 
 const { codeToHtml } = createSingletonShorthands(createHighlighter)
 
-function normalizeLanguage(language: string): SupportedLanguage | undefined {
-  const normalized = language.toLowerCase()
-  if (normalized in languages) return normalized as SupportedLanguage
-  return languageAliases[normalized]
-}
-
-export async function highlightCode(code: string, language: string) {
-  const normalizedLanguage = normalizeLanguage(language)
-  if (!normalizedLanguage) return ""
-
+const request = createRenderQueue(async ({ code, language }: { code: string; language: SupportedLanguage }) => {
   return codeToHtml(code, {
-    lang: normalizedLanguage,
+    lang: language,
     themes: {
       light: "github-light",
       dark: "github-dark",
     },
     defaultColor: false,
   })
+})
+
+export function requestHighlight(code: string, language: string) {
+  const normalizedLanguage = normalizeCodeLanguage(language)
+  if (!normalizedLanguage) return { promise: Promise.resolve(""), cancel: () => {} }
+  return request(`${normalizedLanguage}\0${code}`, { code, language: normalizedLanguage })
 }

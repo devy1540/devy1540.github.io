@@ -40,7 +40,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
 function getPostViews(allPageViews: Record<string, number> | null, slug: string, language: "ko" | "en") {
   if (!allPageViews) return 0
   const localizedPath = language === "en" ? `/en/posts/${slug}` : `/posts/${slug}`
-  return allPageViews[localizedPath] ?? allPageViews[`/posts/${slug}`] ?? 0
+  return allPageViews[localizedPath] ?? 0
 }
 
 function getDaysSince(date: string) {
@@ -194,19 +194,19 @@ export function AnalyticsPage() {
   const momentumCards = [
     {
       label: t.analytics.viewsInRange,
-      value: formatMetric(rangeViews),
+      value: totalViews === null ? "—" : formatMetric(rangeViews),
       detail: `${rangeDays}${language === "ko" ? "일" : "d"}`,
       icon: TrendingUp,
     },
     {
       label: t.analytics.avgDailyViews,
-      value: formatMetric(dailyAverage, 1),
+      value: totalViews === null ? "—" : formatMetric(dailyAverage, 1),
       detail: t.analytics.views,
       icon: Activity,
     },
     {
       label: t.analytics.peakDay,
-      value: peakDay ? formatMetric(peakDay.views) : "-",
+      value: totalViews !== null && peakDay ? formatMetric(peakDay.views) : "—",
       detail: peakDay?.label ?? t.analytics.noData,
       icon: CalendarDays,
     },
@@ -331,7 +331,6 @@ export function AnalyticsPage() {
                     <Link
                       key={post.slug}
                       to={postPath(post.slug, language)}
-                      viewTransition
                       className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted transition-colors"
                     >
                       <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">
@@ -430,7 +429,6 @@ export function AnalyticsPage() {
                   <Link
                     key={post.slug}
                     to={postPath(post.slug, language)}
-                    viewTransition
                     className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted transition-colors"
                   >
                     <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">

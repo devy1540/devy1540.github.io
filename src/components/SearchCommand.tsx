@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
-import { SearchIcon } from "lucide-react"
+import { SearchCommandContext } from "./search-command-context"
+import { useSidebar } from "./ui/sidebar"
 import { usePostSearchIndex } from "@/hooks/usePostData"
 import { searchPosts } from "@/lib/posts"
 import { analytics } from "@/lib/analytics"
@@ -16,11 +17,29 @@ import {
 import { useLanguage } from "@/i18n"
 import { postPath } from "@/lib/i18n-routing"
 
-export function SearchCommand() {
+export function SearchCommandProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const navigate = useNavigate()
   const { language, t } = useLanguage()
+  const { openMobile, setOpenMobile } = useSidebar()
+  const previousFocus = useRef<HTMLElement | null>(null)
+  const restoreFocus = useRef(true)
+  const pendingOpen = useRef<number | undefined>(undefined)
+
+  const openSearch = useCallback(() => {
+    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    restoreFocus.current = true
+    window.clearTimeout(pendingOpen.current)
+    if (openMobile) {
+      setOpenMobile(false)
+      pendingOpen.current = window.setTimeout(() => setOpen(true), 250)
+    } else {
+      setOpen(true)
+    }
+  }, [openMobile, setOpenMobile])
+
+  useEffect(() => () => window.clearTimeout(pendingOpen.current), [])
 
   const searchIndex = usePostSearchIndex(open && Boolean(query.trim()), language)
   const results = searchPosts(query, language)
@@ -29,37 +48,38 @@ export function SearchCommand() {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setOpen((prev) => !prev)
+        if (open) setOpen(false)
+        else openSearch()
       }
     }
     document.addEventListener("keydown", onKeyDown)
     return () => document.removeEventListener("keydown", onKeyDown)
-  }, [])
+  }, [open, openSearch])
 
   function handleSelect(slug: string) {
     if (query) analytics.search(query, results.length)
+    restoreFocus.current = false
     setOpen(false)
     setQuery("")
     navigate(postPath(slug, language))
   }
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="gap-2 text-muted-foreground"
-        onClick={() => setOpen(true)}
-        aria-label={t.components.searchPosts}
-      >
-        <SearchIcon className="size-4" />
-      </Button>
+    <SearchCommandContext.Provider value={{ open, openSearch }}>
+      {children}
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
         title={t.components.searchPosts}
         description={t.components.searchPostsDescription}
         shouldFilter={false}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          if (!restoreFocus.current) return
+          const fallback = Array.from(document.querySelectorAll<HTMLElement>("[data-search-trigger]")).find(el => el.getClientRects().length > 0)
+          const target = previousFocus.current?.isConnected ? previousFocus.current : fallback
+          target?.focus({ preventScroll: true })
+        }}
       >
         <CommandInput
           placeholder={t.components.searchPlaceholder}
@@ -89,6 +109,6 @@ export function SearchCommand() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-    </>
+    </SearchCommandContext.Provider>
   )
 }

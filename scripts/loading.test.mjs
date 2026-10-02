@@ -75,3 +75,9 @@ test("Markdown charts are server-rendered as data tables and their renderer stay
   assert.match(figures[1][1], /29\/34/)
   assert.match(figures[1][1], /70\/75/)
 })
+
+test("ordinary code blocks do not statically import Mermaid or its diagram renderer", () => {
+  const imports = [...staticImports("src/components/CodeBlock.tsx")]
+  assert.deepEqual(imports.filter(key => /MermaidBlock|mermaid-renderer|mermaid\.core|flowDiagram|_shiki-/.test(key)), [])
+  assert.ok(manifest["src/components/MermaidBlock.tsx"]?.isDynamicEntry)
+})

@@ -27,6 +27,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod --audit-level high
       - run: pnpm lint
       - run: pnpm type-check
       - run: pnpm test:post-dates
@@ -35,3 +36,8 @@ jobs:
       - run: pnpm test:seo
       - run: pnpm test:loading
       - run: pnpm test:sitemap-lastmod
+      - run: pnpm check:internal-links
+      - run: pnpm test:analytics
+      - run: pnpm test:rendering
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:browser

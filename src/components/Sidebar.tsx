@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { Home, FileText, Tags, User, Library, BarChart3, ShieldCheck } from "lucide-react"
 import {
@@ -11,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
@@ -18,10 +20,13 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
+import { SidebarInfoMenu } from "@/components/SidebarInfoMenu"
 import { useLanguage } from "@/i18n"
 import { useAdminAuth } from "@/lib/admin/useAdminAuth"
 import { localizePath, stripLanguagePrefix } from "@/lib/i18n-routing"
 import { prefetchRoute } from "@/lib/route-modules"
+import { SearchCommandTrigger } from "./SearchCommandTrigger"
+import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 
 const navIcons = {
   home: Home,
@@ -37,7 +42,9 @@ export function AppSidebar() {
   const { language, t } = useLanguage()
   const { isAdmin } = useAdminAuth()
   const navigate = useNavigate()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, openMobile, open, state } = useSidebar()
+  const collapsed = !isMobile && state === "collapsed"
+  const hydrated = useIsHydrated()
 
   function handleMobileNav(e: React.MouseEvent, to: string) {
     if (!isMobile) return
@@ -57,6 +64,14 @@ export function AppSidebar() {
     { label: t.common.about, to: localizePath("/about", language), basePath: "/about", icon: navIcons.about },
   ]
 
+  const actions = [
+    { key: "theme", label: t.components.toggleTheme, element: <ThemeToggle /> },
+    { key: "color", label: t.components.colorTheme, element: <ColorThemeSelector /> },
+    { key: "language", label: t.components.toggleLanguage, element: <LanguageToggle /> },
+    { key: "shortcuts", label: t.components.keyboardShortcuts, element: <KeyboardShortcuts /> },
+    { key: "info", label: t.components.blogInfo, element: <SidebarInfoMenu onNavigate={handleMobileNav} /> },
+  ]
+
   function isActive(basePath: string) {
     const currentPath = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
     if (basePath === "/") return currentPath === "/"
@@ -65,19 +80,31 @@ export function AppSidebar() {
 
   return (
     <SidebarRoot collapsible="icon">
-      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2">
-        <NavLink
-          to={localizePath("/", language)}
-          className="text-lg font-bold tracking-tight hover:opacity-80 transition-opacity group-data-[collapsible=icon]:text-center"
-        >
-          <span className="group-data-[state=collapsed]:hidden">Devy</span>
-          <span className="hidden group-data-[state=collapsed]:inline">D</span>
-        </NavLink>
+      <SidebarHeader className="h-16 shrink-0 justify-center px-2 py-0">
+        <div className="relative flex h-8 items-center">
+          <NavLink
+            to={localizePath("/", language)}
+            aria-hidden={collapsed || undefined}
+            tabIndex={collapsed ? -1 : undefined}
+            className="sidebar-brand absolute left-2 text-lg font-bold tracking-tight hover:opacity-80"
+          >
+            Devy
+          </NavLink>
+          <Tooltip delayDuration={250}>
+            <TooltipTrigger asChild>
+              <SidebarTrigger disabled={!hydrated} className="ml-auto size-8 shrink-0" aria-label={isMobile ? t.components.closeMenu : state === "expanded" ? t.components.collapseSidebar : t.components.expandSidebar} aria-expanded={isMobile ? openMobile : open} />
+            </TooltipTrigger>
+            <TooltipContent side="right">{isMobile ? t.components.closeMenu : state === "expanded" ? t.components.collapseSidebar : t.components.expandSidebar}</TooltipContent>
+          </Tooltip>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
+            <SidebarMenu className="mb-2">
+              <SidebarMenuItem><SearchCommandTrigger variant="sidebar" /></SidebarMenuItem>
+            </SidebarMenu>
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.to}>
@@ -88,6 +115,7 @@ export function AppSidebar() {
                   >
                     <NavLink
                       to={item.to}
+                      aria-label={item.label}
                       onPointerEnter={() => { void prefetchRoute(item.to) }}
                       onFocus={() => { void prefetchRoute(item.to) }}
                       onTouchStart={() => { void prefetchRoute(item.to) }}
@@ -96,7 +124,7 @@ export function AppSidebar() {
                       {({ isPending }) => (
                         <>
                           <item.icon className={isPending ? "animate-pulse motion-reduce:animate-none" : undefined} />
-                          <span>{item.label}</span>
+                          <span className="sidebar-menu-label">{item.label}</span>
                         </>
                       )}
                     </NavLink>
@@ -108,7 +136,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="관리자">
                     <NavLink to="/admin" onClick={(e) => handleMobileNav(e, "/admin")}>
                       <ShieldCheck />
-                      <span>관리자</span>
+                      <span className="sidebar-menu-label">관리자</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -118,36 +146,15 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
-        <div className="flex items-center justify-center gap-1 group-data-[state=collapsed]:flex-col">
-          <Tooltip>
-            <TooltipTrigger asChild><ThemeToggle /></TooltipTrigger>
-            <TooltipContent side="top">{t.components.toggleTheme}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild><ColorThemeSelector /></TooltipTrigger>
-            <TooltipContent side="top">{t.components.colorTheme}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild><LanguageToggle /></TooltipTrigger>
-            <TooltipContent side="top">{t.components.toggleLanguage}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild><KeyboardShortcuts /></TooltipTrigger>
-            <TooltipContent side="top">{t.components.keyboardShortcuts}</TooltipContent>
-          </Tooltip>
+      <SidebarFooter className="gap-0 p-2">
+        <div className="sidebar-actions" style={{ "--action-count": actions.length } as CSSProperties}>
+          {actions.map(({ key, label, element }, index) => <div key={key} className="sidebar-action" style={{ "--action-index": index } as CSSProperties}>
+            <Tooltip>
+              <TooltipTrigger asChild>{element}</TooltipTrigger>
+              <TooltipContent side="top">{label}</TooltipContent>
+            </Tooltip>
+          </div>)}
         </div>
-        <p className="text-xs text-sidebar-foreground/50 text-center pt-1 group-data-[state=collapsed]:hidden">
-          &copy; {new Date().getFullYear()} Devy
-          {" | "}
-          <NavLink
-            to={localizePath("/privacy", language)}
-            onClick={(e) => handleMobileNav(e, localizePath("/privacy", language))}
-            className="hover:text-sidebar-foreground/80 transition-colors"
-          >
-            {t.common.privacy}
-          </NavLink>
-        </p>
       </SidebarFooter>
 
       <SidebarRail />

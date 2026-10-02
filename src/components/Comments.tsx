@@ -10,7 +10,6 @@ export function Comments() {
   return (
     <div className="mt-10">
       <Giscus
-        key={`${giscusTheme}-${language}`}
         repo="devy1540/devy1540.github.io"
         repoId="R_kgDOPgWYuQ"
         category="General"

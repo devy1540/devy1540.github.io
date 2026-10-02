@@ -20,7 +20,7 @@ export function LanguageToggle() {
   function changeLanguage(next: Language) {
     setLanguage(next)
     analytics.changeLanguage(next)
-    navigate(localizePath(`${location.pathname}${location.search}${location.hash}`, next), { viewTransition: true })
+    navigate(localizePath(`${location.pathname}${location.search}${location.hash}`, next))
   }
 
   return (

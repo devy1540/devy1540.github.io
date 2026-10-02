@@ -11,7 +11,12 @@ function routeComponent(key: RouteComponentKey, resolvedComponents: ResolvedRout
   return Component ? { Component } : { lazy: () => loadRouteModule(key) }
 }
 
-export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}): RouteObject[] {
+export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}, fallback404 = false): RouteObject[] {
+  if (fallback404) return [{
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [{ path: "*", element: <NotFoundPage /> }],
+  }]
   const childRoutes: RouteObject[] = [
     { index: true, element: <HomePage /> },
     { path: "posts", ...routeComponent("posts", resolvedComponents) },

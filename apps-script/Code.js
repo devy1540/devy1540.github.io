@@ -16,8 +16,10 @@ function doGet() {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
+  try {
   var summary = getGA4Summary();
   var response = {
+    success: true,
     totalViews: summary.totalViews,
     pages: summary.pages,
     daily: getGA4Daily(),
@@ -33,6 +35,10 @@ function doGet() {
   return ContentService
     .createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    Logger.log("analytics unavailable: " + err.message);
+    return jsonResponse({ success: false, error: "analytics unavailable" });
+  }
 }
 
 /**
@@ -54,7 +60,7 @@ function getGA4Summary() {
     };
   } catch (err) {
     Logger.log('getGA4Summary error: ' + err.message);
-    return { totalViews: 0, pages: {} };
+    throw err;
   }
 }
 
@@ -107,7 +113,7 @@ function getGA4Daily() {
   try {
     var request = AnalyticsData.newRunReportRequest();
     request.dateRanges = [AnalyticsData.newDateRange()];
-    request.dateRanges[0].startDate = '30daysAgo';
+    request.dateRanges[0].startDate = '59daysAgo';
     request.dateRanges[0].endDate = 'today';
     request.dimensions = [AnalyticsData.newDimension()];
     request.dimensions[0].name = 'date';
@@ -132,10 +138,16 @@ function getGA4Daily() {
         });
       }
     }
-    return daily;
+    var byDate = {};
+    daily.forEach(function (item) { byDate[item.date] = item.views; });
+    var today = new Date(Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd") + "T00:00:00Z");
+    return Array.from({ length: 60 }, function (_, index) {
+      var date = new Date(today.getTime() - (59 - index) * 86400000).toISOString().slice(0, 10);
+      return { date: date, views: byDate[date] || 0 };
+    });
   } catch (err) {
     Logger.log('getGA4Daily error: ' + err.message);
-    return [];
+    throw err;
   }
 }
 

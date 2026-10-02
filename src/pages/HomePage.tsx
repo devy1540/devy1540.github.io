@@ -46,7 +46,7 @@ export function HomePage() {
     <PageContainer>
       <StructuredData data={blogStructuredData(posts, language, t.meta.defaultDescription)} />
       {/* Hero */}
-      <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards">
+      <section className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight mb-2">
           {t.home.title}
         </h1>
@@ -55,19 +55,19 @@ export function HomePage() {
         </p>
         <div className="flex gap-3 mt-4">
           <Button asChild>
-            <Link to={localizePath("/posts", language)} viewTransition>
+            <Link to={localizePath("/posts", language)}>
               {t.home.viewPosts}
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to={localizePath("/about", language)} viewTransition>{t.home.introduction}</Link>
+            <Link to={localizePath("/about", language)}>{t.home.introduction}</Link>
           </Button>
         </div>
       </section>
 
       {/* Mini Stats */}
-      <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards [animation-delay:100ms]">
+      <section className="mb-10">
         <p className="text-sm text-muted-foreground">
           <span className="text-foreground font-medium">{posts.length}</span> {t.home.statsPosts}
           {" · "}
@@ -84,7 +84,7 @@ export function HomePage() {
       </section>
 
       {/* Recent Posts */}
-      <section className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards [animation-delay:200ms]">
+      <section className="mb-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             {t.common.recentPosts}
@@ -92,7 +92,6 @@ export function HomePage() {
           {posts.length > 5 && (
             <Link
               to={localizePath("/posts", language)}
-              viewTransition
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               {t.common.viewAll}
@@ -105,14 +104,13 @@ export function HomePage() {
 
       {/* Popular Posts Top 5 */}
       {popularPosts.length > 0 && (
-        <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-backwards [animation-delay:300ms]">
+        <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               {t.home.popularPosts}
             </h2>
             <Link
-              to="/analytics"
-              viewTransition
+              to={localizePath("/analytics", language)}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               {t.common.viewAll}
@@ -124,7 +122,6 @@ export function HomePage() {
               <Link
                 key={post.slug}
                 to={postPath(post.slug, language)}
-                viewTransition
                 className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-accent/50 transition-colors"
               >
                 <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">

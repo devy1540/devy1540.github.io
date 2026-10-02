@@ -30,7 +30,7 @@ export function PostList({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {posts.map((post) => (
-          <Link key={`${post.language}:${post.slug}`} to={postPath(post.slug, post.language)} viewTransition className="group">
+          <Link key={`${post.language}:${post.slug}`} to={postPath(post.slug, post.language)} className="group">
             <Card className="h-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
@@ -87,7 +87,6 @@ export function PostList({
           {i > 0 && <Separator />}
           <Link
             to={postPath(post.slug, post.language)}
-            viewTransition
             className="block rounded-md px-3 py-4 -mx-3 transition-colors hover:bg-accent/50"
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">

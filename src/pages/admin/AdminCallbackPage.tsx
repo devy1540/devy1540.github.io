@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react"
+import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
+import { useEffect, useRef } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { AlertTriangle, Loader2 } from "lucide-react"
 import { useAdminAuth } from "@/lib/admin/useAdminAuth"
@@ -14,17 +15,17 @@ export function AdminCallbackPage() {
   const startedRef = useRef(false)
   // 초기 렌더는 항상 스피너로 고정한다. 쿼리 누락/실패 판정은 마운트 후에만 하여,
   // 쿼리 없이 프리렌더된 정적 셸과 런타임(?code=…) 초기 렌더가 일치하도록 한다.
-  const [missingParams, setMissingParams] = useState(false)
+  const hydrated = useIsHydrated()
 
   const code = searchParams.get("code")
   const state = searchParams.get("state")
+  const missingParams = hydrated && (!code || !state)
 
   // code → token 교환은 한 번만 시도(코드는 1회용, StrictMode 이중 실행 방지).
   useEffect(() => {
     if (startedRef.current) return
     startedRef.current = true
     if (!code || !state) {
-      setMissingParams(true)
       return
     }
     void exchangeCode(code, state)

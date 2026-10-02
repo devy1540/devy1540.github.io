@@ -1,170 +1,88 @@
-import { useEffect, useRef, useState } from "react"
-import { ChevronRight } from "lucide-react"
+import { useEffect, useId, useRef, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useT } from "@/i18n"
 
-interface TocItem {
-  id: string
-  text: string
-  level: number
-}
+interface TocItem { id: string; text: string; level: number }
 
 export function TableOfContents({ containerSelector = ".prose" }: { containerSelector?: string }) {
   const [headings, setHeadings] = useState<TocItem[]>([])
-  const [activeId, setActiveId] = useState<string>("")
-  const [open, setOpen] = useState(true)
+  const [activeId, setActiveId] = useState("")
+  const [open, setOpen] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [indicator, setIndicator] = useState({ top: 0, height: 0, visible: false })
-  const listRef = useRef<HTMLDivElement>(null)
-  const activeRef = useRef<HTMLAnchorElement>(null)
-  const ulRef = useRef<HTMLUListElement>(null)
+  const listId = useId()
+  const listRef = useRef<HTMLUListElement>(null)
+  const location = useLocation()
   const t = useT()
 
   useEffect(() => {
-    const container = document.querySelector(containerSelector)
-    if (!container) return
-
-    const elements = container.querySelectorAll("h2, h3")
-    const items: TocItem[] = Array.from(elements)
-      .filter((el) => el.id)
-      .map((el) => ({
-        id: el.id,
-        text: el.textContent || "",
-        level: parseInt(el.tagName.charAt(1)),
-      }))
-
-    setHeadings(items)
+    const frame = requestAnimationFrame(() => {
+      const container = document.querySelector(containerSelector)
+      setHeadings(Array.from(container?.querySelectorAll("h2[id], h3[id]") ?? []).map(el => ({
+        id: el.id, text: el.textContent ?? "", level: Number(el.tagName[1]),
+      })))
+    })
+    return () => cancelAnimationFrame(frame)
   }, [containerSelector])
 
   useEffect(() => {
-    if (headings.length === 0) return
-
-    function onScroll() {
-      const offset = 100
+    if (!headings.length) return
+    let frame = 0
+    const measure = () => {
+      frame = 0
+      const firstHeading = document.getElementById(headings[0]!.id)
+      const offset = (firstHeading ? parseFloat(getComputedStyle(firstHeading).scrollMarginTop) || 0 : 0) + 20
       let current = ""
       for (const heading of headings) {
-        const el = document.getElementById(heading.id)
-        if (el && el.getBoundingClientRect().top <= offset) {
-          current = heading.id
-        }
+        if ((document.getElementById(heading.id)?.getBoundingClientRect().top ?? Infinity) <= offset) current = heading.id
       }
       setActiveId(current)
-
-      // Reading progress
-      const prose = document.querySelector(containerSelector)
-      if (prose) {
-        const rect = prose.getBoundingClientRect()
-        const total = rect.height - window.innerHeight
-        if (total > 0) {
-          const scrolled = Math.min(Math.max(-rect.top / total, 0), 1)
-          setProgress(scrolled)
-        }
-      }
+      const rect = document.querySelector(containerSelector)?.getBoundingClientRect()
+      if (rect) setProgress(rect.height <= window.innerHeight ? 1 : Math.min(Math.max(-rect.top / (rect.height - window.innerHeight), 0), 1))
     }
-
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [headings])
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure) }
+    schedule()
+    window.addEventListener("scroll", schedule, { passive: true })
+    window.addEventListener("resize", schedule)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", schedule)
+      window.removeEventListener("resize", schedule)
+    }
+  }, [headings, containerSelector])
 
   useEffect(() => {
-    const container = listRef.current
-    const active = activeRef.current
-    const ul = ulRef.current
-    if (!container || !active || !ul) {
-      setIndicator((prev) => ({ ...prev, visible: false }))
-      return
-    }
+    const active = listRef.current?.querySelector<HTMLElement>('[aria-current="location"]')
+    const list = listRef.current
+    if (!active || !list) return
+    const itemRect = active.getBoundingClientRect(), listRect = list.getBoundingClientRect()
+    if (itemRect.top < listRect.top) list.scrollTop += itemRect.top - listRect.top
+    else if (itemRect.bottom > listRect.bottom) list.scrollTop += itemRect.bottom - listRect.bottom
+  }, [activeId, open])
 
-    const containerRect = container.getBoundingClientRect()
-    const activeRect = active.getBoundingClientRect()
+  if (!headings.length) return null
 
-    // Auto-scroll TOC list
-    if (activeRect.top < containerRect.top) {
-      container.scrollTop += activeRect.top - containerRect.top - 8
-    } else if (activeRect.bottom > containerRect.bottom) {
-      container.scrollTop += activeRect.bottom - containerRect.bottom + 8
-    }
-
-    // Update indicator position relative to ul
-    const ulRect = ul.getBoundingClientRect()
-    setIndicator({
-      top: activeRect.top - ulRect.top,
-      height: activeRect.height,
-      visible: true,
-    })
-  }, [activeId])
-
-  if (headings.length === 0) return null
-
-  return (
-    <nav className="ml-auto hidden h-full w-60 2xl:block" aria-label="Table of contents">
-      <div className="sticky top-20 w-full pr-2">
-        <div className="flex items-center gap-2 mb-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 -ml-2 shrink-0"
-            onClick={() => setOpen(!open)}
-            aria-expanded={open}
-            aria-label={t.components.tableOfContents}
-          >
-            <ChevronRight
-              className={`size-4 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
-            />
-            {t.components.tableOfContents}
-          </Button>
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="h-1 rounded-full bg-muted flex-1 overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-[width] duration-150 ease-out"
-                style={{ width: `${Math.round(progress * 100)}%` }}
-              />
-            </div>
-            <span className="text-xs text-muted-foreground tabular-nums shrink-0">
-              {Math.round(progress * 100)}%
-            </span>
-          </div>
-        </div>
-        <div
-          className="grid transition-[grid-template-rows] duration-200 ease-in-out"
-          style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
-        >
-          <div ref={listRef} className="overflow-y-auto max-h-[calc(100vh-8rem)] scrollbar-thin">
-            <ul ref={ulRef} className="relative space-y-1.5 text-sm border-l">
-              <span
-                className="absolute left-0 w-0.5 bg-primary rounded-full transition-all duration-200 ease-out"
-                style={{
-                  top: indicator.top,
-                  height: indicator.height,
-                  opacity: indicator.visible ? 1 : 0,
-                }}
-              />
-              {headings.map((heading) => (
-                <li key={heading.id}>
-                  <a
-                    ref={activeId === heading.id ? activeRef : undefined}
-                    href={`#${heading.id}`}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth" })
-                    }}
-                    className={`block truncate py-0.5 transition-colors hover:text-foreground ${
-                      heading.level === 3 ? "pl-6" : "pl-3"
-                    } ${
-                      activeId === heading.id
-                        ? "text-primary font-medium"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {heading.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+  return <nav className="post-toc-panel" aria-label={t.components.tableOfContents}>
+    <div className="flex items-center gap-3">
+      <Button className="post-toc-toggle gap-2" variant="ghost" size="sm" aria-expanded={open} aria-controls={listId} onClick={() => setOpen(value => !value)}>
+        {t.components.tableOfContents}<ChevronDown className={`size-4 transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`} />
+      </Button>
+      <span className="post-toc-desktop-title text-sm font-medium">{t.components.tableOfContents}</span>
+      <div className="ml-auto h-1 flex-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={t.components.readingProgress} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
+        <div className="h-full bg-primary" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
-    </nav>
-  )
+      <span className="text-xs text-muted-foreground tabular-nums">{Math.round(progress * 100)}%</span>
+    </div>
+    <ul ref={listRef} id={listId} className="post-toc-list scrollbar-thin" data-open={open}>
+      {headings.map(heading => <li key={heading.id}>
+        <Link to={{ pathname: location.pathname, search: location.search, hash: `#${heading.id}` }} preventScrollReset
+          aria-current={activeId === heading.id ? "location" : undefined}
+          onClick={() => { if (!window.matchMedia("(min-width: 1280px)").matches) setOpen(false) }}
+          className={`block border-l-2 py-1.5 text-sm break-words transition-colors hover:text-foreground ${heading.level === 3 ? "pl-5" : "pl-3"} ${activeId === heading.id ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground"}`}>
+          {heading.text}
+        </Link>
+      </li>)}
+    </ul>
+  </nav>
 }
