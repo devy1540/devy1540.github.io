@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react"
 import { Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,7 +13,7 @@ import { localizePath } from "@/lib/i18n-routing"
 import { useLocation, useNavigate } from "react-router-dom"
 import type { Language } from "@/i18n"
 
-export function LanguageToggle() {
+export function LanguageToggle(buttonProps: ComponentProps<typeof Button> = {}) {
   const { language, setLanguage, t } = useLanguage()
   const location = useLocation()
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export function LanguageToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={t.components.toggleLanguage}>
+        <Button {...buttonProps} variant="ghost" size="icon" aria-label={t.components.toggleLanguage}>
           <Languages className="size-4" />
         </Button>
       </DropdownMenuTrigger>
