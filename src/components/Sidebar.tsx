@@ -7,6 +7,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -58,13 +59,19 @@ function SidebarContents() {
     }, 300)
   }
 
-  const navItems = [
+  const readingItems = [
     { label: t.common.home, to: localizePath("/", language), basePath: "/", icon: navIcons.home },
     { label: t.common.posts, to: localizePath("/posts", language), basePath: "/posts", icon: navIcons.posts },
     { label: t.common.series, to: localizePath("/series", language), basePath: "/series", icon: navIcons.series },
     { label: t.common.tags, to: localizePath("/tags", language), basePath: "/tags", icon: navIcons.tags },
-    { label: t.common.analytics, to: localizePath("/analytics", language), basePath: "/analytics", icon: navIcons.analytics },
+  ]
+  const blogItems = [
     { label: t.common.about, to: localizePath("/about", language), basePath: "/about", icon: navIcons.about },
+    { label: t.common.analytics, to: localizePath("/analytics", language), basePath: "/analytics", icon: navIcons.analytics },
+  ]
+  const navGroups = [
+    { key: "reading", label: t.components.readingGroup, items: readingItems },
+    { key: "blog", label: t.components.blogGroup, items: blogItems },
   ]
 
   const actions = [
@@ -102,13 +109,18 @@ function SidebarContents() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="pb-0">
           <SidebarGroupContent>
-            <SidebarMenu className="mb-2">
+            <SidebarMenu>
               <SidebarMenuItem><SearchCommandTrigger variant="sidebar" /></SidebarMenuItem>
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {navGroups.map(group => <SidebarGroup key={group.key} role="group" aria-label={group.label} className="py-1">
+          <SidebarGroupLabel asChild className="group-data-[collapsible=icon]:pointer-events-none"><h2>{group.label}</h2></SidebarGroupLabel>
+          <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {group.items.map((item) => (
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
                     asChild
@@ -133,7 +145,7 @@ function SidebarContents() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {isAdmin && (
+              {isAdmin && group.key === "blog" && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="관리자">
                     <NavLink to="/admin" onClick={(e) => handleMobileNav(e, "/admin")}>
@@ -145,7 +157,7 @@ function SidebarContents() {
               )}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup>)}
       </SidebarContent>
 
       <SidebarFooter className="gap-0 p-2">

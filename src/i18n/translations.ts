@@ -204,6 +204,8 @@ export interface Translations {
     searchPlaceholder: string
     noResults: string
     postsGroup: string
+    readingGroup: string
+    blogGroup: string
     themeLight: string
     themeDark: string
     themeSystem: string
@@ -451,6 +453,8 @@ export const ko: Translations = {
     searchPlaceholder: "글 검색...",
     noResults: "검색 결과가 없습니다.",
     postsGroup: "글",
+    readingGroup: "읽기",
+    blogGroup: "블로그",
     themeLight: "라이트",
     themeDark: "다크",
     themeSystem: "시스템",
@@ -698,6 +702,8 @@ export const en: Translations = {
     searchPlaceholder: "Search posts...",
     noResults: "No results found.",
     postsGroup: "Posts",
+    readingGroup: "Reading",
+    blogGroup: "Blog",
     themeLight: "Light",
     themeDark: "Dark",
     themeSystem: "System",
