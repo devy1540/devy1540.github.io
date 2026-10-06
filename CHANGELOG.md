@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.2](https://github.com/devy1540/devy1540.github.io/compare/v1.31.1...v1.31.2) (2026-10-06)
+
+
+### 버그 수정
+
+* **ui:** 사이드바 툴팁 이벤트 연결 통일 ([#234](https://github.com/devy1540/devy1540.github.io/issues/234)) ([a1d3ccf](https://github.com/devy1540/devy1540.github.io/commit/a1d3ccf9ee57e026a30a65a68b7dd034bfa9aac6))
+
 ## [1.31.1](https://github.com/devy1540/devy1540.github.io/compare/v1.31.0...v1.31.1) (2026-10-06)
 
 
