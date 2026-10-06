@@ -29,7 +29,9 @@ export class PageViewsClient {
   private readonly storage: () => Storage | undefined
   private readonly request: typeof fetch
   constructor(url: string | undefined, storage: () => Storage | undefined = () => window.sessionStorage, request: typeof fetch = fetch) {
-    this.url = url; this.storage = storage; this.request = request
+    this.url = url; this.storage = storage
+    // 브라우저의 fetch에 클라이언트 객체가 this로 전달되지 않도록 호출한다.
+    this.request = (input, init) => request(input, init)
   }
 
   private readCache() {
