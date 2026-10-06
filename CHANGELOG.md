@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.3](https://github.com/devy1540/devy1540.github.io/compare/v1.31.2...v1.31.3) (2026-10-06)
+
+
+### 리팩터링
+
+* **ui:** 단축키 버튼을 더보기로 이동 ([#236](https://github.com/devy1540/devy1540.github.io/issues/236)) ([6541f83](https://github.com/devy1540/devy1540.github.io/commit/6541f836deb02d9c710dfa2a6bb974a255605c45))
+
 ## [1.31.2](https://github.com/devy1540/devy1540.github.io/compare/v1.31.1...v1.31.2) (2026-10-06)
 
 
