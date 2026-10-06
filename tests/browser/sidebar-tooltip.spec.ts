@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test"
 
-const footerLabels = ["테마 변경", "색상 테마 변경", "언어 변경", "단축키", "블로그 정보 더보기"]
+const footerLabels = ["테마 변경", "색상 테마 변경", "언어 변경", "블로그 정보 더보기"]
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
@@ -37,7 +37,7 @@ for (const collapsed of [false, true]) {
   })
 }
 
-test("tooltip composition preserves menu and dialog triggers and returns keyboard focus", async ({ page }) => {
+test("tooltip composition preserves menu triggers and returns keyboard focus", async ({ page }) => {
   await page.goto("/")
   for (const label of footerLabels) {
     const trigger = page.getByRole("button", { name: label, exact: true })
@@ -45,7 +45,7 @@ test("tooltip composition preserves menu and dialog triggers and returns keyboar
     const tooltip = page.getByRole("tooltip", { name: label, exact: true })
     await expect(tooltip).toHaveText(label)
     await page.keyboard.press("Enter")
-    const popup = label === "단축키" ? page.getByRole("dialog", { name: label, exact: true }) : page.getByRole("menu")
+    const popup = page.getByRole("menu")
     await expect(popup).toBeVisible()
     await expect(tooltip).toBeHidden()
     await page.keyboard.press("Escape")

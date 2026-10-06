@@ -1,6 +1,6 @@
-import type { ComponentProps, MouseEvent } from "react"
+import { useRef, useState, type ComponentProps, type MouseEvent } from "react"
 import { NavLink } from "react-router-dom"
-import { Ellipsis, ShieldCheck } from "lucide-react"
+import { Ellipsis, Keyboard, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
 import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
+import { useKeyboardShortcuts } from "@/components/keyboard-shortcuts-context"
 
 type SidebarInfoMenuProps = ComponentProps<typeof Button> & {
   onNavigate: (event: MouseEvent<HTMLAnchorElement>, to: string) => void
@@ -21,15 +22,39 @@ export function SidebarInfoMenu({ onNavigate, ...buttonProps }: SidebarInfoMenuP
   const { language, t } = useLanguage()
   const hydrated = useIsHydrated()
   const privacyPath = localizePath("/privacy", language)
+  const { openShortcuts } = useKeyboardShortcuts()
+  const [open, setOpen] = useState(false)
+  const openingShortcuts = useRef(false)
+
+  function showShortcuts() {
+    openingShortcuts.current = true
+    setOpen(false)
+    openShortcuts()
+  }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button {...buttonProps} variant="ghost" size="icon" disabled={!hydrated} aria-label={t.components.blogInfo}>
+        <Button {...buttonProps} data-sidebar-info-trigger variant="ghost" size="icon" disabled={!hydrated} aria-label={t.components.blogInfo}>
           <Ellipsis className="size-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="end" sideOffset={8} collisionPadding={8} className="w-56" aria-label={t.components.blogInfo}>
+      <DropdownMenuContent side="top" align="end" sideOffset={8} collisionPadding={8} className="w-56" aria-label={t.components.blogInfo}
+        onCloseAutoFocus={event => {
+          if (!openingShortcuts.current) return
+          event.preventDefault()
+          openingShortcuts.current = false
+        }}
+        onKeyDown={event => {
+          if (event.key !== "?" || event.metaKey || event.ctrlKey || event.altKey) return
+          event.preventDefault()
+          event.stopPropagation()
+          showShortcuts()
+        }}>
+        <DropdownMenuItem className="min-h-11" onSelect={showShortcuts}>
+          <Keyboard className="size-4" />
+          {t.components.keyboardShortcuts}
+        </DropdownMenuItem>
         <DropdownMenuItem asChild className="min-h-11">
           <NavLink to={privacyPath} onClick={event => onNavigate(event, privacyPath)}>
             <ShieldCheck className="size-4" />
