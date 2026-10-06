@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.1](https://github.com/devy1540/devy1540.github.io/compare/v1.31.0...v1.31.1) (2026-10-06)
+
+
+### 버그 수정
+
+* **blog:** 브라우저 조회수 요청 오류 수정 ([#232](https://github.com/devy1540/devy1540.github.io/issues/232)) ([2326071](https://github.com/devy1540/devy1540.github.io/commit/2326071ee78010194afad845758e1be383c353e9))
+
 ## [1.31.0](https://github.com/devy1540/devy1540.github.io/compare/v1.30.1...v1.31.0) (2026-10-02)
 
 
