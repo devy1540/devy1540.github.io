@@ -33,6 +33,7 @@ for (const scenario of [
     await expect(menu).toBeHidden()
     await expect(trigger).toBeFocused()
     await page.keyboard.press("Enter")
+    await page.keyboard.press("ArrowDown")
     await expect(policy).toBeFocused()
     await page.keyboard.press("Enter")
     await expect(page).toHaveURL(new RegExp(`${scenario.destination}$`))

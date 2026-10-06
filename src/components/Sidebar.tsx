@@ -19,7 +19,6 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
-import { KeyboardShortcuts } from "@/components/KeyboardShortcuts"
 import { SidebarInfoMenu } from "@/components/SidebarInfoMenu"
 import { useLanguage } from "@/i18n"
 import { useAdminAuth } from "@/lib/admin/useAdminAuth"
@@ -72,7 +71,6 @@ function SidebarContents() {
     { key: "theme", label: t.components.toggleTheme, element: <ThemeToggle /> },
     { key: "color", label: t.components.colorTheme, element: <ColorThemeSelector /> },
     { key: "language", label: t.components.toggleLanguage, element: <LanguageToggle /> },
-    { key: "shortcuts", label: t.components.keyboardShortcuts, element: <KeyboardShortcuts /> },
     { key: "info", label: t.components.blogInfo, element: <SidebarInfoMenu onNavigate={handleMobileNav} /> },
   ]
 

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { PanelLeft } from "lucide-react"
 import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 import { AppSidebar } from "@/components/Sidebar"
+import { KeyboardShortcutsProvider } from "@/components/KeyboardShortcuts"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SearchCommandProvider } from "@/components/SearchCommand"
 import { SearchCommandTrigger } from "@/components/SearchCommandTrigger"
@@ -52,7 +53,7 @@ function MobileHeader() {
   const { openMobile, setOpenMobile } = useSidebar()
   const hydrated = useIsHydrated()
   return <header data-mobile-header className="sticky top-0 z-40 flex h-12 items-center gap-2 bg-background px-4 md:hidden">
-    <Button disabled={!hydrated} variant="ghost" size="icon" className="size-11" aria-label={t.components.openMenu} aria-expanded={openMobile} onClick={() => setOpenMobile(!openMobile)}>
+    <Button data-mobile-menu-trigger disabled={!hydrated} variant="ghost" size="icon" className="size-11" aria-label={t.components.openMenu} aria-expanded={openMobile} onClick={() => setOpenMobile(!openMobile)}>
       <PanelLeft className="size-4" />
     </Button>
     <span className="font-bold text-lg tracking-tight">Devy</span>
@@ -66,26 +67,28 @@ export function RootLayout() {
   const pageKey = pathname.replace(/\/+$/, "") || "/"
   return (
     <SidebarProvider>
-      <SearchCommandProvider>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:shadow-lg">{t.common.skipToContent}</a>
-        <NavigationStatus />
-        <RoutePreloader />
-        <ScrollToTop />
-        <RouteAnalytics />
-        <RouteLanguageSync />
-        <Confetti />
-        <AppSidebar />
-        <SidebarInset>
-          <MobileHeader />
-          <LanguageSuggestionBanner />
-          <main id="main-content" tabIndex={-1} className="min-w-0 px-4 md:px-20 py-8">
-            <div key={pageKey} className="page-transition">
-              <Outlet />
-            </div>
-          </main>
-          <ScrollToTopButton />
-        </SidebarInset>
-      </SearchCommandProvider>
+      <KeyboardShortcutsProvider>
+        <SearchCommandProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:shadow-lg">{t.common.skipToContent}</a>
+          <NavigationStatus />
+          <RoutePreloader />
+          <ScrollToTop />
+          <RouteAnalytics />
+          <RouteLanguageSync />
+          <Confetti />
+          <AppSidebar />
+          <SidebarInset>
+            <MobileHeader />
+            <LanguageSuggestionBanner />
+            <main id="main-content" tabIndex={-1} className="min-w-0 px-4 md:px-20 py-8">
+              <div key={pageKey} className="page-transition">
+                <Outlet />
+              </div>
+            </main>
+            <ScrollToTopButton />
+          </SidebarInset>
+        </SearchCommandProvider>
+      </KeyboardShortcutsProvider>
     </SidebarProvider>
   )
 }
