@@ -15,7 +15,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ColorThemeSelector } from "@/components/ColorThemeSelector"
 import { LanguageToggle } from "@/components/LanguageToggle"
@@ -38,6 +38,10 @@ const navIcons = {
 } as const
 
 export function AppSidebar() {
+  return <TooltipProvider delayDuration={250}><SidebarContents /></TooltipProvider>
+}
+
+function SidebarContents() {
   const { pathname } = useLocation()
   const { language, t } = useLanguage()
   const { isAdmin } = useAdminAuth()
@@ -90,7 +94,7 @@ export function AppSidebar() {
           >
             Devy
           </NavLink>
-          <Tooltip delayDuration={250}>
+          <Tooltip>
             <TooltipTrigger asChild>
               <SidebarTrigger disabled={!hydrated} className="ml-auto size-8 shrink-0" aria-label={isMobile ? t.components.closeMenu : state === "expanded" ? t.components.collapseSidebar : t.components.expandSidebar} aria-expanded={isMobile ? openMobile : open} />
             </TooltipTrigger>
@@ -151,7 +155,7 @@ export function AppSidebar() {
           {actions.map(({ key, label, element }, index) => <div key={key} className="sidebar-action" style={{ "--action-index": index } as CSSProperties}>
             <Tooltip>
               <TooltipTrigger asChild>{element}</TooltipTrigger>
-              <TooltipContent side="top">{label}</TooltipContent>
+              <TooltipContent side={collapsed ? "right" : "top"}>{label}</TooltipContent>
             </Tooltip>
           </div>)}
         </div>

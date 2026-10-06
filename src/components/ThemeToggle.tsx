@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react"
 import { Sun, Moon, Monitor } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,14 +11,14 @@ import { useTheme } from "@/hooks/useTheme"
 import { analytics } from "@/lib/analytics"
 import { useT } from "@/i18n"
 
-export function ThemeToggle() {
+export function ThemeToggle(buttonProps: ComponentProps<typeof Button> = {}) {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const t = useT()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={t.components.toggleTheme}>
+        <Button {...buttonProps} variant="ghost" size="icon" aria-label={t.components.toggleTheme}>
           {resolvedTheme === "dark" ? (
             <Moon className="size-4" />
           ) : (

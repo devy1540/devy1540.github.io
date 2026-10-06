@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from "react"
+import { useEffect, useSyncExternalStore, type ComponentProps } from "react"
 import { readLocalSetting, writeLocalSetting } from "@/lib/browser-storage"
 import { PaletteIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -33,7 +33,7 @@ let currentColor: string | null = null
 const listeners = new Set<() => void>()
 function subscribe(callback: () => void) { listeners.add(callback); window.addEventListener("storage", callback); return () => { listeners.delete(callback); window.removeEventListener("storage", callback) } }
 function setColor(value: string) { currentColor = value; writeLocalSetting("color-theme", value); listeners.forEach(callback => callback()) }
-export function ColorThemeSelector() {
+export function ColorThemeSelector(buttonProps: ComponentProps<typeof Button> = {}) {
   const selected = useSyncExternalStore(subscribe, () => currentColor ?? readLocalSetting("color-theme") ?? "", () => "")
   useEffect(() => { applyColor(selected) }, [selected])
 
@@ -48,7 +48,7 @@ export function ColorThemeSelector() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={t.components.colorTheme}>
+        <Button {...buttonProps} variant="ghost" size="icon" aria-label={t.components.colorTheme}>
           <PaletteIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>

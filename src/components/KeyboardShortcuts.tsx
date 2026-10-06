@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ComponentProps } from "react"
 import { Keyboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -7,9 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { useT } from "@/i18n"
+import { cn } from "@/lib/utils"
 
 function Kbd({ children }: { children: string }) {
   return (
@@ -19,7 +21,7 @@ function Kbd({ children }: { children: string }) {
   )
 }
 
-export function KeyboardShortcuts() {
+export function KeyboardShortcuts({ className, ...buttonProps }: ComponentProps<typeof Button> = {}) {
   const [open, setOpen] = useState(false)
   const t = useT()
   const isMac = typeof navigator !== "undefined" && navigator.platform.toUpperCase().includes("MAC")
@@ -45,45 +47,45 @@ export function KeyboardShortcuts() {
   ]
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="size-8"
-        onClick={() => setOpen(true)}
-        aria-label={t.components.keyboardShortcuts}
-      >
-        <Keyboard className="size-4" />
-      </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t.components.keyboardShortcuts}</DialogTitle>
-            <DialogDescription className="sr-only">
-              {t.components.keyboardShortcuts}
-            </DialogDescription>
-          </DialogHeader>
-          <Separator />
-          <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-2">
-              {t.components.general}
-            </p>
-            {shortcuts.map((s) => (
-              <div key={s.description} className="flex items-center justify-between py-1.5">
-                <span className="text-sm">{s.description}</span>
-                <div className="flex items-center gap-1">
-                  {s.keys.map((key, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                      {i > 0 && <span className="text-xs text-muted-foreground">+</span>}
-                      <Kbd>{key}</Kbd>
-                    </span>
-                  ))}
-                </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          {...buttonProps}
+          variant="ghost"
+          size="icon"
+          className={cn("size-8", className)}
+          aria-label={t.components.keyboardShortcuts}
+        >
+          <Keyboard className="size-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t.components.keyboardShortcuts}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {t.components.keyboardShortcuts}
+          </DialogDescription>
+        </DialogHeader>
+        <Separator />
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-2">
+            {t.components.general}
+          </p>
+          {shortcuts.map((s) => (
+            <div key={s.description} className="flex items-center justify-between py-1.5">
+              <span className="text-sm">{s.description}</span>
+              <div className="flex items-center gap-1">
+                {s.keys.map((key, i) => (
+                  <span key={i} className="flex items-center gap-1">
+                    {i > 0 && <span className="text-xs text-muted-foreground">+</span>}
+                    <Kbd>{key}</Kbd>
+                  </span>
+                ))}
               </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
