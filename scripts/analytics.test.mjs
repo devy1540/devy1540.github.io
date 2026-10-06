@@ -6,6 +6,16 @@ import { PageViewsClient, parsePageViews } from "../src/lib/page-views-client.ts
 import { buildDailySeries, getPreviousComparableRange } from "../src/lib/analytics-data.ts"
 const data = { totalViews: 8, pages: { "/posts/example": 4 }, daily: [], meta: { cachedAt: "2026-09-30T00:00:00Z" } }
 const reply = () => Promise.resolve(new Response(JSON.stringify(data)))
+test("fetch is invoked without the analytics client as its receiver", async () => {
+  const client = new PageViewsClient("https://example.test", () => undefined, function (url) {
+    assert.equal(this, undefined)
+    assert.equal(url, "https://example.test")
+    return reply()
+  })
+  const result = await client.load()
+  assert.equal(result.isError, false)
+  assert.equal(result.data.totalViews, 8)
+})
 test("storage denial and corrupt caches do not discard a valid API response", async () => {
   for (const storage of [() => { throw new Error("denied") }, () => ({ getItem: () => "{broken", removeItem() {}, setItem() { throw new Error("denied") } })]) {
     const result = await new PageViewsClient("https://example.test", storage, reply).load()
