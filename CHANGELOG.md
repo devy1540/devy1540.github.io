@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.4](https://github.com/devy1540/devy1540.github.io/compare/v1.31.3...v1.31.4) (2026-10-06)
+
+
+### 리팩터링
+
+* **ui:** 사이드바 메뉴를 목적별로 분리 ([#238](https://github.com/devy1540/devy1540.github.io/issues/238)) ([73482f8](https://github.com/devy1540/devy1540.github.io/commit/73482f857c310f44a29aeb70a28f30a2799242c8))
+
 ## [1.31.3](https://github.com/devy1540/devy1540.github.io/compare/v1.31.2...v1.31.3) (2026-10-06)
 
 
