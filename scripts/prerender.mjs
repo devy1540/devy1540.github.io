@@ -41,7 +41,7 @@ function outputPathFor(routePath) {
 
 function withHead(templateHtml, route) {
   const fullTitle = toFullTitle(route.title)
-  const description = route.description || "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."
+  const description = route.description || "Devy의 기술 블로그입니다. 백엔드·클라우드 인프라·AI 개발과 운영에서 겪은 문제와 해결 과정을 기록합니다."
   const previewTitle = route.ogTitle || fullTitle
   const previewDescription = route.ogDescription || description
   const canonicalPath = route.canonicalPath || route.path

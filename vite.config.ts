@@ -7,6 +7,7 @@ import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 import { PROJECTS } from "./src/data/resume"
 import { imageAssetsPlugin } from "./scripts/image-assets"
 import { previewPagesPlugin } from "./scripts/preview-pages"
+import { ko, en } from "./src/i18n/translations"
 
 const BASE_URL = "https://dev.devy.dev"
 const LANGUAGES = ["ko", "en"] as const
@@ -97,6 +98,7 @@ function rssPlugin(): Plugin {
       function writeFeed(language: ContentLanguage) {
         const posts = readPosts(language)
         const isEnglish = language === "en"
+        const meta = (isEnglish ? en : ko).meta
 
         const items = posts.map((p) => `    <item>
       <title>${escapeXml(p.title)}</title>
@@ -109,9 +111,9 @@ function rssPlugin(): Plugin {
         const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Devy Archive</title>
+    <title>${escapeXml(meta.siteName)}</title>
     <link>${isEnglish ? `${BASE_URL}/en/` : BASE_URL}</link>
-    <description>${isEnglish ? "An archive of Devy's development and operations notes, organized around problem solving." : "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."}</description>
+    <description>${escapeXml(meta.defaultDescription)}</description>
     <language>${isEnglish ? "en" : "ko"}</language>
     <atom:link href="${isEnglish ? `${BASE_URL}/en/rss.xml` : `${BASE_URL}/rss.xml`}" rel="self" type="application/rss+xml"/>
 ${items.join("\n")}

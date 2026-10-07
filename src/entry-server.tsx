@@ -8,6 +8,7 @@ import type { ProjectDetail } from "./data/resume"
 import { getAllPosts } from "./lib/posts"
 import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
 import type { Language } from "./i18n"
+import { ko, en } from "./i18n/translations"
 export { preparePostContentForPrerender, getPostHydrationData } from "./lib/posts"
 
 export interface PrerenderRoute {
@@ -33,18 +34,16 @@ function toCanonicalPath(path: string) {
 function localizedStaticRoutes(language: Language): PrerenderRoute[] {
   const isEnglish = language === "en"
   const path = (basePath: string) => toCanonicalPath(localizePath(basePath, language))
-  const homeDescription = isEnglish
-    ? "An archive of Devy's development and operations notes, organized around problem solving."
-    : "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다."
+  const meta = (isEnglish ? en : ko).meta
   const postsDescription = isEnglish ? "All blog posts." : "개발하며 배운 것들을 정리한 글 목록입니다."
 
   return [
     {
       path: path("/"),
       language,
-      title: isEnglish ? "Backend and Infrastructure Engineering Notes" : "백엔드·인프라 개발 기록",
-      description: homeDescription,
-      ogTitle: "Devy Archive",
+      title: meta.homeTitle,
+      description: meta.defaultDescription,
+      ogTitle: meta.siteName,
       alternates: {
         ko: "/",
         en: "/en/",
