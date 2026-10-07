@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.5](https://github.com/devy1540/devy1540.github.io/compare/v1.31.4...v1.31.5) (2026-10-07)
+
+
+### 버그 수정
+
+* **seo:** 블로그 이름과 검색 메타데이터 보강 ([#240](https://github.com/devy1540/devy1540.github.io/issues/240)) ([f1866ab](https://github.com/devy1540/devy1540.github.io/commit/f1866ab880ea866bae1619998606407a8b9fa119))
+
 ## [1.31.4](https://github.com/devy1540/devy1540.github.io/compare/v1.31.3...v1.31.4) (2026-10-06)
 
 
