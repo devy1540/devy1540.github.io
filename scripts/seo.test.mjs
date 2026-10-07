@@ -71,12 +71,45 @@ test("all published articles include visible content and matching React-owned st
   }
 })
 
-test("home, collection, and project metadata is rendered by the active React page", () => {
+test("localized homes identify one website while preserving each blog's canonical URL", () => {
+  const homes = [...pages].filter(([url]) => /^\/(en\/)?$/.test(new URL(url).pathname))
+  assert.equal(homes.length, 2)
+  let websiteIdentity
+
+  for (const [url, html] of homes) {
+    const documents = schemas(html)
+    assert.equal(documents.length, 2, url)
+    const websites = documents.filter((document) => document["@type"] === "WebSite")
+    const blogs = documents.filter((document) => document["@type"] === "Blog")
+    assert.equal(websites.length, 1, url)
+    assert.equal(blogs.length, 1, url)
+
+    const website = websites[0]
+    assert.equal(website.url, `${origin}/`, `localized path incorrectly identifies a separate website: ${url}`)
+    assert.equal(website["@id"], `${origin}/#website`, url)
+    assert.equal(website.name, "Devy Archive", url)
+    assert.equal(website.name, text(html.match(/<meta property="og:site_name" content="([^"]+)"/)?.[1] ?? ""), `site name and Open Graph disagree: ${url}`)
+    const body = html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] ?? ""
+    const visibleContent = text(body.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, ""))
+    assert.ok(visibleContent.includes(website.name), `preferred site name is missing from the visible home: ${url}`)
+    assert.ok(Array.isArray(website.alternateName), url)
+    for (const name of ["Devy 블로그", "Devy 기술 블로그", "Devy Blog", "dev.devy.dev"]) {
+      assert.ok(website.alternateName.includes(name), `missing recognizable site name ${name}: ${url}`)
+    }
+    if (websiteIdentity) assert.deepEqual(website, websiteIdentity, `language variants identify different websites: ${url}`)
+    else websiteIdentity = website
+
+    assert.equal(blogs[0].url, url)
+    assert.equal(blogs[0].inLanguage, new URL(url).pathname.startsWith("/en/") ? "en" : "ko-KR", url)
+    assert.ok(!schemas(html.split("</head>")[0]).length, `unmanaged head schema: ${url}`)
+  }
+})
+
+test("collection and project metadata is rendered by the active React page", () => {
   for (const [url, html] of pages) {
     const pathname = new URL(url).pathname
-    const expected = /^\/(en\/)?$/.test(pathname) ? "Blog"
-      : /^\/(en\/)?posts\/$/.test(pathname) ? "CollectionPage"
-        : pathname.includes("/about/projects/") ? "WebPage" : null
+    const expected = /^\/(en\/)?posts\/$/.test(pathname) ? "CollectionPage"
+      : pathname.includes("/about/projects/") ? "WebPage" : null
     if (!expected) continue
     const documents = schemas(html)
     assert.equal(documents.length, 1, url)

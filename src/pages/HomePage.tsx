@@ -10,7 +10,7 @@ import { ArrowRight, Eye } from "lucide-react"
 import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { StructuredData } from "@/components/StructuredData"
-import { blogStructuredData } from "@/lib/structured-data"
+import { blogStructuredData, websiteStructuredData } from "@/lib/structured-data"
 
 export function HomePage() {
   const { language, t } = useLanguage()
@@ -44,6 +44,7 @@ export function HomePage() {
 
   return (
     <PageContainer>
+      <StructuredData data={websiteStructuredData()} />
       <StructuredData data={blogStructuredData(posts, language, t.meta.defaultDescription)} />
       {/* Hero */}
       <section className="mb-10">

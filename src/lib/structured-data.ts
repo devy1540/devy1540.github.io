@@ -8,6 +8,17 @@ const BASE_URL = "https://dev.devy.dev"
 const SITE_NAME = "Devy Archive"
 const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-5`
 
+export function websiteStructuredData() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${BASE_URL}/#website`,
+    name: SITE_NAME,
+    alternateName: ["Devy 블로그", "Devy 기술 블로그", "Devy Blog", "dev.devy.dev"],
+    url: `${BASE_URL}/`,
+  }
+}
+
 function articleText(markdown: string) {
   return markdown
     .replace(/```[\s\S]*?```/g, "")

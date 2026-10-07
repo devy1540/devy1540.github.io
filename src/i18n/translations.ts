@@ -276,7 +276,7 @@ export const ko: Translations = {
   },
   home: {
     title: "What works, and why.",
-    subtitle: "무엇이 통했고, 왜 그랬는지 기록합니다.",
+    subtitle: "Devy Archive는 Devy의 기술 블로그입니다. 백엔드·인프라·AI를 개발하고 운영하며 배운 것을 기록합니다.",
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "인기 글",
@@ -493,8 +493,8 @@ export const ko: Translations = {
   },
   meta: {
     siteName: "Devy Archive",
-    homeTitle: "백엔드·인프라 개발 기록",
-    defaultDescription: "Devy의 개발과 운영 기록을 문제 해결 중심으로 모아둔 아카이브입니다.",
+    homeTitle: "Devy 블로그 — 백엔드·인프라·AI 개발 기록",
+    defaultDescription: "Devy의 기술 블로그입니다. 백엔드·클라우드 인프라·AI 개발과 운영에서 겪은 문제와 해결 과정을 기록합니다.",
   },
 }
 
@@ -525,7 +525,7 @@ export const en: Translations = {
   },
   home: {
     title: "What works, and why.",
-    subtitle: "Documenting what worked, and why.",
+    subtitle: "Devy Archive is Devy's technical blog. Lessons from building and operating backend systems, infrastructure, and AI.",
     viewPosts: "View Posts",
     introduction: "About",
     popularPosts: "Popular Posts",
@@ -742,7 +742,7 @@ export const en: Translations = {
   },
   meta: {
     siteName: "Devy Archive",
-    homeTitle: "Backend and Infrastructure Engineering Notes",
-    defaultDescription: "An archive of Devy's development and operations notes, organized around problem solving.",
+    homeTitle: "Devy Blog — Backend, Infrastructure, and AI Engineering",
+    defaultDescription: "Devy's technical blog about backend engineering, cloud infrastructure, and AI. Notes on development and operations problems and how they were solved.",
   },
 }
