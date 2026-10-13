@@ -386,7 +386,7 @@ html.theme-transition *::after {
 }
 
 .page-container-article {
-  --page-container-max-width: 72rem;
+  --page-container-max-width: 57rem;
 }
 
 .page-container-wide {
@@ -394,9 +394,10 @@ html.theme-transition *::after {
 }
 
 /* 글 본문과 목차를 화면 크기에 맞춰 배치한다. */
-.post-page-layout { display: flex; flex-direction: column; gap: 1.5rem; }
-.page-container-article { --page-container-max-width: 50rem; }
+.post-page-layout { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 72rem; margin-inline: auto; }
 .post-toc-layer { order: -1; position: sticky; top: 3rem; z-index: 30; }
+/* SSR 본문에 목차 대상이 있으면 hydration 전부터 접힌 목차 높이를 확보한다. */
+.post-page-layout:has(.prose h2[id], .prose h3[id]) .post-toc-layer { min-height: 3rem; }
 .post-toc-panel { padding: .5rem .75rem; background: var(--background); }
 .post-toc-desktop-title { display: none; }
 .post-toc-list { display: none; margin-top: .75rem; max-height: 50vh; overflow-y: auto; }
@@ -408,7 +409,7 @@ html.theme-transition *::after {
   .prose h2, .prose h3 { scroll-margin-top: 5rem; }
 }
 @media (min-width: 1280px) {
-  .post-page-layout { display: grid; grid-template-columns: minmax(0, 50rem) 13rem; gap: 2rem; max-width: 65rem; margin-inline: auto; align-items: start; }
+  .post-page-layout { display: grid; grid-template-columns: minmax(0, 1fr) 13rem; gap: 2rem; align-items: start; }
   .post-article-centered { grid-column: 1; grid-row: 1; }
   .post-toc-layer { grid-column: 2; grid-row: 1; top: 2rem; }
   .post-toc-panel { padding: .75rem; }

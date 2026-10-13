@@ -219,11 +219,11 @@ export function AnalyticsPage() {
   ]
 
   return (
-    <PageContainer>
+    <PageContainer className="@container/analytics">
       <section className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight mb-2">{t.common.analytics}</h1>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <p className="text-muted-foreground flex-1">{t.analytics.description}</p>
+        <div className="flex flex-col gap-3 @min-[40rem]/analytics:flex-row @min-[40rem]/analytics:items-center">
+          <p className="min-w-0 text-muted-foreground flex-1">{t.analytics.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <ToggleGroup
               type="single"
@@ -260,14 +260,14 @@ export function AnalyticsPage() {
       </section>
 
       {/* Summary Cards */}
-      <section className="grid grid-cols-2 gap-3 mb-8 md:grid-cols-4">
+      <section className="grid grid-cols-1 gap-3 mb-8 @min-[22rem]/analytics:grid-cols-2 @min-[48rem]/analytics:grid-cols-4">
         {summaryCards.map((card) => (
-          <Card key={card.label} className="py-4">
+          <Card key={card.label} className="min-w-0 py-4">
             <CardContent className="flex items-center gap-3 px-4">
               <card.icon className="size-5 text-muted-foreground shrink-0" />
-              <div>
-                <p className="text-xs text-muted-foreground">{card.label}</p>
-                <p className="text-2xl font-bold tabular-nums">{card.value}</p>
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground wrap-anywhere">{card.label}</p>
+                <p className="text-2xl font-bold tabular-nums break-all">{card.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -285,21 +285,21 @@ export function AnalyticsPage() {
 
       {/* Traffic Momentum */}
       <section className="mb-8">
-        <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
             {t.analytics.trafficMomentum}
           </h2>
           <Badge variant="outline">{rangeDays === 7 ? t.analytics.range7d : rangeDays === 14 ? t.analytics.range14d : t.analytics.range30d}</Badge>
         </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 @min-[22rem]/analytics:grid-cols-2 @min-[48rem]/analytics:grid-cols-4">
           {momentumCards.map((card) => (
-            <Card key={card.label} className="py-4">
+            <Card key={card.label} className="min-w-0 py-4">
               <CardContent className="px-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
-                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                  <p className="min-w-0 text-xs text-muted-foreground wrap-anywhere">{card.label}</p>
                   <card.icon className="size-4 text-muted-foreground shrink-0" />
                 </div>
-                <p className="text-2xl font-bold tabular-nums">{card.value}</p>
+                <p className="text-2xl font-bold tabular-nums break-all">{card.value}</p>
                 <p className="mt-1 text-xs text-muted-foreground truncate">{card.detail}</p>
               </CardContent>
             </Card>
@@ -309,14 +309,14 @@ export function AnalyticsPage() {
 
       {/* Content Insights */}
       <section className="mb-8">
-        <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
             {t.analytics.contentInsights}
           </h2>
           <Badge variant="secondary">{t.analytics.allTimeBasis}</Badge>
         </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Card>
+        <div className="grid gap-4 @min-[48rem]/analytics:grid-cols-2">
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 {t.analytics.fastestPosts}
@@ -353,7 +353,7 @@ export function AnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 {t.analytics.tagPerformance}
@@ -366,9 +366,9 @@ export function AnalyticsPage() {
                 <div className="space-y-3">
                   {tagPerformance.map((item) => (
                     <div key={item.tag}>
-                      <div className="mb-1 flex items-center gap-2">
-                        <span className="text-sm font-medium truncate">{item.tag}</span>
-                        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                      <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="min-w-0 text-sm font-medium truncate">{item.tag}</span>
+                        <span className="ml-auto text-xs text-muted-foreground tabular-nums wrap-anywhere">
                           {formatMetric(item.views)} · {formatMetric(item.averageViews, 1)} {t.analytics.averageViews}
                         </span>
                       </div>
@@ -385,7 +385,7 @@ export function AnalyticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2">
+          <Card className="min-w-0 @min-[48rem]/analytics:col-span-2">
             <CardHeader>
               <CardTitle className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 {t.analytics.seriesPerformance}
@@ -395,12 +395,12 @@ export function AnalyticsPage() {
               {seriesPerformance.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t.analytics.noSeriesData}</p>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-3 @min-[32rem]/analytics:grid-cols-2 @min-[64rem]/analytics:grid-cols-5">
                   {seriesPerformance.map((item) => (
-                    <div key={item.series} className="rounded-md border p-3">
+                    <div key={item.series} className="min-w-0 rounded-md border p-3">
                       <p className="mb-2 line-clamp-2 min-h-10 text-sm font-medium">{item.series}</p>
-                      <p className="text-xl font-bold tabular-nums">{formatMetric(item.views)}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xl font-bold tabular-nums break-all">{formatMetric(item.views)}</p>
+                      <p className="text-xs text-muted-foreground wrap-anywhere">
                         {item.count} {t.analytics.postsCount} · {formatMetric(item.averageViews, 1)} {t.analytics.averageViews}
                       </p>
                     </div>

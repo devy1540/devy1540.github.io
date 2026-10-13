@@ -61,7 +61,7 @@ function CompanySection({
   const t = useT()
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-4 md:gap-8">
+    <div className="grid grid-cols-1 gap-4 @min-[48rem]/about:grid-cols-[160px_minmax(0,1fr)] @min-[48rem]/about:gap-8">
       {/* Left: Company Info */}
       <div>
         <h3 className="font-bold">{company.name}</h3>
@@ -70,7 +70,7 @@ function CompanySection({
       </div>
 
       {/* Right: Projects */}
-      <div className="space-y-3">
+      <div className="min-w-0 space-y-3">
         {company.projects.map((ps, index) => {
           const project = projects.find((p) => p.slug === ps.slug)
           if (!project) return null
@@ -214,17 +214,17 @@ export function AboutPage() {
   }
 
   return (
-    <PageContainer variant="wide" className="space-y-10">
+    <PageContainer variant="wide" className="@container/about space-y-10">
       {/* Profile Header */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <Avatar className="h-24 w-24">
+      <div className="flex flex-col items-center gap-6 @min-[30rem]/about:flex-row @min-[30rem]/about:items-start">
+        <Avatar className="h-24 w-24 shrink-0">
           <AvatarImage src="https://github.com/devy1540.png" alt={resume.profile.name} />
           <AvatarFallback className="text-2xl">HJ</AvatarFallback>
         </Avatar>
-        <div className="text-center sm:text-left space-y-2">
+        <div className="min-w-0 w-full space-y-2 text-center @min-[30rem]/about:flex-1 @min-[30rem]/about:text-left">
           <h1 className="text-3xl font-bold tracking-tight">{resume.profile.name}</h1>
           <p className="text-lg text-muted-foreground">{t.about.description}</p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground justify-center sm:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground @min-[30rem]/about:justify-start">
             <a href={`mailto:${resume.profile.email}`} className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
               <Mail className="h-3.5 w-3.5" />
               {resume.profile.email}
@@ -234,7 +234,7 @@ export function AboutPage() {
               {displayPhone}
             </a>
           </div>
-          <div className="flex gap-2 justify-center sm:justify-start">
+          <div className="flex flex-wrap justify-center gap-2 @min-[30rem]/about:justify-start">
             <Button asChild variant="outline" size="sm">
               <a href={resume.profile.github} target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
@@ -279,7 +279,7 @@ export function AboutPage() {
       {/* Development approach */}
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t.about.aiNativeDevelopment}</h2>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 @min-[48rem]/about:grid-cols-3">
           {resume.aiNativeWorkflow.map((item) => (
             <div key={item.title} className="rounded-lg border bg-card p-4">
               <h3 className="font-semibold">{item.title}</h3>

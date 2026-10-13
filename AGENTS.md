@@ -178,7 +178,9 @@ pnpm test:loading # 빌드 후 로딩 분리, 재시도, SSG 회귀 검사
 
 ### Reader and browser regression checks
 - `scripts/image-assets.ts`에서 본문 이미지의 WebP와 크기 메타데이터를 생성합니다. 원본 파일은 유지합니다.
-- 글 본문은 최대 800px, 1280px 이상에서 옆 목차, 작은 화면에서 접는 목차를 사용합니다.
+- 글 본문과 목차 전체는 최대 1152px로 중앙 정렬합니다. 1280px 이상에서 본문 최대 912px + 간격 32px + 목차 208px로 배치하고, 작은 화면에서는 접는 목차를 사용합니다.
+- SSR 본문에 목차 대상 제목이 있으면 접힌 목차의 48px 높이를 hydration 전부터 확보합니다.
+- 태그·시리즈·소개·분석의 열 전환은 페이지나 목록의 실제 가용폭을 기준으로 합니다.
 - `useHydratedSearchParams`로 첫 렌더를 SSG와 맞춘 후 필터를 적용합니다. 404 프리렌더 표시가 있으면 클라이언트도 404 라우트로 시작합니다.
 - `pnpm preview`는 GitHub Pages의 실제 404 응답을 재현합니다.
 - 이동·hydration·접근성 변경 후 `pnpm build`, `pnpm test:browser`를 실행합니다.
