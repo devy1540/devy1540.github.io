@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.1](https://github.com/devy1540/devy1540.github.io/compare/v1.32.0...v1.32.1) (2026-10-13)
+
+
+### 버그 수정
+
+* **seo:** 번역 오류와 게시글 수정일 정정 ([#246](https://github.com/devy1540/devy1540.github.io/issues/246)) ([5a4a5ad](https://github.com/devy1540/devy1540.github.io/commit/5a4a5adf22d29d7891dc9b6eb5e47f3ce8a0b282))
+
 ## [1.32.0](https://github.com/devy1540/devy1540.github.io/compare/v1.31.6...v1.32.0) (2026-10-13)
 
 
