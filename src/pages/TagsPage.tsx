@@ -206,8 +206,8 @@ export function TagsPage() {
   const hasFilters = Boolean(query.trim() || selectedTag || sortMode !== "popular")
 
   return (
-    <PageContainer variant="wide">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <PageContainer variant="wide" className="@container/taxonomy">
+      <div className="mb-8 flex flex-col flex-wrap gap-4 @min-[32rem]/taxonomy:flex-row @min-[32rem]/taxonomy:items-end @min-[32rem]/taxonomy:justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight">{t.common.tags}</h1>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -216,7 +216,7 @@ export function TagsPage() {
         </div>
 
         {selectedStats && (
-          <Badge variant="outline" className="w-fit rounded-full px-3 py-1 text-sm">
+          <Badge variant="outline" className="max-w-full whitespace-normal break-words rounded-full px-3 py-1 text-sm">
             {t.tags.selectedLabel(selectedStats.tag)}
           </Badge>
         )}
@@ -234,7 +234,7 @@ export function TagsPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 @min-[32rem]/taxonomy:flex-row @min-[32rem]/taxonomy:items-center @min-[32rem]/taxonomy:justify-between">
           <ToggleGroup
             type="single"
             value={sortMode}
@@ -252,7 +252,7 @@ export function TagsPage() {
               type="button"
               variant="ghost"
               size="sm"
-              className="w-fit self-start sm:self-auto"
+              className="w-fit self-start @min-[32rem]/taxonomy:self-auto"
               onClick={resetFilters}
             >
               <XIcon className="size-3" />
@@ -265,14 +265,14 @@ export function TagsPage() {
       {tagStats.length === 0 ? (
         <p className="text-muted-foreground">{t.tags.noTags}</p>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem]">
-          <div className="space-y-9">
+        <div className="grid gap-10 @min-[56rem]/taxonomy:grid-cols-[minmax(0,1fr)_24rem]">
+          <div className="@container/taxonomy-list min-w-0 space-y-9">
             <section>
               <div className="mb-3 flex items-center justify-between gap-4">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                   {t.tags.topTags}
                 </h2>
-                <span className="hidden text-xs text-muted-foreground sm:inline">{t.tags.topTagsNote}</span>
+                <span className="hidden text-xs text-muted-foreground @min-[32rem]/taxonomy-list:inline">{t.tags.topTagsNote}</span>
               </div>
 
               {visibleTopTags.length === 0 ? (
@@ -283,14 +283,14 @@ export function TagsPage() {
                     <Link
                       key={stats.tag}
                       to={tagsPathFor(stats.tag)}
-                      className="grid min-h-14 grid-cols-1 gap-1 border-b py-3 transition-colors hover:bg-accent/40 sm:grid-cols-[minmax(0,1fr)_5rem_7rem] sm:items-center sm:gap-4 sm:px-0"
+                      className="grid min-h-14 grid-cols-1 gap-1 border-b py-3 transition-colors hover:bg-accent/40 @min-[28rem]/taxonomy-list:grid-cols-[minmax(0,1fr)_5rem_7rem] @min-[28rem]/taxonomy-list:items-center @min-[28rem]/taxonomy-list:gap-4"
                     >
                       <span className="flex min-w-0 items-center gap-2 font-medium">
                         <span
                           className={
                             selectedTag === stats.tag
-                              ? "size-2 rounded-full bg-foreground"
-                              : "size-2 rounded-full bg-muted-foreground/25"
+                              ? "size-2 shrink-0 rounded-full bg-foreground"
+                              : "size-2 shrink-0 rounded-full bg-muted-foreground/25"
                           }
                         />
                         <span className="truncate">{stats.tag}</span>
@@ -313,7 +313,7 @@ export function TagsPage() {
               {groupedTags.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t.tags.noMatchingTags}</p>
               ) : (
-                <div className="grid gap-x-8 gap-y-7 sm:grid-cols-2">
+                <div className="grid gap-x-8 gap-y-7 @min-[28rem]/taxonomy-list:grid-cols-2">
                   {groupedTags.map((group) => (
                     <div key={group.id} className="min-w-0">
                       <h3 className="mb-3 text-base font-semibold">{group.label}</h3>
@@ -337,7 +337,7 @@ export function TagsPage() {
           </div>
 
           {activeStats && (
-            <aside className="border-t pt-8 lg:sticky lg:top-20 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
+            <aside className="min-w-0 border-t pt-8 @min-[56rem]/taxonomy:sticky @min-[56rem]/taxonomy:top-20 @min-[56rem]/taxonomy:border-l @min-[56rem]/taxonomy:border-t-0 @min-[56rem]/taxonomy:pl-7 @min-[56rem]/taxonomy:pt-0">
               <div className="mb-2 flex items-start justify-between gap-3">
                 <h2 className="break-all text-3xl font-bold tracking-tight">{activeStats.tag}</h2>
                 <Badge className="shrink-0 rounded-full">{t.tags.postCount(activeStats.count)}</Badge>
@@ -389,7 +389,7 @@ export function TagsPage() {
                 </div>
               </div>
 
-              <Button asChild variant="outline" className="mt-5 w-full">
+              <Button asChild variant="outline" className="mt-5 h-auto min-h-9 w-full whitespace-normal">
                 <Link to={localizePath(`/posts?tag=${encodeURIComponent(activeStats.tag)}`, language)}>
                   {t.tags.viewInPosts(activeStats.tag)}
                 </Link>

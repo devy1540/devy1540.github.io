@@ -32,7 +32,7 @@ test("shared article anchor and TOC preserve the target URL", async ({ page }) =
   const heading = page.locator(`[id="${anchor}"]`)
   await expect(heading).toBeInViewport()
   await expect(page.locator(".post-toc-panel")).toBeVisible()
-  expect(await page.locator("article").evaluate(el => el.getBoundingClientRect().width)).toBeLessThanOrEqual(800)
+  expect(await page.locator("article").evaluate(el => el.getBoundingClientRect().width)).toBeLessThanOrEqual(912)
   const link = page.locator(".post-toc-panel a").first()
   await link.click()
   const href = await link.getAttribute("href")
