@@ -1,7 +1,7 @@
 ---
 title: "GitOps Deployment Automation - Building a Slack Approval Pipeline with ArgoCD, n8n, and GitHub Actions"
 date: "2026-02-26"
-updated: "2026-02-26"
+updated: "2026-10-13"
 description: "How I built a GitOps-based deployment automation system during the ECS to EKS migration, combining ArgoCD, n8n, and GitHub Actions with different deployment strategies per environment."
 tags: ["kubernetes", "argocd", "gitops", "n8n", "devops", "github-actions"]
 draft: false
@@ -28,16 +28,16 @@ flowchart TB
     CI --> IMG["Build image"]
     IMG --> REG["Push image to registry"]
 
-    REG --> UPDATER["ArgoCD Image Updater<br/>(dev/stage)"]
-    UPDATER --> GIT1["Commit image tag to overlay"]
-    GIT1 --> ARGO["ArgoCD sync"]
+    REG --> UPDATER["ArgoCD Image Updater<br/>Detect mutable-tag digest changes<br/>(dev/stage)"]
+    UPDATER --> ARGO["ArgoCD auto-sync<br/>(dev/stage)"]
 
-    CI --> N8N["n8n workflow<br/>(prod)"]
+    CI --> GIT2["Commit prod image tag"]
+    GIT2 --> N8N["n8n workflow<br/>(prod)"]
     N8N --> SLACK["Slack approval"]
-    SLACK --> GIT2["Commit prod image tag"]
-    GIT2 --> ARGO
+    SLACK --> SYNC["n8n calls ArgoCD Sync API"]
 
     ARGO --> EKS["EKS cluster"]
+    SYNC --> EKS
 ```
 
 The important distinction is that no deployment tool directly edits Kubernetes production objects. It edits Git, and ArgoCD applies the desired state.
@@ -47,10 +47,9 @@ The important distinction is that no deployment tool directly edits Kubernetes p
 For dev and stage, the goal is fast feedback.
 
 1. GitHub Actions builds the image.
-2. The image is pushed to the registry.
-3. ArgoCD Image Updater detects the new image.
-4. It updates the kustomize overlay.
-5. ArgoCD syncs the application.
+2. The image is pushed to the registry with the mutable `dev` or `stage` tag.
+3. ArgoCD Image Updater detects a change in the image digest, even when the tag name stays the same.
+4. ArgoCD automatically syncs the application.
 
 There is no manual approval. If something breaks, the environment is not customer-facing and can be fixed quickly.
 
@@ -58,13 +57,13 @@ There is no manual approval. If something breaks, the environment is not custome
 
 Production has a different policy.
 
-1. GitHub Actions builds the image.
-2. n8n receives release metadata.
-3. n8n sends a Slack message with approve/reject buttons.
-4. If approved, n8n creates a Git commit that updates the prod overlay image tag.
-5. ArgoCD syncs the new desired state.
+1. GitHub Actions builds and pushes the image with an immutable tag.
+2. It commits that tag to the prod overlay in the manifest repository.
+3. n8n receives release metadata and sends a Slack message with approve/reject buttons.
+4. If approved, n8n calls the ArgoCD Sync API.
+5. ArgoCD applies the new desired state.
 
-This keeps production deployment auditable. The approval happens in Slack, but the actual deployment state is still Git.
+The manifest commit happens before approval, so prod auto-sync stays disabled. The approval happens in Slack, and n8n explicitly starts the sync. Git still records the desired deployment state.
 
 ## Core Components
 
@@ -90,11 +89,13 @@ jobs:
         run: docker push app-api:${{ github.sha }}
 ```
 
-The CI job does not apply Kubernetes manifests. It only produces an immutable image and metadata.
+The snippet shows the image build and push. In the prod workflow, CI then commits the image tag to the manifest repository and calls the n8n webhook to request approval. It does not directly apply Kubernetes objects.
 
 ### 2. ArgoCD - Cluster State Management
 
 ArgoCD watches the Git repository and makes the cluster match it.
+
+In dev and stage, Image Updater detects digest changes under the mutable tags and triggers automatic sync; changing the tag name is not required.
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -108,13 +109,10 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: app-prod
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: true
+  syncPolicy: {}
 ```
 
-For prod, auto-sync can still be used because approval happens before Git changes. The Git commit itself is the gate.
+The prod Application has no automated sync policy. Updating Git does not start a production rollout; n8n calls the Sync API only after Slack approval. Dev and stage use automatic sync instead.
 
 ### 3. n8n - Slack Approval Workflow
 
@@ -125,11 +123,12 @@ flowchart LR
     A["GitHub Actions webhook"] --> B["n8n"]
     B --> C["Create Slack approval message"]
     C --> D{"Approved?"}
-    D -->|"Yes"| E["Commit image tag to prod overlay"]
+    D -->|"Yes"| E["Call ArgoCD Sync API"]
+    E --> G["Notify deployment result"]
     D -->|"No"| F["Stop workflow"]
 ```
 
-n8n was useful because the workflow is mostly integration logic: receive metadata, format Slack messages, wait for interaction, call GitHub API, and notify the result.
+n8n was useful because the workflow is mostly integration logic: receive metadata, format Slack messages, wait for interaction, call the ArgoCD Sync API, and notify the result.
 
 ### 4. kustomize - Environment Separation
 
@@ -144,15 +143,15 @@ apps/app-api/
     prod/
 ```
 
-The production approval workflow only changes the image tag in the prod overlay. It does not touch dev or stage.
+CI updates the image tag in the prod overlay before requesting approval. The approval workflow then syncs the prod Application. It does not deploy dev or stage.
 
 ## Environment Strategy Comparison
 
-| Environment | Deployment trigger | Approval | Rollback |
-|-------------|--------------------|----------|----------|
-| dev | merge or image build | none | update overlay |
-| stage | merge or image build | none | update overlay |
-| prod | release workflow | Slack approval | revert Git commit |
+| Environment | Deployment trigger | Approval | ArgoCD sync | Rollback |
+|-------------|--------------------|----------|-------------|----------|
+| dev | merge or image build | none | automatic | re-push previous image (same tag) |
+| stage | merge or image build | none | automatic | re-push previous image (same tag) |
+| prod | manifest update, then Slack approval | Slack approval | explicit Sync API call after approval | revert Git commit, then sync |
 
 The key is that all environments share the same manifest structure, but not the same policy.
 
@@ -160,9 +159,9 @@ The key is that all environments share the same manifest structure, but not the 
 
 ### Why I Delayed ArgoCD for prod at First
 
-At first, I considered applying ArgoCD only to dev and stage. Production felt risky because auto-sync sounded like "automatic production deployment."
+At first, I planned to bring ArgoCD into production immediately. Rollback problems during deployment showed that dev and stage needed more verification first. I stabilized those environments while building the n8n approval gate, then brought the flow to production more cautiously.
 
-The important realization was that auto-sync and auto-release are different. ArgoCD auto-sync only applies Git state. If Git changes are controlled by Slack approval, production is still gated.
+Production kept automatic sync disabled. A manifest commit prepared the change, and Slack approval allowed n8n to start the sync.
 
 ### Why stage Became Fully Automatic
 
@@ -193,6 +192,6 @@ The fix was to align Kubernetes readiness timing with Spring Boot startup behavi
 
 GitOps is not just "use ArgoCD." The important question is where the source of truth lives.
 
-If CI directly changes the cluster, the source of truth is split between scripts, cluster state, and the repository. If CI only builds artifacts and deployment changes happen through Git, the model becomes much easier to reason about.
+If CI directly changes the cluster, the source of truth is split between scripts, cluster state, and the repository. Recording deployment changes in Git and controlling when ArgoCD applies them makes the model easier to reason about.
 
-The final structure was simple: GitHub Actions builds, n8n approves, Git records, and ArgoCD applies.
+The final structure was simple: GitHub Actions builds and records the manifest change in Git, n8n handles Slack approval and starts the sync, and ArgoCD applies it.

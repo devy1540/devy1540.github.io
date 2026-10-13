@@ -1,7 +1,7 @@
 ---
 title: "Spring AI CS 상담 보조 시스템 운영기 - Function Calling에서 운영자 제안 워크플로까지"
 date: "2026-07-06"
-updated: "2026-07-28"
+updated: "2026-10-13"
 description: "Spring AI 기반 CS 답변 초안을 운영에 적용하며 Function Calling 중심 설계를 병렬 조회, QA, 오류 진단, 운영자 검수 워크플로로 바꾼 과정과 성과를 정리합니다."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "cs"]
 draft: false

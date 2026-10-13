@@ -1,8 +1,8 @@
 ---
 title: "JDK 마이그레이션 (1) - JDK 11에서 21로, Spring Boot 3.x 전환기"
 date: "2026-03-18"
-updated: "2026-03-18"
-description: "프로덕션 Spring Boot 서비스를 JDK 11 → 21로 업그레이드하며 겪은 javax→jakarta 전환, AWS SDK v3 마이그레이션, QueryDSL 호환성 해결 등 실전 경험을 정리합니다."
+updated: "2026-10-13"
+description: "프로덕션 Spring Boot 서비스를 JDK 11 → 21로 업그레이드하며 겪은 javax→jakarta 전환, AWS SDK for Java 1.x→2.x와 Spring Cloud AWS 3.x 마이그레이션, QueryDSL 호환성 해결 등 실전 경험을 정리합니다."
 tags: ["java", "jdk", "spring-boot", "migration", "devops"]
 series: "JDK Migration"
 seriesOrder: 1
@@ -23,7 +23,7 @@ draft: false
 
 **Spring Boot 2.7.x OSS 지원 종료**도 트리거였다. 보안 패치가 끊기면 프로덕션에서 운영할 명분이 없다. Spring Boot 3.x로 올리려면 JDK 17 이상이 필수이고 어차피 올릴 거면 LTS인 21까지 한 번에 가기로 했다.
 
-**AWS SDK v1의 유지보수 모드 전환** 역시 무시할 수 없었다. SQS, S3, Lambda를 적극적으로 사용하는 서비스 특성상 새로운 AWS 기능이 SDK v1에 추가되지 않는 건 실질적인 제약이었다. 특히 SQS의 비동기 처리 개선이나 S3의 새로운 API를 활용하려면 SDK v3가 필요했다.
+**AWS SDK for Java 1.x의 유지보수 모드 전환** 역시 무시할 수 없었다. SQS, S3, Lambda를 적극적으로 사용하는 서비스 특성상 새로운 AWS 기능이 SDK 1.x에 추가되지 않는 건 실질적인 제약이었다. AWS SDK for Java 2.x와 이를 사용하는 Spring Cloud AWS 3.x로 클라이언트와 통합 라이브러리를 함께 옮겼다.
 
 ### 변경 요약
 
@@ -33,7 +33,8 @@ draft: false
 | Spring Boot | 2.7.2 | 3.4.3 |
 | Gradle | 7.5 | 8.5 |
 | Java EE | javax.* | jakarta.* |
-| AWS SDK | v1 (awspring 2.4) | v3 (awspring 3.3) |
+| AWS SDK for Java | 1.x | 2.x |
+| Spring Cloud AWS | 2.4.4 | 3.3.0 |
 | MySQL Connector | mysql:mysql-connector-java | com.mysql:mysql-connector-j |
 | QueryDSL | querydsl-jpa | querydsl-jpa:5.0.0:jakarta |
 
@@ -102,7 +103,9 @@ annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 핵심은 `:jakarta` classifier다. 이것만 빠뜨려도 Q클래스 생성은 정상이지만 런타임에 javax 의존성을 찾다가 실패한다. 컴파일이 되니까 안심하고 배포했다가 프로덕션에서 터지는 최악의 시나리오가 가능하다.
 
-## AWS SDK v1 → v3 (awspring cloud)
+## AWS SDK for Java 1.x → 2.x, Spring Cloud AWS 3.x 전환
+
+SDK와 Spring 통합 라이브러리의 버전을 구분해야 한다. AWS SDK for Java는 1.x에서 2.x로, Spring Cloud AWS는 2.4.4에서 3.3.0으로 올렸다. [Spring Cloud AWS 공식 호환성 표](https://awspring.io/what-is-spring-cloud-aws#compatibility-with-spring-project-versions)에서도 Spring Cloud AWS 3.3.x가 AWS SDK for Java 2.x를 사용한다고 명시한다.
 
 가장 손이 많이 가는 변경이었다. 의존성, 설정 파일, 서비스 코드 세 곳 모두 변경이 필요하다.
 
@@ -120,13 +123,15 @@ implementation "io.awspring.cloud:spring-cloud-starter-aws-messaging"
 implementation "io.awspring.cloud:spring-cloud-starter-aws"
 implementation "com.amazonaws:aws-java-sdk-lambda"
 
-// after (AWS SDK v3 기반)
+// after (AWS SDK for Java 2.x 기반의 Spring Cloud AWS 3.x)
 implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0")
 implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.3.0'
 implementation 'io.awspring.cloud:spring-cloud-aws-sqs:3.3.0'
 implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.3.0'
 implementation 'software.amazon.awssdk:lambda:2.30.27'
 ```
+
+[AWS 공식 마이그레이션 가이드](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/migration-whats-different.html)에서 설명하는 패키지 변경도 같은 구분이다. SDK 1.x의 `com.amazonaws`가 SDK 2.x의 `software.amazon.awssdk`로 바뀌었다. 위 코드의 `3.3.0`은 Spring Cloud AWS 버전이고, Lambda 클라이언트의 `2.30.27`은 AWS SDK for Java 버전이다.
 
 ### 설정 파일 구조 변경
 
@@ -159,19 +164,21 @@ spring:
 
 ### 서비스 코드 마이그레이션
 
-AWS SDK v3는 비동기 클라이언트가 기본이다. 클라이언트 생성 방식과 API 호출 패턴이 근본적으로 달라진다.
+AWS SDK for Java 2.x는 동기 `S3Client`와 비동기 `S3AsyncClient`를 모두 제공한다. 모든 호출이 기본적으로 비동기가 되는 것은 아니다. [AWS S3 클라이언트 안내](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-s3.html)를 기준으로 호출부에 맞는 클라이언트를 선택해야 한다. 아래는 기존 `AmazonS3` 업로드를 `S3AsyncClient`로 옮기는 예다.
 
 ```java
 // S3 - before (sync, blocking)
 AmazonS3 s3Client;
 s3Client.putObject(bucket, key, file);
 
-// S3 - after (async, non-blocking)
+// S3 - after (AWS SDK for Java 2.x, async)
 S3AsyncClient s3Client;
-s3Client.putObject(PutObjectRequest.builder()
-    .bucket(bucket).key(key).build(),
+CompletableFuture<PutObjectResponse> upload = s3Client.putObject(
+    PutObjectRequest.builder().bucket(bucket).key(key).build(),
     AsyncRequestBody.fromFile(file));
 ```
+
+비동기 업로드는 `CompletableFuture`를 반환하므로 호출부에서 완료와 실패를 함께 처리해야 한다. 클라이언트 생성, 리전, 인증 정보도 API 호출 변경과 별도로 확인한다.
 
 ```java
 // SQS Listener
@@ -206,9 +213,9 @@ Spring Boot 3.x에서 `WebSecurityConfigurerAdapter`가 완전히 제거되었�
 
 가장 찾기 어려웠던 버그다. Q클래스 생성도 정상, 컴파일도 정상인데 런타임에 `ClassNotFoundException`이 터진다. `:jakarta`를 빠뜨리면 QueryDSL이 내부적으로 `javax.persistence`를 참조하기 때문이다. 컴파일 타임에 잡히지 않으니 CI에서도 통과하고 로컬 테스트에서도 통과하고 실제 기동할 때 터진다.
 
-### AWS SDK v3 비동기 전환
+### AWS SDK for Java 2.x 비동기 클라이언트 전환
 
-SDK v1의 동기 API에 익숙해져 있으면 v3의 `CompletableFuture` 기반 비동기 패턴이 낯설 수 있다. 기존 동기 코드를 그대로 `.join()`으로 감싸는 것도 방법이지만 장기적으로는 비동기 패턴을 도입하는 것이 좋다.
+동기 호출이 필요한 경로에는 `S3Client`를 쓸 수 있고, `S3AsyncClient`를 쓰는 경로는 반환된 future의 완료와 실패를 처리해야 한다. `.join()`은 호출 스레드를 기다리게 하므로, 비동기 클라이언트로 바꾸고 바로 `.join()`한다고 호출부까지 논블로킹이 되는 것은 아니다.
 
 ### 219개 파일을 한 번에 바꾼 것
 
@@ -216,7 +223,7 @@ SDK v1의 동기 API에 익숙해져 있으면 v3의 `CompletableFuture` 기반 
 
 ## 마무리
 
-JDK 11 → 21은 단순한 버전업이 아니라 **Java 생태계 전체의 패러다임 전환**이었다. javax → jakarta, AWS SDK v1 → v3, Spring Security 설정 방식 변경까지 동시에 일어나기 때문에, 실질적으로는 프로젝트를 새로 세팅하는 것에 가깝다.
+JDK 11 → 21은 단순한 버전업이 아니라 **Java 생태계 전체의 패러다임 전환**이었다. javax → jakarta, AWS SDK for Java 1.x → 2.x, Spring Cloud AWS 2.x → 3.x, Spring Security 설정 방식 변경까지 동시에 일어나기 때문에, 실질적으로는 프로젝트를 새로 세팅하는 것에 가깝다.
 
 219개 파일을 한 번에 바꿨지만 프로덕션에 무사히 올라갔을 때의 안도감은 아직도 생생하다.
 

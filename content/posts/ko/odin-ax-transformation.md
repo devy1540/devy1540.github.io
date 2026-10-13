@@ -1,7 +1,7 @@
 ---
 title: "팀의 업무 병목을 줄이기 위한 AX 전환"
 date: "2026-09-22"
-updated: "2026-09-22"
+updated: "2026-10-13"
 description: "목적별 에이전트 실험을 거쳐, 한 세션에서 일하던 경험을 오딘과 Codex 하네스로 옮기기까지의 시행착오."
 tags: ["ai", "ai-agent", "codex", "slack", "ax", "engineering"]
 series: "AI 에이전트와 일하는 시스템 만들기"
