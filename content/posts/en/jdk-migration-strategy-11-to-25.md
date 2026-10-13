@@ -1,8 +1,8 @@
 ---
 title: "JDK Migration (1) - From JDK 11 to 21 and the Spring Boot 3.x Transition"
 date: "2026-03-18"
-updated: "2026-03-18"
-description: "A practical record of upgrading a production Spring Boot service from JDK 11 to 21, including the javax to jakarta transition, AWS SDK migration, and QueryDSL compatibility work."
+updated: "2026-10-13"
+description: "A practical record of upgrading a production Spring Boot service from JDK 11 to 21, including the javax to jakarta transition, AWS SDK for Java 1.x to 2.x migration, Spring Cloud AWS 3.x, and QueryDSL compatibility work."
 tags: ["java", "jdk", "spring-boot", "migration", "devops"]
 series: "JDK Migration"
 seriesOrder: 1
@@ -33,7 +33,8 @@ The migration touched many files because the change crossed framework boundaries
 | Spring Boot | 2.x -> 3.x |
 | Java EE namespace | `javax.*` -> `jakarta.*` |
 | QueryDSL | Jakarta-compatible classifier |
-| AWS integration | old SDK/Spring Cloud AWS setup -> newer awspring style |
+| AWS SDK for Java | 1.x -> 2.x |
+| Spring Cloud AWS | 2.4.4 -> 3.3.0 |
 | MySQL connector | old driver naming and dependency update |
 | Spring Security | API and configuration updates |
 
@@ -89,23 +90,27 @@ annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
 Without the `jakarta` classifier, generated Q classes may still depend on `javax.persistence`, which creates confusing compile errors.
 
-## AWS SDK v1 to v3 through awspring cloud
+## AWS SDK for Java 1.x to 2.x with Spring Cloud AWS 3.x
+
+These are two separate version changes: AWS SDK for Java moved from 1.x to 2.x, while Spring Cloud AWS moved from 2.4.4 to 3.3.0. The [Spring Cloud AWS compatibility table](https://awspring.io/what-is-spring-cloud-aws#compatibility-with-spring-project-versions) identifies AWS SDK for Java 2.x as the SDK used by Spring Cloud AWS 3.3.x.
 
 ### Dependency Changes
 
-AWS integration also changed. The old setup mixed AWS SDK versions and Spring Cloud AWS APIs. The migration moved toward the newer awspring ecosystem.
+The old AWS SDK for Java dependencies used the `com.amazonaws` group. SDK 2.x uses `software.amazon.awssdk`, as described in the [official migration guide](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/migration-whats-different.html). The integration library's `3.3.0` version and the Lambda client's `2.30.27` version below belong to different version lines.
 
 ```gradle
-implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs"
-implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
-implementation "software.amazon.awssdk:s3"
+implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0")
+implementation "io.awspring.cloud:spring-cloud-aws-starter:3.3.0"
+implementation "io.awspring.cloud:spring-cloud-aws-sqs:3.3.0"
+implementation "io.awspring.cloud:spring-cloud-aws-s3:3.3.0"
+implementation "software.amazon.awssdk:lambda:2.30.27"
 ```
 
 The goal was to make AWS clients explicit and compatible with Spring Boot 3.x.
 
 ### Configuration Structure
 
-The configuration also changed from older property names to the awspring style.
+The configuration prefix changed from `cloud.aws.*` to `spring.cloud.aws.*`.
 
 ```yaml
 spring:
@@ -118,23 +123,25 @@ spring:
           name: default
 ```
 
-In production, credentials are not configured as static keys. They are resolved through IAM roles, usually IRSA on EKS.
+For an EKS deployment using IRSA, credentials can be resolved through the workload's IAM role. The profile setting above is a configuration example rather than an account of production credential storage.
 
 ### Service Code Migration
 
-Some service code changed from older clients to SDK v2-style clients.
+SDK 2.x provides both synchronous `S3Client` and asynchronous `S3AsyncClient` APIs; asynchronous operation is a client choice, not the default behavior of every SDK call. The [AWS S3 client guide](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-s3.html) explains the available clients. The upload example from this migration changed from `AmazonS3` to `S3AsyncClient`:
 
 ```java
-PutObjectRequest request = PutObjectRequest.builder()
-    .bucket(bucket)
-    .key(key)
-    .contentType(contentType)
-    .build();
+// Before: AWS SDK for Java 1.x, synchronous upload
+AmazonS3 legacyClient;
+legacyClient.putObject(bucket, key, file);
 
-s3Client.putObject(request, RequestBody.fromBytes(bytes));
+// After: AWS SDK for Java 2.x, asynchronous upload
+S3AsyncClient s3Client;
+CompletableFuture<PutObjectResponse> upload = s3Client.putObject(
+    PutObjectRequest.builder().bucket(bucket).key(key).build(),
+    AsyncRequestBody.fromFile(file));
 ```
 
-The important point is not the syntax itself. The important point is that AWS client construction, region, and credentials become explicit and testable.
+An asynchronous upload returns a `CompletableFuture`, so the caller must handle completion and failure. Client construction, region, and credential resolution also need to be checked independently of the API rename.
 
 ## MySQL Connector Changes
 
@@ -186,9 +193,7 @@ The fix was to use Jakarta-compatible QueryDSL dependencies consistently for bot
 
 ### AWS SDK Async Migration
 
-Some AWS libraries encourage async clients. Async clients are useful, but they also change execution and error handling. I avoided mixing async conversion into the same step unless the calling code actually needed it.
-
-The migration rule was: first make it compatible, then optimize.
+An async client changes completion and error handling at the call site. A synchronous path can use `S3Client`; a path using `S3AsyncClient` needs to account for its returned future. Calling `.join()` waits on the calling thread, so replacing a synchronous call with an async client and immediately joining it does not make that caller non-blocking.
 
 ### Changing 219 Files at Once
 

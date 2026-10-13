@@ -1,7 +1,7 @@
 ---
 title: "GitOps 자동화 배포 - ArgoCD + n8n + GitHub Actions로 Slack 승인 배포 파이프라인 구축하기"
 date: "2026-02-26"
-updated: "2026-02-26"
+updated: "2026-10-13"
 description: "ECS에서 EKS로 마이그레이션하면서 구축한 GitOps 기반 배포 자동화 시스템을 소개합니다. ArgoCD, n8n, GitHub Actions를 조합하여 환경별로 차등화된 배포 전략을 설계한 경험을 공유합니다."
 tags: ["kubernetes", "argocd", "gitops", "n8n", "devops", "github-actions"]
 draft: false
@@ -45,8 +45,6 @@ flowchart TB
         K -->|거절| N[배포 취소]
     end
 ```
-
-> **Screenshot 제안**: ArgoCD 대시보드에서 Application 목록이 보이는 화면 (dev/stage/prod 환경이 함께 보이면 좋음)
 
 ### dev / stage - 완전 자동
 
@@ -120,8 +118,6 @@ spec:
 
 dev/stage에서는 ArgoCD Image Updater가 ECR에 올라간 이미지의 digest 변경을 감지해서 자동으로 sync한다. mutable tag라 태그 이름은 같지만 실제 내용물(digest)이 바뀌면 배포가 트리거된다.
 
-> **Screenshot 제안**: ArgoCD Application 상세 화면 - Sync 상태(Synced/OutOfSync)와 Health 상태가 보이는 화면
-
 ### 3. n8n - Slack 승인 워크플로우
 
 n8n은 prod 배포에서 GitHub Actions와 ArgoCD 사이의 **승인 게이트** 역할을 한다. 오픈소스 워크플로우 자동화 도구인데, 이런 연결 작업에 딱이다.
@@ -147,10 +143,6 @@ n8n을 선택한 이유가 몇 가지 있다:
 - **시각적 워크플로우 빌더** - 노드를 끌어다 놓으면서 흐름을 만들 수 있어서 나중에 다른 팀원이 봐도 바로 이해할 수 있다
 - **셀프호스팅** - EKS 클러스터 안에서 돌리고 있어서 외부 의존성이 없다
 - **재사용성** - 환경 변수만 바꾸면 같은 워크플로우를 여러 서비스에 적용할 수 있다
-
-> **Screenshot 제안**: n8n 워크플로우 에디터 화면 - Webhook → Slack 메시지 → 승인 대기 → ArgoCD Sync 노드들이 연결된 모습
-
-> **Screenshot 제안**: Slack에서 배포 승인 요청 메시지가 온 화면 - 승인/거절 버튼이 보이는 상태
 
 ### 4. kustomize - 환경별 설정 분리
 
@@ -180,7 +172,7 @@ base에 공통 리소스를 두고 overlay에서 환경별 차이만 덮어쓴�
 | **배포 트리거** | Image Updater (digest) | Image Updater (digest) | manifest 업데이트 + Slack 승인 |
 | **승인** | 없음 | 없음 | Slack 버튼 (n8n 경유) |
 | **ArgoCD sync** | 자동 | 자동 | 수동 (승인 후) |
-| **롤백** | 재push | 재push | Git revert → 자동 sync |
+| **롤백** | 재push | 재push | Git revert → 수동 sync |
 
 ## 삽질했던 것들
 
@@ -209,8 +201,6 @@ ApplicationSet에 서비스를 다시 추가하고 standalone Application을 삭
 ### readiness probe 때문에 자동 롤백되던 문제
 
 배포 직후에 ArgoCD가 자꾸 자동 롤백을 해서 뭔가 싶었는데, 원인은 readiness probe의 `initialDelaySeconds`가 너무 짧은 거였다. Spring Boot 앱이 완전히 뜨기 전에 헬스체크가 시작되니까 실패 → 롤백이 반복된 거다. probe 타이밍을 앱 기동 시간에 맞게 조정해서 해결했다.
-
-> **Screenshot 제안**: ArgoCD에서 Degraded 상태로 표시된 Application 화면 (혹은 Pod의 Restart 횟수가 보이는 화면)
 
 ## 성과
 

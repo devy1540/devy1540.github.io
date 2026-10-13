@@ -1,7 +1,7 @@
 ---
 title: "From ECS to EKS - Building an Operating Environment with kustomize and Gateway API"
 date: "2026-03-12"
-updated: "2026-03-12"
+updated: "2026-10-13"
 description: "What I learned while migrating from AWS ECS to EKS and building an operating model with kustomize base/overlay, Kubernetes Gateway API, Karpenter node autoscaling, and blue/green deployment."
 tags: ["kubernetes", "eks", "kustomize", "gateway-api", "karpenter", "devops", "aws"]
 series: "Service Infrastructure Modernization"
@@ -17,7 +17,7 @@ But as the number of services and environments grew, ECS started to show limits.
 
 ### Limits I Felt in ECS
 
-The first pain was environment management. Dev, stage, and prod each had slightly different task definitions, environment variables, listener rules, health checks, and autoscaling settings. These differences were managed through Terraform and GitHub Actions, but the shape of each environment drifted over time.
+The first pain was environment management. Dev, stage, and prod each had slightly different task definitions, environment variables, listener rules, health checks, and autoscaling settings. These differences lived in task definitions and GitHub Actions deployment scripts, making them harder to review together.
 
 The second pain was deployment control. ECS blue/green deployment works, but the operational model was not flexible enough for the workflows we wanted:
 
@@ -31,9 +31,9 @@ The third pain was observability and platform extensibility. Once we started thi
 
 ### Why ECS Blue/Green Became Complicated
 
-ECS blue/green deployment with CodeDeploy is convenient when the deployment shape is simple. But our deployment needed more control.
+Our ECS blue/green deployment used two services and separate ALB target groups. The `deploy-blue.yml` and `deploy-green.yml` workflows queried listener rules to identify the active target group and deployed to the inactive service.
 
-We wanted to compare two versions through shared routing rules, switch traffic explicitly, and keep the environment differences in version-controlled manifests. In ECS, a lot of this ended up split between task definitions, target groups, listener rules, CodeDeploy applications, and GitHub Actions scripts.
+Traffic switching was a separate operation on the ALB listener rules. Build logic was duplicated across the two workflows, and the active slot was recorded in AWS state rather than Git.
 
 That split made the deployment hard to reason about. When a deployment failed, the question was not only "which version failed?" It was also "which AWS object currently owns the truth?"
 
@@ -56,23 +56,30 @@ flowchart TB
     GH["GitHub Actions"] --> IMG["Build and push Docker image"]
     IMG --> REG["Container registry"]
 
-    GH -->|"dev/stage update"| KUS["kustomize overlay"]
-    KUS --> ARGO["ArgoCD"]
-    ARGO --> EKS["EKS cluster"]
+    REG --> UPDATER["Image Updater<br/>dev/stage digest changes"]
+    UPDATER --> AUTO["ArgoCD auto-sync"]
 
-    subgraph cluster["EKS"]
+    GH -->|"prod manifest update"| KUS["kustomize prod overlay"]
+    KUS --> APPROVAL["n8n + Slack approval"]
+    APPROVAL --> SYNC["ArgoCD sync after approval"]
+    AUTO --> EKS
+    SYNC --> EKS
+
+    subgraph EKS["EKS cluster"]
         GW["Gateway API + AWS Load Balancer Controller"]
         ROUTE["HTTPRoute"]
-        SVC["Kubernetes Service"]
+        BSVC["blue Service"]
+        GSVC["green Service"]
         BLUE["blue Deployment"]
         GREEN["green Deployment"]
         KAR["Karpenter"]
+        NODES["Workload nodes"]
     end
 
-    GW --> ROUTE --> SVC
-    SVC --> BLUE
-    SVC --> GREEN
-    KAR -->|"provision nodes"| EKS
+    GW --> ROUTE
+    ROUTE -->|"weight 0"| BSVC --> BLUE
+    ROUTE -->|"weight 100"| GSVC --> GREEN
+    KAR -->|"provision nodes"| NODES
 ```
 
 The main pieces were:
@@ -88,7 +95,7 @@ The main pieces were:
 
 ### Creating the EKS Cluster with eksctl
 
-I used `eksctl` to create the base cluster. The cluster itself was intentionally kept small. Application capacity would be handled by Karpenter.
+I used `eksctl` to create the base cluster. The system node group stayed small, while Karpenter supplied application capacity. The YAML excerpts below are abbreviated; names and hostnames are illustrative.
 
 ```yaml
 apiVersion: eksctl.io/v1alpha5
@@ -97,7 +104,7 @@ kind: ClusterConfig
 metadata:
   name: service-prod
   region: ap-northeast-2
-  version: "1.31"
+  version: "1.34"
 
 iam:
   withOIDC: true
@@ -107,7 +114,7 @@ managedNodeGroups:
     instanceTypes: ["t3.medium"]
     desiredCapacity: 2
     minSize: 2
-    maxSize: 4
+    maxSize: 3
 ```
 
 The important part is `withOIDC: true`. Without OIDC, IRSA cannot be used, and Pods end up relying on node-level IAM permissions.
@@ -186,11 +193,13 @@ spec:
         - name: app-api
           image: app-api:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 9285
           readinessProbe:
             httpGet:
-              path: /actuator/health/readiness
-              port: 8080
+              path: /status/health/readiness
+              port: 9285
+            initialDelaySeconds: 40
+            periodSeconds: 10
 ```
 
 ### Overlay - Patch Only the Differences
@@ -203,17 +212,18 @@ kind: Deployment
 metadata:
   name: app-api
 spec:
-  replicas: 4
+  replicas: 3
   template:
     spec:
       containers:
         - name: app-api
           resources:
             requests:
-              cpu: "500m"
-              memory: "1Gi"
+              cpu: "100m"
+              memory: "2048Mi"
             limits:
-              memory: "2Gi"
+              cpu: "1500m"
+              memory: "4096Mi"
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
@@ -225,7 +235,7 @@ spec:
 |------|-----|-------|------|
 | Deployment | automatic | automatic | Slack approval |
 | Replicas | small | similar to prod | production capacity |
-| Image update | ArgoCD Image Updater | ArgoCD Image Updater | Git commit after approval |
+| Image update | ArgoCD Image Updater | ArgoCD Image Updater | Git commit before approval; sync after approval |
 | Route | dev domain | stage domain | production domain |
 | Resource limit | relaxed | close to prod | strict |
 
@@ -264,17 +274,19 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: public-gateway
+  name: common-gateway
+  namespace: networking
 spec:
   gatewayClassName: alb
   listeners:
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.example.com"
       allowedRoutes:
         namespaces:
           from: All
+      tls:
+        mode: Terminate
 ```
 
 ### HTTPRoute - Service Routing
@@ -286,13 +298,15 @@ metadata:
   name: app-api
 spec:
   parentRefs:
-    - name: public-gateway
+    - name: common-gateway
+      namespace: networking
+      sectionName: https
   hostnames:
     - api.example.com
   rules:
     - backendRefs:
         - name: app-api
-          port: 80
+          port: 9285
 ```
 
 ### TargetGroupConfiguration - Health Check
@@ -300,7 +314,7 @@ spec:
 For AWS-specific health check settings, `TargetGroupConfiguration` was used.
 
 ```yaml
-apiVersion: elbv2.k8s.aws/v1beta1
+apiVersion: gateway.k8s.aws/v1beta1
 kind: TargetGroupConfiguration
 metadata:
   name: app-api
@@ -309,9 +323,12 @@ spec:
     group: ""
     kind: Service
     name: app-api
-  healthCheckConfig:
-    path: /actuator/health/readiness
-    port: "8080"
+  defaultConfiguration:
+    targetType: ip
+    healthCheckConfig:
+      healthCheckPath: /status/health/liveness
+      healthCheckPort: "9285"
+      healthCheckProtocol: HTTP
 ```
 
 ## Karpenter - Node Autoscaling
@@ -328,55 +345,59 @@ Karpenter can look at pending pods, choose a fitting instance type, and provisio
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: app
+  name: nodepool
 spec:
   template:
     spec:
       requirements:
         - key: kubernetes.io/arch
           operator: In
-          values: ["amd64"]
-        - key: karpenter.sh/capacity-type
-          operator: In
-          values: ["on-demand"]
-        - key: node.kubernetes.io/instance-type
-          operator: In
-          values: ["m6i.large", "m6i.xlarge", "m7i.large", "m7i.xlarge"]
+          values: ["arm64"]
   disruption:
     consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 30s
 ```
 
-The design was intentionally conservative at first. Production used on-demand capacity, and instance families were limited to a known set. Spot capacity can be added later for workloads that tolerate interruption.
+Workload NodePools used ARM64 and were separated for dev, stage, production backend, and production web workloads. Taints and tolerations kept those workloads in their intended pools. CI built multi-architecture images with `--platform linux/amd64,linux/arm64` so the same image reference could run on either architecture.
 
 ## Blue/Green Deployment Strategy
 
 ### Structure
 
-Blue/green deployment was expressed with labels and services.
+The frontend (`my-web`) used two independent Deployments, each with its own Service and HPA. An HTTPRoute referred to both Services and controlled which slot received traffic.
 
 ```mermaid
 flowchart LR
-    R["HTTPRoute"] --> S["Service selector: color=blue"]
-    S --> B["Deployment app-api-blue"]
-    G["Deployment app-api-green"]
+    R["HTTPRoute"] -->|"weight 100"| GS["Service my-web-green"]
+    GS --> G["Deployment my-web-green"]
+    R -->|"weight 0"| BS["Service my-web-blue"]
+    BS --> B["Deployment my-web-blue"]
 ```
 
-The inactive color can be deployed, warmed up, and checked before traffic is switched. Traffic switching is done by changing the service selector or route target.
+The inactive slot could be deployed and checked while the active slot continued serving requests. Traffic switching changed the HTTPRoute weights between `100` and `0`; the Services kept their existing selectors.
 
 ### Traffic Switching
 
 ```yaml
-apiVersion: v1
-kind: Service
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: app-api
+  name: my-web-route
 spec:
-  selector:
-    app: app-api
-    color: green
+  hostnames:
+    - app.example.io
+    - app.example.com
+  rules:
+    - backendRefs:
+        - name: my-web-green
+          port: 3000
+          weight: 100
+        - name: my-web-blue
+          port: 3000
+          weight: 0
 ```
 
-This model made rollback simple. If green fails, switch the selector back to blue. The switch is small, visible, and version-controlled.
+With green active in this example, the next image was deployed to blue first. After its health checks passed, blue received weight `100` and green received weight `0`. The previous slot stayed running, so rollback restored the previous weights without rebuilding or redeploying the old version. The route change was visible in Git.
 
 ### HPA - Traffic-Based Scaling
 
@@ -386,21 +407,21 @@ HPA handles pod count, and Karpenter handles node count. The two are separate bu
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: app-api
+  name: my-web-blue
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: app-api
-  minReplicas: 2
-  maxReplicas: 20
+    name: my-web-blue
+  minReplicas: 6
+  maxReplicas: 24
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 60
+          averageUtilization: 30
 ```
 
 If traffic increases, HPA creates more pods. If there is no capacity, pods become pending. Karpenter sees the pending pods and provisions new nodes.
@@ -412,8 +433,8 @@ If traffic increases, HPA creates more pods. If there is no capacity, pods becom
 For dev and stage, deployment is fully automatic.
 
 1. GitHub Actions builds and pushes an image.
-2. ArgoCD Image Updater detects the new tag.
-3. The kustomize overlay is updated.
+2. ArgoCD Image Updater detects a changed digest for the mutable tag.
+3. Image Updater updates ArgoCD's image override when the digest changes.
 4. ArgoCD syncs the cluster.
 
 This gives fast feedback without manual approval.
@@ -423,11 +444,11 @@ This gives fast feedback without manual approval.
 Production is different.
 
 1. GitHub Actions builds the image.
-2. n8n sends a Slack approval message.
-3. After approval, a Git commit updates the prod overlay image tag.
-4. ArgoCD applies the new desired state.
+2. A Git commit updates the prod overlay with the immutable image tag and records the previous tag for rollback.
+3. n8n sends a Slack approval message.
+4. After approval, ArgoCD syncs the committed desired state.
 
-Production deployment still becomes GitOps: the cluster changes only after Git changes.
+Production deployment uses the committed manifest as its desired state, with approval gating the ArgoCD sync.
 
 ### Before/After Comparison
 
@@ -438,7 +459,7 @@ Production deployment still becomes GitOps: the cluster changes only after Git c
 | Ingress | ALB listener rules | Gateway API |
 | Autoscaling | ECS service + ASG | HPA + Karpenter |
 | Deployment source | CI scripts and AWS state | Git manifests |
-| Rollback | CodeDeploy or AWS console | Git state and route switch |
+| Rollback | Previous task definition and ALB rules | Previous image tag or HTTPRoute weights |
 
 ## Things That Went Wrong
 
@@ -446,7 +467,7 @@ Production deployment still becomes GitOps: the cluster changes only after Git c
 
 The application needed time to warm up. When the readiness probe started too early, the deployment looked unhealthy even though the app would have become ready a few seconds later.
 
-The fix was to tune `initialDelaySeconds`, `periodSeconds`, and the Spring Boot readiness endpoint so that Kubernetes only routed traffic after the application was actually ready.
+The readiness delay was increased from `20` to `40` seconds, the check period from `5` to `10` seconds, and `failureThreshold` was set to `5`. This gave the Spring Boot application time to become ready before receiving traffic.
 
 ### Gateway API allowedRoutes
 
@@ -454,9 +475,7 @@ At first, `HTTPRoute` resources in other namespaces did not attach to the shared
 
 ### Karpenter Consolidation and PDB Conflict
 
-Karpenter consolidation tries to remove or replace underused nodes. PodDisruptionBudget can block that. If PDB settings are too strict, consolidation does not happen and node cost stays high.
-
-The fix was not to remove PDB, but to set realistic disruption budgets for each workload.
+In this migration, production workloads were briefly disrupted during consolidation because a PodDisruptionBudget had not been configured. A PDB with `minAvailable: 1` was added to preserve a minimum number of available Pods during voluntary disruptions.
 
 ### LoadRestrictionsNone
 

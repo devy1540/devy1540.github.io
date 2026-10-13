@@ -1,7 +1,7 @@
 ---
 title: "Operating a CS Support System with Spring AI - From Function Calling to an Operator Suggestion Workflow"
 date: "2026-07-06"
-updated: "2026-07-28"
+updated: "2026-10-13"
 description: "How a Spring AI customer-support draft system moved from function calling to parallel lookups, QA, error diagnosis, and an operator-review workflow in production."
 tags: ["spring-ai", "spring-boot", "ai", "llm", "cs"]
 draft: false
