@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/devy1540/devy1540.github.io/compare/v1.31.6...v1.32.0) (2026-10-13)
+
+
+### 새로운 기능
+
+* **seo:** 관련 글 내부 링크 보강 ([#244](https://github.com/devy1540/devy1540.github.io/issues/244)) ([f09c762](https://github.com/devy1540/devy1540.github.io/commit/f09c7625278d22780a7fde8baa202adf3482e53f))
+
 ## [1.31.6](https://github.com/devy1540/devy1540.github.io/compare/v1.31.5...v1.31.6) (2026-10-13)
 
 
