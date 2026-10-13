@@ -42,6 +42,7 @@ export interface Translations {
     backToList: string
     prevPost: string
     nextPost: string
+    relatedPosts: string
     readingTime: (minutes: number) => string
     views: string
     updatedAt: (date: string) => string
@@ -291,6 +292,7 @@ export const ko: Translations = {
     backToList: "목록으로",
     prevPost: "이전 글",
     nextPost: "다음 글",
+    relatedPosts: "관련 글",
     readingTime: (minutes) => `${minutes}분 읽기`,
     views: "조회",
     updatedAt: (date) => `수정 ${date}`,
@@ -540,6 +542,7 @@ export const en: Translations = {
     backToList: "Back to list",
     prevPost: "Previous",
     nextPost: "Next",
+    relatedPosts: "Related Posts",
     readingTime: (minutes) => `${minutes} min read`,
     views: "views",
     updatedAt: (date) => `Updated ${date}`,

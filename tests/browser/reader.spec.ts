@@ -12,6 +12,25 @@ test.beforeEach(async ({ page }) => {
   })
 })
 
+for (const language of ["ko", "en"]) {
+  test(`related article links preserve ${language} through hydration and navigation`, async ({ page }) => {
+    const errors: string[] = []
+    page.on("pageerror", error => errors.push(error.message))
+    page.on("console", message => { if (/hydration|React error #418/i.test(message.text())) errors.push(message.text()) })
+    const response = await page.goto(`${language === "en" ? "/en" : ""}/posts/spring-ai-pipeline-real-world/`)
+    expect(await response!.text()).toContain('aria-labelledby="related-posts-heading"')
+    const section = page.getByRole("region", { name: language === "en" ? "Related Posts" : "관련 글", exact: true })
+    const link = section.getByRole("link").first()
+    const title = await link.locator("span").textContent()
+    const href = await link.getAttribute("href")
+    expect(href).toMatch(language === "en" ? /^\/en\/posts\/[^/]+\/$/ : /^\/posts\/[^/]+\/$/)
+    await link.click()
+    await expect(page).toHaveURL(new RegExp(`${href}$`))
+    await expect(page.locator("article h1")).toHaveText(title!)
+    expect(errors).toEqual([])
+  })
+}
+
 for (const url of ["/posts/?q=JSON-RPC", "/tags/?tag=java", "/series/?q=인증", "/posts/missing-post/", "/en/missing-page/"]) {
   test(`direct URL hydrates without errors: ${url}`, async ({ page }) => {
     const errors: string[] = []

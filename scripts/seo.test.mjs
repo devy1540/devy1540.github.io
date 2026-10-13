@@ -3,6 +3,7 @@ import fs from "node:fs"
 import path from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
+import { selectRelatedPosts } from "../src/lib/related-posts.ts"
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url))
 const origin = "https://dev.devy.dev"
@@ -23,6 +24,45 @@ function alternates(html) {
 function text(html) {
   return html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").trim()
 }
+
+test("related article selection keeps focused topics and excludes unavailable or duplicate destinations", () => {
+  const post = (slug, overrides = {}) => ({ slug, language: "ko", availableLanguages: ["ko"], title: slug, date: "2026-01-01", updated: "2026-01-01", description: "", tags: ["java", "spring-boot", "authentication"], ...overrides })
+  const current = post("current", { series: "Login" })
+  const candidates = [
+    current,
+    post("same-series", { series: "Login" }),
+    post("draft", { draft: true }),
+    post("scheduled", { publishDate: "9999-01-01" }),
+    post("translation", { language: "en" }),
+    post("adjacent"),
+    post("framework-only", { tags: ["java", "spring-boot", "payment"] }),
+    post("jwt", { tags: ["authentication", "jwt"] }),
+    post("jwt", { tags: ["authentication", "jwt"] }),
+  ]
+  assert.deepEqual(selectRelatedPosts(current, candidates, ["adjacent"]).map((entry) => entry.slug), ["jwt"])
+  assert.deepEqual(selectRelatedPosts(current, [post("framework-only", { tags: ["java", "spring-boot"] })]), [])
+})
+
+test("initial article HTML includes crawlable related links to published pages in the same language", () => {
+  let sections = 0
+  for (const [url, html] of pages) {
+    const section = html.match(/<section aria-labelledby="related-posts-heading"[^>]*>([\s\S]*?)<\/section>/)?.[1]
+    if (!section) continue
+    sections++
+    const hrefs = [...section.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map((match) => match[1])
+    assert.ok(hrefs.length > 0 && hrefs.length <= 3, url)
+    assert.equal(new Set(hrefs).size, hrefs.length, `duplicate related links: ${url}`)
+    for (const href of hrefs) {
+      assert.match(href, /^\/(en\/)?posts\/[^/]+\/$/, url)
+      const destination = new URL(href, origin).href
+      assert.notEqual(destination, url, `self link: ${url}`)
+      assert.ok(pages.has(destination), `unpublished or missing related article: ${destination}`)
+      assert.equal(href.startsWith("/en/"), new URL(url).pathname.startsWith("/en/"), `related link changes language: ${url}`)
+      assert.equal(schemas(pages.get(destination))[0]?.["@type"], "BlogPosting", destination)
+    }
+  }
+  assert.ok(sections > 0, "related links must exist in the initial HTML")
+})
 
 test("every sitemap URL has indexable HTML with one matching canonical and language", () => {
   assert.ok(urls.length > 0)

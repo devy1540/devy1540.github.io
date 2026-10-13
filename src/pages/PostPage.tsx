@@ -30,7 +30,8 @@ function rehypeCodeBrFix() {
     })(tree)
   }
 }
-import { getPostBySlug, getAdjacentPosts } from "@/lib/posts"
+import { getPostBySlug, getAdjacentPosts, getAllPosts } from "@/lib/posts"
+import { selectRelatedPosts } from "@/lib/related-posts"
 import { usePostContent } from "@/hooks/usePostData"
 import { getReadingMinutes } from "@/lib/reading-time"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -41,6 +42,7 @@ import { PageContainer } from "@/components/PageContainer"
 import { TableOfContents } from "@/components/TableOfContents"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
+import { RelatedPosts } from "@/components/RelatedPosts"
 import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
@@ -100,6 +102,7 @@ export function PostPage() {
   const post = slug ? getPostBySlug(slug, language) : undefined
   const fallbackPost = !post && slug && language === "en" ? getPostBySlug(slug, "ko") : undefined
   const { prev, next } = slug && post ? getAdjacentPosts(slug, language) : { prev: null, next: null }
+  const relatedPosts = post ? selectRelatedPosts(post, getAllPosts(language), [prev?.slug, next?.slug].filter((slug): slug is string => !!slug)) : []
   const { getPostViews } = usePageViews()
   const views = slug ? getPostViews(slug, language) : null
   const availableLanguages = post?.availableLanguages ?? fallbackPost?.availableLanguages ?? []
@@ -279,6 +282,8 @@ export function PostPage() {
             {post.content}
           </ReactMarkdown>}
         </div>
+
+        <RelatedPosts posts={relatedPosts} />
 
         {(prev || next) && (
           <>
