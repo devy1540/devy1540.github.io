@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.6](https://github.com/devy1540/devy1540.github.io/compare/v1.31.5...v1.31.6) (2026-10-13)
+
+
+### 버그 수정
+
+* **layout:** 읽기 폭과 반응형 레이아웃 개선 ([#242](https://github.com/devy1540/devy1540.github.io/issues/242)) ([e1389ef](https://github.com/devy1540/devy1540.github.io/commit/e1389ef43ce9200e70a23fd291503426b362881e))
+
 ## [1.31.5](https://github.com/devy1540/devy1540.github.io/compare/v1.31.4...v1.31.5) (2026-10-07)
 
 
