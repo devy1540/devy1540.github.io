@@ -5,22 +5,27 @@ import { Button } from "@/components/ui/button"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { useLanguage } from "@/i18n"
 import { localizePath } from "@/lib/i18n-routing"
+import { collectionFilterPath, readCollectionFilters } from "@/lib/collection-filters"
+import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 
 export function SearchPage() {
   const { language, t } = useLanguage()
   const location = useLocation()
   const navigate = useNavigate()
-  const postsPath = localizePath(`/posts${location.search}`, language)
+  const hydrated = useIsHydrated()
+  const filters = hydrated ? readCollectionFilters(location.search, location.hash) : new URLSearchParams()
+  const postsPath = collectionFilterPath("/posts", filters, language)
 
   useMetaTags({
     title: t.common.posts,
     description: t.posts.description,
     url: localizePath("/posts", language),
+    noindex: true,
   })
 
   useEffect(() => {
-    navigate(postsPath, { replace: true })
-  }, [navigate, postsPath])
+    if (hydrated) void navigate(postsPath, { replace: true })
+  }, [hydrated, navigate, postsPath])
 
   return (
     <PageContainer>

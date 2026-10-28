@@ -125,7 +125,7 @@ test("comments update theme without recreating the iframe and follow the next ar
   await expect(page.frameLocator("giscus-widget iframe").locator("#config")).toHaveAttribute("data-theme", "dark")
   expect(iframeLoads).toBe(1)
   await page.getByRole("link", { name: "홈", exact: true }).click()
-  await page.locator('main a[href="/posts/spring-ai-cs-automation/"]').click()
+  await page.locator('section[aria-labelledby="reading-guides-heading"] a[href="/posts/spring-ai-cs-automation/"]').click()
   await expect(widget).toBeAttached()
   await widget.scrollIntoViewIfNeeded()
   await expect(widget.locator("iframe")).not.toHaveAttribute("data-persistent-frame", "yes")

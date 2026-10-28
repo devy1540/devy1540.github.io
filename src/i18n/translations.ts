@@ -31,6 +31,8 @@ export interface Translations {
     viewPosts: string
     introduction: string
     popularPosts: string
+    readingGuides: string
+    readingGuidesDescription: string
     statsPosts: string
     statsSeries: string
     statsTags: string
@@ -281,6 +283,8 @@ export const ko: Translations = {
     viewPosts: "글 목록 보기",
     introduction: "소개",
     popularPosts: "인기 글",
+    readingGuides: "문제별로 읽기",
+    readingGuidesDescription: "지금 해결하려는 문제에 맞춰 설계 배경과 구현 과정을 이어서 읽어보세요.",
     statsPosts: "글",
     statsSeries: "시리즈",
     statsTags: "태그",
@@ -531,6 +535,8 @@ export const en: Translations = {
     viewPosts: "View Posts",
     introduction: "About",
     popularPosts: "Popular Posts",
+    readingGuides: "Read by problem",
+    readingGuidesDescription: "Start with the problem you are solving and follow the design decisions through to the implementation.",
     statsPosts: "posts",
     statsSeries: "series",
     statsTags: "tags",

@@ -1,3 +1,16 @@
 User-agent: *
 Allow: /
+# Reader-only legacy filters. Article URLs and unfiltered collections stay crawlable.
+Disallow: /posts?
+Disallow: /posts/?
+Disallow: /tags?
+Disallow: /tags/?
+Disallow: /series?
+Disallow: /series/?
+Disallow: /en/posts?
+Disallow: /en/posts/?
+Disallow: /en/tags?
+Disallow: /en/tags/?
+Disallow: /en/series?
+Disallow: /en/series/?
 Sitemap: https://dev.devy.dev/sitemap.xml

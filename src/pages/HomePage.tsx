@@ -11,6 +11,7 @@ import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { StructuredData } from "@/components/StructuredData"
 import { blogStructuredData, websiteStructuredData } from "@/lib/structured-data"
+import { ReadingGuides } from "@/components/ReadingGuides"
 
 export function HomePage() {
   const { language, t } = useLanguage()
@@ -102,6 +103,8 @@ export function HomePage() {
         </div>
         <PostList posts={recentPosts} />
       </section>
+
+      <ReadingGuides posts={posts} />
 
       {/* Popular Posts Top 5 */}
       {popularPosts.length > 0 && (

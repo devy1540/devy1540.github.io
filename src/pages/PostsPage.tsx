@@ -1,4 +1,4 @@
-import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
+import { useCollectionFilters } from "@/hooks/useCollectionFilters"
 import { useMemo, useState } from "react"
 import { usePostSearchIndex } from "@/hooks/usePostData"
 import { useMetaTags } from "@/hooks/useMetaTags"
@@ -53,12 +53,12 @@ function postMatchesTags(post: PostMeta, query: string) {
 
 export function PostsPage() {
   const { language, t } = useLanguage()
-  const [searchParams, setSearchParams] = useHydratedSearchParams()
+  const [searchParams, setSearchParams, legacyQuery] = useCollectionFilters()
   useMetaTags({
     title: t.common.posts,
     description: t.posts.description,
     url: localizePath("/posts", language),
-    ...filteredViewMeta("/posts", searchParams.toString(), language),
+    ...filteredViewMeta("/posts", legacyQuery, language),
   })
   const { getPostViews } = usePageViews()
   const allPosts = useMemo(() => getAllPosts(language), [language])

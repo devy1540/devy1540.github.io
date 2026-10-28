@@ -24,7 +24,6 @@ import { SidebarInfoMenu } from "@/components/SidebarInfoMenu"
 import { useLanguage } from "@/i18n"
 import { useAdminAuth } from "@/lib/admin/useAdminAuth"
 import { localizePath, stripLanguagePrefix } from "@/lib/i18n-routing"
-import { prefetchRoute } from "@/lib/route-modules"
 import { SearchCommandTrigger } from "./SearchCommandTrigger"
 import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 
@@ -130,9 +129,6 @@ function SidebarContents() {
                     <NavLink
                       to={item.to}
                       aria-label={item.label}
-                      onPointerEnter={() => { void prefetchRoute(item.to) }}
-                      onFocus={() => { void prefetchRoute(item.to) }}
-                      onTouchStart={() => { void prefetchRoute(item.to) }}
                       onClick={(e) => handleMobileNav(e, item.to)}
                     >
                       {({ isPending }) => (

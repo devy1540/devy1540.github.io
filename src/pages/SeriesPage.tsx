@@ -1,4 +1,4 @@
-import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
+import { useCollectionFilters } from "@/hooks/useCollectionFilters"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SearchIcon, XIcon } from "lucide-react"
@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
 import { filteredViewMeta, localizePath, postPath } from "@/lib/i18n-routing"
+import { collectionFilterPath } from "@/lib/collection-filters"
 
 type SeriesSort = "recent" | "count" | "name"
 
@@ -80,7 +81,7 @@ function getGroupScore(series: SeriesInfo, group: SeriesGroup) {
 export function SeriesPage() {
   const { language, t } = useLanguage()
 
-  const [searchParams, setSearchParams] = useHydratedSearchParams()
+  const [searchParams, setSearchParams, legacyQuery] = useCollectionFilters()
   const selectedSeriesName = searchParams.get("name") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toSeriesSort(searchParams.get("sort"))
@@ -89,7 +90,7 @@ export function SeriesPage() {
     title: t.common.series,
     description: t.series.description,
     url: localizePath("/series", language),
-    ...filteredViewMeta("/series", searchParams.toString(), language),
+    ...filteredViewMeta("/series", legacyQuery, language),
   })
 
   const posts = useMemo(() => getAllPosts(language), [language])
@@ -152,8 +153,7 @@ export function SeriesPage() {
   function seriesPathFor(seriesName: string) {
     const next = new URLSearchParams(searchParams)
     next.set("name", seriesName)
-    const suffix = next.toString()
-    return localizePath(`/series${suffix ? `?${suffix}` : ""}`, language)
+    return collectionFilterPath("/series", next, language)
   }
 
   const hasFilters = Boolean(query.trim() || selectedSeriesName || sortMode !== "recent")
@@ -339,7 +339,7 @@ export function SeriesPage() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {activeSeries.tags.slice(0, 8).map((tag) => (
-                      <Link key={tag} to={localizePath(`/posts?tag=${encodeURIComponent(tag)}`, language)}>
+                      <Link key={tag} to={collectionFilterPath("/posts", new URLSearchParams({ tag }), language)}>
                         <Badge variant="secondary" className="rounded-full">
                           {tag}
                         </Badge>
