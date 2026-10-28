@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.2](https://github.com/devy1540/devy1540.github.io/compare/v1.32.1...v1.32.2) (2026-10-28)
+
+
+### 버그 수정
+
+* **seo:** 필터 URL 수집을 줄이고 주요 글 탐색 개선 ([#248](https://github.com/devy1540/devy1540.github.io/issues/248)) ([72e1f1b](https://github.com/devy1540/devy1540.github.io/commit/72e1f1be54c0e52ccb8cf8f14a3c9cc913ab2c41))
+
 ## [1.32.1](https://github.com/devy1540/devy1540.github.io/compare/v1.32.0...v1.32.1) (2026-10-13)
 
 
