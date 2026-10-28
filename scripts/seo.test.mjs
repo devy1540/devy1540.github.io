@@ -4,6 +4,7 @@ import path from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
 import { selectRelatedPosts } from "../src/lib/related-posts.ts"
+import { collectionFilterHash, collectionFilterPath, isCollectionFilterHash, readCollectionFilters } from "../src/lib/collection-filters.ts"
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url))
 const origin = "https://dev.devy.dev"
@@ -24,6 +25,70 @@ function alternates(html) {
 function text(html) {
   return html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").trim()
 }
+
+test("collection fragments preserve encoded filters and remain distinct from article anchors", () => {
+  const params = new URLSearchParams({ tag: "C++", name: "서비스 & 롤백", q: "a#b" })
+  const hash = collectionFilterHash(params)
+  assert.deepEqual([...readCollectionFilters("?tag=legacy", hash)], [...params])
+  assert.equal(collectionFilterPath("/tags", params, "en"), `/en/tags/${hash}`)
+  assert.equal(readCollectionFilters("?tag=java", "#main-content").get("tag"), "java")
+  assert.equal(collectionFilterHash(new URLSearchParams()), "")
+  assert.equal(isCollectionFilterHash("/en/tags/", hash), true)
+  assert.equal(isCollectionFilterHash("/posts/example/", hash), false)
+  assert.equal(isCollectionFilterHash("/tags/", "#main-content"), false)
+})
+
+test("initial HTML exposes collection filters as fragments without new query URLs", () => {
+  let filterLinks = 0
+  for (const [source, html] of pages) {
+    for (const [, href] of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
+      const destination = new URL(href.replace(/&amp;/g, "&"), source)
+      if (destination.origin !== origin || !/^\/(en\/)?(posts|tags|series)\/$/.test(destination.pathname)) continue
+      assert.equal(destination.search, "", `crawlable query link on ${source}: ${href}`)
+      if (destination.hash.startsWith("#filters:")) {
+        filterLinks++
+        assert.ok(pages.has(`${origin}${destination.pathname}`), href)
+      }
+    }
+  }
+  assert.ok(filterLinks > 0)
+})
+
+test("robots rules restrict legacy collection queries while allowing every sitemap document", () => {
+  const robots = fs.readFileSync(path.join(dist, "robots.txt"), "utf8")
+  const blockedPrefixes = [...robots.matchAll(/^Disallow:\s*(\S+)$/gm)].map(match => match[1])
+  // These rules deliberately use literal URL prefixes; '?' is not a wildcard in robots.txt.
+  for (const prefix of blockedPrefixes) assert.ok(!/[*$]/.test(prefix), "extend this prefix-policy check before adding wildcard rules")
+  const blocked = url => {
+    const parsed = new URL(url, origin)
+    return blockedPrefixes.some(prefix => `${parsed.pathname}${parsed.search}`.startsWith(prefix))
+  }
+  for (const url of urls) assert.equal(blocked(url), false, `blocked sitemap URL: ${url}`)
+  for (const prefix of ["", "/en"]) {
+    for (const route of ["posts", "tags", "series"]) {
+      for (const slash of ["", "/"]) assert.equal(blocked(`${prefix}/${route}${slash}?tag=java`), true)
+    }
+    assert.equal(blocked(`${prefix}/posts/example/?utm_source=share`), false)
+    assert.equal(blocked(`${prefix}/tags/#filters:tag=java`), false)
+  }
+})
+
+test("localized home reading guides link directly to published articles in initial HTML", () => {
+  for (const prefix of ["", "/en"]) {
+    const html = pages.get(`${origin}${prefix}/`)
+    const section = html.match(/<section aria-labelledby="reading-guides-heading"[^>]*>([\s\S]*?)<\/section>/)?.[1]
+    assert.ok(section, `missing reading guides: ${prefix}`)
+    const links = [...section.matchAll(/href="([^"]+)"/g)].map(match => match[1])
+    assert.equal(links.length, 12)
+    assert.equal(new Set(links).size, links.length)
+    for (const href of links) {
+      assert.ok(href.startsWith(`${prefix}/posts/`), href)
+      assert.ok(pages.has(`${origin}${href}`), `missing or unpublished guide target: ${href}`)
+    }
+    assert.ok(links.includes(`${prefix}/posts/i18n-03-rollout-killswitch/`))
+    assert.ok(links.includes(`${prefix}/posts/gitops-argocd-n8n-deployment/`))
+  }
+})
 
 test("related article selection keeps focused topics and excludes unavailable or duplicate destinations", () => {
   const post = (slug, overrides = {}) => ({ slug, language: "ko", availableLanguages: ["ko"], title: slug, date: "2026-01-01", updated: "2026-01-01", description: "", tags: ["java", "spring-boot", "authentication"], ...overrides })

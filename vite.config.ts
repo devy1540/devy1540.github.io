@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react"
 import { postAssetsPlugin } from "./scripts/post-assets"
 import { assertValidPostDates, getPostModifiedDate } from "./src/lib/post-dates"
 import { PROJECTS } from "./src/data/resume"
+import { PAGE_UPDATED } from "./src/data/page-updates"
 import { imageAssetsPlugin } from "./scripts/image-assets"
 import { previewPagesPlugin } from "./scripts/preview-pages"
 import { ko, en } from "./src/i18n/translations"
@@ -160,7 +161,7 @@ function sitemapPlugin(): Plugin {
             { hreflang: "en", href: staticPageUrl(page, "en") },
             { hreflang: "x-default", href: staticPageUrl(page, "ko") },
           ]
-          return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), undefined, alternates))
+          return LANGUAGES.map((language) => urlEntry(staticPageUrl(page, language), PAGE_UPDATED[page], alternates))
         }),
         ...PROJECTS.flatMap((project) => {
           const koUrl = `${BASE_URL}/about/projects/${project.slug}/`

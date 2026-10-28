@@ -1,4 +1,4 @@
-import { useHydratedSearchParams } from "@/hooks/useHydratedSearchParams"
+import { useCollectionFilters } from "@/hooks/useCollectionFilters"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SearchIcon, XIcon } from "lucide-react"
@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
 import { filteredViewMeta, localizePath, postPath } from "@/lib/i18n-routing"
+import { collectionFilterPath } from "@/lib/collection-filters"
 import type { PostMeta } from "@/types/post"
 
 type TagSort = "popular" | "recent" | "name"
@@ -107,7 +108,7 @@ export function TagsPage() {
   const { language, t } = useLanguage()
 
   const posts = useMemo(() => getAllPosts(language), [language])
-  const [searchParams, setSearchParams] = useHydratedSearchParams()
+  const [searchParams, setSearchParams, legacyQuery] = useCollectionFilters()
   const selectedTag = searchParams.get("tag") ?? ""
   const query = searchParams.get("q") ?? ""
   const sortMode = toTagSort(searchParams.get("sort"))
@@ -116,7 +117,7 @@ export function TagsPage() {
     title: t.common.tags,
     description: t.tags.description,
     url: localizePath("/tags", language),
-    ...filteredViewMeta("/tags", searchParams.toString(), language),
+    ...filteredViewMeta("/tags", legacyQuery, language),
   })
 
   const tagStats = useMemo(() => buildTagStats(posts), [posts])
@@ -199,8 +200,7 @@ export function TagsPage() {
   function tagsPathFor(tag: string) {
     const next = new URLSearchParams(searchParams)
     next.set("tag", tag)
-    const suffix = next.toString()
-    return localizePath(`/tags${suffix ? `?${suffix}` : ""}`, language)
+    return collectionFilterPath("/tags", next, language)
   }
 
   const hasFilters = Boolean(query.trim() || selectedTag || sortMode !== "popular")
@@ -390,7 +390,7 @@ export function TagsPage() {
               </div>
 
               <Button asChild variant="outline" className="mt-5 h-auto min-h-9 w-full whitespace-normal">
-                <Link to={localizePath(`/posts?tag=${encodeURIComponent(activeStats.tag)}`, language)}>
+                <Link to={collectionFilterPath("/posts", new URLSearchParams({ tag: activeStats.tag }), language)}>
                   {t.tags.viewInPosts(activeStats.tag)}
                 </Link>
               </Button>

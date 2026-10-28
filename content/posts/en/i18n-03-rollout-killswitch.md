@@ -1,7 +1,7 @@
 ---
 title: "Service Internationalization (3) - Zero-Downtime Rollout with a GrowthBook Kill Switch"
 date: "2026-06-17"
-updated: "2026-06-17"
+updated: "2026-10-28"
 description: "Even with all translations ready, flipping the switch for everyone at once is risky. The story of funneling locale decisions into a single choke point and rolling out i18n with zero downtime, gradually, via a GrowthBook kill switch."
 tags: ["i18n", "nextjs", "growthbook", "feature-flag"]
 series: "Service Internationalization"
@@ -17,7 +17,9 @@ In parts 1 and 2, I moved copy into a message catalog and got the language packs
 - The same sentence differs in length across Japanese and English, so layouts can break
 - Awkward or wrong translations might surface only later
 
-So the goal was singular. **Turn it on gradually, but if something goes wrong, roll it back instantly without a deploy.** That mechanism is the GrowthBook kill switch.
+So the goal was singular. **Turn it on gradually, but retain a way to roll it back without a deploy.** That mechanism is the GrowthBook kill switch.
+
+This article follows the decision from **the server reading a flag to the client using the same locale for its first render**. The prerequisites are [locale precedence](/posts/i18n-01-foundation/) and [language-pack delivery and caching through GCS](/posts/i18n-02-language-pack-gcs/).
 
 ## Funneling locale decisions into one place: a single choke point
 
@@ -43,6 +45,19 @@ export const resolveEffectiveLocale = ({
 
 When the flag is off, whether the user's setting is `en` or `ja`, whatever the system language is, it **falls back to Korean unconditionally.** It's as if I put a switch on the one gate every locale must pass through. The flag value is managed by a single `i18n_enabled` in GrowthBook.
 
+### What the flag changes, and what it preserves
+
+The kill switch changes the **effective locale for this render**, not the user’s saved language preference. Keeping the saved preference allows the user’s choice to take effect again when the feature is enabled.
+
+| Flag | User preference | System or browser setting | Decision for this render |
+|---|---|---|---|
+| Off | `en` or `ja` | Any value | `ko` |
+| On | Explicit `en` | `ja-JP` | `en` |
+| On | `system` | Supported system locale is available | System locale |
+| On | `system` | System locale cannot be resolved | `Accept-Language`, then the fallback locale |
+
+These branches follow directly from the function above. Checking the flag first prevents a lower-priority setting from overriding the disabled state.
+
 ## Making the server and client reach the same decision
 
 Because it's the Next.js App Router, the locale is used on both the server (the layout) and the client (the provider). If the two pick different locales, hydration breaks. So **both feed the same flag into the same `resolveEffectiveLocale`.**
@@ -58,12 +73,26 @@ The server reads the flag to decide `html lang` and the first render, and the cl
 
 ## True zero-downtime means being able to roll back
 
-The real worth of a kill switch is that you can **roll it back instantly without a deploy.**
+The value of a kill switch is that you can **restore the effective locale without deploying rollback code.**
 
 - **Gradual rollout** - In GrowthBook, turn it on first for only a certain percentage or a certain user group
-- **Instant cutoff** - If a translation incident is found, the moment you flip the flag off, everyone safely reverts to `ko`. No need to wait for a rollback deploy
+- **Cutoff** - Turn the flag off when a translation problem appears. Requests that read the new flag value return to `ko` without waiting for a rollback deploy
 
 "If you can't roll a feature back, you can't turn it on" was the principle, and the kill switch upheld that principle.
+
+### An already open page may still have the previous value
+
+The code above does not guarantee an immediate update in every open browser. The server passes its flag value to the provider, so an existing document can retain the old value. Propagation depends on flag caching and on when a new request or render occurs.
+
+Before a rollout, check these boundaries.
+
+1. **Targeting**: Do the server and client evaluate the same user or group?
+2. **First render**: Do `html lang`, the message catalog, and the client’s initial locale agree?
+3. **Flag caching**: When does a new request see the disabled value, and where can an older value remain cached?
+4. **Existing pages**: Are refreshed pages and already open pages checked separately?
+5. **Preserved data**: Does disabling the feature retain the user’s language preference and the Korean language pack?
+
+Fetching a language pack from a CDN and selecting a locale are separate decisions. A cached non-Korean pack must not override an effective locale of `ko`.
 
 ## Pin tests to ko
 
@@ -77,7 +106,21 @@ test('forces ko when i18n is disabled, regardless of language/system', () => {
 })
 ```
 
-As long as this test stays green, no matter who touches the locale logic, the safety net of "kill switch off = everyone ko" won't break.
+This test checks the function’s rule that a disabled flag produces an effective locale of `ko`. It does not prove that the server and browser receive the same flag, so a rendered-page check is needed as well.
+
+The following test example covers more combinations of user and browser preferences. The disabled flag must take precedence in every case.
+
+```ts
+test.each([
+  { languageCode: 'en', systemLocale: 'ja-JP', acceptLanguage: 'en-US' },
+  { languageCode: 'ja', systemLocale: 'en-US', acceptLanguage: 'ja-JP' },
+  { languageCode: 'system', systemLocale: 'ja-JP', acceptLanguage: 'en-US' },
+])('keeps ko while the kill switch is off: %o', (input) => {
+  expect(resolveEffectiveLocale({ ...input, i18nEnabled: false })).toBe('ko')
+})
+```
+
+After the unit test, open the first request for an `en` user with the feature enabled and disabled. Compare the initial HTML with the hydrated page: the locale should not change unexpectedly, and raw translation keys should not appear.
 
 ## Wrap-up
 
@@ -87,4 +130,4 @@ The core of a zero-downtime rollout was ultimately **a structure you can roll ba
 - Control server and client at once with a single GrowthBook `i18n_enabled`
 - Pin the "if off, always ko" invariant with a test
 
-That's the frontend story so far. But no matter how well you translate on the frontend, if the server hands down a Korean response or a Korean document, Korean gets mixed back into the screen. In the final part, I'll cover how the backend stored the user's language and time zone and carried the locale all the way through to responses and documents.
+That's the frontend story so far. But no matter how well you translate on the frontend, if the server hands down a Korean response or a Korean document, Korean gets mixed back into the screen. [Backend locale handling](/posts/i18n-04-backend-locale/) covers the boundary between stored language preferences and API responses. [Localized document rendering](/posts/i18n-05-document-render/) continues that flow into generated documents.

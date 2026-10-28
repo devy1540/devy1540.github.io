@@ -98,7 +98,7 @@ test("published posts use explicit updated as sitemap lastmod", () => {
   }
 })
 
-test("static and aggregate pages omit unreliable sitemap lastmod", () => {
+test("static pages only publish explicitly recorded significant modification dates", () => {
   const entries = new Map(parseSitemapEntries().map((entry) => [entry.loc, entry]))
   const staticPaths = ["/", "/posts/", "/tags/", "/series/", "/analytics/", "/about/", "/privacy/"]
 
@@ -107,7 +107,8 @@ test("static and aggregate pages omit unreliable sitemap lastmod", () => {
       const localizedPath = languagePrefix && staticPath === "/" ? "/en/" : `${languagePrefix}${staticPath}`
       const url = `${baseUrl}${localizedPath}`
       assert.ok(entries.has(url), `missing sitemap entry for ${url}`)
-      assert.equal(entries.get(url).lastmod, undefined, `unexpected lastmod for ${url}`)
+      const expected = ["/", "/tags/", "/series/"].includes(staticPath) ? "2026-10-28" : undefined
+      assert.equal(entries.get(url).lastmod, expected, `wrong lastmod for ${url}`)
     }
   }
 })

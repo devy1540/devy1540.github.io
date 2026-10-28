@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react"
 import { useLocation, useNavigationType } from "react-router-dom"
 import { getScrollBehavior } from "@/lib/motion"
 import { followScrollAnchor } from "@/lib/scroll-anchor"
+import { isCollectionFilterHash } from "@/lib/collection-filters"
 
 const positions = new Map<string, number>()
 
@@ -38,7 +39,7 @@ export function ScrollToTop() {
       initialNavigation.current = false
       if (saved !== undefined) {
         window.scrollTo(0, saved)
-      } else if (hash) {
+      } else if (hash && !isCollectionFilterHash(pathname, hash)) {
         let id: string
         try { id = decodeURIComponent(hash.slice(1)) } catch { id = hash.slice(1) }
         const scroll = () => {

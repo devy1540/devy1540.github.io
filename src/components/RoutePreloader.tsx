@@ -6,26 +6,21 @@ export function RoutePreloader() {
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
     if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? "")) return
 
-    const paths = ["/posts", "/tags", "/series", "/about", "/analytics"]
-    let active = true
-    let idleId: number | undefined
-    let timer: ReturnType<typeof setTimeout> | undefined
-
-    function schedule() {
-      if (!active || paths.length === 0) return
-      const run = () => {
-        if (!active) return
-        const path = paths.shift()!
-        void prefetchRoute(path).then(schedule)
-      }
-      if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(run, { timeout: 2000 })
-      else timer = setTimeout(run, 1000)
+    function prefetchOnIntent(event: Event) {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null
+      if (!link || link.hasAttribute("download") || link.target === "_blank") return
+      const url = new URL(link.href, window.location.href)
+      if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return
+      void prefetchRoute(url.pathname)
     }
-    schedule()
+
+    document.addEventListener("pointerover", prefetchOnIntent, { passive: true })
+    document.addEventListener("focusin", prefetchOnIntent)
+    document.addEventListener("touchstart", prefetchOnIntent, { passive: true })
     return () => {
-      active = false
-      if (idleId !== undefined) window.cancelIdleCallback(idleId)
-      if (timer !== undefined) clearTimeout(timer)
+      document.removeEventListener("pointerover", prefetchOnIntent)
+      document.removeEventListener("focusin", prefetchOnIntent)
+      document.removeEventListener("touchstart", prefetchOnIntent)
     }
   }, [])
   return null
