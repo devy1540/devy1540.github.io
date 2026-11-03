@@ -15,20 +15,14 @@ function pushDataLayer(eventName: string, params?: AnalyticsParams) {
 function trackEvent(eventName: string, params?: AnalyticsParams) {
   if (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) return
 
+  const eventParams = { page_location: window.location.href, page_title: document.title, ...params }
+
   if (window.gtag) {
-    window.gtag("event", eventName, params)
+    window.gtag("event", eventName, eventParams)
     return
   }
 
-  pushDataLayer(eventName, params)
-}
-
-export function trackPageView(path: string) {
-  trackEvent("page_view", {
-    page_path: path,
-    page_location: `${window.location.origin}${path}`,
-    page_title: document.title,
-  })
+  pushDataLayer(eventName, eventParams)
 }
 
 export const analytics = {
