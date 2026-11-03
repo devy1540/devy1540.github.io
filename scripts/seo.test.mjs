@@ -241,3 +241,34 @@ test("non-indexable prerendered routes do not publish article structured data", 
   visit(dist)
   assert.match(fs.readFileSync(path.join(dist, "404.html"), "utf8"), /<meta name="robots" content="noindex, nofollow"/)
 })
+
+test("sitemap and HTML publish exactly the same language alternatives", () => {
+  for (const [, entry] of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const url = entry.match(/<loc>([^<]+)<\/loc>/)[1]
+    const xmlAlternates = [...entry.matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)]
+      .map(match => ({ language: match[1], url: match[2] }))
+    assert.deepEqual(alternates(pages.get(url)), xmlAlternates, url)
+  }
+})
+
+test("RSS lists exactly the published articles and HTML links to the feed in its own language", () => {
+  for (const prefix of ["", "/en"]) {
+    const feed = fs.readFileSync(path.join(dist, prefix, "rss.xml"), "utf8")
+    const items = [...feed.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(match => match[1].match(/<link>([^<]+)<\/link>/)[1])
+    const articles = urls.filter(url => new URL(url).pathname.startsWith(`${prefix}/posts/`) && new URL(url).pathname !== `${prefix}/posts/`)
+    assert.deepEqual([...items].sort(), articles.sort())
+    for (const [url, html] of pages) {
+      if (new URL(url).pathname.startsWith("/en/") !== Boolean(prefix)) continue
+      assert.match(html, new RegExp(`type="application/rss\\+xml"[^>]*href="${origin}${prefix}/rss.xml"`), url)
+    }
+  }
+})
+
+test("article time metadata agrees with structured data", () => {
+  for (const [url, html] of pages) {
+    if (!/\/(?:en\/)?posts\/[^/]+\/$/.test(new URL(url).pathname)) continue
+    const article = schemas(html)[0]
+    assert.equal(html.match(/property="article:published_time" content="([^"]+)"/)?.[1], article.datePublished, url)
+    assert.equal(html.match(/property="article:modified_time" content="([^"]+)"/)?.[1], article.dateModified, url)
+  }
+})

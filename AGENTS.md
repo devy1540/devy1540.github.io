@@ -130,8 +130,9 @@ publishDate: "2025-12-01" # optional - 예약 발행
 - draft/scheduled 글은 production 메타데이터·본문·검색 인덱스에서 자동 필터링
 
 ### SEO
-- `useMetaTags()` 훅으로 페이지별 title, description, OG 태그 설정
-- `vite.config.ts`에서 빌드 시 sitemap.xml, rss.xml 자동 생성
+- `src/lib/seo.ts`의 공통 사이트 설정·정규화·메타태그 규칙을 초기 HTML과 `useMetaTags()` 훅에서 공유
+- `src/entry-server.tsx`의 발행 경로 목록으로 `scripts/prerender.mjs`에서 sitemap.xml, 언어별 rss.xml 생성
+- SEO 변경 후 `pnpm build`, `pnpm test:seo`, `pnpm test:sitemap-lastmod`, `pnpm check:internal-links` 실행; 상세 규칙은 `docs/seo.md` 참고
 - `src/entry-server.tsx` + `scripts/prerender.mjs`로 주요 라우트를 hydrated SSG HTML로 생성
 - 빌드 후 `dist/404.html`은 NotFound SSR HTML로 생성해 GitHub Pages SPA fallback의 hydration mismatch 방지
 

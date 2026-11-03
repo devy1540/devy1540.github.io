@@ -2,6 +2,7 @@ import { useCollectionFilters } from "@/hooks/useCollectionFilters"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SearchIcon, XIcon } from "lucide-react"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { getAllPosts, getAllSeries, type SeriesInfo } from "@/lib/posts"
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { PageContainer } from "@/components/PageContainer"
 import { useLanguage } from "@/i18n"
-import { filteredViewMeta, localizePath, postPath } from "@/lib/i18n-routing"
+import { filteredViewMeta, postPath } from "@/lib/i18n-routing"
 import { collectionFilterPath } from "@/lib/collection-filters"
 
 type SeriesSort = "recent" | "count" | "name"
@@ -87,9 +88,7 @@ export function SeriesPage() {
   const sortMode = toSeriesSort(searchParams.get("sort"))
 
   useMetaTags({
-    title: t.common.series,
-    description: t.series.description,
-    url: localizePath("/series", language),
+    ...staticPageSeo("/series/", language),
     ...filteredViewMeta("/series", legacyQuery, language),
   })
 

@@ -1,3 +1,5 @@
+import { SITE } from "../lib/seo"
+
 export type Language = "ko" | "en"
 
 export interface Translations {
@@ -498,9 +500,9 @@ export const ko: Translations = {
     general: "일반",
   },
   meta: {
-    siteName: "Devy Archive",
+    siteName: SITE.name,
     homeTitle: "Devy 블로그 — 백엔드·인프라·AI 개발 기록",
-    defaultDescription: "Devy의 기술 블로그입니다. 백엔드·클라우드 인프라·AI 개발과 운영에서 겪은 문제와 해결 과정을 기록합니다.",
+    defaultDescription: SITE.description.ko,
   },
 }
 
@@ -750,8 +752,8 @@ export const en: Translations = {
     general: "General",
   },
   meta: {
-    siteName: "Devy Archive",
+    siteName: SITE.name,
     homeTitle: "Devy Blog — Backend, Infrastructure, and AI Engineering",
-    defaultDescription: "Devy's technical blog about backend engineering, cloud infrastructure, and AI. Notes on development and operations problems and how they were solved.",
+    defaultDescription: SITE.description.en,
   },
 }

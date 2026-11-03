@@ -44,6 +44,7 @@ import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
 import { RelatedPosts } from "@/components/RelatedPosts"
 import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
+import { postSeo } from "@/lib/post-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { analytics } from "@/lib/analytics"
@@ -111,16 +112,14 @@ export function PostPage() {
   const isScheduled = !!(post?.publishDate && post.publishDate > new Date().toISOString().split("T")[0]!)
 
   useMetaTags({
-    title: fallbackPost ? t.post.translationUnavailableTitle : post?.title,
-    description: fallbackPost ? t.post.translationUnavailableDescription : post?.description,
-    url: slug ? postPath(slug, language) : undefined,
-    type: "article",
+    ...(post ? postSeo(post) : {
+      title: fallbackPost ? t.post.translationUnavailableTitle : undefined,
+      description: fallbackPost ? t.post.translationUnavailableDescription : undefined,
+      url: slug ? postPath(slug, language) : undefined,
+      canonicalPath: fallbackPost && slug ? postPath(slug, "ko") : undefined,
+      alternateUrls: slug ? Object.fromEntries(availableLanguages.map(availableLanguage => [availableLanguage, postPath(slug, availableLanguage)])) : undefined,
+    }),
     noindex: !post || isDraft || isScheduled,
-    canonicalPath: fallbackPost && slug ? postPath(slug, "ko") : undefined,
-    alternateUrls: slug ? {
-      ...(availableLanguages.includes("ko") ? { ko: postPath(slug, "ko") } : {}),
-      ...(availableLanguages.includes("en") ? { en: postPath(slug, "en") } : {}),
-    } : undefined,
   })
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useCollectionFilters } from "@/hooks/useCollectionFilters"
 import { useMemo, useState } from "react"
 import { usePostSearchIndex } from "@/hooks/usePostData"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { LayoutListIcon, LayoutGridIcon, SearchIcon, XIcon } from "lucide-react"
 import { getAllPosts, searchPosts } from "@/lib/posts"
@@ -18,7 +19,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { usePageViews } from "@/hooks/usePageViews"
 import { useLanguage } from "@/i18n"
-import { filteredViewMeta, localizePath } from "@/lib/i18n-routing"
+import { filteredViewMeta } from "@/lib/i18n-routing"
 import type { PostMeta } from "@/types/post"
 import { StructuredData } from "@/components/StructuredData"
 import { postListStructuredData } from "@/lib/structured-data"
@@ -55,9 +56,7 @@ export function PostsPage() {
   const { language, t } = useLanguage()
   const [searchParams, setSearchParams, legacyQuery] = useCollectionFilters()
   useMetaTags({
-    title: t.common.posts,
-    description: t.posts.description,
-    url: localizePath("/posts", language),
+    ...staticPageSeo("/posts/", language),
     ...filteredViewMeta("/posts", legacyQuery, language),
   })
   const { getPostViews } = usePageViews()

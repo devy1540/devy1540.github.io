@@ -3,10 +3,11 @@ import type { Post, PostMeta } from "@/types/post"
 import type { ProjectDetail } from "@/data/resume"
 import { localizePath, postPath } from "./i18n-routing"
 import { getPostModifiedDate } from "./post-dates"
+import { SITE } from "./seo"
 
-const BASE_URL = "https://dev.devy.dev"
-const SITE_NAME = "Devy Archive"
-const OG_IMAGE_URL = `${BASE_URL}/og-image.png?v=20260922-5`
+const BASE_URL = SITE.url
+const SITE_NAME = SITE.name
+const OG_IMAGE_URL = SITE.image
 
 export function websiteStructuredData() {
   return {

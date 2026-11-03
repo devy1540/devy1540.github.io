@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { PostList } from "@/components/PostList"
@@ -15,12 +16,7 @@ import { ReadingGuides } from "@/components/ReadingGuides"
 
 export function HomePage() {
   const { language, t } = useLanguage()
-  useMetaTags({
-    title: t.meta.homeTitle,
-    description: t.meta.defaultDescription,
-    ogTitle: t.meta.siteName,
-    url: localizePath("/", language),
-  })
+  useMetaTags(staticPageSeo("/", language))
   const posts = getAllPosts(language)
   const recentPosts = posts.slice(0, 5)
   const series = getAllSeries(language)
