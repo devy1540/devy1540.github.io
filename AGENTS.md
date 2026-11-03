@@ -146,6 +146,7 @@ publishDate: "2025-12-01" # optional - 예약 발행
 - hydration 관련 변경 후에는 `pnpm build`, `pnpm preview`로 `Loading...`, Suspense hidden segment, React hydration warning이 없는지 확인
 
 ### Page Views
+- `page_view`는 GA4 자동 측정(초기 로드·브라우저 History 변화)에서만 전송합니다. 앱이나 GTM 맞춤 이벤트 태그에서 중복 발행하지 않습니다.
 - Google Apps Script API로 GA 데이터 조회
 - `usePageViews()` 훅: sessionStorage 캐시 (TTL 15분)
 - 메모리 + sessionStorage 이중 캐시

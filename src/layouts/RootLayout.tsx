@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { Outlet, useLocation } from "react-router-dom"
 import { SidebarProvider, SidebarInset, useSidebar } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
@@ -14,27 +14,8 @@ import { Confetti } from "@/components/Confetti"
 import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner"
 import { NavigationStatus } from "@/components/NavigationStatus"
 import { RoutePreloader } from "@/components/RoutePreloader"
-import { trackPageView } from "@/lib/analytics"
 import { getRouteLanguage } from "@/lib/i18n-routing"
 import { useLanguage } from "@/i18n"
-
-function RouteAnalytics() {
-  const location = useLocation()
-  const isInitialPageLoad = useRef(true)
-
-  useEffect(() => {
-    if (isInitialPageLoad.current) {
-      isInitialPageLoad.current = false
-      return
-    }
-
-    const path = `${location.pathname}${location.search}`
-    const timeoutId = window.setTimeout(() => trackPageView(path), 0)
-    return () => window.clearTimeout(timeoutId)
-  }, [location.pathname, location.search])
-
-  return null
-}
 
 function RouteLanguageSync() {
   const location = useLocation()
@@ -73,7 +54,6 @@ export function RootLayout() {
           <NavigationStatus />
           <RoutePreloader />
           <ScrollToTop />
-          <RouteAnalytics />
           <RouteLanguageSync />
           <Confetti />
           <AppSidebar />
