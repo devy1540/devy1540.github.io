@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.3](https://github.com/devy1540/devy1540.github.io/compare/v1.32.2...v1.32.3) (2026-11-03)
+
+
+### 버그 수정
+
+* **seo:** 초기 HTML과 화면 이동의 SEO 정보 통합 ([#250](https://github.com/devy1540/devy1540.github.io/issues/250)) ([b1c5a47](https://github.com/devy1540/devy1540.github.io/commit/b1c5a47e66348911feef2f48292bc2318f06b220))
+
 ## [1.32.2](https://github.com/devy1540/devy1540.github.io/compare/v1.32.1...v1.32.2) (2026-10-28)
 
 
