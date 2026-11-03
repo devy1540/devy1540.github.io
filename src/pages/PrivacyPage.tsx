@@ -1,8 +1,8 @@
 import type { ReactNode } from "react"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { useLanguage } from "@/i18n"
 import type { Language } from "@/i18n"
-import { localizePath } from "@/lib/i18n-routing"
 import { getResumeData } from "@/data/resume-i18n"
 
 const EFFECTIVE_DATE = "2026-06-29"
@@ -180,11 +180,7 @@ export function PrivacyPage() {
   const email = getResumeData(language).profile.email
   const content = getContent(language, email)
 
-  useMetaTags({
-    title: t.common.privacy,
-    description: language === "en" ? "Privacy policy for dev.devy.dev." : "dev.devy.dev의 개인정보처리방침입니다.",
-    url: localizePath("/privacy", language),
-  })
+  useMetaTags(staticPageSeo("/privacy/", language))
 
   return (
     <div className="mx-auto max-w-3xl">

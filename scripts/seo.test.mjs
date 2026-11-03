@@ -241,3 +241,71 @@ test("non-indexable prerendered routes do not publish article structured data", 
   visit(dist)
   assert.match(fs.readFileSync(path.join(dist, "404.html"), "utf8"), /<meta name="robots" content="noindex, nofollow"/)
 })
+
+test("topic guides are substantive, localized documents with published reading paths and backlinks", () => {
+  const topics = ["authentication", "spring-ai", "cloud-migration"]
+  for (const prefix of ["", "/en"]) {
+    const indexUrl = `${origin}${prefix}/topics/`
+    const index = pages.get(indexUrl)
+    assert.ok(index, `missing topic index: ${indexUrl}`)
+    assert.equal(schemas(index)[0]["@type"], "CollectionPage")
+    const home = pages.get(`${origin}${prefix}/`)
+    for (const slug of topics) {
+      const guidePath = `${prefix}/topics/${slug}/`
+      const url = `${origin}${guidePath}`
+      const html = pages.get(url)
+      assert.ok(html, `missing guide: ${url}`)
+      assert.ok(index.includes(`href="${guidePath}"`), `index does not link guide: ${url}`)
+      assert.ok(home.includes(`href="${guidePath}"`), `home does not link guide: ${url}`)
+      const title = text(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? "")
+      assert.equal(text(html.match(/<title>(.*?)<\/title>/)?.[1] ?? ""), `${title} | Devy Archive`)
+      assert.ok((html.match(/<h[23]\b/g) ?? []).length >= 5, `guide has no editorial structure: ${url}`)
+      const documents = schemas(html)
+      assert.deepEqual(documents.map(document => document["@type"]), ["CollectionPage", "BreadcrumbList"])
+      assert.equal(documents[0].url, url)
+      const items = documents[0].mainEntity.itemListElement
+      assert.ok(items.length >= 4, `guide needs a complete reading path: ${url}`)
+      assert.equal(new Set(items.map(item => item.url)).size, items.length)
+      for (const [index, item] of items.entries()) {
+        assert.equal(item.position, index + 1)
+        assert.ok(pages.has(item.url), `unpublished reading target: ${item.url}`)
+        assert.ok(item.url.startsWith(`${origin}${prefix}/posts/`), `reading target switches language: ${item.url}`)
+        assert.ok(html.includes(`href="${new URL(item.url).pathname}"`), `schema target is not visible: ${item.url}`)
+        assert.ok(pages.get(item.url).includes(`href="${guidePath}"`), `article does not link back to guide: ${item.url}`)
+      }
+      for (const item of documents[1].itemListElement) assert.ok(pages.has(item.item), `missing breadcrumb target: ${item.item}`)
+    }
+  }
+  assert.ok(!pages.get(`${origin}/en/topics/cloud-migration/`).includes('/en/posts/aws-to-gcp-migration/'), "do not recommend an unavailable English translation")
+})
+
+test("sitemap and HTML publish exactly the same language alternatives", () => {
+  for (const [, entry] of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const url = entry.match(/<loc>([^<]+)<\/loc>/)[1]
+    const xmlAlternates = [...entry.matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)]
+      .map(match => ({ language: match[1], url: match[2] }))
+    assert.deepEqual(alternates(pages.get(url)), xmlAlternates, url)
+  }
+})
+
+test("RSS lists exactly the published articles and HTML links to the feed in its own language", () => {
+  for (const prefix of ["", "/en"]) {
+    const feed = fs.readFileSync(path.join(dist, prefix, "rss.xml"), "utf8")
+    const items = [...feed.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(match => match[1].match(/<link>([^<]+)<\/link>/)[1])
+    const articles = urls.filter(url => new URL(url).pathname.startsWith(`${prefix}/posts/`) && new URL(url).pathname !== `${prefix}/posts/`)
+    assert.deepEqual([...items].sort(), articles.sort())
+    for (const [url, html] of pages) {
+      if (new URL(url).pathname.startsWith("/en/") !== Boolean(prefix)) continue
+      assert.match(html, new RegExp(`type="application/rss\\+xml"[^>]*href="${origin}${prefix}/rss.xml"`), url)
+    }
+  }
+})
+
+test("article time metadata agrees with structured data", () => {
+  for (const [url, html] of pages) {
+    if (!/\/(?:en\/)?posts\/[^/]+\/$/.test(new URL(url).pathname)) continue
+    const article = schemas(html)[0]
+    assert.equal(html.match(/property="article:published_time" content="([^"]+)"/)?.[1], article.datePublished, url)
+    assert.equal(html.match(/property="article:modified_time" content="([^"]+)"/)?.[1], article.dateModified, url)
+  }
+})

@@ -1,5 +1,7 @@
 import type { RouteObject } from "react-router-dom"
 import { RootLayout } from "./layouts/RootLayout"
+import { TopicsPage } from "./pages/TopicsPage"
+import { TopicPage } from "./pages/TopicPage"
 import { HomePage } from "./pages/HomePage"
 import { ErrorPage } from "./pages/ErrorPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
@@ -20,6 +22,8 @@ export function createServerRoutes(): RouteObject[] {
     { index: true, element: <HomePage /> },
     { path: "posts", element: <PostsPage /> },
     { path: "posts/:slug", element: <PostPage /> },
+    { path: "topics", element: <TopicsPage /> },
+    { path: "topics/:slug", element: <TopicPage /> },
     { path: "tags", element: <TagsPage /> },
     { path: "series", element: <SeriesPage /> },
     { path: "search", element: <SearchPage /> },

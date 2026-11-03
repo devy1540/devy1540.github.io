@@ -4,6 +4,8 @@ import { createRetryableLoader } from "./async-loader"
 import { preloadPostForPath } from "./posts"
 
 export type RouteComponentKey =
+  | "topics"
+  | "topic"
   | "posts"
   | "post"
   | "tags"
@@ -19,6 +21,8 @@ export type RouteComponentKey =
 export type ResolvedRouteComponents = Partial<Record<RouteComponentKey, ComponentType>>
 
 const factories: Record<RouteComponentKey, () => Promise<{ Component: ComponentType }>> = {
+  topics: () => import("../pages/TopicsPage").then((module) => ({ Component: module.TopicsPage })),
+  topic: () => import("../pages/TopicPage").then((module) => ({ Component: module.TopicPage })),
   posts: () => import("../pages/PostsPage").then((module) => ({ Component: module.PostsPage })),
   post: () => import("../pages/PostPage").then((module) => ({ Component: module.PostPage })),
   tags: () => import("../pages/TagsPage").then((module) => ({ Component: module.TagsPage })),
@@ -46,6 +50,8 @@ export function loadRouteModule(key: RouteComponentKey) {
 
 export function getRouteComponentKey(pathname: string): RouteComponentKey | null {
   const path = stripLanguagePrefix(pathname).replace(/\/+$/, "") || "/"
+  if (path === "/topics") return "topics"
+  if (path.startsWith("/topics/")) return "topic"
   if (path === "/posts") return "posts"
   if (path.startsWith("/posts/")) return "post"
   if (path === "/tags") return "tags"

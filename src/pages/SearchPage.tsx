@@ -2,9 +2,9 @@ import { useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { PageContainer } from "@/components/PageContainer"
 import { Button } from "@/components/ui/button"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { useLanguage } from "@/i18n"
-import { localizePath } from "@/lib/i18n-routing"
 import { collectionFilterPath, readCollectionFilters } from "@/lib/collection-filters"
 import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 
@@ -16,12 +16,7 @@ export function SearchPage() {
   const filters = hydrated ? readCollectionFilters(location.search, location.hash) : new URLSearchParams()
   const postsPath = collectionFilterPath("/posts", filters, language)
 
-  useMetaTags({
-    title: t.common.posts,
-    description: t.posts.description,
-    url: localizePath("/posts", language),
-    noindex: true,
-  })
+  useMetaTags(staticPageSeo("/search/", language))
 
   useEffect(() => {
     if (hydrated) void navigate(postsPath, { replace: true })

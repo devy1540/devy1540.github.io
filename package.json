@@ -14,7 +14,7 @@
     "test:post-dates": "node --test scripts/post-dates.test.mjs",
     "test:charts": "node --test scripts/markdown-chart.test.mjs",
     "test:loading": "node --test scripts/async-loader.test.mjs scripts/loading.test.mjs",
-    "test:seo": "node --test scripts/seo.test.mjs",
+    "test:seo": "node --test scripts/seo.test.mjs scripts/seo-metadata.test.mjs",
     "test:sitemap-lastmod": "node --test scripts/sitemap-lastmod.test.mjs",
     "test:analytics": "node --test scripts/analytics.test.mjs",
     "test:rendering": "node --test scripts/rendering.test.mjs",

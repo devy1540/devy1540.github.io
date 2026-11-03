@@ -30,6 +30,7 @@ function phoneHref(phone: string, language: Language) {
   }
   return `tel:${digits}`
 }
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/PageContainer"
@@ -171,7 +172,7 @@ export function AboutPage() {
   const displayPhone = formatPhone(resume.profile.phone, language)
   const contactPhoneHref = phoneHref(resume.profile.phone, language)
   const [pdfLoading, setPdfLoading] = useState(false)
-  useMetaTags({ title: t.common.about, description: t.about.description, url: localizePath("/about", language) })
+  useMetaTags(staticPageSeo("/about/", language))
 
   async function handleDownloadPdf() {
     setPdfLoading(true)

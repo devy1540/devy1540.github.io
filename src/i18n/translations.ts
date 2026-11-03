@@ -1,9 +1,12 @@
+import { SITE } from "../lib/seo"
+
 export type Language = "ko" | "en"
 
 export interface Translations {
   common: {
     skipToContent: string
     home: string
+    topics: string
     posts: string
     series: string
     search: string
@@ -266,6 +269,7 @@ export const ko: Translations = {
     reloadPage: "페이지 새로 열기",
     skipToContent: "본문으로 바로가기",
     home: "홈",
+    topics: "주제별 안내",
     posts: "글 목록",
     series: "시리즈",
     search: "검색",
@@ -498,9 +502,9 @@ export const ko: Translations = {
     general: "일반",
   },
   meta: {
-    siteName: "Devy Archive",
+    siteName: SITE.name,
     homeTitle: "Devy 블로그 — 백엔드·인프라·AI 개발 기록",
-    defaultDescription: "Devy의 기술 블로그입니다. 백엔드·클라우드 인프라·AI 개발과 운영에서 겪은 문제와 해결 과정을 기록합니다.",
+    defaultDescription: SITE.description.ko,
   },
 }
 
@@ -518,6 +522,7 @@ export const en: Translations = {
     reloadPage: "Reload page",
     skipToContent: "Skip to content",
     home: "Home",
+    topics: "Topic guides",
     posts: "Posts",
     series: "Series",
     search: "Search",
@@ -750,8 +755,8 @@ export const en: Translations = {
     general: "General",
   },
   meta: {
-    siteName: "Devy Archive",
+    siteName: SITE.name,
     homeTitle: "Devy Blog — Backend, Infrastructure, and AI Engineering",
-    defaultDescription: "Devy's technical blog about backend engineering, cloud infrastructure, and AI. Notes on development and operations problems and how they were solved.",
+    defaultDescription: SITE.description.en,
   },
 }

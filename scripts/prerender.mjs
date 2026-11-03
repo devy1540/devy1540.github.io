@@ -1,13 +1,13 @@
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { getPrerenderRoutes, render, preparePostContentForPrerender, getPostHydrationData } from "../dist-ssr/entry-server.js"
+import { getPrerenderRoutes, render, preparePostContentForPrerender, getPostHydrationData, renderSeoHead, siteConfig as SITE, getFeedPosts, resolveSeo, escapeMarkup } from "../dist-ssr/entry-server.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, "..")
 const distDir = path.resolve(rootDir, "dist")
 const template = fs.readFileSync(path.resolve(distDir, "index.html"), "utf-8")
-const baseUrl = "https://dev.devy.dev"
+const baseUrl = SITE.url
 
 function escapeAttr(value) {
   return value
@@ -15,19 +15,6 @@ function escapeAttr(value) {
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-}
-
-function toFullTitle(title) {
-  return title ? `${title} | Devy Archive` : "Devy Archive"
-}
-
-function toCanonicalPath(routePath) {
-  if (routePath === "/") return "/"
-  return routePath.endsWith("/") ? routePath : `${routePath}/`
-}
-
-function toAbsoluteUrl(routePath) {
-  return `${baseUrl}${toCanonicalPath(routePath)}`
 }
 
 function safeJsonLd(jsonLd) {
@@ -40,48 +27,63 @@ function outputPathFor(routePath) {
 }
 
 function withHead(templateHtml, route) {
-  const fullTitle = toFullTitle(route.title)
-  const description = route.description || "Devy의 기술 블로그입니다. 백엔드·클라우드 인프라·AI 개발과 운영에서 겪은 문제와 해결 과정을 기록합니다."
-  const previewTitle = route.ogTitle || fullTitle
-  const previewDescription = route.ogDescription || description
-  const canonicalPath = route.canonicalPath || route.path
-  const fullUrl = toAbsoluteUrl(canonicalPath)
-  const ogType = route.type || "website"
-  const htmlLang = route.language === "en" ? "en" : "ko"
+  const head = renderSeoHead({ ...route, url: route.path, alternateUrls: route.alternates }, route.language || "ko")
+  if (!templateHtml.includes("<!-- seo:start -->")) throw new Error("Missing SEO head boundary")
+  return templateHtml
+    .replace(/<html lang="[^"]*"/, `<html lang="${route.language || "ko"}"`)
+    .replace(/<!-- seo:start -->[\s\S]*?<!-- seo:end -->/, () => `<!-- seo:start -->\n    ${head}\n    <!-- seo:end -->`)
+}
 
-  let html = templateHtml
-    .replace(/<html lang="[^"]*"/, `<html lang="${htmlLang}"`)
-    .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(fullTitle)}</title>`)
-    .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeAttr(description)}$2`)
-    .replace(/(<meta name="robots" content=")[^"]*(")/, `$1${route.noindex ? "noindex, nofollow" : "index, follow"}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
-    .replace(/(<meta property="og:type" content=")[^"]*(")/, `$1${escapeAttr(ogType)}$2`)
-    .replace(/(<meta property="og:locale" content=")[^"]*(")/, `$1${route.language === "en" ? "en_US" : "ko_KR"}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${escapeAttr(fullUrl)}$2`)
-    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeAttr(previewTitle)}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${escapeAttr(previewDescription)}$2`)
-
-  if (!html.includes('meta name="robots"')) {
-    html = html.replace(
-      /(<meta name="description" content="[^"]*" \/>)/,
-      `$1\n    <meta name="robots" content="${route.noindex ? "noindex, nofollow" : "index, follow"}" />`
-    )
+function writeDiscoveryFiles(routes) {
+  const entries = routes.filter(route => !route.noindex).map(route => {
+    const seo = resolveSeo({ ...route, url: route.path, alternateUrls: route.alternates }, route.language || "ko")
+    if (new URL(seo.url).pathname !== route.path) throw new Error(`Non-canonical sitemap route: ${route.path}`)
+    return [
+      "  <url>",
+      `    <loc>${escapeMarkup(seo.url)}</loc>`,
+      ...(route.lastmod ? [`    <lastmod>${escapeMarkup(route.lastmod)}</lastmod>`] : []),
+      ...seo.alternates.map(alt => `    <xhtml:link rel="alternate" hreflang="${alt.hreflang}" href="${escapeMarkup(alt.href)}"/>`),
+      "  </url>",
+    ].join("\n")
+  })
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${entries.join("\n")}
+</urlset>
+`
+  fs.writeFileSync(path.resolve(distDir, "sitemap.xml"), sitemap)
+  for (const language of ["ko", "en"]) {
+    const homePath = language === "en" ? "/en/" : "/"
+    const home = routes.find(route => route.path === homePath)
+    const seo = resolveSeo({ ...home, url: homePath }, language)
+    const items = getFeedPosts(language).map(post => {
+      const url = `${baseUrl}${language === "en" ? "/en" : ""}/posts/${post.slug}/`
+      if (!routes.some(route => route.path === new URL(url).pathname && !route.noindex)) throw new Error(`RSS target is not indexable: ${url}`)
+      return `    <item>
+      <title>${escapeMarkup(post.title)}</title>
+      <link>${escapeMarkup(url)}</link>
+      <guid>${escapeMarkup(url)}</guid>
+      <description>${escapeMarkup(post.description)}</description>
+      <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+    </item>`
+    })
+    const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeMarkup(SITE.name)}</title>
+    <link>${baseUrl}${homePath}</link>
+    <description>${escapeMarkup(home.description)}</description>
+    <language>${language}</language>
+    <atom:link href="${seo.feedUrl}" rel="self" type="application/rss+xml"/>
+${items.join("\n")}
+  </channel>
+</rss>
+`
+    const feedPath = path.resolve(distDir, language === "en" ? "en/rss.xml" : "rss.xml")
+    fs.mkdirSync(path.dirname(feedPath), { recursive: true })
+    fs.writeFileSync(feedPath, rss)
   }
-
-  if (route.alternates) {
-    const alternates = [
-      route.alternates.ko ? `    <link rel="alternate" hreflang="ko-KR" href="${escapeAttr(toAbsoluteUrl(route.alternates.ko))}">` : "",
-      route.alternates.en ? `    <link rel="alternate" hreflang="en" href="${escapeAttr(toAbsoluteUrl(route.alternates.en))}">` : "",
-      route.alternates.ko ? `    <link rel="alternate" hreflang="x-default" href="${escapeAttr(toAbsoluteUrl(route.alternates.ko))}">` : "",
-    ].filter(Boolean).join("\n")
-    if (alternates) {
-      html = html.replace("</head>", `${alternates}\n  </head>`)
-    }
-  }
-
-  return html
 }
 
 function injectAppHtml(templateHtml, appHtml, routePath) {
@@ -106,6 +108,8 @@ for (const route of routes) {
   fs.mkdirSync(path.dirname(outPath), { recursive: true })
   fs.writeFileSync(outPath, html)
 }
+
+writeDiscoveryFiles(routes)
 
 const notFoundRoute = {
   path: "/404/",

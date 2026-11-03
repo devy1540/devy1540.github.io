@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { usePageViews } from "@/hooks/usePageViews"
 import { PostList } from "@/components/PostList"
@@ -11,16 +12,12 @@ import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { StructuredData } from "@/components/StructuredData"
 import { blogStructuredData, websiteStructuredData } from "@/lib/structured-data"
+import { TopicGuides } from "@/components/TopicGuides"
 import { ReadingGuides } from "@/components/ReadingGuides"
 
 export function HomePage() {
   const { language, t } = useLanguage()
-  useMetaTags({
-    title: t.meta.homeTitle,
-    description: t.meta.defaultDescription,
-    ogTitle: t.meta.siteName,
-    url: localizePath("/", language),
-  })
+  useMetaTags(staticPageSeo("/", language))
   const posts = getAllPosts(language)
   const recentPosts = posts.slice(0, 5)
   const series = getAllSeries(language)
@@ -104,6 +101,7 @@ export function HomePage() {
         <PostList posts={recentPosts} />
       </section>
 
+      <TopicGuides />
       <ReadingGuides posts={posts} />
 
       {/* Popular Posts Top 5 */}

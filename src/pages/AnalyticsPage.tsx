@@ -11,11 +11,12 @@ import { createRetryableLoader } from "@/lib/async-loader"
 import { PageContainer } from "@/components/PageContainer"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { usePageViews } from "@/hooks/usePageViews"
+import { staticPageSeo } from "@/lib/page-seo"
 import { useMetaTags } from "@/hooks/useMetaTags"
 import { averageViews, buildDailySeries, getPeakDay, getPercentChange, getPreviousComparableRange, sumViews } from "@/lib/analytics-data"
 import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts"
 import { useLanguage } from "@/i18n"
-import { localizePath, postPath } from "@/lib/i18n-routing"
+import { postPath } from "@/lib/i18n-routing"
 
 const loadAnalyticsCharts = createRetryableLoader(() => import("@/components/AnalyticsCharts"))
 
@@ -65,7 +66,7 @@ export function AnalyticsPage() {
   const { language, t } = useLanguage()
   const { value: charts, error: chartError, retry: retryCharts } = useDeferredModule(loadAnalyticsCharts)
   const [rangeDays, setRangeDays] = useState<RangeDays>(14)
-  useMetaTags({ title: t.common.analytics, description: t.analytics.description, url: localizePath("/analytics", language) })
+  useMetaTags(staticPageSeo("/analytics/", language))
 
   const { totalViews, allPageViews, daily, isError, isLoading, lastUpdated, refresh } = usePageViews()
   const posts = getAllPosts(language)

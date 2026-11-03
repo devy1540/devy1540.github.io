@@ -5,24 +5,24 @@ import { AppProviders } from "./app-shell"
 import { createServerRoutes } from "./routes.server"
 import { getResumeData } from "./data/resume-i18n"
 import type { ProjectDetail } from "./data/resume"
+import { postSeo } from "./lib/post-seo"
 import { getAllPosts } from "./lib/posts"
-import { getRouteLanguage, localizePath, postPath } from "./lib/i18n-routing"
+import { getRouteLanguage, localizePath, postPath, stripLanguagePrefix } from "./lib/i18n-routing"
 import type { Language } from "./i18n"
-import { ko, en } from "./i18n/translations"
+import { en } from "./i18n/translations"
+import { STATIC_PAGE_PATHS, staticPageSeo } from "./lib/page-seo"
+import type { SeoOptions } from "./lib/seo"
+import { PAGE_UPDATED } from "./data/page-updates"
+import { TOPICS, TOPICS_COPY, topicPath } from "./data/topics"
+export { renderSeoHead, resolveSeo, SITE as siteConfig, escapeMarkup } from "./lib/seo"
 export { preparePostContentForPrerender, getPostHydrationData } from "./lib/posts"
 
-export interface PrerenderRoute {
+export interface PrerenderRoute extends SeoOptions {
   path: string
   title: string
   description: string
-  ogTitle?: string
-  ogDescription?: string
-  type?: "website" | "article"
-  date?: string
-  tags?: string[]
   language?: Language
-  noindex?: boolean
-  canonicalPath?: string
+  lastmod?: string
   alternates?: Partial<Record<Language, string>>
 }
 
@@ -32,96 +32,10 @@ function toCanonicalPath(path: string) {
 }
 
 function localizedStaticRoutes(language: Language): PrerenderRoute[] {
-  const isEnglish = language === "en"
-  const path = (basePath: string) => toCanonicalPath(localizePath(basePath, language))
-  const meta = (isEnglish ? en : ko).meta
-  const postsDescription = isEnglish ? "All blog posts." : "개발하며 배운 것들을 정리한 글 목록입니다."
-
-  return [
-    {
-      path: path("/"),
-      language,
-      title: meta.homeTitle,
-      description: meta.defaultDescription,
-      ogTitle: meta.siteName,
-      alternates: {
-        ko: "/",
-        en: "/en/",
-      },
-    },
-    {
-      path: path("/posts/"),
-      language,
-      title: isEnglish ? "Posts" : "글 목록",
-      description: postsDescription,
-      alternates: {
-        ko: "/posts/",
-        en: "/en/posts/",
-      },
-    },
-    {
-      path: path("/tags/"),
-      language,
-      title: isEnglish ? "Tags" : "태그",
-      description: isEnglish ? "Blog posts grouped by tag." : "태그별로 분류된 블로그 글 목록입니다.",
-      alternates: {
-        ko: "/tags/",
-        en: "/en/tags/",
-      },
-    },
-    {
-      path: path("/series/"),
-      language,
-      title: isEnglish ? "Series" : "시리즈",
-      description: isEnglish ? "Blog posts grouped by series." : "시리즈별로 분류된 블로그 글 목록입니다.",
-      alternates: {
-        ko: "/series/",
-        en: "/en/series/",
-      },
-    },
-    {
-      path: path("/search/"),
-      language,
-      title: isEnglish ? "Posts" : "글 목록",
-      description: postsDescription,
-      noindex: true,
-      canonicalPath: path("/posts/"),
-      alternates: {
-        ko: "/posts/",
-        en: "/en/posts/",
-      },
-    },
-    {
-      path: path("/analytics/"),
-      language,
-      title: isEnglish ? "Analytics" : "통계",
-      description: isEnglish ? "Blog visit and post view statistics." : "블로그 방문과 글 조회 통계를 확인합니다.",
-      alternates: {
-        ko: "/analytics/",
-        en: "/en/analytics/",
-      },
-    },
-    {
-      path: path("/about/"),
-      language,
-      title: isEnglish ? "About" : "소개",
-      description: isEnglish ? "About Devy." : "개발자 Devy의 소개 페이지입니다.",
-      alternates: {
-        ko: "/about/",
-        en: "/en/about/",
-      },
-    },
-    {
-      path: path("/privacy/"),
-      language,
-      title: isEnglish ? "Privacy Policy" : "개인정보처리방침",
-      description: isEnglish ? "Privacy policy for dev.devy.dev." : "dev.devy.dev의 개인정보처리방침입니다.",
-      alternates: {
-        ko: "/privacy/",
-        en: "/en/privacy/",
-      },
-    },
-  ]
+  return STATIC_PAGE_PATHS.map(path => {
+    const seo = staticPageSeo(path, language)
+    return { ...seo, path: localizePath(path, language), language, alternates: seo.alternateUrls }
+  })
 }
 
 function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): PrerenderRoute[] {
@@ -142,15 +56,36 @@ function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): 
   })
 }
 
+function localizedTopicRoutes(language: Language): PrerenderRoute[] {
+  const copy = TOPICS_COPY[language]
+  return [
+    {
+      path: topicPath(undefined, language), language,
+      title: copy.title, description: copy.description,
+      alternates: { ko: topicPath(undefined, "ko"), en: topicPath(undefined, "en") },
+    },
+    ...TOPICS.map(topic => ({
+      path: topicPath(topic.slug, language), language,
+      title: topic.title[language], description: topic.description[language], lastmod: topic.updated,
+      alternates: { ko: topicPath(topic.slug, "ko"), en: topicPath(topic.slug, "en") },
+    })),
+  ]
+}
+
+// The same catalogue drives prerendered HTML, sitemap inclusion, and RSS.
+export function getFeedPosts(language: Language) { return getAllPosts(language) }
+
 export function getPrerenderRoutes(): PrerenderRoute[] {
   const koPosts = getAllPosts("ko")
   const enPosts = getAllPosts("en")
   const koProjects = getResumeData("ko").projects
   const enProjects = getResumeData("en").projects
 
-  return [
+  const routes: PrerenderRoute[] = [
     ...localizedStaticRoutes("ko"),
     ...localizedStaticRoutes("en"),
+    ...localizedTopicRoutes("ko"),
+    ...localizedTopicRoutes("en"),
     // 어드민 진입 화면은 클라이언트 전용 동작이지만, 정적 셸을 프리렌더해서
     // SPA fallback(404.html) hydration 불일치를 피한다. 색인은 막는다(noindex).
     {
@@ -169,51 +104,31 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
     },
     ...localizedProjectRoutes("ko", koProjects),
     ...localizedProjectRoutes("en", enProjects),
-    ...koPosts.map((post) => {
-      const alternates: Partial<Record<Language, string>> = { ko: postPath(post.slug, "ko") }
-      if (post.availableLanguages.includes("en")) alternates.en = postPath(post.slug, "en")
-
+    ...[...koPosts, ...enPosts].map(post => {
+      const seo = postSeo(post)
       return {
-        path: `/posts/${post.slug}/`,
-        language: "ko" as const,
-        title: post.title,
-        description: post.description,
-        type: "article" as const,
-        date: post.date,
-        tags: post.tags,
-        alternates,
+        ...seo,
+        path: postPath(post.slug, post.language),
+        language: post.language,
+        lastmod: post.updated,
+        alternates: seo.alternateUrls,
       }
     }),
-    ...koPosts.map((koPost) => {
-      const post = enPosts.find((candidate) => candidate.slug === koPost.slug)
-      const path = postPath(koPost.slug, "en")
-      const alternates: Partial<Record<Language, string>> = { ko: postPath(koPost.slug, "ko") }
-      if (post) alternates.en = path
-
-      if (!post) {
-        return {
-          path,
-          language: "en" as const,
-          title: "English version is not available yet",
-          description: "This post has not been translated into English yet.",
-          noindex: true,
-          canonicalPath: postPath(koPost.slug, "ko"),
-          alternates,
-        }
-      }
-
-      return {
-        path,
-        language: "en" as const,
-        title: post.title,
-        description: post.description,
-        type: "article" as const,
-        date: post.date,
-        tags: post.tags,
-        alternates,
-      }
-    }),
-  ].map((route) => ({ ...route, path: toCanonicalPath(route.path) }))
+    ...koPosts.filter(post => !post.availableLanguages.includes("en")).map(post => ({
+      path: postPath(post.slug, "en"),
+      language: "en" as const,
+      title: en.post.translationUnavailableTitle,
+      description: en.post.translationUnavailableDescription,
+      noindex: true,
+      canonicalPath: postPath(post.slug, "ko"),
+      alternates: { ko: postPath(post.slug, "ko") },
+    })),
+  ]
+  return routes.map(route => ({
+    ...route,
+    path: toCanonicalPath(route.path),
+    lastmod: route.lastmod ?? PAGE_UPDATED[toCanonicalPath(stripLanguagePrefix(route.path))],
+  }))
 }
 
 export function render(url: string) {

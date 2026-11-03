@@ -107,7 +107,7 @@ test("static pages only publish explicitly recorded significant modification dat
       const localizedPath = languagePrefix && staticPath === "/" ? "/en/" : `${languagePrefix}${staticPath}`
       const url = `${baseUrl}${localizedPath}`
       assert.ok(entries.has(url), `missing sitemap entry for ${url}`)
-      const expected = ["/", "/tags/", "/series/"].includes(staticPath) ? "2026-10-28" : undefined
+      const expected = staticPath === "/" ? "2026-11-03" : ["/tags/", "/series/"].includes(staticPath) ? "2026-10-28" : undefined
       assert.equal(entries.get(url).lastmod, expected, `wrong lastmod for ${url}`)
     }
   }

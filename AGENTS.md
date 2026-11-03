@@ -88,6 +88,8 @@ React + TypeScript + Vite로 구축된 개인 기술 블로그. GitHub Pages 커
 | `/` | HomePage | 최신글 5개, 인기글 Top 5, 블로그 통계 |
 | `/posts` | PostsPage | 전체 글 목록 (리스트/그리드) |
 | `/posts/:slug` | PostPage | 글 상세 (마크다운 렌더링) |
+| `/topics` | TopicsPage | 주제별 안내 목록 |
+| `/topics/:slug` | TopicPage | 인증·Spring AI·클라우드 이전 읽기 안내 |
 | `/tags` | TagsPage | 태그별 필터링 |
 | `/series` | SeriesPage | 시리즈별 필터링 |
 | `/search` | SearchPage | 고급 검색 |
@@ -130,8 +132,10 @@ publishDate: "2025-12-01" # optional - 예약 발행
 - draft/scheduled 글은 production 메타데이터·본문·검색 인덱스에서 자동 필터링
 
 ### SEO
-- `useMetaTags()` 훅으로 페이지별 title, description, OG 태그 설정
-- `vite.config.ts`에서 빌드 시 sitemap.xml, rss.xml 자동 생성
+- `src/lib/seo.ts`의 공통 사이트 설정·정규화·메타태그 규칙을 초기 HTML과 `useMetaTags()` 훅에서 공유
+- `src/entry-server.tsx`의 발행 경로 목록으로 `scripts/prerender.mjs`에서 sitemap.xml, 언어별 rss.xml 생성
+- 주제 안내는 `src/data/topics.ts`에서 한·영 내용·읽기 순서·실제 수정일을 관리하고 발행된 같은 언어의 글만 연결
+- SEO 변경 후 `pnpm build`, `pnpm test:seo`, `pnpm test:sitemap-lastmod`, `pnpm check:internal-links` 실행; 상세 규칙은 `docs/seo.md` 참고
 - `src/entry-server.tsx` + `scripts/prerender.mjs`로 주요 라우트를 hydrated SSG HTML로 생성
 - 빌드 후 `dist/404.html`은 NotFound SSR HTML로 생성해 GitHub Pages SPA fallback의 hydration mismatch 방지
 
