@@ -3,7 +3,7 @@ import type { Post, PostMeta } from "@/types/post"
 import type { ProjectDetail } from "@/data/resume"
 import { localizePath, postPath } from "./i18n-routing"
 import { getPostModifiedDate } from "./post-dates"
-import { SITE, canonicalUrl } from "./seo"
+import { SITE } from "./seo"
 
 const BASE_URL = SITE.url
 const SITE_NAME = SITE.name
@@ -112,38 +112,5 @@ export function projectStructuredData(project: ProjectDetail, language: Language
       description: project.tasks.map((task) => task.content).join(" "),
       dateCreated: project.period,
     },
-  }
-}
-
-export function collectionStructuredData(title: string, description: string, path: string, language: Language, items: { name: string; path: string }[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: title,
-    description,
-    url: canonicalUrl(path),
-    inLanguage: language === "en" ? "en" : "ko-KR",
-    mainEntity: {
-      "@type": "ItemList",
-      itemListElement: items.map((item, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: item.name,
-        url: canonicalUrl(item.path),
-      })),
-    },
-  }
-}
-
-export function breadcrumbStructuredData(items: { name: string; path: string }[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: item.name,
-      item: canonicalUrl(item.path),
-    })),
   }
 }

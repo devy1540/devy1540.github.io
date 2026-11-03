@@ -21,8 +21,6 @@ export function createRoutes(resolvedComponents: ResolvedRouteComponents = {}, f
     { index: true, element: <HomePage /> },
     { path: "posts", ...routeComponent("posts", resolvedComponents) },
     { path: "posts/:slug", ...routeComponent("post", resolvedComponents) },
-    { path: "topics", ...routeComponent("topics", resolvedComponents) },
-    { path: "topics/:slug", ...routeComponent("topic", resolvedComponents) },
     { path: "tags", ...routeComponent("tags", resolvedComponents) },
     { path: "series", ...routeComponent("series", resolvedComponents) },
     { path: "search", ...routeComponent("search", resolvedComponents) },

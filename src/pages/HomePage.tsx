@@ -12,7 +12,6 @@ import { useLanguage } from "@/i18n"
 import { localizePath, postPath } from "@/lib/i18n-routing"
 import { StructuredData } from "@/components/StructuredData"
 import { blogStructuredData, websiteStructuredData } from "@/lib/structured-data"
-import { TopicGuides } from "@/components/TopicGuides"
 import { ReadingGuides } from "@/components/ReadingGuides"
 
 export function HomePage() {
@@ -101,7 +100,6 @@ export function HomePage() {
         <PostList posts={recentPosts} />
       </section>
 
-      <TopicGuides />
       <ReadingGuides posts={posts} />
 
       {/* Popular Posts Top 5 */}

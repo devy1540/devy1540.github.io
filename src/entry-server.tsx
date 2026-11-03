@@ -13,7 +13,6 @@ import { en } from "./i18n/translations"
 import { STATIC_PAGE_PATHS, staticPageSeo } from "./lib/page-seo"
 import type { SeoOptions } from "./lib/seo"
 import { PAGE_UPDATED } from "./data/page-updates"
-import { TOPICS, TOPICS_COPY, topicPath } from "./data/topics"
 export { renderSeoHead, resolveSeo, SITE as siteConfig, escapeMarkup } from "./lib/seo"
 export { preparePostContentForPrerender, getPostHydrationData } from "./lib/posts"
 
@@ -56,22 +55,6 @@ function localizedProjectRoutes(language: Language, projects: ProjectDetail[]): 
   })
 }
 
-function localizedTopicRoutes(language: Language): PrerenderRoute[] {
-  const copy = TOPICS_COPY[language]
-  return [
-    {
-      path: topicPath(undefined, language), language,
-      title: copy.title, description: copy.description,
-      alternates: { ko: topicPath(undefined, "ko"), en: topicPath(undefined, "en") },
-    },
-    ...TOPICS.map(topic => ({
-      path: topicPath(topic.slug, language), language,
-      title: topic.title[language], description: topic.description[language], lastmod: topic.updated,
-      alternates: { ko: topicPath(topic.slug, "ko"), en: topicPath(topic.slug, "en") },
-    })),
-  ]
-}
-
 // The same catalogue drives prerendered HTML, sitemap inclusion, and RSS.
 export function getFeedPosts(language: Language) { return getAllPosts(language) }
 
@@ -84,8 +67,6 @@ export function getPrerenderRoutes(): PrerenderRoute[] {
   const routes: PrerenderRoute[] = [
     ...localizedStaticRoutes("ko"),
     ...localizedStaticRoutes("en"),
-    ...localizedTopicRoutes("ko"),
-    ...localizedTopicRoutes("en"),
     // 어드민 진입 화면은 클라이언트 전용 동작이지만, 정적 셸을 프리렌더해서
     // SPA fallback(404.html) hydration 불일치를 피한다. 색인은 막는다(noindex).
     {

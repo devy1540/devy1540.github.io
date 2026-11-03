@@ -11,9 +11,8 @@ test.beforeEach(async ({ page }) => {
 })
 
 const staticPaths = ["", "posts/", "tags/", "series/", "analytics/", "about/", "privacy/"]
-const topicPaths = ["topics/", "topics/authentication/", "topics/spring-ai/", "topics/cloud-migration/"]
 const detailPaths = ["posts/backend-owned-login-flow/", "about/projects/payment-system/"]
-const paths = ["", "/en"].flatMap(prefix => [...staticPaths, ...topicPaths, ...detailPaths].map(path => `${prefix}/${path}`))
+const paths = ["", "/en"].flatMap(prefix => [...staticPaths, ...detailPaths].map(path => `${prefix}/${path}`))
 paths.push("/en/posts/aws-to-gcp-migration/", "/en/posts/odin-ax-transformation/")
 
 for (const path of paths) {
@@ -47,33 +46,34 @@ for (const path of paths) {
   })
 }
 
-test("home, topic, article, language switch, and Back retain one current set of metadata", async ({ page }) => {
+test("article navigation, language switch, and Back retain one current set of metadata", async ({ page }) => {
   await page.goto("/")
-  await page.locator('main a[href="/topics/authentication/"]').first().click()
-  await expect(page).toHaveURL(/\/topics\/authentication\/$/)
   await page.locator('main a[href="/posts/backend-owned-login-flow/"]').first().click()
   await expect(page).toHaveURL(/\/posts\/backend-owned-login-flow\/$/)
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `${origin}/posts/backend-owned-login-flow/`)
   await expect(page.locator('head meta[property="article:published_time"]')).toHaveCount(1)
-  await page.goBack()
-  await expect(page.locator('head meta[property="article:published_time"]')).toHaveCount(0)
-  await page.getByRole("button", { name: "언어 변경", exact: true }).click()
-  await page.getByRole("menuitemcheckbox", { name: "English", exact: true }).click()
-  await expect(page).toHaveURL(/\/en\/topics\/authentication\/$/)
+  await page.getByRole("link", { name: "English", exact: true }).click()
+  await expect(page).toHaveURL(/\/en\/posts\/backend-owned-login-flow\/$/)
   await expect(page.locator('head link[rel="canonical"]')).toHaveCount(1)
-  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `${origin}/en/topics/authentication/`)
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `${origin}/en/posts/backend-owned-login-flow/`)
   await expect(page.locator('head link[hreflang]')).toHaveCount(3)
   await expect(page.locator("html")).toHaveAttribute("lang", "en")
-  await expect(page.locator('main a[href="/en/posts/backend-owned-login-flow/"]')).toBeVisible()
+  await page.goBack()
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `${origin}/posts/backend-owned-login-flow/`)
+  await page.goBack()
+  await expect(page).toHaveURL(/\/$/)
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `${origin}/`)
+  await expect(page.locator('head meta[property="article:published_time"]')).toHaveCount(0)
 })
 
-test("topic guides reflow on a narrow screen and unknown topics stay excluded from search", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 800 })
-  await page.goto("/topics/spring-ai/")
-  await expect(page.getByRole("heading", { name: "Spring AI 적용과 운영", exact: true })).toBeVisible()
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
-  const response = await page.goto("/topics/missing-topic/")
-  expect(response?.status()).toBe(404)
-  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow")
-  expect(await page.locator('script[type="application/ld+json"]').count()).toBe(0)
+test("existing navigation has no topic guides and removed URLs return a non-indexable 404", async ({ page, request }) => {
+  await page.goto("/")
+  await expect(page.locator('a[href*="/topics/"]')).toHaveCount(0)
+  for (const prefix of ["", "/en"]) {
+    for (const suffix of ["", "authentication/", "spring-ai/", "cloud-migration/"]) {
+      const response = await request.get(`${prefix}/topics/${suffix}`, { headers: { Accept: "text/html" } })
+      expect(response.status()).toBe(404)
+      expect(await response.text()).toContain('name="robots" content="noindex, nofollow"')
+    }
+  }
 })

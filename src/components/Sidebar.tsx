@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Home, FileText, Tags, User, Library, BarChart3, ShieldCheck, Compass } from "lucide-react"
+import { Home, FileText, Tags, User, Library, BarChart3, ShieldCheck } from "lucide-react"
 import {
   Sidebar as SidebarRoot,
   SidebarContent,
@@ -29,7 +29,6 @@ import { useIsHydrated } from "@/hooks/useHydratedSearchParams"
 
 const navIcons = {
   home: Home,
-  topics: Compass,
   posts: FileText,
   series: Library,
   tags: Tags,
@@ -62,7 +61,6 @@ function SidebarContents() {
   const readingItems = [
     { label: t.common.home, to: localizePath("/", language), basePath: "/", icon: navIcons.home },
     { label: t.common.posts, to: localizePath("/posts", language), basePath: "/posts", icon: navIcons.posts },
-    { label: t.common.topics, to: localizePath("/topics", language), basePath: "/topics", icon: navIcons.topics },
     { label: t.common.series, to: localizePath("/series", language), basePath: "/series", icon: navIcons.series },
     { label: t.common.tags, to: localizePath("/tags", language), basePath: "/tags", icon: navIcons.tags },
   ]

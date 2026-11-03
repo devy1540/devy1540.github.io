@@ -4,13 +4,13 @@ import { canonicalUrl, renderSeoHead, resolveSeo } from "../src/lib/seo.ts"
 
 test("canonical addresses normalize paths, retain legacy queries, and discard document fragments", () => {
   assert.equal(canonicalUrl(), "https://dev.devy.dev/")
-  assert.equal(canonicalUrl("/en/topics/spring-ai#section"), "https://dev.devy.dev/en/topics/spring-ai/")
+  assert.equal(canonicalUrl("/en/posts/spring-ai-guide-01-setup#section"), "https://dev.devy.dev/en/posts/spring-ai-guide-01-setup/")
   assert.equal(canonicalUrl("/tags?tag=C%2B%2B#filters:tag=java"), "https://dev.devy.dev/tags/?tag=C%2B%2B")
   assert.throws(() => canonicalUrl("https://example.com/post"), /must belong/)
 })
 
 test("metadata escapes text and attribute values without corrupting literal replacement tokens", () => {
-  const html = renderSeoHead({ title: 'A & B <script> $& $1', description: '" onload="oops < &', url: "/topics/test" }, "ko")
+  const html = renderSeoHead({ title: 'A & B <script> $& $1', description: '" onload="oops < &', url: "/posts/test" }, "ko")
   assert.ok(html.includes("A &amp; B &lt;script&gt; $&amp; $1 | Devy Archive"))
   assert.ok(html.includes('content="&quot; onload=&quot;oops &lt; &amp;"'))
   assert.ok(!html.includes("<script>"))

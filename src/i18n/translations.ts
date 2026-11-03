@@ -6,7 +6,6 @@ export interface Translations {
   common: {
     skipToContent: string
     home: string
-    topics: string
     posts: string
     series: string
     search: string
@@ -269,7 +268,6 @@ export const ko: Translations = {
     reloadPage: "페이지 새로 열기",
     skipToContent: "본문으로 바로가기",
     home: "홈",
-    topics: "주제별 안내",
     posts: "글 목록",
     series: "시리즈",
     search: "검색",
@@ -522,7 +520,6 @@ export const en: Translations = {
     reloadPage: "Reload page",
     skipToContent: "Skip to content",
     home: "Home",
-    topics: "Topic guides",
     posts: "Posts",
     series: "Series",
     search: "Search",

@@ -42,7 +42,6 @@ import { PageContainer } from "@/components/PageContainer"
 import { TableOfContents } from "@/components/TableOfContents"
 import { Comments } from "@/components/Comments"
 import { SeriesNavigator } from "@/components/SeriesNavigator"
-import { TopicGuides } from "@/components/TopicGuides"
 import { RelatedPosts } from "@/components/RelatedPosts"
 import { AlertCircle, ArrowLeft, ArrowRight, Clock, Eye } from "lucide-react"
 import { postSeo } from "@/lib/post-seo"
@@ -283,7 +282,6 @@ export function PostPage() {
           </ReactMarkdown>}
         </div>
 
-        <TopicGuides postSlug={post.slug} />
         <RelatedPosts posts={relatedPosts} />
 
         {(prev || next) && (
