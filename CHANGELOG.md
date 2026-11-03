@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.4](https://github.com/devy1540/devy1540.github.io/compare/v1.32.3...v1.32.4) (2026-11-03)
+
+
+### 버그 수정
+
+* connect analytics events without duplicate pageviews ([#252](https://github.com/devy1540/devy1540.github.io/issues/252)) ([767d9a6](https://github.com/devy1540/devy1540.github.io/commit/767d9a60989bde72844d297cbb3f3fbb78af3b00))
+
 ## [1.32.3](https://github.com/devy1540/devy1540.github.io/compare/v1.32.2...v1.32.3) (2026-11-03)
 
 
